@@ -9,6 +9,7 @@ To pass input text via button to component.ts
 <input #passVal type = "text">
 <button (click) = "showConsoleLog(passVal)"
 ```
+
 ```typescript=
 //..
 export class example implement OnInit{
