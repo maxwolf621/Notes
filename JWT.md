@@ -50,8 +50,8 @@ export class TokenInterceptor implements HttpInterceptor {
 }
 ```
 
-it is necessary to register it as a provider with HTTP_INTERCEPTORS token in Angular module.
-```
+It is necessary to register it as a provider with `HTTP_INTERCEPTORS` token in Angular module.
+```typescript
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 @NgModule({
   // declarations...
@@ -103,7 +103,6 @@ Using filter(token => token != null) will make this trick! Once there is some va
 Finally, we can tell the interceptor to finish processing this request with next.handle.
 
 ```typescript
-
 private isRefreshing = false;
 private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
