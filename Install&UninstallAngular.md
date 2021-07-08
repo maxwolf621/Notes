@@ -3,16 +3,16 @@
 [node_module](https://stackoverflow.com/questions/63294260/what-is-the-purpose-of-node-modules-folder)  
 [To install Node.js](https://hackmd.io/6Nvu-p8aQ0ynRhhsppBbww)  
 
-Create node_module's fold
-```bash
-npm install
-```
 
-delete the cache
+## Install Angular
+
+Reinstall angular  
 ```bash
 npm uninstall -g @angular/cli
+# delete cache
 npm cache verify
 npm install -g @angular/cli@latest
+# Create node_module's fold
 npm install
 ```
 
@@ -21,7 +21,9 @@ Angular will be installed in this directory
 /usr/lib/node_modules
 ```
 
-Create a `package.json` for npm
+Create a `package.json` for the local npm package
+[ref1](https://www.sitepoint.com/npm-guide/)  
+[ref2](https://stackoverflow.com/questions/9484829/npm-cant-find-package-json)  
 ```bash
 npm init
 ```
