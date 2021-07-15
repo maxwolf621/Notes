@@ -16,14 +16,14 @@ export class HeroService {
 ```
 
 當我們在provider設定這個服務給這個module使用，如下：
-```
+```typescript
 providers: [
   UserService
 ],
 ```
 
 Service使用`@Injectable()`表示此service會變成是Singleton，只要我們在某個Component的Constructor加入此service的宣告則會自動注入Instance
-```
+```typescript
 export class HeroListComponent {
   heroes: Hero[];
   
@@ -94,7 +94,7 @@ providers: [{ provide: Logger, useClass: BetterLogger }]
 ## 直接使用一個實體物件利用 `useValue`
 
 在provide提供現成的物件實體, 有的時候我們會希望能夠直接使用一個已建立好的物件實體，可以用下面的方式：
-```
+```typescript
 // An object in the shape of the logger service
 export function SilentLoggerFn() {}
 
@@ -105,7 +105,7 @@ const silentLogger = {
 };
 ```
 下面的宣告方式，可以讓我們在元件下的建構子可以直接使用Logger來取得上面所建的物件實體
-```
+```typescript
 [{ provide: Logger, useValue: silentLogger }]
 ```
 
@@ -127,13 +127,13 @@ getHeroes() {
 ```
 
 `hero.service.provider.ts`裡定義了factory的物件
-```typscript
+```typescript
 let heroServiceFactory = (logger: Logger, userService: UserService) => {
   return new HeroService(logger, userService.user.isAuthorized);
 };
 ```
 然後在providers的宣告是這樣的
-```
+```typescript
 export let heroServiceProvider =
   { provide: HeroService,
     useFactory: heroServiceFactory,
@@ -145,7 +145,7 @@ useFactory可讓angular知道provider是一個工廠函數，其實現是heroSer
 
 ## 常數注入
 如果有時我們要注入的對象不是物件時，例如要注入下面這個常數
-```typscript
+```typescript
 export const HERO_DI_CONFIG: AppConfig = {
   apiEndpoint: 'api.heroes.com',
   title: 'Dependency Injection'
@@ -165,7 +165,7 @@ export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 ```
 
 然後用剛剛建的InjectionToken來註冊這個程序
-```typscript
+```typescript
 providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }]
 ```
 使用這串字串的方式如下：
