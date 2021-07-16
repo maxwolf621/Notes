@@ -1,77 +1,31 @@
 ###### tags: `Angular`
-
 # Binding
-
 [TOC]
 
-[Brief TypeScript](/OffOQAeBRraLWjiSHY5tPg)
+[Note from](https://ithelp.ithome.com.tw/articles/10241010)  
+[Angular CLI](/aepJENweRzOZtm_AkEbmIA)  
 
-[Note from](https://ithelp.ithome.com.tw/articles/10241010)
+:::danger  
+由於Angular Application主要是利用元件所組合而成  
+我們可以利用Binding將來操控各個Component內的Attirbutes  
+:::  
 
-> Angular 應用程式主要是利用元件所組合而成。
-
-
-
-
-To create **A to do list** webpage
-On the Terminal
-
-`ng generate module directory`
-
-Genreate a enum type named task-state in the `enum/ ...` directory
-```bash=
-ng g enum enum/task-state 
-#** OR **#
-ng g e enum/task-state
-```
-
-Generate a class named task in the `model/task` directory
-```bash=
-ng g class model/task --skipTests
-# or 
-ng g cl model/task --skipTests
-```
-
-To define our Enum task-state.ts
-```typescript=
-export enum TaskState{
-    None,
-    Doing,
-    Finish,
-}
-```
-
-
-To define our task.component
-```typescript=
-import { TaskState } from "../enum/task-state.enum";
-
-export class Task{
-    constructor(
-        // string subject
-        public subject : string,
-        // TaskState state by default
-        public state : TaskState = TaskState.None
-    ){}
-}
-```
-
-
-## Inter-polation
+## Interpolation `{{ ... }}`
 
 Bind class's methods and attributes in HTML TAG上  
 
 使用方式就是在 HTML TAG加上 
-- `{{ component.method }}`  
-- `{{ component.attribute }}`
+```html
+{{ component.method }}  
+{{ component.attribute }}
+```
 
-For example  
-```typescript=
+FOR EXAMPLE  
+```typescript
 import { TaskState } from "../../enum/task-state.enum";
 export class TaskComponent implements OnInit {
   task: Task;
  
-  // Void ngOnInit
   // ngOnInit() to instantiate object 
   ngOnInit(): void {
     this.task = new Task("頁面需要顯示待辦事項主旨");
@@ -90,10 +44,12 @@ export class TaskComponent implements OnInit {
 }
 ```
 
-```htmlembedded=
+```html
 <div class="card">
   <div class="content">
+     <!-- display 頁面需要顯示待辦事項主旨 -->
     <span>{{ task.subject }}</span>
+    <!-- return 目前狀態 -->
     <span>{{ getStateDesc() }}</span>
   </div>
 </div>
@@ -101,27 +57,37 @@ export class TaskComponent implements OnInit {
 
 ## Event Binding 
 - Class's methods are called via `<button>` in html
-> `(event)="method_In_Component.ts"`
-> : 在等號左邊指定目標事件，而右邊則指定在事件觸發後要call的Component's Function。
 
-```typescript=
+```html
+(event)="SPECIFIC_METHOD_In_Component.ts"
+```
+- (event)指定目標事件被觸發後，呼叫等號右邊該Component內指定的Function
+
+FOR EXAMPLE
+```typescript
 import { TaskState } from "../../enum/task-state.enum";
 
 export class TaskComponent implements OnInit {
   // ... 
+  
   task : Task;
   TaskState = TaskState;
   
-  // To define the state
+  /**
+   * @Description
+   *   To define State of the Task
+   *   Will be used as Event Binding
+   */
   onSetTaskState(state: TaskState): void {
     this.task.state = state;
   }
 }
 ```
-
-```htmlembedded=
+In this component HTML file
+```htmlembedded
 <div class="card">
   <div class="content">
+    <!-- Interpolation -->
     <span>{{ task.subject }}</span>
     <span>{{ getStateDesc() }}</span>
   </div>
@@ -144,20 +110,28 @@ export class TaskComponent implements OnInit {
 
 ## Property and Attribute Binding
 
-Attribute Binding來將_Variable_繫結在HTML _Attribute_
+Attribute Binding來將*Attribute in Component*在HTML *Attribute*
+
+### Difference btw property and attribute 
 
 - Attribute
     > Defined By HTML
 - Property
     > 文件物件模型 (Document Object Model, DOM) 的節點屬性。
-    > 而這兩者(Attribute and Property)並非是互相對應的，且名稱也不一定會相同  
-    > 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
 
+Attribute and Property並非是互相對應的，且名稱也不一定會相同  
+> 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
 
-Property Binding `[property]="FieldInComponent.ts"` 
-
-Attribute Binding `[attr.name]="ValuePassedToAttribute"`
-
+```html
+<!-- 
+Property Binding 
+-->
+[property]="FieldInComponent.ts"
+<!--
+Attribute Binding 
+-->
+[attr.name]="ValuePassedToAttribute"
+```
 ```htmlembedded=
 <div class="content">
     <button type="button" 
@@ -175,10 +149,22 @@ Attribute Binding `[attr.name]="ValuePassedToAttribute"`
 
 
 ## Style Binding and Class Binding 
+Style Binding 是針對 HTML 中 style 屬性的 `CSS` 樣式進行資料繫結
 
-- Style Binding 是針對 HTML 中 style 屬性的 `CSS` 樣式進行資料繫結
-    > `[style.CssProperty] = "attirbute_OR_method_In_Component.ts"`
-```typescript=
+```html
+<!-- style指的是css -->
+<!-- CssProperty指的是該css file內某個attribute -->
+
+<!-- 
+等號右邊的attirbute_OR_method_In_Component.ts表
+利用Component內的attribute或者method 
+來control CSS內指定的Attirbute之值
+-->
+[style.CssProperty] = "attirbute_OR_method_In_Component.ts"`
+```
+
+FOR EXAMPLE
+```typescript
 getStateColor(): string {
     switch (this.task.state) {
           case TaskState.Doing:
@@ -202,24 +188,47 @@ getStateColor(): string {
 [Source](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
 
 To bind different classes use
-1. `[class.CSS_Attribute]="Expression with Attribute_In_Component"`
-2. `[class] = "Attribute_IN_Component that corresponds to Css_Attribute"`
-3. `[ngclass] = "Array_In_Component"`
+```html
+<!-- 
+Assign 指定的CSS_Attribute 透過 Attribute in the Componet
+-->
+[class.CSS_Attribute]="Attribute_In_This_Component"
+
+<!--
+use Method/Attribute defined in this Component 
+which it can control the CssAttributes
+
+same as class = css_attribute
+--> 
+[class] = "MethodorAttirbute_IN_this_Component"
+
+
+[ngclass] = "ArrayDefinedCssAttriute_In_Component"
+```
 ```typescript
 @Component({
 template:'
-
     <h2 class = "text-success"> Codevolution </h2>    
-    <!-- via attribute in comonent to assign a class -->
-    <!-- this is euqal to <h2 class ="text-success"> -->
+    
+    /** 
+      * via attribute in component to assign a class
+      *   this is euqal to <h2 class ="text-success"> 
+      */
     <h2 [class]="successClass"> Codevolution </h2>
     
-    <!-- Using expression -->
-    <!-- if hasError is ture then redirect Codevolution via text-danger-->
+    /**
+     * Using expression 
+     * if hasError is ture 
+     * then redirect Codevolution via text-danger
+     */
     <h2 [class.text-danger] = "hasError"> Codevolution </h2>
     
-    <!-- Using [ngClass] to have mutiple css attributes redirect -->
-    <!-- the Codevolution will be redirected with text-success and text-special --> 
+    /** 
+     * Using [ngClass] to 
+     *  have mutiple css attributes redirect 
+     * the Codevolution will be 
+     *  redirected with text-success and text-special  
+     */
     <h2 [ngClass] = "messageClass"> Codevolution </h2>
 ',
 styles:['
@@ -250,17 +259,17 @@ export class test implements OnInit{
 
 ## @Input and Property Binding
 
-`@Input()` 裝飾器用來定義元件屬性是可從*父*元件接收值，而在*父*元件則可以利用屬性繫結 (Property Binding) 來傳入資料。
+`@Input()` 裝飾器用來定義元件屬性是可從*父*元件接收值，而在*父*元件則可以利用屬性繫結 (`Property Binding`) 來傳入資料。  
+
 ```htmlembedded
 <!-- Assign value to Child_Variable via Father's Method-->
 <TAG [Child_Variable] = Father.Method> ... </TAG>
-
 <!-- Assign value to CHild_Variable via Father's Attribute --> 
 <TAG [Child_Variable] = Father.Attribute> ... </TAG>
 ```
 
-in app.component.ts (Father)
-```typescript=
+`app.component.ts` (Father)  
+```typescript
 import { Task } from "./model/task";
 
 export class AppComponent implements OnInit {
@@ -271,11 +280,11 @@ export class AppComponent implements OnInit {
 }
 ```
 
-task.component.ts (Child)
+`task.component.ts `(Child)
 ```typescript=
 // ... 
 export class TaskComponent implements OnInit {
-  // variable subject and state 
+  // subject and state 
   //     will receive the value from app.component.ts
   @Input() subject: string;
   @Input() state: TaskState;
