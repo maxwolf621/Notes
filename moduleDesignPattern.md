@@ -43,7 +43,7 @@ export class PageOneModule { }
 ```
 - 將`SearchComponent`放到了`SharedModule`的`declarations: []` 之中，為了在其他模組中也能使用這個元件，在`exports: []`做一個再次匯出的動作；此時`PageOneModule`以及`PageTwoModule`只需要在`imports: []`加入`SharedModule`，即可直接使用其中的`SearchComponent`達到程式碼共用的目標  
 
-如果當`SharedModule` 內沒有其他Component's樣板使用到`SearchComponent`，代表 `SearchComponent`只有不會在`SharedModule`內部使用到，只有其他外部模組會用到，此時可以從`declarations: [] `中移除，如下：
+如果當`SharedModule`內沒有其他Component's樣板使用到`SearchComponent`，代表`SearchComponent`只有不會在`SharedModule`內部使用到，只有其他外部模組會用到，此時可以從`declarations: [] `中移除，如下：
 ```typescript
 @NgModule({
   declarations: [/** other components **/],
@@ -66,7 +66,7 @@ export class MaterialSharedModule { }
 })
 export class PageOneModule { }
 ```
-- 建立`MaterialSharedModule`，來管理共用的Angular Material元件模組，並將這些模組放到`expots: []`內，此時在其他頁面只需要加入 `MaterialSharedModule`，就代表將裡面 exports: [] 設定的程式都歸類到此模組下
+- 建立`MaterialSharedModule`，來管理共用的Angular Material元件模組，並將這些模組放到`expots: []`內，此時在其他頁面只需要加入 `MaterialSharedModule`，就代表將裡面`exports: []`設定的程式都歸類到此模組下
  
 ## CoreModule
 在 Angular 6 之前，當我們建立 service 時，會在需要使用此 service 的模組中的`providers: []`加入此程式，在一個模組內，每個 service 都只會被產生一次(singleton)，**但當一個 service 有共用需求時，可能會選擇加入`SharedModule`的`providers: []`中**
