@@ -1,6 +1,8 @@
 ###### tags: `Angular`
 # Angular CLI 
-[basic Setting in CLI](https://ithelp.ithome.com.tw/articles/10238044)
+[basic Setting in CLI](https://ithelp.ithome.com.tw/articles/10238044)  
+
+[TOC]
 
 ## new A project
 ```bash
@@ -48,6 +50,39 @@ We swap web pages by `Routing`
 using `--routing=true` to create route module   
 
 > 單一頁面應用程式 (Single-Page Application, SPA) 不同於早期網頁程式，整個應用程式只有一個頁面，透過`Ajax`與伺服器溝通並更新部分網頁資料  
+
+
+## Generate a `enum` type 
+
+named task-state in the `enum/ ...` directory  
+```bash
+ng g enum enum/task-state 
+# or 
+ng g e enum/task-state
+```
+
+To define our `enum task-state.ts`  
+```typescript
+export enum TaskState{
+    None,
+    Doing,
+    Finish,
+}
+```
+
+Use `enum` in a component  
+```typescript
+import { TaskState } from "../enum/task-state.enum";
+
+export class Task{
+    constructor(
+        // string subject
+        public subject : string,
+        // TaskState state by default
+        public state : TaskState = TaskState.None
+    ){}
+}
+```
 
 
 ## `test` the Application
