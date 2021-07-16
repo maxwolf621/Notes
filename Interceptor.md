@@ -1,6 +1,9 @@
 ###### tags: `Angular`
 [Ref](https://medium.com/angular-in-depth/top-10-ways-to-use-interceptors-in-angular-db450f8a62d6)
-[For Angular 7](https://dev-academy.com/angular-jwt/)
+[For Angular 7](https://dev-academy.com/angular-jwt/)  
+
+[TOC]
+
 # Interceptor
 `HttpInterceptor` was introduced with Angular 4.3. 
 - It provides a way to intercept HTTP requests and responses to transform or handle them before passing them along.
@@ -378,4 +381,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 }
 ```
+- [switchMap](https://ithelp.ithome.com.tw/articles/10188387)
+
 - [switchMap](https://ithelp.ithome.com.tw/articles/10188387)
