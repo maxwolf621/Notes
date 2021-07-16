@@ -184,3 +184,22 @@ For example a work-space of angular application would have multiple projects fil
 潛在問題  
 - 一般開發網頁程式為了減少程式檔案大小，來降低程式傳輸至客戶端的時間，常常會將 JavaScript 進行程式碼壓縮；但也因此讓程式人員無法在系統錯誤時，直接知道哪一行程式拋出的錯誤訊息  
     > 解決: 利用`SourceMap`即用來記錄程式碼在壓縮前後位置對應的檔案，讓程式人員可以更方便地除錯  
+
+```json
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "system",
+    "target": "es5",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true, // 單行註解
+    "outFile": "./dist/app-build.js", // 全部整合在這一隻 js
+    "sourceMap": true
+  }
+  /*
+   * 多行註解
+   */
+}
+```
+[More Details](https://yiyingloveart.blogspot.com/2016/07/typescript-tsconfigjson.html)
