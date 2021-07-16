@@ -1,10 +1,10 @@
-[Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)
+# Inhaltsverzeichnis
 
 [Install and Uninstall Angular](Install&UninstallAngular.md)  
 [Angular CLI](AngularCLI.md)  
 [TypeScript](TypeScript.md)  
-[flow of boosting Angular Application](ApplicationActs.md)  
-[life hooks](lifeHooks.md)  
+[Flow of boosting Angular Application](ApplicationActs.md)  
+[Life hooks](lifeHooks.md)  
 [Module](ngModule.md)  
 [ModuleDesignPattern](moduleDesignPattern.md)  
 [Structural Directives](Structural%20Directives.md)  
@@ -16,4 +16,5 @@
 [Route Guard](Route%20Guard.md)  
 [Interceptor](Interceptor.md)  
 [JWT](JWT.md)  
-[viewPost](viewPost.md)  
+[Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)
+[ViewPost](viewPost.md)  
