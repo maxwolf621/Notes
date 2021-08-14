@@ -205,7 +205,7 @@ and `template` will replace it with <h2>Courses</h2>
 ```
 
 Add the component to Module
-```typescrip
+```typescript
 // A app.module.ts
 import {AppComponent} from './app.component';
 import {CoursesComponent} from './courses.component'
