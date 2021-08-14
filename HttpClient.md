@@ -32,13 +32,15 @@ export class MyComponent implements OnInit {
 
 
 ## 定義回傳格式
+
 首先先建立一個要回傳的物件介面
 ```typescript
 interface ItemsResponse {
   results: string[];
 }
 ```
-在get後面設定要回傳的資料的格式
+
+在`.get<ResponseType>('Backend_URL')`後面設定要回傳的資料的格式
 ```typescript
 /**
   * response的資料類型為ItemResponse
@@ -61,8 +63,8 @@ http
     console.log(resp.body.someField);
   });
 ```
-處理錯誤訊息
-可以在.subscribe()下面增加err函數來處理HTTP錯誤的狀況
+
+利用`err`處理錯誤訊息, 可以在`.subscribe()`下面增加`err`函數來處理HTTP錯誤的狀況
 ```typescript
 http
   .get<ItemsResponse>('/api/items')
@@ -75,7 +77,8 @@ http
     }
   );
 ```
-err這個含數可以有傳入更詳細的HTTP錯誤訊息物件HttpErrorResponse
+
+`err`可以有傳入更詳細的HTTP錯誤訊息物件`HttpErrorResponse`
 ```
 http
   .get<ItemsResponse>('/api/items')
