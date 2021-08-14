@@ -1,8 +1,5 @@
 ###### tags: `Angular`
-# Reactive Programming
-
-[TOC]
-[Ref](https://blog.techbridge.cc/2016/05/28/reactive-programming-intro-by-rxjs/)
+# [Reactive Programming](https://blog.techbridge.cc/2016/05/28/reactive-programming-intro-by-rxjs/)
 
 ```diff
 + Reactive Programming 
