@@ -45,13 +45,15 @@ export class AppComponent implements OnInit {
   heros
 
   ngOnInit() {
-    //  this.heros = this.dataService.getData()
+    // this.dataService (Youtuber) 
+    // get Information form it 
     this.dataService.getData()
-    // pipe can gahter many function inside
+    // .pipe can gahter many function inside
     .pipe(
       tap(e=>console.log(`還沒使用運算子之前的資料樣子：${e}`)),
       map(e=>e.data)
       )
+    // subscribe the content from the youtuber
     .subscribe(data => {
       console.log(data)
       this.heros = data
