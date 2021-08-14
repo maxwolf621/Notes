@@ -5,7 +5,7 @@
 
 Basic Syntax `variable : DataType`
 
-```typescript=
+```typescript
 S : string = "what up";
 N : number = 1234;
 
@@ -15,7 +15,7 @@ arr : any[] = [1,2,3,4,5];
 ```
 
 Or do just like python
-```typescript=
+```typescript
 s = "what up";
 N = 1234;
 ```
@@ -33,7 +33,7 @@ class Point{
 ```
 
 Optional parameter
-```typescript=
+```typescript
 class Point{
     private x ;
     private y ;
@@ -43,8 +43,8 @@ class Point{
 }
 ```
 
-Access modifier parameter in constructor 
-```typescript=
+Access-modifier parameter in constructor 
+```typescript
 class Point{
     constructor(private _x? : number , private _y? : number){
         //..
@@ -55,8 +55,9 @@ class Point{
 
 ## Property (setter and getter)
 
-```typescript=
+```typescript
 class Point{
+
     // Attributes ...
     set x(value){
         //..
@@ -70,40 +71,42 @@ class Point{
 
 let point = new Point(1,2);
 let x = point.x; // getter
-point.x = 3 ; // setter
+point.x = 3 ;    // setter
 ```
 
 ## import a module 
 
 #### Syntax
-==`import { "moduleName" } from 'Where_The_Module_File_Locates'`==
+`import { "moduleName" } from 'Where_The_Module_File_Locates'`
+
 
 For example
-```typescript=
+```typescript
 import { Point } from './'
 ```
 
 ## Arrow function
 
-```typescript=
+```typescript
 let log = function(message){
     console.log(message);
 }
 ```
 
-Arrow Function's Syntax ==`(parameter) => { function body }`==
-```typescript=
+Arrow Function's Syntax `(parameter) => { function body }`
+```typescript
 let doLong = (message) => {
     console.log(message)
 }
-// coz it only has one line in function body so we can
+
+// or
 let doLong = (message) => console.log(message)
 ```
 
 ## Interface
 
 The following makes the code not so flexible
-```typescript=
+```typescript
 let drawPoint = (point) =>{
     //...
 }
@@ -130,6 +133,7 @@ let drawPoint = (point : Point) =>{
     //...
 }
 
+// As object 
 drawPoint({
     x:1,
     y:2
@@ -140,7 +144,7 @@ drawPoint({
 ## Cohesion
 
 The following causes Cohesion Problem
-```typescript=
+```typescript
 // Parameter pointA and pointB would have same values
 let GetDistance = (pointA : Point , pointB : Point){
     //...
@@ -152,10 +156,11 @@ drawPoint({
 ```
 
 To deal with it we need `class`
-```typescript=
+```typescript
 class Point{
     x:number;
     y:number;
+    
     // getDistance from this.Point to another_Point
     getDistance(another_Point : Point){
         //...
@@ -166,19 +171,20 @@ class Point{
 
 ## With Angular
 
-[](https://www.youtube.com/watch?v=k5E2AVpwsko)
+[Tutorial](https://www.youtube.com/watch?v=k5E2AVpwsko)
 
 Angular components 
 - Data
 - Logic
 - HTML Template
 
-> Module in Angular
-> : group of components
+- Module in Angular
+  > Group of components
 
 
-A course.component.ts
-```typescript=
+```typescript
+// A course.component.ts
+
 @Component({
     // selector : id , 
     // template: let the id wear something on
@@ -190,16 +196,24 @@ export class CoursesComponent{
 }
 ```
 
-A app.module.ts
-```typescript=
+app.component.html
+```html
+<!-- selector will find out this
+and `template` will replace it with <h2>Courses</h2> 
+-->
+<course></course>
+```
 
+Add the component to Module
+```typescrip
+// A app.module.ts
 import {AppComponent} from './app.component';
 import {CoursesComponent} from './courses.component'
 @NgMoudle({
     declarations:[
         AppComponent,
         // using CLI to generate component
-        //     this will automatically be added
+        //     this component will automatically be added
         CoursesComponent
     ],
 
@@ -207,19 +221,11 @@ import {CoursesComponent} from './courses.component'
 export class AppModule {}
 ```
 
-app.coponent.html
-```htmlembedded=
-<!-- selector will find out this
-and `template` will replace it with <h2>Courses</h2> 
--->
-<course></course>
-```
 
+Using `ng g c COMPONENTNAME`in CLI to generate a new component
 
-Using `ng g c course` in CLI to create component
-
-It will create
-```bash=
+```bash
+ng g c course
 create src/app/course/course.component.css
 create src/app/course/course.component.html
 create src/app/course/course.component.spec.ts
@@ -228,10 +234,9 @@ update src/app/app.module.ts
 ```
 
 
-
 ## More Object-Orient Program way
 
-```typescript=
+```typescript
 import { Component } from '@angular/core'
 
 @Component({
@@ -246,9 +251,8 @@ export class CourseComponent{
 }
 ```
 
-
 With items
-```typescript=
+```typescript
 import { Component } from '@angular/core'
 
 @Component({
@@ -270,14 +274,15 @@ export class CourseComponent{
 
 
 
-## service and dependency Injection
+## Service and dependency Injection
 
-[More Details](/8AQani2_TCKWNUsp5ob5ng)
+[More Details](Dependency%20Injection.md)
 
-Service
-> Decoupling
+- Service
+  > Decoupling
 
-```typescript=
+COMPONENT : `coursecomponent.ts`
+```typescript
 import { Component } from '@angular/core'
 
 @Component({
@@ -304,8 +309,8 @@ export class CourseComponent{
 ```
 
 
-courses.service.ts
-```typescript=
+SERVICE : `courses.service.ts`
+```typescript
 export class CoursesService{
     courses = ["course1, course2, course3"]
     
@@ -316,13 +321,13 @@ export class CoursesService{
 }
 ```
 
-
 ### Dependency Injection 
 
-> **To shared singleton instance of the module for other modules**
+**To shared singleton instance of the module for other modules**
 
-Without Dependency Injection every time a object of `CourseComponent` is invoked it also invoke a new instance of `CourseServce`
-```typescript=
+Without Dependency Injection A object of `CourseComponent` is invoked and also a new instance of `CourseServce` is invoked too 
+
+```typescript
 import { Component } from '@angular/core'
 import { CourseService } from '...'
 @Component({
@@ -348,11 +353,11 @@ export class CourseComponent{
 }
 ```
 
-So have the same instance for modules who need to use `CourseService`, we need to add `COurseService` in array of `providers` 
-```typescript=
+To share the same instance with modules which need to use `CourseService`, we must provide `CourseService` to array of `providers` in `@ngModule` 
+```typescript
 import {AppComponent} from './app.component';
 import {CoursesComponent} from './courses.component'
-@NgMoudle({
+@NgModule({
     declarations:[
         AppComponent,
         // using CLI to generate component
@@ -368,14 +373,15 @@ import {CoursesComponent} from './courses.component'
 export class AppModule {}
 ```
 
-Once `providers` attribute with `CourseService` in it.
-let's say a module (e.g. `CourseComponent`) want to use Component `CourseService` then ...
-```typescript=
+Once `providers:[...]` in `@NgModule` has `CourseService` in it.
+
+Say a module (e.g. `CourseComponent`) want to use Component `CourseService` then ...
+```typescript
 constructor(service : CourseService){
-    // Dependence injection to this constructor by Providers
-    //    from AppModule
+    /**
+      * Dependence injection to this constructor by Providers
+      * from AppModule
+      */
     this.courses = service.getCourses();
 }
 ```
-
-
