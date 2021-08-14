@@ -33,13 +33,13 @@ export class MyComponent implements OnInit {
 
 ## 定義回傳格式
 首先先建立一個要回傳的物件介面
-```
+```typescript
 interface ItemsResponse {
   results: string[];
 }
 ```
 在get後面設定要回傳的資料的格式
-```
+```typescript
 /**
   * response的資料類型為ItemResponse
   */
@@ -50,7 +50,7 @@ http.get<ItemsResponse>('/api/items').subscribe(data => {
 ```
 
 很多時候我們也會需要Http header的資料，而不光是回傳的body，這時候可以更改observe的值為response
-```
+```typescript
 http
   .get<MyJsonData>('/data.json', {observe: 'response'})
   .subscribe(resp => {
