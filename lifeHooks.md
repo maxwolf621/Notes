@@ -90,9 +90,7 @@ export class PriceComponent implements OnInit, OnChanges {
    * As value is updated 
    * ngOnChanges will be called
    */
-  template: `
-      <app-price [price]="value"></app-price>
-  `
+  template: `<app-price [price]="value"></app-price`
 })
 export class AppComponent{
   value = 100;
@@ -128,13 +126,12 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
     <span class="price" [ngClass]="{increase: price > lastPrice, decrease: price < lastPrice }">
       {{ price }
     <span>{{ firstChange ? '' : (price > lastPrice ? '↑' : '↓') }}</span>
-  </span>
-  `,
+  </span>`
+  ,
   styles: [
     ` .price { background: black;  color: white; }
       .increase { color: red; }
-      .decrease { color: green; }
-    `
+      .decrease { color: green; }`
   ]
 })
 export class PriceComponent implements OnInit, OnChanges {
@@ -219,7 +216,7 @@ export class PriceComponent implements OnInit, OnChanges {
 }
 ```
 
-App.Component.ts 
+`App.Component.ts` 
 ```typescript
 @Component({
   selector: 'my-app',
@@ -244,7 +241,7 @@ export class AppComponent {
   }
 }
 ```
-- 除了第一次以外，完全不再進入pricecomponent's `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
+- 除了第一次以外，完全不再進入`pricecomponent`'s `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
 
 要改變這個結果有兩種方式，一種是複製一個新的物件再改變新物件的內容，並把`price`指派為新的物件(Object)，此時因為物件的參考位置修改了，變更偵測就能夠認得；當然每次都建立新物件是有成本的，所以我們也能在`DoCheck`週期中自行判斷
 ```typescript
@@ -292,7 +289,10 @@ export class PriceComponent implements OnInit, DoCheck {
 ## `AfterContentInit` and `AfterContentChecked` for `@Component.template`
 
 在設計Component時，我們會使用`<ng-content>`來允許使用元件的時候放置更多的HTML內容，我們常使用`<ng-content>`來設計類似tabs功能的Component  
-例如, `BlockComponent`中的`tempalate`透過了`<ng-content>`的方式，讓顯示的內容改為由使用父元件來決定，增加元件的彈性  
+例如, `BlockComponent`中的`tempalate`透過了`<ng-content>`的方式，**讓顯示的內容改為由使用父元件來決定，增加元件的彈性**
+
+`<ng-content>` : 子元件內`@Component`中的`Template`交給父元件成員with annotation `@ContentChild`或`@ContentChildren`來決定
+
 ```typescript
 /**
  * Child Component
@@ -303,8 +303,10 @@ import { Component } from '@angular/core';
   selector: 'app-block',
   template: `
   <div class="block">
+    <!-- ng-content表示顯示的內容交給父元件 -->
     <ng-content></ng-content>
-  </div>`,
+  </div>`
+  ,
   styles: [
     `.block { border: 1px solid black; }`
   ]
@@ -312,8 +314,8 @@ import { Component } from '@angular/core';
 export class BlockComponent { }
 
 /**
- * Father Component uses
- *  Child Component
+ * Father Component is used 
+ *        in Child Component
  */
 @Component({
   selector: 'my-app',
@@ -329,8 +331,7 @@ export class BlockComponent { }
   </app-block>
   <app-block *ngIf="tab === 3">
     Tab 3
-  </app-block>
-  `
+  </app-block>`
 })
 export class AppComponent{
   tab = 1;
@@ -338,7 +339,21 @@ export class AppComponent{
 ```
 - **每偵測到變更時，`AfterContentChecked`總會在`DoCheck`後觸發**  
 
-在使用`<ng-content>`的元件內，我們可以使用`@ContentChild` 來取得某個樣板參考變數實體或子元件，若父元件在使用時有加入符合`@ContentChild`設定的條件時，在`AfterContentInit`週期就可以取得其實體，若想取得多個實體，則可以使用`@ContentChildern`來取得一個包含所有實體的`QueryList`
+在使用`<ng-content>`的元件內，我們可以使用`@ContentChild`來取得某個Template參考(reference)變數實體或子元件，若父元件在使用時有加入符合`@ContentChild`設定的條件時，在`AfterContentInit`週期就可以取得其實體，若想取得多個實體，則可以使用`@ContentChildern`來取得一個包含所有實體的`QueryList`
+
+```diff
+兩種模式
+父 : @ContentChild
+       '
+     (bind)   
+       '---> 子的AfterContentInit contains Element
+父 : @ContentChildren
+       '
+     (bind)
+       '---> 子的AfterContentInit contains QueryList
+```
+
+For example
 ```typescript
 import { AfterContentChecked, AfterContentInit,  ContentChild, ContentChildren, Component, OnInit } from '@angular/core';
 
@@ -403,16 +418,15 @@ export class AppComponent{
 }
 ```
 
+## `AfterViewInit` 與 `AfterViewChecked` for `@ViewChild` in 父Component
 
-## `AfterViewInit` 與 `AfterViewChecked`
-
-**在開發Component時，我們常常會使用`@ViewChild`取得TEMPLATE上的某個子Component宣告**
+**在開發Component時，我們常常會使用`@ViewChild`取得父`@Component.template`上的某個子Component宣告**
 ```typescript
 @ViewChild(Type) variable;
 ```
-- `Type` can be HTML's tag (e.g. 'button') or component (e.g. AppComponent) 
+- `Type` can be HTML's tag (e.g. `'button'`) or component (e.g. `AppComponent`) 
 
-如果想取得樣板上指定的某個子元件的所有宣告，則可以使用`@ViewChildren`取得一個包含所有子Component的`QueryList`，這些子Component在其父元件的`OnInit`週期時還不會產生實體，必須在`AfterViewInit`之後，才能正確取得實體
+如果想取得`@Component.template`上指定的某個子元件的所有宣告，則可以使用`@ViewChildren`取得一個包含所有子Component的`QueryList`，這些子Component在其父元件的`OnInit`週期時還不會產生實體，必須在`AfterViewInit`之後，才能正確取得實體
 
 ```typescript
 /**
@@ -433,6 +447,7 @@ export class ChildComponent {
  */
 @Component({
   selector: 'my-app',
+  // View child-component 
   template: `
   <button (click)="create()" #button>Create New Child</button>
   <app-child *ngFor="let item of list" [value]="item"></app-child>
@@ -477,6 +492,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 ## `OnDestroy`
 
 `OnDestroy`會在元件不需要被使用時，觸發`ngOnDestroy`方法，通常用來處理一些清理資料行為，若有些程式是不會在元件消失時被清除的，則需要在這個週期內額外處理，最常見的就是使用`RxJS`且有`subscribe`行為時，可能需要額外處理退訂的動作，以免重複訂閱或產生預期外的行為
+
 ```typescript
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
