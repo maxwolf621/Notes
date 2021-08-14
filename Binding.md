@@ -1,14 +1,8 @@
 ###### tags: `Angular`
-# Binding
-[TOC]
+# [Binding](https://ithelp.ithome.com.tw/articles/10241010)  
 
-[Note from](https://ithelp.ithome.com.tw/articles/10241010)  
-[Angular CLI](/aepJENweRzOZtm_AkEbmIA)  
-
-:::danger  
 由於Angular Application主要是利用元件所組合而成  
-我們可以利用Binding將來操控各個Component內的Attirbutes  
-:::  
+我們可以利用Bind將來操控各個Component內的Attirbutes  
 
 ## Interpolation `{{ ... }}`
 
@@ -84,7 +78,7 @@ export class TaskComponent implements OnInit {
 }
 ```
 In this component HTML file
-```htmlembedded
+```html
 <div class="card">
   <div class="content">
     <!-- Interpolation -->
@@ -110,31 +104,30 @@ In this component HTML file
 
 ## Property and Attribute Binding
 
-Attribute Binding來將*Attribute in Component*在HTML *Attribute*
+*Component's Attribute* is Binding to HTML's *Attribute*
 
-### Difference btw property and attribute 
-
-- Attribute
-    > Defined By HTML
-- Property
-    > 文件物件模型 (Document Object Model, DOM) 的節點屬性。
-
-Attribute and Property並非是互相對應的，且名稱也不一定會相同  
-> 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
+- Attribute Binding
+  > Defined By HTML
+- Property Binding
+  > Defined By 文件物件模型 (Document Object Model, DOM) 
+- Attribute and Property並非是互相對應的，且名稱也不一定會相同  
+  > 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
 
 ```html
 <!-- 
-Property Binding 
+(DOM) Property Binding 
 -->
-[property]="FieldInComponent.ts"
+[property]="FieldInComponent"
+
 <!--
-Attribute Binding 
+(HTML) Attribute Binding 
 -->
 [attr.name]="ValuePassedToAttribute"
 ```
-```htmlembedded=
+```html
 <div class="content">
-    <button type="button" 
+    <!-- Property Binding -->
+    <button type="button"
     [disabled]="task.state === TaskState.Finish">
         A_Button_To_Start_Or_Close
     </button>
@@ -149,16 +142,17 @@ Attribute Binding
 
 
 ## Style Binding and Class Binding 
-Style Binding 是針對 HTML 中 style 屬性的 `CSS` 樣式進行資料繫結
+Style Binding 是Component針對HTML中style屬性的`CSS`樣式進行Binding
 
 ```html
-<!-- style指的是css -->
-<!-- CssProperty指的是該css file內某個attribute -->
+<!-- style指的是css 
+     CssProperty指的是該css file內某個attribute 
+-->
 
 <!-- 
-等號右邊的attirbute_OR_method_In_Component.ts表
+attirbute_OR_method_In_Component.ts表示
 利用Component內的attribute或者method 
-來control CSS內指定的Attirbute之值
+來control CSS內指定的Attribute之值
 -->
 [style.CssProperty] = "attirbute_OR_method_In_Component.ts"`
 ```
@@ -174,8 +168,7 @@ getStateColor(): string {
     }
 }
 ```
-
-```htmlembedded
+```html
 <div class="content">
   <!-- To assign .color via getStateColor -->
   <span [style.color]="getStateColor()">
@@ -190,21 +183,24 @@ getStateColor(): string {
 To bind different classes use
 ```html
 <!-- 
-Assign 指定的CSS_Attribute 透過 Attribute in the Componet
+Assign指定的CSS_Attribute透過 Attribute in the Component
 -->
 [class.CSS_Attribute]="Attribute_In_This_Component"
 
 <!--
-use Method/Attribute defined in this Component 
-which it can control the CssAttributes
-
-same as class = css_attribute
+use Method/Attribute defined in Component 
+    which can assign a CSS Attribute
+    It's same as 
+    <tag class="css_attribute"> ... </tag>
 --> 
-[class] = "MethodorAttirbute_IN_this_Component"
+[class] = "Method_OR_Attribute_IN_Component"
 
-
-[ngclass] = "ArrayDefinedCssAttriute_In_Component"
+<!-- 
+assign multiple CSS attributes from Component's Array
+-->
+[ngclass] = "Array_Containing_Css_Attriute_IN_Component"
 ```
+
 ```typescript
 @Component({
 template:'
@@ -218,16 +214,16 @@ template:'
     
     /**
      * Using expression 
-     * if hasError is ture 
-     * then redirect Codevolution via text-danger
+     *       if hasError is true 
+     *       then redirect Codevolution via text-danger
      */
     <h2 [class.text-danger] = "hasError"> Codevolution </h2>
     
     /** 
      * Using [ngClass] to 
-     *  have mutiple css attributes redirect 
-     * the Codevolution will be 
-     *  redirected with text-success and text-special  
+     *       have mutiple css attributes redirect 
+     * The Codevolution will be 
+     *       redirected with text-success and text-special  
      */
     <h2 [ngClass] = "messageClass"> Codevolution </h2>
 ',
@@ -257,18 +253,19 @@ export class test implements OnInit{
 ```
 
 
-## @Input and Property Binding
+## `@Input` and Property Binding
 
-`@Input()` 裝飾器用來定義元件屬性是可從*父*元件接收值，而在*父*元件則可以利用屬性繫結 (`Property Binding`) 來傳入資料。  
+`@Input()` 裝飾器用來定義*子*元件屬性是可從*父*元件接收值，而在*父*元件則可以利用屬性繫結 (`Property Binding`) 來傳入資料給*子*元件內的field    
 
-```htmlembedded
+```html
 <!-- Assign value to Child_Variable via Father's Method-->
 <TAG [Child_Variable] = Father.Method> ... </TAG>
+
 <!-- Assign value to CHild_Variable via Father's Attribute --> 
 <TAG [Child_Variable] = Father.Attribute> ... </TAG>
 ```
 
-`app.component.ts` (Father)  
+父 `app.component.ts` 
 ```typescript
 import { Task } from "./model/task";
 
@@ -280,12 +277,15 @@ export class AppComponent implements OnInit {
 }
 ```
 
-`task.component.ts `(Child)
-```typescript=
+子`task.component.ts `
+```typescript
 // ... 
+
 export class TaskComponent implements OnInit {
-  // subject and state 
-  //     will receive the value from app.component.ts
+  /**
+    * {@code subject} and {@code state} 
+    * will receive the value from 父 app.component.ts
+    */
   @Input() subject: string;
   @Input() state: TaskState;
 
@@ -295,7 +295,7 @@ export class TaskComponent implements OnInit {
 }
 ```
 
-Using Property Binding to binding two classes(father and son) together
-```htmlembedded=
+Via Property Binding to binding two classes(父 and 子)together
+```html
 <app-task [subject]="task.subject" [state]="task.state"></app-task>
 ```
