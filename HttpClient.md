@@ -95,10 +95,11 @@ http
 ```
 
 ## `retry`遇到錯誤時自動重試
-- RxJS有一個有用的運算符.retry()，可以在遇到錯誤時自動重新嘗試
+- RxJS有一個有用的運算符`.retry()`，可以在遇到錯誤時自動重新嘗試
 
 ```typescript
 http
+  // get<ResponseType>('後端位置')
   .get<ItemsResponse>('/api/items')
   // Retry this request up to 3 times.
   .retry(3)
@@ -121,34 +122,39 @@ http
 
 ## POST request
 
-```
+```typescript
 const body = {name: 'Brad'};
 
 http
+  // post('後端位置', request_body)
   .post('/api/developers/add', body)
-  // See below - subscribe() is still necessary when using post().
   .subscribe(...);
 ``` 
-所有rxjs的動作都會在有人subscribe後才會呼叫，因此如果忽略subscribe()，http將不會做任何動作。
+
+**所有rxjs的動作都會在有人subscribe後才會呼叫**，因此如果忽略`subscribe()`，http將不會做任何動作。
 下面為一個簡單範例：
-```
+```typescript
 const req = http.post('/api/items/add', body);
+
 // 0 requests made - .subscribe() not called.
 req.subscribe();
+
 // 1 request made.
 req.subscribe();
+
 // 2 requests made.
-設置request的header
+
+// 設置request的header
 http
   .post('/api/items/add', body, {
     headers: new HttpHeaders().set('Authorization', 'my-auth-token'),
   })
   .subscribe();
 ```
-- 該HttpHeaders的內容是不變的，每次set()時會返回一個新的實體，並套用所設定的更改。
+- 該HttpHeaders的內容是不變的，每次`set()`時會返回一個新的實體，並套用所設定的更改。
 
 ## 設置URL參數
-如果想要發送請求至`/api/items/add?id=3`
+如果想要發送Request至`/api/items/add?id=3`
 ```typescript
 http
   .post('/api/items/add', body, {
