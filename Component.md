@@ -1,12 +1,11 @@
 ###### tags: `Angular`
-# Angular Component
+# [Angular Component CLI](https://ithelp.ithome.com.tw/articles/10240474)
 [TOC]
 
 ## 指定Component所屬模組(Module)
 
-**每個 Angular Component皆需要定義在 Angular Modules內**，否則是無法被使用;  
-
-因此透過 Angular CLI 建立Component時，**CLI 會從新增元件所在的目錄向上層找尋最近的模組，並將此元件定義至該模組內**  
+**每個 Angular Component皆需要定義在 Angular Modules內**，否則是無法被使用;   
+透過Angular CLI建立Component時，**CLI會從新增元件所在的目錄向上層找尋最近的模組，並將此元件(Component)定義至該模組內**  
 > 例如，當執行 `ng g c demo1` 命令時，由於在根目錄 `src/app` 下建立元件，而最接近的模組是 AppModule，故此元件會加入在 `AppModule` 內  
 
 若要將元件建立在特定模型之下，可以使用絕對路徑  
@@ -15,7 +14,7 @@
 # 加入task/TaskModule模組內
 ng g c task/demo1
 ```
-- 也可以利用 --module 參數來明確指定要加入的模組；不過需要注意，此方法會讓模組位置與檔案位置兩者不一致  
+- 也可以利用`--module`參數來明確指定要加入的模組；不過需要注意，此方法會讓模組位置與檔案位置兩者不一致  
 
 ## `export` component到指定的module
 
@@ -23,6 +22,13 @@ ng g c task/demo1
 
 例如有個`TaskComponent`需要讓`AppComponent`使用
 ```bash 
+#由於在根目錄 src/app 下建立元件，而最接近的模組是 AppModule，故此元件會加入在 AppModule 內
+ng g c demo1 
+
+# 若要將元件demo1建立在特定模型之下，可以明確指定路徑
+# 元件建立在 src/app/task
+ng g c task/demo1  
+
 ng g c task/task --export
 ```
 - 透過 `--export`讓CLI在 `TaskModule` 將`TaskComponent`加入至`export`屬性內。
@@ -48,13 +54,11 @@ ng g c task/task --export
 - 若在Terminal建立Component時，指定了`--inlineStyle`與 `--inlineTemplate`，則會在`template`與`styles`兩屬性下撰寫頁面與樣式的程式碼而不是`templateUrl`與`styleUrls`  
 
 ## `@Component.selector`
-使其他元件的html內可以使用此元件  
-
-- **當透過Router的方式來載入的元件時，不會使用到選擇器的設定，此時可以在建立元件時使用`--skipSelector`**  
+使其他Components的HTML內可以使用此元件  
+- **當透過Router的方式來載入的元件時，不會使用到選擇器(Selector)的設定，此時可以在建立元件時使用`--skipSelector`**  
 
 `@Component`的`selector`命名上，開頭會使用統一的前字元 (prefix)，其後則為元件名稱  
 > 而前字元可以在建立專案(`ng new`)或建立元件(`ng g c`)時，利用 `--prefix` 參數指定  
 
-:::danger  
-**需要注意的是，若在專案與元件所使用前字元不同時，除非變更 Lint 規則，否則會出現警告訊息**  
-:::  
+
+**需要注意的是，若在專案(Project)與元件(Component)所使用(prefix)前字元不同時，除非變更Lint規則，否則會出現警告訊息**  
