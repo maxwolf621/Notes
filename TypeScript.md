@@ -24,7 +24,7 @@ N = 1234;
 
 ## Constructor
 
-```typescript=
+```typescript
 class Point{
     private x;
     private y;
@@ -122,7 +122,7 @@ let drawPoint = (point : {x:number , y:number})=>{
 ```
 
 Using `interface`
-```typescript=
+```typescript
 interface Point{
     x:number,
     y:number,
