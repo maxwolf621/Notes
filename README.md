@@ -23,3 +23,9 @@
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 - [ViewPost](viewPost.md)  
 
+
+## ERROR
+
+[`An unhandled exception occurred: Cannot find module '@angular-devkit/build-angular/package.json'`](https://stackoverflow.com/questions/50333003/could-not-find-module-angular-devkit-build-angular?page=2&tab=votes#tab-top)
+
+
