@@ -122,21 +122,23 @@ np update @angular/material
 ```
 
 
-### Dynamically Boost up Angular Application
+### [Dynamically Boost up Angular Application](https://www.howtoing.com/install-angular-cli-on-linux)    
 
-[Reference](https://www.howtoing.com/install-angular-cli-on-linux)  
-[More Cli](https://ithelp.ithome.com.tw/articles/10238044)  
+[More Cli](https://ithelp.ithome.com.tw/articles/10238044)   
 
 
 To open Application (e.g Web Application ...etc )  
-```bash
+```json
 ng serve <Name_Of_Project> [parameter]
-# **OR** #
+# OR** 
 ng s <Name_Of_Project> [parameter]
+# In Application Directory
+ng serve 
 ```
 - According to the setting of `angular.json` to boost application dynamically 
 - Via default path `http://localhost:4200` to browser websites
 
+Parameters :
 1. using `--host` or `--port` to access specified host and port
 2. using `--open` to open Web application(e.g. chromium ...) and access the application automatically 
 3. using `--watch=false` 與 `--liveReload=false` 兩個參數則是可以取消檔案監控與重新載入應用程式頁面。
@@ -164,8 +166,7 @@ ng g <schematic> [parameter]
 # For example create Angular Material's table
 ng generate @angular/material:table <component-name>
 ```
-
-`new`、`add` 與 `generate` 三個命令主要都會新增修改相關的程式檔案，在需要確認命令是否正確的話，可以透過 `--dryRun=true` 參數來確認命令的執行結果是不是自己所想要的
+- `new`、`add` 與 `generate` 三個命令主要都會新增修改相關的程式檔案，在需要確認命令是否正確的話，可以透過 `--dryRun=true` 參數來確認命令的執行結果是不是自己所想要的
 
 
 ## Compile the Application to `ECMAScript`
@@ -174,30 +175,28 @@ ng generate @angular/material:table <component-name>
 ng build <Name_Of_Project> [parameter]
 ng b <Name_Of_Project> [parameter]
 ```
-After compiling successfully it will be stored in the `dist/` + `ProjectName` 
+- After compiling successfully it will be stored in the `dist/ProjectName` 
+
+[difference btw `ng b` and `ng s`](https://stackoverflow.com/questions/47150724/what-is-difference-between-ng-build-and-ng-serve)  
+
 
 ## Deploy our Application 
-Deploy Complied Application to specified Environment (e.g. Azure ...) 
+Deploy Complied Application to specified Environment (e.g. `Azure` ... etc) 
 
 ```bash
+# Deploy our Application to Azure
 np deploy @azure/np-deploy
-```
-
-## Create a To-do list
-
-```bash
-np new todo
 ```
 
 ## `package-lock.json`
 
-紀錄專案的基本資訊，例如專案的名稱、版本，還有專案會使用到的相依套件等等資訊  
+紀錄Application的基本資訊，例如Application的Name、Version，還有Application會使用到的相依套件(Dependencies)等等資訊  
 - When `npm install` is executed , then it will look up `package-lock.json` to install the packages that `package-lock.json` lists  
 
 ### Install dependencies
 
-We often use `npm install` to install 前端的packages.  
-These installed packages will be recorded in `dependencies` or `devDependencies` attribute.  
+We often use `npm install` to install frontend's packages.  
+- These installed packages will be recorded in `dependencies` or `devDependencies` attribute.  
 
 For example, to install A bootstrap
 ```bash
@@ -209,8 +208,8 @@ npm install -save bootstrap
 To set up **configurations** of the angular application
 
 For example a work-space of angular application would have multiple projects files
-- The `newProjectRoot` attribute indicates where the new files will be stored at 
-> `defaultProject` 屬性用來描述整個工作環境下，預設的專案名稱；當執行 Angular CLI 指令時，若不指定專案，就會依此處設定的專案為執行對象。
+- `newProjectRoot` attribute indicates where the new files will be stored at 
+- `defaultProject` attribute 當執行Angular CLI Command時(`ng serve`)，若不指定Application(Our Project)，就會依此處設定的Application為執行對象。
 
 ## `tsconfig.json`
 
