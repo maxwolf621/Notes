@@ -4,22 +4,29 @@
 [To install Node.js](https://hackmd.io/6Nvu-p8aQ0ynRhhsppBbww)  
 
 
-## Install Angular
+## Reinstall angular  
 
-Reinstall angular  
-```bash
+```console
+# old version
 npm uninstall -g @angular/cli
+
 # delete cache
 npm cache verify
+
+# install latest angular cli version
 npm install -g @angular/cli@latest
-# Create node_module's fold
+
+# create (dependecies)node_module's fold and package.lock-json
 npm install
 ```
 
 Angular will be installed in this directory
+- node_modules contains denpedencies of `packages.json` needs 
 ```bash 
 /usr/lib/node_modules
 ```
+
+## `package.json`
 
 Create a `package.json` for the local npm package
 [ref1](https://www.sitepoint.com/npm-guide/)  
@@ -36,12 +43,39 @@ npm install express
 npm init -y
 ```
 
+## [`npm WARN ... requires a peer of ... but none is installed. You must install peer dependencies yourself`](https://stackoverflow.com/questions/38817571/npm-install-multiple-package-names)
+
+delete `node_module` file and `package-lock.json` and redo 
+```
+npm install
+```
+- https://stackoverflow.com/questions/35207380/how-to-install-npm-peer-dependencies-automatically#comment97140066_35207380
+
 ## install `node`
 
 ```bash
 nvm install node # "node" is an alias for the latest version
 ```
 
+## (Update dependencies)[https://angular.io/cli/update]
+
+
+https://stackoverflow.com/questions/10068592/how-do-i-update-devdependencies-in-npm
+```console
+npm install -g npm-check-updates
+ncu -u
+npm install
+```
+
+## install the dependecies
+
+```
+# install dependency to package.json
+ng i new_dependency
+
+# 
+ng install
+```
 
 ## Install `nvm`
 [](https://github.com/nvm-sh/nvm#install--update-script)
