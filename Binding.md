@@ -255,7 +255,7 @@ export class test implements OnInit{
 
 ## `@Input` and Property Binding
 
-`@Input()` 裝飾器用來定義*子*元件屬性是可從*父*元件接收值，而在*父*元件則可以利用屬性繫結 (`Property Binding`) 來傳入資料給*子*元件內的field    
+`@Input()` :  base component pass value to child component
 
 ```html
 <!-- Assign value to Child_Variable via Father's Method-->
@@ -265,26 +265,28 @@ export class test implements OnInit{
 <TAG [Child_Variable] = Father.Attribute> ... </TAG>
 ```
 
-父 `app.component.ts` 
+**Child component needs to have `@input` annotation to receive value passed by Base Component.**
+
+Base `app.component.ts` 
 ```typescript
 import { Task } from "./model/task";
 
 export class AppComponent implements OnInit {
   task: Task;
   ngOnInit(): void {
-    this.task = new Task("頁面需要顯示待辦事項主旨");
+    this.task = new Task("......");
   }
 }
 ```
 
-子`task.component.ts `
+Child `task.component.ts `
 ```typescript
 // ... 
 
 export class TaskComponent implements OnInit {
   /**
     * {@code subject} and {@code state} 
-    * will receive the value from 父 app.component.ts
+    * will receive the value from Base Component app.component.ts
     */
   @Input() subject: string;
   @Input() state: TaskState;
@@ -295,7 +297,85 @@ export class TaskComponent implements OnInit {
 }
 ```
 
+we may also use via setter method
+
+```typescript
+// ... 
+
+export class TaskComponent implements OnInit {
+
+  _subject!: string;
+  _state!: TaskState;
+  
+  @input()
+  set subject(subject : string ){
+    ....
+  }
+  
+  //...
+}
+```
+
 Via Property Binding to binding two classes(父 and 子)together
 ```html
 <app-task [subject]="task.subject" [state]="task.state"></app-task>
 ```
+
+## `@Output`
+
+Parent listens for child event
+
+Child component use `EventEmitter<Object>` to output the value to Base component 
+```typescript
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+ 
+@Component({
+  selector: 'app-voter',
+  template: '
+    <h4>{{name}}</h4>
+    <button (click)="vote(true)"  [disabled]="voted">Agree</button>
+    <button (click)="vote(false)" [disabled]="voted">Disagree</button>
+  '
+})
+export class VoterComponent {
+  @Input()  name: string;
+  @Output() onVoted = new EventEmitter<boolean>();
+  voted = false;
+ 
+  vote(agreed: boolean) {
+    /**
+      * emit (output) the value
+      */
+    this.onVoted.emit(agreed);
+    this.voted = true;
+  }
+}
+```
+
+Base Component 
+```typescript
+import { Component }      from '@angular/core';
+
+@Component({
+  selector: 'app-vote-taker',
+  template: '
+    <h2>Should mankind colonize the Universe?</h2>
+    <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
+    <app-voter *ngFor="let voter of voters"
+      [name]="voter"
+      <!-- (child_component) = (method_in_base_compoent($emit_event_from_value)) -->
+      (onVoted)="onVoted($event)">
+    </app-voter>
+  '
+})
+export class VoteTakerComponent {
+  agreed = 0;
+  disagreed = 0;
+  voters = ['Mr. IQ', 'Ms. Universe', 'Bombasto'];
+ 
+  onVoted(agreed: boolean) {
+    agreed ? this.agreed++ : this.disagreed++;
+  }
+}
+```
+
