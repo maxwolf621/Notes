@@ -352,18 +352,23 @@ export class VoterComponent {
 }
 ```
 
-Base Component 
+Base Component
+
+to receive the value passed by child in html
+```
+(child_component_emitter_name) = (method_in_base_compoent($emitted_event_from_value))
+```
+
 ```typescript
 import { Component }      from '@angular/core';
 
 @Component({
   selector: 'app-vote-taker',
-  template: '
+  template:'
     <h2>Should mankind colonize the Universe?</h2>
     <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
     <app-voter *ngFor="let voter of voters"
       [name]="voter"
-      <!-- (child_component) = (method_in_base_compoent($emit_event_from_value)) -->
       (onVoted)="onVoted($event)">
     </app-voter>
   '
