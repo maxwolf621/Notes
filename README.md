@@ -18,7 +18,10 @@
 - [Observable](Observable.md)    
 - [Interceptor](Interceptor.md)   
 - [HttpClient.md](HttpClient.md)    
-- [Route Guard](Route%20Guard.md)    
+- **[Router](Router.md)**   
+- **[RouterForChild](RouterForChild.md)**
+- **[Route Guard](Route_Guard.md)**  
+- **[Router For Content](RouterForContentLoading.md)**
 - [JWT](JWT.md)    
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 

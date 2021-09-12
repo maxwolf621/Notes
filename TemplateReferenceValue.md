@@ -1,8 +1,8 @@
 ###### tags: `Angular`
 # Template Reference Value
 
-To pass input text via button to component.ts
-```htmlembedded=
+To pass input text via button to component's `.ts` file
+```html
 <h2>
     {{title}}
 </h2>
@@ -10,7 +10,7 @@ To pass input text via button to component.ts
 <button (click) = "showConsoleLog(passVal)"
 ```
 
-```typescript=
+```typescript
 //..
 export class example implement OnInit{
     public title = "Template Reference Value"
