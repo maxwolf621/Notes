@@ -6,14 +6,14 @@
 - [Flow of boosting Angular Application](ApplicationActs.md)  
 - [Typescript](TypeScript.md)  
 - [Module](ngModule.md)  
-- [ModuleDesignPattern](moduleDesignPattern.md)  
+- **[ModuleDesignPattern](moduleDesignPattern.md)**
 - [Component](Component.md)  
 - [Life hooks](lifeHooks.md)  
 - **[Bind](Binding.md)**
-- [Structural Directives](Structural%20Directives.md)   
+- **[Two Way Binding via `@input` and `output`](TwoWayBinding.md)**
+- **[Structural Directives](Structural%20Directives.md)**  
 - [TemplateReferenceValue](TemplateReferenceValue.md)   
-- [Two Way Binding via `@input` and `output`](TwoWayBinding.md)   
-- [Dependency Injection](Dependency%20Injection.md)      
+- **[`@ngModule.Provider` And Dependency Injection](Dependency%20Injection.md)**
 - [Reactive Programming](ReactiveProgramming.md)   
 - [Observable](Observable.md)    
 - [Interceptor](Interceptor.md)   
@@ -21,7 +21,6 @@
 - [Route Guard](Route%20Guard.md)    
 - [JWT](JWT.md)    
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
-
 
 ## ERROR
 
