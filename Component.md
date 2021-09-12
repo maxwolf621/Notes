@@ -11,7 +11,7 @@
 若要將元件建立在特定模型之下，可以使用絕對路徑  
 ```bash
 # 將Component建立在`src/app/task`目錄下
-# 加入task/TaskModule模組內
+# 加入task/TaskModule模組內(如果存在TaskModule否則加入到appModule內)
 ng g c task/demo1
 ```
 - 也可以利用`--module`參數來明確指定要加入的模組；不過需要注意，此方法會讓模組位置與檔案位置兩者不一致  
@@ -22,7 +22,7 @@ ng g c task/demo1
 
 例如有個`TaskComponent`需要讓`AppComponent`使用
 ```bash 
-#由於在根目錄 src/app 下建立元件，而最接近的模組是 AppModule，故此元件會加入在 AppModule 內
+#由於在根目錄 src/app下建立元件，而最接近的模組是AppModule，故此元件會加入在 AppModule 內
 ng g c demo1 
 
 # 若要將元件demo1建立在特定模型之下，可以明確指定路徑
@@ -36,7 +36,7 @@ ng g c task/task --export
 ## Component的裝飾器
 如同module一樣，Component透過裝飾器`@Component` 可以決定此元件在執行期間該如何處理、實體化與使用  
 
-例如  
+如  
 - `task.component`被`app.component.html`使用
 ![](https://i.imgur.com/Tt080Iu.png)  
 

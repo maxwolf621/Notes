@@ -1,14 +1,12 @@
 ###### tags: `Angular`
 # [Binding](https://ithelp.ithome.com.tw/articles/10241010)  
 
-由於Angular Application主要是利用元件所組合而成  
-我們可以利用Bind將來操控各個Component內的Attirbutes  
+Angular Component主要有三種檔案`.css`(`scss`), `.html`以及`.ts`, 利用Bind(綁定)的方式達成value傳遞的交流
 
 ## Interpolation `{{ ... }}`
 
-Bind class's methods and attributes in HTML TAG上  
+Bind(pass) class's methods or attributes from `.ts` with(to) `.html`  
 
-使用方式就是在 HTML TAG加上 
 ```html
 {{ component.method }}  
 {{ component.attribute }}
@@ -19,11 +17,16 @@ FOR EXAMPLE
 import { TaskState } from "../../enum/task-state.enum";
 export class TaskComponent implements OnInit {
   task: Task;
- 
-  // ngOnInit() to instantiate object 
+
+  constructor(){}
+
+  /**
+   * Initiate after constructor
+   */ 
   ngOnInit(): void {
     this.task = new Task("頁面需要顯示待辦事項主旨");
   }
+
   // string getStateDesc()
   getStateDesc(): string {
     switch (this.task.state) {
@@ -38,19 +41,21 @@ export class TaskComponent implements OnInit {
 }
 ```
 
+Pass the attribute and field in `.ts` to `.html`
 ```html
 <div class="card">
   <div class="content">
-     <!-- display 頁面需要顯示待辦事項主旨 -->
+    <!-- display 頁面需要顯示待辦事項主旨 -->
     <span>{{ task.subject }}</span>
+    
     <!-- return 目前狀態 -->
     <span>{{ getStateDesc() }}</span>
   </div>
 </div>
 ```
 
-## Event Binding 
-- Class's methods are called via `<button>` in html
+## Event Binding  `(event) = "class_method"`
+Class's methods are called via `<button ... (event) = "class_method">` in html
 
 ```html
 (event)="SPECIFIC_METHOD_In_Component.ts"
@@ -62,8 +67,9 @@ FOR EXAMPLE
 import { TaskState } from "../../enum/task-state.enum";
 
 export class TaskComponent implements OnInit {
-  // ... 
   
+  // ... 
+
   task : Task;
   TaskState = TaskState;
   
@@ -77,7 +83,7 @@ export class TaskComponent implements OnInit {
   }
 }
 ```
-In this component HTML file
+
 ```html
 <div class="card">
   <div class="content">
@@ -85,6 +91,7 @@ In this component HTML file
     <span>{{ task.subject }}</span>
     <span>{{ getStateDesc() }}</span>
   </div>
+  
   <!-- Add Buttion Attirbute To implement event binding  -->
   <div class="button">
     <span>
@@ -102,34 +109,39 @@ In this component HTML file
 </div>
 ```
 
-## Property and Attribute Binding
+## Property and Attribute Binding `[ ... ] = "class_attribute"`
 
 *Component's Attribute* is Binding to HTML's *Attribute*
-
-- Attribute Binding
-  > Defined By HTML
-- Property Binding
-  > Defined By 文件物件模型 (Document Object Model, DOM) 
-- Attribute and Property並非是互相對應的，且名稱也不一定會相同  
-  > 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
 
 ```html
 <!-- 
 (DOM) Property Binding 
 -->
-[property]="FieldInComponent"
+[property]="Field_In_Component"
 
 <!--
 (HTML) Attribute Binding 
 -->
-[attr.name]="ValuePassedToAttribute"
+[attr.name]="Value_Passed_To_Attribute"
 ```
+
+
+- Attribute Binding
+  > [ ATTRIBUTE ] : the ATTRIBUTE is Defined By HTML
+
+- Property Binding
+  > [PROPERTY ] : the PROPERTY is Defined By 文件物件模型 (Document Object Model, DOM) 
+
+- Attribute and Property並非是互相對應的，且名稱也不一定會相同  
+  > 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
+
+
 ```html
 <div class="content">
     <!-- Property Binding -->
     <button type="button"
     [disabled]="task.state === TaskState.Finish">
-        A_Button_To_Start_Or_Close
+    A_Button_To_Start_Or_Close
     </button>
     
     <!-- Attribute Binding with `? :` -->
@@ -145,16 +157,18 @@ In this component HTML file
 Style Binding 是Component針對HTML中style屬性的`CSS`樣式進行Binding
 
 ```html
-<!-- style指的是css 
-     CssProperty指的是該css file內某個attribute 
--->
-
 <!-- 
-attirbute_OR_method_In_Component.ts表示
+style
+指的是css 
+
+Css_Property
+指的是該`.css`內某個attribute 
+
+attirbute_OR_method_In_Component.ts
 利用Component內的attribute或者method 
-來control CSS內指定的Attribute之值
+來達成對CSS內Attributes賦值
 -->
-[style.CssProperty] = "attirbute_OR_method_In_Component.ts"`
+[style.Css_Property] = "Attribute_OR_Method_In_typescript"
 ```
 
 FOR EXAMPLE
@@ -168,37 +182,39 @@ getStateColor(): string {
     }
 }
 ```
+
 ```html
 <div class="content">
+  
   <!-- To assign .color via getStateColor -->
   <span [style.color]="getStateColor()">
-      {{ getStateDesc() }}
+  {{ getStateDesc() }}
   </span>
 </div>
 ```
 
-## class Binding
-[Source](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
+## [class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
 
 To bind different classes use
 ```html
 <!-- 
-Assign指定的CSS_Attribute透過 Attribute in the Component
+透過 Attribute in the Component  
+Assign certain CSS_Attribute 
 -->
 [class.CSS_Attribute]="Attribute_In_This_Component"
 
 <!--
-use Method/Attribute defined in Component 
-    which can assign a CSS Attribute
-    It's same as 
-    <tag class="css_attribute"> ... </tag>
+use Method/Attribute defined in .ts 
+which can assign a CSS Attribute to .css
+
+It's same as <tag class="css_attribute"> ... </tag>
 --> 
 [class] = "Method_OR_Attribute_IN_Component"
 
 <!-- 
-assign multiple CSS attributes from Component's Array
+Assign multiple CSS attributes from Component's Array
 -->
-[ngclass] = "Array_Containing_Css_Attriute_IN_Component"
+[ngclass] = "Array_Containing_Css_Attribute_IN_Component"
 ```
 
 ```typescript
@@ -207,26 +223,29 @@ template:'
     <h2 class = "text-success"> Codevolution </h2>    
     
     /** 
-      * via attribute in component to assign a class
-      *   this is euqal to <h2 class ="text-success"> 
+      * Pass Attributes in .ts to .html for render
+      * css property (indirect change the css property)        
       */
+    // this is equal to <h2 class ="text-success"> 
     <h2 [class]="successClass"> Codevolution </h2>
     
     /**
      * Using expression 
      *       if hasError is true 
-     *       then redirect Codevolution via text-danger
+     *       then render Codevolution with 
+     *       css property `text-danger`
      */
     <h2 [class.text-danger] = "hasError"> Codevolution </h2>
     
+
     /** 
      * Using [ngClass] to 
-     *       have mutiple css attributes redirect 
+     *       have multiple css attributes render 
      * The Codevolution will be 
-     *       redirected with text-success and text-special  
+     *       render with text-success and text-special  
      */
-    <h2 [ngClass] = "messageClass"> Codevolution </h2>
-',
+    <h2 [ngClass] = "messageClass"> Codevolution </h2>'
+    ,
 styles:['
     .text-success{
         color:green
@@ -251,23 +270,21 @@ export class test implements OnInit{
     }
 }
 ```
+## `@Input` allows Property Binding with different components
 
-
-## `@Input` and Property Binding
-
-`@Input()` :  base component pass value to child component
+`@Input()` :  base component can pass field to child component via `.html`
 
 ```html
 <!-- Assign value to Child_Variable via Father's Method-->
-<TAG [Child_Variable] = Father.Method> ... </TAG>
+<TAG [Child_field] = Father.Method> ... </TAG>
 
 <!-- Assign value to CHild_Variable via Father's Attribute --> 
-<TAG [Child_Variable] = Father.Attribute> ... </TAG>
+<TAG [Child_field] = Father.Attribute> ... </TAG>
 ```
 
 **Child component needs to have `@input` annotation to receive value passed by Base Component.**
 
-Base `app.component.ts` 
+Base component ,  `app.component.ts` 
 ```typescript
 import { Task } from "./model/task";
 
@@ -279,10 +296,11 @@ export class AppComponent implements OnInit {
 }
 ```
 
-Child `task.component.ts `
+Child component,  `task.component.ts `
 ```typescript
-// ... 
-
+/**
+ *  to get value from base component
+ */
 export class TaskComponent implements OnInit {
   /**
     * {@code subject} and {@code state} 
@@ -297,11 +315,9 @@ export class TaskComponent implements OnInit {
 }
 ```
 
-we may also use via setter method
-
+via setter method to do binding
 ```typescript
 // ... 
-
 export class TaskComponent implements OnInit {
 
   _subject!: string;
@@ -316,29 +332,39 @@ export class TaskComponent implements OnInit {
 }
 ```
 
-Via Property Binding to binding two classes(父 and 子)together
 ```html
 <app-task [subject]="task.subject" [state]="task.state"></app-task>
 ```
 
 ## `@Output`
 
-Parent listens for child event
 
-Child component use `EventEmitter<Object>` to output the value to Base component 
+In contrast with `@input` we can also pass the value in child component to base component
+
+
+first base component needs to listen for child component event,
+so the child component uses `EventEmitter<Object>` to output the value to Base component 
+
 ```typescript
-import { Component, EventEmitter, Input, Output } from '@angular/core';
- 
+import { Component, EventEmitter, Input, Output } from '@angular/core'; 
 @Component({
   selector: 'app-voter',
   template: '
     <h4>{{name}}</h4>
     <button (click)="vote(true)"  [disabled]="voted">Agree</button>
     <button (click)="vote(false)" [disabled]="voted">Disagree</button>
-  '
+    '
 })
 export class VoterComponent {
+  
+  /**
+   *  receive the value from base
+   */
   @Input()  name: string;
+
+  /**
+   *  pass the value to base
+   */
   @Output() onVoted = new EventEmitter<boolean>();
   voted = false;
  
@@ -354,9 +380,11 @@ export class VoterComponent {
 
 Base Component
 
-to receive the value passed by child in html
-```
-(child_component_emitter_name) = (method_in_base_compoent($emitted_event_from_value))
+Too receive the value passed by child in html
+```    
+(child_component_emitter_name) = (method_in_base_component($emitted_event_from_value))
+  |                                                    ^ 
+  +----------------------------------------------------+
 ```
 
 ```typescript
@@ -368,14 +396,15 @@ import { Component }      from '@angular/core';
     <h2>Should mankind colonize the Universe?</h2>
     <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
     <app-voter *ngFor="let voter of voters"
-      [name]="voter"
-      (onVoted)="onVoted($event)">
+    [name]="voter"
+    (onVoted)="onVoted($event)">
     </app-voter>
   '
 })
 export class VoteTakerComponent {
   agreed = 0;
   disagreed = 0;
+  
   voters = ['Mr. IQ', 'Ms. Universe', 'Bombasto'];
  
   onVoted(agreed: boolean) {
@@ -383,4 +412,3 @@ export class VoteTakerComponent {
   }
 }
 ```
-
