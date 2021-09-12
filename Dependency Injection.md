@@ -120,12 +120,15 @@ const silentLogger = {
 
 ## 在`@NgModule.Provider`內使用工廠模式
 
-- 更有彈性客製化不同Components使其使用不同類別實現自動注入(DI)
+- 更有彈性客製化不同Components使用不同類別實現自動注入(DI)
 
 **如果我們希望針對客戶的層級不同提供不同的服務，可以使用Factory providers。**
 
-For example
-In `src/app/heroes/hero.service.ts`
+For example   
+
+We got two service provide for Factory for components 
+
+In `src/app/heroes/hero.service.ts`  
 ```typescript
 constructor(
   private logger: Logger,
@@ -138,13 +141,14 @@ getHeroes() {
 }
 ```
 
-`hero.service.provider.ts`裡定義了factory的物件
+In `hero.service.provider.ts`裡定義了factory的物件
 ```typescript
 let heroServiceFactory = (logger: Logger, userService: UserService) => {
   return new HeroService(logger, userService.user.isAuthorized);
 };
 ```
-然後在`@NgModule.providers`的宣告是這樣的
+
+然後在Module `@NgModule.providers`
 ```typescript
 export let heroServiceProvider =
   { provide: HeroService,
@@ -152,13 +156,13 @@ export let heroServiceProvider =
     deps: [Logger, UserService]
   };
 ```
-`useFactory`可讓angular知道`provider`是一個工廠函數，其實現是`heroServiceFactory`
-而`deps`屬性是這個工廠需要用到的Service  
-angular會將Service中的`Logger`和`UserService`注入(DI)符合的Factory function參數。
+- `useFactory`可讓angular知道`provider`是一個Factory，其實現是`heroServiceFactory`
+- `deps`屬性是這個工廠需要用到的Services  
+- angular會將Service中的`Logger`和`UserService`注入(DI)符合的Factory Function  
 
+## 常數注入   
 
-## 常數注入
-如果有時我們要注入的對象不是物件時，例如要注入下面這個常數
+如果有時我們要注入的對象不是物件(Object)時，例如要注入下面這個常數(Constant)
 ```typescript
 export const HERO_DI_CONFIG: AppConfig = {
   apiEndpoint: 'api.heroes.com',
@@ -173,20 +177,22 @@ export const HERO_DI_CONFIG: AppConfig = {
 - 這是因為javascript是一個弱型別的語言，即便typescript是強型別的，但最終會被轉回弱型別的javascript
   > 因此用這種方式angular會無法找到這個型別。
 
-正確的使用方式是使用`export const NANME = new InjectionToken<ProvideName>(ConstantValue);` 
-- `const`的變數通常使用大寫表示之
+
+正確的使用方式是使用`export const NAME = new InjectionToken<ProvideName>(ConstantValue);` 
 ```typescript
 import { InjectionToken } from '@angular/core';
-
 export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
 ```
 
-然後用剛剛建的InjectionToken來註冊這個程序
+把該Constant註冊在`@ngModel.provider`內
 ```typescript
+/**
+ *  Provide APP_CONFIG
+ */
 providers: [{ provide: APP_CONFIG, useValue: HERO_DI_CONFIG }]
 ```
 
-當Component的Constructor要使用常數注入時則要利用annotation `@InJect(CONST_VARAIBLE) DI_variable : Provide`
+當Component的Constructor要使用常數注入時則要利用annotation `@InJect(CONST_VARIABLE) DI_variable : Provide`
 ```typescript
 /**
   * with annotation `@Inject(provider)`
@@ -198,22 +204,27 @@ constructor(@Inject(APP_CONFIG) config: AppConfig) {
 
 ## `@Optional()`表示不一定會被注入的Service 
 
-有些service可以不一定要被自動注入，這時可以用這個方式宣告
+如果想要有些services不要被自動注入，這時可以用這個方式宣告
 ```typescript   
 import { Optional } from '@angular/core';
+
+/**
+ *  該service DI is optional
+ */
 constructor(@Optional() private logger: Logger) {
+  
   // if logger不是null
   if (this.logger) {
     this.logger.log(some_message);
   }
 }
 ```
-如果使用`@Optional()`，並且找不到相應的服務時，就不會跳錯誤，而logger的值會是`null`。 
+如果使用`@Optional()`，並且找不到相應的服務時，就不會跳錯誤，而logger的值會是`null`
 
 ## 分層注入系統
-Angular的Service是這樣的，每一次在providers裡註冊(register)一次這個類別，就會產生一次物件實體, 我們可以利用這個特性來讓服務裡的資訊彼此間隔離不受干擾  
+Angular的Service是這樣的，每一次在`providers`裡註冊(register)一次，就會產生一次物件實體, 我們可以利用這個特性來讓服務裡的資訊彼此間隔離不受干擾     
 
-例如下圖的HeroesListComponent下面有三個`HeroTaxReturnComponent`實體，裡面各字會有一個這個Hero的稅單資料（HeroTaxReturnService）
+例如下圖的HeroesListComponent下面有三個`HeroTaxReturnComponent`實體，裡面各字會有一個這個Hero的稅單資料（HeroTaxReturnService）  
 ![image](https://user-images.githubusercontent.com/68631186/125828144-9f481a78-0b21-43ae-bb8e-a9a8e36d1d7b.png)
 
 但若我們不希望彼此間的服務會受到彼此的干擾，則可以在`HeroTaxReturnComponent`再宣告一次`HeroTaxReturnService`，則可以達到這個目的
@@ -227,7 +238,7 @@ import { HeroTaxReturnService } from './hero-tax-return.service';
   templateUrl: './hero-tax-return.component.html',
   styleUrls: [ './hero-tax-return.component.css' ],
   /**
-    * I have my own Insatnce of HeroTaxReturnService
+    * I have my own Instance of HeroTaxReturnService
     */ 
   providers: [ HeroTaxReturnService ]
 })
