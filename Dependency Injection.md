@@ -2,28 +2,28 @@
 # Dependency Injection
 
 ## Service's DI
+ 
 ```typescript
 import { Injectable } from '@angular/core';
 /**
- * <p> @Injectable()是angular的service使用做依賴注入的裝飾詞,
+ * @Injectable()是angular的service使用做依賴注入的裝飾詞,
  *     ，可以使該Service成為被Components注入(USE)的實體
- * </p>
  */
 @Injectable()
 export class HeroService {
   constructor() { }
 }
 ```
+- Service使用`@Injectable()`表示此service會變成是Singleton
 
-當我們在provider設定這個服務給這個module使用，如下：
+註冊在`provider`讓這個服務可以給xxx module使用，如下：
 ```typescript
 providers: [
   UserService
 ],
 ```
 
-Service使用`@Injectable()`表示此service會變成是Singleton，  
-只要我們在某個Component的Constructor加入此service的宣告則會自動注入(USE)的Instance
+這時只要我們在xxx module某個component的Constructor加入此Service的宣告就會自動注入(USE)的Instance
 ```typescript
 export class HeroListComponent {
   heroes: Hero[];
@@ -39,12 +39,12 @@ export class HeroListComponent {
 ```
 
 ## component's provider
+
 **在`ngModule`裡provider設定的服務可以在該模組下任一元件裡去從建構子取得同一個物件的實體而不需要再在元件中額外去在provider宣告**
 
-如果有一個服務只需要在某個元件下被使用，則可以直接在`@Component.providers`裡面註冊(Register)
-
-**Component DI是相互獨立的**，每個組件都創建它自己的Component提供服務的實例。
-> 故當Angular Destroy其中一個Component實體時，它也會Destroy Component的注入器和注入器的服務實體  
+- 如果需要某個Service只需要在某個元件下被使用，則可以直接在`@Component.providers`裡面註冊(Register)而不而不適再module's `provider`
+- **Component DI是相互獨立的**，每個組件都創建它自己的Component提供服務的實例。
+  > 故當Angular Destroy其中一個Component實體時，它也會Destroy Component的注入器和注入器的服務實體  
 
 ## 更新注入Instance的Implementation類別
 
@@ -68,16 +68,15 @@ constructor(private logger: Logger) {}
 providers: [{ provide: Logger, useClass: Logger }]
 ```
 
-假如我們需要更新一些Logger類別的內容則可以建立了一個繼承Logger並覆寫其部份功能的類別BetterLogger (OPEN CLOSE Principle)
+假如我們需要更新一些Logger類別的內容則可以建立了一個繼承Logger並覆寫其部份功能的類別BetterLogger(OPEN CLOSE Principle)
 ```typescript
 /**
-  * userClass:Logger -> 實現provide:LoggerBetterLogger(Which implements Logger)
-  * provide:Logger -> 注入的instance的類型是Logger
-  * 亦即對所有自動注入Logger類型的instances都會使用class LoggerBetterLogger內的methods實現
+  * userClass: BetterLogger -> 實現 provide: LoggerBetterLogger(Which implements Logger)
+  * provide: Logger -> 注入的instance的類型是Logger
+  * 亦即對所有會自動注入Logger類別的component都會使用LoggerBetterLogger內的methods實現而不是Logger
   */
 providers: [{ provide: Logger, useClass: BetterLogger }]
 ```
-
 ## Aliased class providers
 
 以上面的例子，如果我們在**根模組(Root)的`@NgModule.providers[ ... ]`設定Logger為token，實際創建的物件卻為BetterLogger**，會造成其他的**子元件也都無法直接在constructor取得BetterLogger這類型的物件**   
@@ -93,12 +92,14 @@ providers: [{ provide: Logger, useClass: BetterLogger }]
   */
 [ NewLogger,
   // 任何Component使用(舊的)OldLogger時會去取得NewLogger這個類別的實體
+  // 將NewLogger提供給OldLogger
   { provide: OldLogger, useExisting: NewLogger}]
 ```
 
 ## 直接使用一個Instance利用 `useValue`
 
-有的時候我們會希望能夠直接使用一個已建立好的物件實體(instance) 提供(provides)給其他的Component自動注入(DI)
+有的時候我們會希望能夠直接使用一個已建立好的物件實體(instance)而不是(class)提供(provides)給其他的Component自動注入(DI)
+
 在`provider[ provide : xxx , useValue : yyy]`提供現成的物件`yyy`實體(instance)給`provide : xxx`使用
 
 ```typescript
@@ -117,7 +118,7 @@ const silentLogger = {
 [{ provide: Logger, useValue: silentLogger }]
 ```
 
-## 在Provide service時使用工廠模式
+## 在`@NgModule.Provider`內使用工廠模式
 
 - 更有彈性客製化不同Components使其使用不同類別實現自動注入(DI)
 

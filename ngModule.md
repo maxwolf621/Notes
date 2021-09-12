@@ -1,7 +1,6 @@
-###### tags: `Angular`
+ ###### tags: `Angular`
 # Module
 [TOC]
-
 
 ## To generate Module in CLI
 
@@ -32,13 +31,13 @@ Using `Angular Schematics` Extension Package to generate modules we want
 
 # Module內的`@NgModule`
 
-## imports (Modules)
+## imports (Modules) to use 
 代表要使用哪些模組所提供的功能，例如我們常常使用的`ngModel` ，就是在 `FormsModule`裡面所提供的一個 directive，此時我們就必須在`@NgModule `的`imports: []`中加入`FormsModule`  
 
 - 在一般使用 Angular CLI建立的`.ts`，我們可以看到在`AppModule.ts`中的`@NgModule`包含了`imports: [BrowserModule]`，代表的就是針對瀏覽器開發的常用程式都來自於`BrowserModule`中  
 > 簡單的說，當有使用到其他Module的需求時，就需要使用`imports: [] `將該Module加入。
 
-## declarations (Components)
+## declarations(Components) to use
 在`declarations: [] `設定中，我們會將**可宣告(declarable)** 的類別放在這個設定中，什麼是可宣告的類別呢？簡單來說就是跟Template顯示有關的程式，都屬於這裡面的設定。
 
 簡單來說，在 HTML 上可能會看到某個元件(component)的selector、某個元素上掛了一個指令(directive)，或是使用管線(pipe)來改變呈現內容，這些都是跟樣板有關的，而當 Angular 在編譯這些樣板時，就會在相關的模組中，尋找是否在`declarations: []`有加入這些類別，如果有，就執行相關的程式並且改變畫面的行為。如下程式：
@@ -51,9 +50,8 @@ export class AppModule { }
 - 這些與顯示相關的程式類別都只能存在於一個模組之中，如果存在多個Different Modules中時，編譯程式時就會發生錯誤！
     > 因此如果我希望將某個元件封裝在某個模組中，但在別的模組中的元件要能夠使用時，就需要使用另一個設定：`exports`。
 
-## exports (Component)
-
-我們已經知道 Angular 中的與畫面相關的程式類別必須放在`declarations: []`之中，且每個與畫面相關的程式類別只能存在於一個模組內；但我們很有可能在 A 模組寫了個Component_A，卻想在 B 模組中的另一個元件中使用Component_A  
+## exports (Component) to other module to use
+我們已經知道 Angular 中的與畫面相關的程式類別必須放在`declarations: []`之中，且每個與畫面相關的程式類別只能存在於一個模組內；但我們很有可能在A模組寫了個Component_A，卻想在B模組中的另一個元件中使用Component_A  
 ```typescript
 @Component({
   selector: 'app-main',
@@ -107,7 +105,7 @@ export class MainModule { }
     > 放在` bootstrap: []` 中的元件，會自動被視為放入 `entryComponents: []` 之中  
     > Boost Angular Application -> bootstrap內的component會自動啟用 
 
-## entryComponents
+## entryComponents (動態載入 e.g. (彈出的小視窗`dialog`))
 在顯示一個元件時，有動態載入與靜態載入兩種方法：
 
 1. 動態載入：代表不是在某個樣板中使用`<app-xxx></app-xxx>`的方法載入元件，**而是透過我們手動撰寫程式，將元件載入在畫面(`xxx.html`)中的某個地方**  
