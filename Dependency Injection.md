@@ -98,15 +98,16 @@ providers: [{ provide: Logger, useClass: BetterLogger }]
 
 ## 直接使用一個Instance利用 `useValue`
 
-有的時候我們會希望能夠直接使用一個已建立好的物件實體(instance)而不是(class)提供(provides)給其他的Component自動注入(DI)
+https://ithelp.ithome.com.tw/articles/10208240
 
+有的時候我們會希望能夠直接使用一個已建立好的物件實體(instance)而不是(class)提供(provides)給其他的Component自動注入(DI)
 在`provider[ provide : xxx , useValue : yyy]`提供現成的物件`yyy`實體(instance)給`provide : xxx`使用
 
 ```typescript
 // service 
 export function SilentLoggerFn() {}
 
-// object to be used for provide in @ngModule.Provider
+// An object will be used for provide in @ngModule.Provider
 const silentLogger = {
   logs: ['Silent logger says "Shhhhh!". Provided via "useValue"'],
   log: SilentLoggerFn
@@ -117,17 +118,19 @@ const silentLogger = {
 ```typescript
 [{ provide: Logger, useValue: silentLogger }]
 ```
+- Provide Logger service uses value of object silentLogger
 
 ## 在`@NgModule.Provider`內使用工廠模式
+
+https://ithelp.ithome.com.tw/articles/10208240
 
 - 更有彈性客製化不同Components使用不同類別實現自動注入(DI)
 
 **如果我們希望針對客戶的層級不同提供不同的服務，可以使用Factory providers。**
 
-For example   
 
-We got two service provide for Factory for components 
-
+For example :: We got two service provides for Factory for components 
+### service
 In `src/app/heroes/hero.service.ts`  
 ```typescript
 constructor(
@@ -141,6 +144,7 @@ getHeroes() {
 }
 ```
 
+### service provider
 In `hero.service.provider.ts`裡定義了factory的物件
 ```typescript
 let heroServiceFactory = (logger: Logger, userService: UserService) => {
@@ -148,8 +152,14 @@ let heroServiceFactory = (logger: Logger, userService: UserService) => {
 };
 ```
 
-然後在Module `@NgModule.providers`
+### register in the root module 
+然後在`app-module`的`@NgModule.providers`
 ```typescript
+/**
+ *  heroServiceProvider <--- factory
+ *  provide : HeroService <---- service
+ * dep : factory 
+ */
 export let heroServiceProvider =
   { provide: HeroService,
     useFactory: heroServiceFactory,
@@ -162,7 +172,7 @@ export let heroServiceProvider =
 
 ## 常數注入   
 
-如果有時我們要注入的對象不是物件(Object)時，例如要注入下面這個常數(Constant)
+**如果有時我們要注入的對象不是物件(Object)時**，例如要注入下面這個常數(Constant)
 ```typescript
 export const HERO_DI_CONFIG: AppConfig = {
   apiEndpoint: 'api.heroes.com',

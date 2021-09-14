@@ -1,7 +1,6 @@
-## Guard
-[](https://ithelp.ithome.com.tw/articles/10208485)  
+## [Guard](https://ithelp.ithome.com.tw/articles/10208485)  
 
-- Guard 也是 Service 的一種，因為它也有 @Injectable 的裝飾器
+- Guard 也是 Service 的一種，因為它也有`@Injectable`的裝飾器
 - To Restrict the access to certain path 
 
 
@@ -27,12 +26,10 @@ export class LayoutGuard implements CanActivate {
   }
 }
 ```
-- next 與 state ，其所會對應到的資料型別是`ActivatedRouteSnapshot`與`RouterStateSnapshot`
+- `next`與`state`, 其所會對應到的資料型別是`ActivatedRouteSnapshot`與`RouterStateSnapshot`
 - 利用`next`以及`state`設定路徑的權限
 
-
-For example 需要guard幫我們過濾`path:''`這個路徑,任何人在access該路徑之前都得經過guard檢查
-
+For example :: 需要Guard幫我們過濾`path:''`這個路徑,任何人在access該路徑之前都得經過guard檢查
 ```typescript
 canActivate(
   next: ActivatedRouteSnapshot,
@@ -56,14 +53,12 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [LayoutGuard], <---------------------- HIER
+    canActivate: [LayoutGuard],  //<---------------------- HIER
     children: [...]
   }
   // ...
 ]
 ```
-
-## `Router.navigate([path_name],{ queryParams:{... } ....} ) `
 
 利用typescript的方法綁定`html`內的event進行頁面轉換
 ```typescript
@@ -73,7 +68,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  
+  // `Router.navigate([path_name],{ queryParams:{... } ....} ) `
   login(): void{
     this.router.navigate([''], queryParams:{
        name : 'John'; 
@@ -83,7 +79,7 @@ export class LoginComponent implements OnInit {
 ```
 ## Ask User to redirect to other page
 
-利用Guard內的`CanDeactivate`詢問使用者是否要離開當前頁面
+每次使用者如果點選離開的頁面-> 可以利用Guard內的`CanDeactivate`詢問使用者是否要離開當前頁面
 
 ```typescript
 export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
@@ -123,15 +119,13 @@ export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
 
 當使用者有在當前頁面輸入資料時,如果使用者在未完成該網頁需要fill in的欄位會詢問是否要離開此頁面(如果都沒填任何欄位會直接離開不會詢問)
 
+假設我們的頁面需要有fill in `name`的欄位如下
 ```html
 <input type="text" [(ngModel)]="name">
 ```
-- 雙向綁定了`name`這個屬性，所以到LoginComponent 裡新增一下這個屬性：
 
+我們需要在`canDeactivate`內把欄位的field `name`做檢查,看使用者沒有沒做填入的動作
 ```typescript
-name = '';
-最後調整一下 EnsureLoginGuard 的程式碼：
-
 canDeactivate(
   component: LoginComponent,
   currentRoute: ActivatedRouteSnapshot,
