@@ -1,14 +1,15 @@
 
-## [子路由](https://ithelp.ithome.com.tw/articles/10209259)   
+# [子路由](https://ithelp.ithome.com.tw/articles/10209259)   
+
+## 子路由內的模組設定
 
 
-## 子路由內的模組設定為
+先`ng g m feature --routing`
 
 ```typescript
 const routes: Routes = [
   // ...
 ];
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
@@ -16,15 +17,15 @@ const routes: Routes = [
 export class FeatureRoutingModule { }
 ```
 
-在`app-module.tx`引入位置要擺在 AppRoutingModule 之前
+之後加入`app-module.tx`的`@ngModule.imports`內
+順序要擺在`AppRoutingModule`之前
 ```typescript
 imports: [
   BrowserModule,
-  FeatureModule, // 放在這裡
+  FeatureModule,  // <-----
   AppRoutingModule
 ],
 ```
-
 ## [Guard](Router_Guard.md)
 
 一般常見使用路由守門員的時機大致上有兩種：   
@@ -32,6 +33,7 @@ imports: [
 `canDeactivate` － 當使用者想要離開某個路由時，透過路由守門員來判斷要不要讓使用者離開。   
 
 ## `Resolve` 傳遞複雜資料   
+
 ```typescript
  const routes: Routes = [
   {
@@ -51,7 +53,7 @@ imports: [
 ];
 ```
 
-ProductDetailResolverService 大概會長這樣：
+`ProductDetailResolverService` 大概會長這樣：
 ```typescript
 import { Injectable } from '@angular/core';
 import {
@@ -97,7 +99,7 @@ export class ProductDetailResolverService implements Resolve<Product> {
 ```
 
 
-最後在 ProductDetailComponent 的頁面我們就透過這樣的方式來接值：
+最後在`ProductDetailComponent`的頁面我們就透過這樣的方式來接值：
 ```typescript
 ngOnInit() {
   this.route.data.subscribe((data: { product: Product }) => {

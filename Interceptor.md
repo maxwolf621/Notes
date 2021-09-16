@@ -381,6 +381,5 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 }
 ```
-- [switchMap](https://ithelp.ithome.com.tw/articles/10188387)
+- [switchMap](https://ithelp.ithome.com.tw/articles/10188387)  
 
-- [switchMap](https://ithelp.ithome.com.tw/articles/10188387)
