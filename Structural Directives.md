@@ -2,17 +2,11 @@
 
 在Angular我們利用利用`*`來實現Structural Directive  
 ```html
-<!--
-`*`會悄悄的讓這個Directive成為Structural Directive
--->
+<!-- `*`會悄悄的讓這個Directive成為Structural Directive -->
 <div *ngIf="hero" >{{hero.name}}</div>
-```
-同等於以下結構
-```html
+
+<!-- 同等於以下結構 -->
 <ng-template [ngIf]="hero">
-  <!-- 
-  所有屬性..包括它的class屬性，都移到了`<ng-template>`元素之下 
-  -->
   <div>{{hero.name}}</div>
 </ng-template>
 ```
@@ -22,11 +16,11 @@
   > **因為它已經不在DOM之上，是沒辦法被操作的**
 
 上述可以看出Structural Directive是建立在ng-template之上的
-- ng-template並不會一開始就顯示在畫面上，而是通過directive操作裡面的dom並將要顯示的template添加在dom之中
+- `ng-template`並不會一開始就顯示在畫面上，而是通過directive操作裡面的dom並將要顯示的template添加在dom之中
 
 不過由於若是網頁內的資料量大，angular有足夠的理由這樣做  
 **因為這可以避免過多的dom元素拖累網頁效能，若單純使用css去hide、show元素(只是隱藏而已)，所有的監聽器、物件依舊會在背景執行，這會讓效能變得不佳**
-> 如果我們需要在show、hide物件的同時執行一些特殊的指令，可以用Lifecycle Hooks來撰寫此時要做的事情。
+- 如果我們需要在show、hide物件的同時執行一些特殊的指令，可以用Lifecycle Hooks來撰寫此時要做的事情。
 
 ## 在`.html`套用Multiple Structural Directives
 
@@ -71,11 +65,10 @@
   </ng-container>
 </select>
 ```
+
 ![image](https://user-images.githubusercontent.com/68631186/129431979-33264c35-0cf9-4998-aaaa-c03294e83fc4.gif)
 
-
 ## Custom Structural Directive
-
 ```typescript
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 /**

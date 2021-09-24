@@ -1,7 +1,7 @@
 ###### tags: `Angular`
 # [Binding](https://ithelp.ithome.com.tw/articles/10241010)  
 
-Angular Component主要有三種檔案`.css`(`scss`), `.html`以及`.ts`, 利用Bind(綁定)的方式達成value傳遞的交流
+Angular Component主要有三種檔案`.css`(`scss`), `.html`以及`.ts`, 利用Bind(綁定)的方式達成value在這三種文件中傳遞交流
 
 ## Interpolation `{{ ... }}`
 
@@ -60,9 +60,9 @@ Class's methods are called via `<button ... (event) = "class_method">` in html
 ```html
 (event)="SPECIFIC_METHOD_In_Component.ts"
 ```
-- (event)指定目標事件被觸發後，呼叫等號右邊該Component內指定的Function
+- `(event)`指定目標事件被觸發後，呼叫等號右邊該Component `.ts`內指定的Member function
 
-FOR EXAMPLE
+FOR EXAMPLE ::
 ```typescript
 import { TaskState } from "../../enum/task-state.enum";
 
@@ -157,21 +157,14 @@ export class TaskComponent implements OnInit {
 Style Binding 是Component針對HTML中style屬性的`CSS`樣式進行Binding
 
 ```html
-<!-- 
-style
-指的是css 
-
-Css_Property
-指的是該`.css`內某個attribute 
-
-attirbute_OR_method_In_Component.ts
-利用Component內的attribute或者method 
-來達成對CSS內Attributes賦值
--->
 [style.Css_Property] = "Attribute_OR_Method_In_typescript"
 ```
+- `style` : 指的是css 
+- `Css_Property`  該component `.css`內某個attribute 
+- `attribute_OR_method_In_Component.ts` : 利用Component內的attribute或者method來達成對CSS內Attributes賦值
 
-FOR EXAMPLE
+FOR EXAMPLE 
+
 ```typescript
 getStateColor(): string {
     switch (this.task.state) {
@@ -184,18 +177,17 @@ getStateColor(): string {
 ```
 
 ```html
-<div class="content">
-  
+<div class="content">  
   <!-- To assign .color via getStateColor -->
   <span [style.color]="getStateColor()">
   {{ getStateDesc() }}
   </span>
 </div>
 ```
-
 ## [class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
 
-To bind different classes use
+To bind different classes
+
 ```html
 <!-- 
 透過 Attribute in the Component  
@@ -263,6 +255,7 @@ export class test implements OnInit{
     public successClass = "text-success";
     public hasError = true ;
     public isSpecial = true;
+
     public MessageClass ={
         "text-success" = hasError;
         "text-danger"  = !hasError;
@@ -270,21 +263,23 @@ export class test implements OnInit{
     }
 }
 ```
-## `@Input` allows Property Binding with different components
 
-`@Input()` :  base component can pass field to child component via `.html`
+## Component passes the value to another Component 
+### `@Input` allows Property Binding with different components
+
+`@Input()` :  base component can pass value to child component via `.html`
 
 ```html
 <!-- Assign value to Child_Variable via Father's Method-->
-<TAG [Child_field] = Father.Method> ... </TAG>
+<BaseComponent [Child_field] = Father.Method> ... </BaseComponent>
 
 <!-- Assign value to CHild_Variable via Father's Attribute --> 
-<TAG [Child_field] = Father.Attribute> ... </TAG>
+<BaseComponent [Child_field] = Father.Attribute> ... </BaseComponent>
 ```
 
 **Child component needs to have `@input` annotation to receive value passed by Base Component.**
 
-Base component ,  `app.component.ts` 
+Base component    
 ```typescript
 import { Task } from "./model/task";
 
@@ -296,12 +291,13 @@ export class AppComponent implements OnInit {
 }
 ```
 
-Child component,  `task.component.ts `
+Child component
 ```typescript
 /**
  *  to get value from base component
  */
 export class TaskComponent implements OnInit {
+  
   /**
     * {@code subject} and {@code state} 
     * will receive the value from Base Component app.component.ts
@@ -332,21 +328,21 @@ export class TaskComponent implements OnInit {
 }
 ```
 
+Base Component's `.html`
 ```html
 <app-task [subject]="task.subject" [state]="task.state"></app-task>
 ```
 
 ## `@Output`
 
-
-In contrast with `@input` we can also pass the value in child component to base component
-
+In contrast with `@input` we can also pass the value in child component to Base component
 
 first base component needs to listen for child component event,
-so the child component uses `EventEmitter<Object>` to output the value to Base component 
+so the child component uses `EventEmitter<Object>` to output/emit the value to Base component 
 
 ```typescript
 import { Component, EventEmitter, Input, Output } from '@angular/core'; 
+
 @Component({
   selector: 'app-voter',
   template: '
@@ -357,22 +353,19 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class VoterComponent {
   
-  /**
-   *  receive the value from base
-   */
+  //receive the value from base
   @Input()  name: string;
 
-  /**
-   *  pass the value to base
-   */
+  //pass the value to base
   @Output() onVoted = new EventEmitter<boolean>();
+  
   voted = false;
  
   vote(agreed: boolean) {
-    /**
-      * emit (output) the value
-      */
+
+    // emit (output) the value
     this.onVoted.emit(agreed);
+    
     this.voted = true;
   }
 }
@@ -380,9 +373,9 @@ export class VoterComponent {
 
 Base Component
 
-Too receive the value passed by child in html
-```    
-(child_component_emitter_name) = (method_in_base_component($emitted_event_from_value))
+To receive the value passed by child in html
+```console    
+(@output member_name from child component) = (method_in_base_component($event))
   |                                                    ^ 
   +----------------------------------------------------+
 ```
@@ -392,23 +385,26 @@ import { Component }      from '@angular/core';
 
 @Component({
   selector: 'app-vote-taker',
-  template:'
+  template:'               
     <h2>Should mankind colonize the Universe?</h2>
     <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
     <app-voter *ngFor="let voter of voters"
     [name]="voter"
     (onVoted)="onVoted($event)">
-    </app-voter>
-  '
+    </app-voter>'                 
 })
 export class VoteTakerComponent {
   agreed = 0;
   disagreed = 0;
   
-  voters = ['Mr. IQ', 'Ms. Universe', 'Bombasto'];
+  voters = ['Mr. IQ', 'Ms. Universe', 'Ms. Toshiro'];
  
   onVoted(agreed: boolean) {
     agreed ? this.agreed++ : this.disagreed++;
   }
 }
+```
+
+```html
+<app-voter (onVoted) = "onVoted($event)"></app-vote>
 ```
