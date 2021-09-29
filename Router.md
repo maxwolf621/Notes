@@ -14,7 +14,7 @@
 
 ## Router Configuration In Angular
 
-Root Router module `app-routing.module.ts`
+Root Routing module `app-routing.module.ts`
 ```typescript
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -28,7 +28,7 @@ const routes: Routes = [];
 export class AppRoutingModule { }
 ```
 
-Router module會被注入到root `app.module.ts`中的`@ngModule.import`內
+Routing module會被注入到root `app.module.ts`中的`@ngModule.import`內
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -42,7 +42,7 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule //  <---- the root Module
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -51,10 +51,13 @@ export class AppModule { }
 ```
 
 Template In `app.component.html`
+```html
+<!-- 
+  Plug different component's templates via outlet
+-->
+<router-outlet></router-outlet> 
 ```
-<router-outlet></router-outlet>
-```
-- **Angular 的路由機制靠的是我們放在 Template 裡的路由插座 `<router-outlet></router-outlet>`**
+- **Angular的路由機制靠的是我們放在Template(`.html`)裡的路由插座`<router-outlet></router-outlet>`**
 
 
 ### Router In Action
@@ -83,11 +86,11 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
-- `enableTracing : true`在console印出'監聽router的trace'
+- `enableTracing : true`在console prints出監聽route's trace
 
+## Directive for Routing
 
-## Directive for Router
-Router's directive 分成兩個
+Router's directive for template `.html` 分成兩個
 1. `<a></a>` 用的 RouterLinkWithHref 
 2. 其他非`<a></a>`元素用的 RouterLink 
 
@@ -98,7 +101,6 @@ Router's directive 分成兩個
   <li><a [routerLink]="'/about'">About</a></li>
 </ul>
 ```
-
 
 ## 萬用路由
 
@@ -111,23 +113,22 @@ const routers: Routers:[
     }
 ];
 ```
-- 當所在的路徑不屬於`const routers`內所有設定的路徑則統一redirect to `home` 這個路徑
-- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers` array的tail
+- 上述表當所在的路徑不屬於`const routers`內所有設定的路徑則統一redirect to `home` 這個路徑
+- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers : Routers : [ {..} , {...}, ... , {path : '**' ...} ]`的尾
 
-## Child Router Design Pattern 子路由
-
+## Child Router 子路由
 設定子路由的優點
 - **可讀性高的 url** ，如： /articles/10207918
 - 延遲載入
 - **減少撰寫重複的程式碼**
 - 預處理層
 
+### Without child router
 
+子路由的Component與直接使用參數去定義路由，Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**。因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同的內容資料。**
 
-### Problem 1 without child router
-子路由的Component與直接使用參數去定義路由，Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**。因此在物件被重用的狀況下，該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同的內容資料。
+但是**被創建的元件實體(Instance)會在離開頁面時被銷毀並取消註冊**，因此在前面範例的`heroes-routing`.`module.ts`檔案中裡，所使用的導航設定方式，由於在瀏覽`HeroDetailComponent`之後，一定要先回到`HeroListComponent`，才能進入下一個Detail頁面。
 
-但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**，因此在前面範例的heroes-routing.module.ts檔案中裡，所使用的導航設定方式，由於在瀏覽`HeroDetailComponent`之後，一定要先回到`HeroListComponent`，才能進入下一個Detail頁面。
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },
@@ -198,15 +199,16 @@ this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.r
 - 只要路由有設定children的route，再加上在Template裡有放`<router-outlet></router-outlet>`的話, Angular的路由機制就會自動幫你向下找。   
 
 實際應用上，**通常我們會將相關的功能包裝成一個一個的 NgModule ，而每個 NgModule，也其實都可以有自己的 RoutingModule** (e.g. 一個網站共同的頁面layout)   
-For example :: 建立一個module以及FeatureRoutingModule給`feature` component使用   
+For example :: 建立一個module以及FeatureRoutingModule給feature component使用   
 ```bash
 # with --routing 則會另外建立一個FeatureRoutingModule的路由  
 ng generate module feature --routing
 
+# generate feature component
 ng generate component feature
 ```
 
-對於child route, 輸入`RouterModule.forChild(routers)`
+對於child route (建立一個module以及FeatureRoutingModule給feature)
 ```typescript
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -222,7 +224,7 @@ const routes: Routes = [
 
 @NgModule({
   /**
-   * only allow forChild
+   * only forChild
    */
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
@@ -231,16 +233,13 @@ export class FeatureRoutingModule { }
 ```
 - 整個系統只有`AppRoutingModule`才會使用 forRoot ，其他的子路由模組都是使用`forChild`  
 
-
-只要在`app.module.ts`內將該`FeatureModule.ts`註冊入`@ngModule.import`內就可見入路由路徑,**由於路由是有順序性的所以不能放在root router module之前**, For example ::
+只要在`app.module.ts`內將`FeatureModule.ts`註冊到`@ngModule.import`內就可加入child的路由路徑,**由於路由是有順序性的所以不能放在root routing module之後**, For example ::
 ```typescript
 imports: [
   BrowserModule,
-  AppRoutingModule,
-  FeatureModule   /* Feature Component的路徑會放在萬用路由的後面 */
+  AppRoutingModule, // <-- 先跑這裡面的所有路由
+  FeatureModule    // <-- 跑完AppRoutingModule所有路徑才會執行
 ]
-
-// instead of
 
 imports: [
   BrowserModule,
@@ -248,10 +247,11 @@ imports: [
   AppRoutingModule,
 ]
 ```
-- 故`AppRoutingModule`總是會放在`@ngModule import`的tail
+- 故`AppRoutingModule`總是會放在`@ngModule import`的TAIL
 
 
 ## Lazy Loading
+
 Lazy Loading implementation via `loadChildren`   
 
 In `FeatureRoutingModule.ts` 
@@ -265,11 +265,14 @@ const routes: Routes = [
 ```
 
 Add it in  `app-routing.module.ts` after
+```typescript 
+loadChildren:()=>import('./yyyy/xxxx.module').then(module => module.XXXXModule) 
+```
 ```typescript
 // Angular 8+
 {
   path: 'feature',
-loadChildren: () => import('./feature/feature.module').then(module => module.FeatureModule)
+  loadChildren: () => import('./feature/feature.module').then(module => module.FeatureModule)
 }
 ```
 
@@ -295,6 +298,7 @@ import { PreloadAllModules } from '@angular/router';
 ```
 
 ## Path query parameter 
+
 路由參數有時候我們會需透過路由傳遞參數，而傳遞參數的方法有兩種
 1. query string  `?`
 2. matrix URL notation `;`
@@ -302,6 +306,9 @@ import { PreloadAllModules } from '@angular/router';
 ### 使用 Query String 表示法
 Ex: `http://localhost:4200/products?id=101`
 
+#### 前往Link Path的方式
+
+In `.ts`
 ```typescript
 this.router.navigate(['products'], {
     queryParams: {
@@ -310,12 +317,13 @@ this.router.navigate(['products'], {
 });
 ```
 
+In `.html`
 ```html
-<a [routerLink]="['products']" [queryParams]="{ id: 101 }">Prodcuts</a>
+<a [routerLink]="['products']" [queryParams]="{ id: 101 }">Link For Product</a>
 ```
 
+#### 取得path的參數的方式
 
-取得path的參數的方式
 1. using `queryParams.subscribe((queryParams) => { ...})`
 2. using `.snapshot.queryParams['..']`
 ```typescript
@@ -325,12 +333,12 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
   
-      // 第一種方式（較推薦）
+      // 訂閱（較推薦）
       this.route.queryParams.subscribe((queryParams) => {
         console.log(queryParams['id']);
       });
       
-      // 第二種方式
+      // 利用snapshot.queryParams
       console.log(this.route.snapshot.queryParams['id']);
   
   }
@@ -343,6 +351,8 @@ export class ProductsComponent implements OnInit {
 
 Ex：`http://localhost:4200/products;id=101`
 
+
+#### 前往Link Path的方式
 ```typescript
 this.router.navigate(['path_name'], {queryParam_1 : xxx , queryParam_2 : yyy , ...});
 this.router.navigate(['products', { id: 101 }]);
@@ -352,7 +362,7 @@ this.router.navigate(['products', { id: 101 }]);
 <a [routerLink]="['products', { id: 101 }]">Products</a>
 ```
 
-取得Path的參數的方式：
+#### 取得Path的參數的方式：
 ```typescript
 export class ProductsComponent implements OnInit {
 
