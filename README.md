@@ -31,8 +31,9 @@
 ## RXJS
 - [Reactive Programming](ReactiveProgramming.md)   
 - **[Observable](Observable.md)**  
+- **[AsyncPipe](AsyncPipe.md)**
 - **[behaviorSubject](behaviorSubject.md)**
-- [RXJS Operators](RXJS_Operators.md)
+- **[RXJS Operators](RXJS_Operators.md)**
 - **[Interceptor](Interceptor.md)**  
 - [HttpClient.md](HttpClient.md)    
 
