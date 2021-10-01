@@ -14,7 +14,7 @@
 - **[Two Way Binding via `@input` and `output`](TwoWayBinding.md)**
 - **[Structural Directives](Structural%20Directives.md)**  
   > [`ng-template`](ng-template.md)
-  > [ng-container](ng-container.md)
+  > [`ng-container`](ng-container.md)
 - **[ElementRef, ViewChild and AfterViewInit](ElementRef_ViewChild_AfterViewInit.md)**
 - [TemplateReferenceValue](TemplateReferenceValue.md) 
 - **[ReactiveFormsModule](ReactiveFormsModule.md)** 
@@ -30,9 +30,10 @@
 
 ## RXJS
 - [Reactive Programming](ReactiveProgramming.md)   
-- [Observable](Observable.md)    
+- **[Observable](Observable.md)**  
+- **[behaviorSubject](behaviorSubject.md)**
 - [RXJS Operators](RXJS_Operators.md)
-- [Interceptor](Interceptor.md)   
+- **[Interceptor](Interceptor.md)**  
 - [HttpClient.md](HttpClient.md)    
 
 - [JWT](JWT.md)    
