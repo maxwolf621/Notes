@@ -3,10 +3,11 @@
 
 ## Introduction of Life hooks
 
+一個Component完整的Life Hooks順序  
 ![](https://i.imgur.com/qQNg86Y.png)  
-- 一個Component完整的Life Hooks順序  
 
-當Angular核心(core) Application建立元件並進入初始化的生命週期時，會判斷其中是否有上圖的Life Hooks，若有則執行該Life Hook(Method), 便能在Component初始化時執行某些行為  
+
+當Angular核心(core) Application建立元件並進入初始化的生命週期時，會判斷其中是否存在其Life Hooks，若有則依序執行Life Hook(Method), 便能在Component初始化時執行某些行為  
 
 ## 宣告Lifecycle Hooks
 Angular 也提供了所有生命週期的`Interface`宣告，放在 `@angular/core` 中
@@ -138,10 +139,14 @@ export class PriceComponent implements OnInit, OnChanges {
   
   firstChange = true;
  
+  /**
+   * Assigned in the ngOnchange
+   * If @input price is changed from Base Component
+   */
   lastPrice;
   
   /**
-   * Controled By Father
+   * Assigned By Base
    */
   @Input() price;
 
@@ -150,18 +155,19 @@ export class PriceComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Keep Listening OnChanges 
+   * @description Keep Listening OnChanges 
    */
   ngOnChanges(changes: SimpleChanges) {
     console.log('Price Component Input Changed ');
     
-    /** (changes['price']) 
-      * key price 是否第一次做改變 
-      * 只有第一次時會是true 
+    /** 
+     * @description (changes['price']) key : `price` 是否第一次做改變 只有第一次時會是true 
       **/
     this.firstChange = changes['price'].firstChange;
     
-    /** (changes[price]) key price 上次的值**/
+    /** 
+     * @description (changes[price]) key : price 上次的值
+     * **/
     this.lastPrice = changes['price'].previousValue;
   }
 }
@@ -172,14 +178,17 @@ export class PriceComponent implements OnInit, OnChanges {
 
 在第一次執行完`ngOnChanges`後(如果有的話)，就會進入`ngOnInit`週期，**大部分的初始化程式都建議在`ngOnInit()`週期中執行，而非在Constructor做處理，尤其是比較複雜程式或`ajax`呼叫，建議都在 `ngOnInit`中執行。**
  
-因為放在Constructor中初始化明顯的缺點是：撰寫單元測試時，由於Constructor本身對外部程式的依賴(Dependency)太重(Import的Package都在Constructor進行DI)，**容易造成測試程式難以撰寫**  
+- 放在Constructor中初始化明顯的缺點是：撰寫單元測試時，由於Constructor本身對外部程式的依賴(Dependency)太重(Import的Package都在Constructor進行DI)，**容易造成測試程式難以撰寫**  
 
 ## `DoCheck`
 
 **`ngDoCheck`會在Angular核心程式執行變更偵測後呼叫，我們可以在這裡面額外撰寫程式來處理變更偵測所無法偵測到的部分**  
 
-若我們把原來的傳入`priceComponent`的`price`值的資料型態改為`Object` (`price = { value = 100 }`)  
+若我們把原來的傳入child component `priceComponent`的`price`值的資料型態改為`Object` (`price = { value = 100 }`)  
 ```typescript
+/**
+ * @description ----------Child Component
+ */
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
@@ -204,9 +213,7 @@ export class PriceComponent implements OnInit, OnChanges {
   
   @Input() price;
 
-  ngOnInit() {
-    console.log('Init Price Component ');
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     console.log('Price Component Input Changed ');
@@ -214,10 +221,12 @@ export class PriceComponent implements OnInit, OnChanges {
     this.lastPrice = changes['price'].previousValue;
   }
 }
-```
 
-`App.Component.ts` 
-```typescript
+
+/**
+ *  @description --------------Base Component 
+ * 
+ */
 @Component({
   selector: 'my-app',
   template: `
@@ -229,8 +238,8 @@ export class PriceComponent implements OnInit, OnChanges {
 export class AppComponent {
   
   /**
-   * An Object price
-   * (資料時態如果為Object)就變成Reference問題了
+   * @description 
+   * 當資料時態如果為Object就會有Reference/Copy的問題了
    */
   priceObj = { value: 100 };
   increase() {
@@ -241,9 +250,9 @@ export class AppComponent {
   }
 }
 ```
-- 除了第一次以外，完全不再進入`pricecomponent`'s `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
+- 由於是`@input`的資料型態為`Object`所以除了第一次以外，該`@Input`完全不再進入`pricecomponent`'s `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
 
-要改變這個結果有兩種方式，一種是複製一個新的物件再改變新物件的內容，並把`price`指派為新的物件(Object)，此時因為物件的參考位置修改了，變更偵測就能夠認得；當然每次都建立新物件是有成本的，所以我們也能在`DoCheck`週期中自行判斷
+要改變這個結果有兩種方式，一種是複製一個新的物件再改變新物件的內容，並把`price`指派為新的物件(Object)，此時因為物件的參考位置修改了，變更偵測就能夠認得；當然每次都建立新物件是有成本的，另一個方法則是利用`DoCheck`週期進行判斷
 ```typescript
 import { Component, DoCheck, Input, OnInit } from '@angular/core';
 
@@ -271,12 +280,11 @@ export class PriceComponent implements OnInit, DoCheck {
   
   @Input() price: { value: number };
 
-  ngOnInit() {
-    console.log('Init Price Component ');
-  }
+  ngOnInit() {}
 
   ngDoCheck() {
-    // 在這裡主動判斷資料是否有變更 (判斷 Angular 所無法判斷的部分)
+    // 在這裡主動判斷資料是否有變更 
+    // (ngDocheck判斷 ngOnChanges 所無法判斷的部分)
     if (this.price && this.lastPriceValue && this.price.value !== this.lastPriceValue) {
       this.firstChange = false;
       this.priceIncrease = this.price.value > this.lastPriceValue;
@@ -286,16 +294,16 @@ export class PriceComponent implements OnInit, DoCheck {
   }
 }
 ```
-## `AfterContentInit` and `AfterContentChecked` for `@Component.template`
+## `AfterContentInit` and `AfterContentChecked`
 
 在設計Component時，我們會使用`<ng-content>`來允許使用元件的時候放置更多的HTML內容，我們常使用`<ng-content>`來設計類似tabs功能的Component  
-例如, `BlockComponent`中的`tempalate`透過了`<ng-content>`的方式，**讓顯示的內容改為由使用父元件來決定，增加元件的彈性**
+例如, `BlockComponent`中的`template`透過了`<ng-content>`的方式，**讓顯示的內容改為由使用父元件來決定，增加元件的彈性**
 
-`<ng-content>` : 子元件內`@Component`中的`Template`交給父元件成員with annotation `@ContentChild`或`@ContentChildren`來決定
+- `<ng-content>` : 子元件的`Template`交給父元件`@ContentChild`或`@ContentChildren`的成員來決定
 
 ```typescript
 /**
- * Child Component
+ * ---------- Child Component
  */
 import { Component } from '@angular/core';
 
@@ -303,10 +311,12 @@ import { Component } from '@angular/core';
   selector: 'app-block',
   template: `
   <div class="block">
+
     <!-- ng-content表示顯示的內容交給父元件 -->
     <ng-content></ng-content>
-  </div>`
-  ,
+  
+  </div>
+  `,   
   styles: [
     `.block { border: 1px solid black; }`
   ]
@@ -314,8 +324,7 @@ import { Component } from '@angular/core';
 export class BlockComponent { }
 
 /**
- * Father Component is used 
- *        in Child Component
+ * ---------- Base Component
  */
 @Component({
   selector: 'my-app',
@@ -432,7 +441,14 @@ export class AppComponent{
 /**
  * 子元件
  */
-import { AfterViewChecked, AfterViewInit, Component, OnInit, Input, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { AfterViewChecked, 
+         AfterViewInit, 
+         Component, 
+         OnInit, 
+         Input, 
+         ViewChild, 
+         ViewChildren, 
+         QueryList } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -443,17 +459,22 @@ export class ChildComponent {
   @Input() value
 
 /**
- * 父元件
+ * ---- 父元件
  */
 @Component({
   selector: 'my-app',
   // View child-component 
-  template: `
+  template: `         
+  
   <button (click)="create()" #button>Create New Child</button>
-  <app-child *ngFor="let item of list" [value]="item"></app-child>
+  
+  <app-child *ngFor="let item of list" [value]="item"></app-child>      
+
   `
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  
+  // 對應 html的 #button
   @ViewChild('button') button;
   
   @ViewChild(ChildComponent) child;

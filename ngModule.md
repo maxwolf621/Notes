@@ -97,7 +97,7 @@ export class MainModule { }
 - 在共用模組時，我們可以自行決定哪些程式允許外部使用，哪些程式是不需要被外部使用的，維持最小知識原則，避免不必要的元件被外部程式誤用  
 
 ## providers
-`providers: []` 主要是用來決定哪些服務(service)允許被Injected，在 Angular 6 之後替`@Service`加上了`providedIn`設定，讓服務不一定非要放在`providers: []`之中，**但在很多時候要改變注入行為時，這裡依然是很重要的設定點 [Dependency Injection](/8AQani2_TCKWNUsp5ob5ng)**  
+`providers: []` 主要是用來決定哪些服務(service)允許被Injected，在 Angular 6 之後替`@Service`加上了`providedIn`設定，讓服務不一定非要放在`providers: []`之中，**但在很多時候要改變注入行為時，這裡依然是很重要的設定點**  
 
 
 ## bootstrap
@@ -105,12 +105,11 @@ export class MainModule { }
     > 放在` bootstrap: []` 中的元件，會自動被視為放入 `entryComponents: []` 之中  
     > Boost Angular Application -> bootstrap內的component會自動啟用 
 
-## entryComponents (動態載入 e.g. (彈出的小視窗`dialog`))
+## entryComponents
 在顯示一個元件時，有動態載入與靜態載入兩種方法：
 
 1. 動態載入：代表不是在某個樣板中使用`<app-xxx></app-xxx>`的方法載入元件，**而是透過我們手動撰寫程式，將元件載入在畫面(`xxx.html`)中的某個地方**  
 2. 靜態載入：剛好與動態組入相反，也就是**主動**在樣板中使用`<app-xxx></app-xxx>`的方式來載入元件  
 
-:::info  
-由於動態載入元件時不會在樣板中宣告使用元件，因此在打包程式時，會因為不知道何時被使用，為了減少打包程式的大小，而將元件去掉，反而造成無法載入的問題，因此 Angular 設計了 `entryComponents: []`，只要元件在程式中需要被動態載入，可以透過放入 `entryComponents: [] `來避免程式在打包時被移除  
-:::  
+
+由於動態載入元件時不會在樣板中宣告使用元件，因此在打包程式時，會因為不知道何時被使用，為了減少打包程式的大小，而將元件去掉，反而造成無法載入的問題，因此 Angular 設計了 `entryComponents: []` (e.g `dialog 小視窗` ...)，只要元件在程式中需要被動態載入，可以透過放入 `entryComponents: [] `來避免程式在打包時被移除  

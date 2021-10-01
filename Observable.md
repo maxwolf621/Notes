@@ -3,10 +3,42 @@
 
 在 Reactive Programming 裡面，最重要的兩個東西叫做 Observable 跟 Observer
 
-每一個Observable就是一個Stream也就是下圖的`[data]`
-每一個`[data]`的內容都不太一樣   
+Observable 以及 Observer
 ![](https://i.imgur.com/f98nz07.png)    
 
+Observable : 後端每一個資料
+```typescript
+
+Export class PostService{
+
+    //....
+
+    // Each PostPayload[] dataType is observable from resource backend_URL
+    getAllPost():Observable<PostPayLoad[]>{
+        return this.http.post<PostPayLoad[]>('${backend_URL}`);
+    }
+}
+```
+Observer : 取得某特定後端資料的人
+```typescript
+
+// inject dependency
+constructor(private postService : PostService){}
+
+//...
+
+// observer 
+getAllPostFromService(){
+    this.postService.getAllPosts().subscribe
+    (
+        (posts)=>{
+            //...
+        },(error)=>{
+            //...
+        }
+    )
+}
+```
 
 ## Difference btw Observable and Array
 Observable has `time` dimension
@@ -18,7 +50,6 @@ Observable has `time` dimension
 **Observer can be list of functions or object.**
 ```typescript
 Observable.subscribe(
-
  (value) =>{ ..} ,
  (error) =>{ ..},
  () => {..}

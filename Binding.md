@@ -212,31 +212,31 @@ Assign multiple CSS attributes from Component's Array
 ```typescript
 @Component({
 template:'
-    <h2 class = "text-success"> Codevolution </h2>    
+    <h2 class = "text-success"> Code Volution </h2>    
     
     /** 
       * Pass Attributes in .ts to .html for render
       * css property (indirect change the css property)        
       */
     // this is equal to <h2 class ="text-success"> 
-    <h2 [class]="successClass"> Codevolution </h2>
+    <h2 [class]="successClass"> Code Volution </h2>
     
     /**
      * Using expression 
      *       if hasError is true 
-     *       then render Codevolution with 
+     *       then render Code Volution with 
      *       css property `text-danger`
      */
-    <h2 [class.text-danger] = "hasError"> Codevolution </h2>
+    <h2 [class.text-danger] = "hasError"> Code Volution </h2>
     
 
     /** 
      * Using [ngClass] to 
      *       have multiple css attributes render 
-     * The Codevolution will be 
+     * The Code Volution will be 
      *       render with text-success and text-special  
      */
-    <h2 [ngClass] = "messageClass"> Codevolution </h2>'
+    <h2 [ngClass] = "messageClass"> Code Volution </h2>'
     ,
 styles:['
     .text-success{
@@ -251,7 +251,7 @@ styles:['
 ']
 })
 export class test implements OnInit{
-    public name = "Codevolution";
+    public name = "Code Volution";
     public successClass = "text-success";
     public hasError = true ;
     public isSpecial = true;
@@ -264,6 +264,24 @@ export class test implements OnInit{
 }
 ```
 
+More Specific for `[ngClass]`
+```html
+<ul>
+  <li *ngFor="let hero of heroes" (click)="test(hero.fav = !hero.fav)">
+    <div [ngClass]="hero.fav ? 'primary' : 'secondary'" (click)="test(hero.id)">{{ hero.name }}</div>
+  </li>
+</ul>
+
+```scss
+.primary {
+  color: red;
+}
+.secondary {
+  color: green;
+}
+```
+
+
 ## Component passes the value to another Component 
 ### `@Input` allows Property Binding with different components
 
@@ -271,10 +289,10 @@ export class test implements OnInit{
 
 ```html
 <!-- Assign value to Child_Variable via Father's Method-->
-<BaseComponent [Child_field] = Father.Method> ... </BaseComponent>
+<ChildComponent [Child_field] = BaseComponent.Method> ... </ChildComponent>
 
 <!-- Assign value to CHild_Variable via Father's Attribute --> 
-<BaseComponent [Child_field] = Father.Attribute> ... </BaseComponent>
+<ChildComponent [Child_field] = BaseComponent.Attribute> ... </ChildComponent>
 ```
 
 **Child component needs to have `@input` annotation to receive value passed by Base Component.**
@@ -353,10 +371,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class VoterComponent {
   
-  //receive the value from base
+  //receive the value from base component
   @Input()  name: string;
 
-  //pass the value to base
+  //We need onVoted for passing the value to base component 
   @Output() onVoted = new EventEmitter<boolean>();
   
   voted = false;
@@ -373,9 +391,9 @@ export class VoterComponent {
 
 Base Component
 
-To receive the value passed by child in html
+For base component's html to receive the value passed by child ... 
 ```console    
-(@output member_name from child component) = (method_in_base_component($event))
+(Field that with annotation @output in child component) = (Method In Base Component($event))
   |                                                    ^ 
   +----------------------------------------------------+
 ```
