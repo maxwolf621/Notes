@@ -4,7 +4,10 @@
 
 [Note Taking From](https://ithelp.ithome.com.tw/articles/10209372)
 
-使用`HttpClient`去呼叫一個API, 例如`http.get`的API從後端取得Observable,因此並透過`subscribe`方法，去訂閱結果，
+## Observable and Subscription
+
+我們通常使用`HttpClient`去呼叫一個API, 例如`http.get(`${backend_URL}`)`的API從後端`backend_URL`取得`Observable`,並透過`subscribe`方法，訂閱結果(fetch the data),如下
+
 ```typescript
 @Component({
   selector: 'my-app',
@@ -20,7 +23,8 @@ export class AppComponent {
   constructor(private httpClient: HttpClient) { }
 
   ngOnInit() {
-    this.httpClient.get('https://jsonplaceholder.typicode.com/todos/').subscribe
+    // get observable
+    this.httpClient.get('https://jsonplaceholder.typicode.com/todos/').subscribe // fetch the data
       (
           (data: any[]) => {
               this.todos$ = data;
@@ -29,11 +33,12 @@ export class AppComponent {
 }
 ```
 
-由於 Http Request 是非同步的程式， `observable` 也是，因此我們可以先把這個非同步的物件保留起來，而不是立刻呼叫 `subscribe` 方法：
+由於 Http Request 是非同步的程式， `Observable` 也是，因此我們可以先把這個非同步的物件保留起來，而不是立刻呼叫 `subscribe` 方法：
 ```typescript
 import { Observable } from 'rxjs';
 
 export class AppComponent {
+
   todos$: Observable<any[]>;
 
   constructor(private httpClient: HttpClient) { }
@@ -52,7 +57,7 @@ export class AppComponent {
 <li *ngFor="let todo of todos$ | async">{{ todo.title }}</li>
 ```
 
-`AsyncPipe`也可以幫助我們自動處理`Promise`，不過在 Angular 中還是使用 RxJS 居多。
+- `AsyncPipe`也可以幫助我們自動處理`Promise`，不過在Angular中還是使用 RxJS 居多。
 
 ### 類延遲載入
 由於我們現在把訂閱的工作交給樣板上的程式了，因此資料不會在元件開始的時候就載入，而是在樣板中有需要顯示的時候才載入，因此我們可以做出一個類似延遲載入的效果：
@@ -105,10 +110,11 @@ ngOnInit() {
     <li *ngFor="let todo of todos$ | async">{{ todo.title }}</li>
   </ul>
 </ng-container>
+
 <ng-template #loading>Loading...</ng-template>
 ```
 
-這段程式可以運作得非常好，在 Http Request 還沒完成的期間顯示 Loading... 內容，直到有資料後才顯示內容，但需要使用兩次 AsyncPipe，雖然我們已經知道可以搭配 shareReplay 來避免重複呼叫，但是套用多個 AsyncPipe 還是感覺醜醜的，這時候可以加上 as ，把訂閱的結果存到另一個區域變數中，如下：
+這段程式可以運作得非常好，在 Http Request 還沒完成的期間顯示 Loading... 內容，直到有資料後才顯示內容，但需要使用兩次 AsyncPipe，雖然我們已經知道可以搭配`shareReplay`來避免重複呼叫，但是套用多個AsyncPipe還是感覺醜醜的，這時候可以加上`as` ，把訂閱的結果存到另一個區域變數中，如下：
 
 ```html
 <ng-container *ngIf="todos$ | async as todos; else loading">

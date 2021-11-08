@@ -6,7 +6,7 @@
 Observable 以及 Observer
 ![](https://i.imgur.com/f98nz07.png)    
 
-Observable : 後端每一個資料
+`Observable` : Each Data from Stream
 ```typescript
 
 Export class PostService{
@@ -19,7 +19,7 @@ Export class PostService{
     }
 }
 ```
-Observer : 取得某特定後端資料的人
+`Observer` : Subscriber who want to fetch data from stream
 ```typescript
 
 // inject dependency
@@ -41,7 +41,8 @@ getAllPostFromService(){
 ```
 
 ## Difference btw Observable and Array
-Observable has `time` dimension
+
+- Observable has `time` dimension
 
 ## Syntax
 ![](https://i.imgur.com/207aMtD.png)  

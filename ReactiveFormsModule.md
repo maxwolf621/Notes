@@ -7,29 +7,26 @@ FormGroup:
 - FormGroup has the role of **tracking the value and validity state** of a group of FormControl.
 
 [FormArray](https://appdividend.com/2019/12/16/angular-form-control-example/):
-FormArray **tracks the value and validity state of the array** of FormControl, FormGroup, or FormArray instances.
+- FormArray **tracks the value and validity state of the array** of FormControl, FormGroup, or FormArray instances.
 
-
-## initialize
+## Create A filed of form
 
 ```typescript
 name = new FormControl('', [Validators.required]);
 ```
-
 respect to  
 ```html
-<input [formControl]="name">
+<input mat-input ... formControlName="name"  ... required>
 ```
+- `required` means that this field cant be skipped
 
-## set default value
+## Set default value of field
 
 ```typescript
-
-
-name = new FormControl('get default value', [Validators.required]);
+name = new FormControl('DefaultValue', [Validators.required]);
 ```
 
-##　`setValue`
+##　`setValue` method 
 
 ```typescript
 this.name.setValue('setName'); 
@@ -39,13 +36,12 @@ this.name.setValue('setName');
 
 FormGroup tracks the value and validity state of a group of FormControl instances.
 
-
-Initialize the group of form control
+Initialize the group of form control for default value
 ```typescript
  angForm = new FormGroup({
-    name: new FormControl('Krunal', Validators.maxLength(10)),
-    age: new FormControl(26, Validators.required),
-    college: new FormControl('VVP College'),
+    name: new FormControl('default_name', Validators.maxLength(10)),
+    age: new FormControl(13, Validators.required),
+    college: new FormControl('default_college'),
   });
 ```
 

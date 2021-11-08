@@ -21,24 +21,27 @@ It needs an initial value as it must always return a value on subscription even 
  */
 let bSubject = new BehaviorSubject("a"); 
 
+// ... no subscription ...
 
 bSubject.next("b");
 
-// behaviorSubject always got a least updated data
+/**
+ * bSubject will keep listening updates if new observable was emitted 
+ */
 bSubject.subscribe(value => {
   console.log("Subscription got", value); // Subscription got b, 
-                                          // ^ This would not happen 
+                                          // This would not happen 
                                           // for a generic observable 
                                           // or generic subject by default
 });
 
-bSubject.next("c"); // Subscription got c
+bSubject.next("c"); // Subscription got c 
 bSubject.next("d"); // Subscription got d
 ```
 
-
-A regular observable only triggers when it receives an onnext
+A regular observable only triggers when it receives an on next
 at any point, **you can retrieve the last value of the subject in a non-observable code using the `getValue()` method.**
+
 ```typescript
 // Regular Subject
 
@@ -56,14 +59,14 @@ subject.next("c"); // Subscription got c
 subject.next("d"); // Subscription got d
 ```
 
-#### 2. It can be observer and observable (subscribe and send)
+#### 2. It can be `observer` and `observable` (subscribe and send)
 
 Unique features of a subject compared to an observable are: it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
 
 - We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method on BehaviorSubject.
 
 
-#### 3. It a subtype of `observable`
+#### 3. It's a subtype of `observable`
 
 `observable` is a Generic, and **`BehaviorSubject` is technically a sub-type of Observable** because `BehaviorSubject` is an observable with specific qualities.
 
@@ -77,6 +80,7 @@ Unique features of a subject compared to an observable are: it is an `observer` 
    - `BehaviorSubject` is bi-directional. it's observer can assign value to observable via `next(...)`
 - **`BehaviorSubject` (or `Subject` ) stores observer details, runs the code only once and gives the result to all observers .**    
    - `observable` creates **copy of data** for each observer. so using `observable` may cause inefficiency if there were multiple observers  
+
 
 ```typescript
 // RxJS v6+
@@ -101,8 +105,6 @@ subject.next(789);
 ```
 - Observables : Observables are lazy collections of multiple values over time.
 - **BehaviorSubject: A Subject that requires an initial value and emits its current value to new subscribers.**
-
-
 ## Usage
 
 #### Update `@input` property for both child and parent component
