@@ -3,6 +3,10 @@
 
  - [Angular RXJS](https://ithelp.ithome.com.tw/articles/10222014)
 
+
+
+`Reactive Programming = Observer Pattern + Iterator pattern + Functional Programming`
+
 ![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
 - Create : `Observable`
 - Combine : `Operator`
@@ -13,13 +17,10 @@
 ```java
 -O-O-O-O-|->  // each O is a Subject which is Observable
  ' ' ' ' '  
- Operator()
+ Operators() // Each Operators Combine Subjects
  ' ' ' ' '
 -0-0-0-0-|-> // subscribe
 ```
-
-`Reactive Programming = Observer Pattern + Iterator pattern + Functional Programming`
-
 ![](https://i.imgur.com/1uzXLNR.png)   
 
 
@@ -27,13 +28,15 @@
 
 A Subject (STREAM) is `Observable`
 
-The Subject can have these default methods
+The Subject have these default methods
 - `next`：用來觸發新的事件資料，呼叫` next 並傳入新的事件資訊後，在訂閱步驟就會吃到有新事件發生了。
 - `error` ：只有第一次呼叫會在訂閱步驟觸發，當整個流程發生錯誤時，可以呼叫 `error` 並傳入作物資訊，用來告知錯誤內容，同時整個 Observable 就算是結束了。
 - `complete` ：只有第一次呼叫會在訂閱步驟觸發，當整個 `Observable` 結束時，用來通知已經結束了，由於是單純的結束了，`complete()` 方法不用帶入任何參數
 
 
-### from event to create a Subject(Stream) 
+### Create The Subject 
+
+Operator `fromevent` create a observable Subject
 
 ```typescript
 import { fromEvent } from 'rxjs';
@@ -48,22 +51,21 @@ document.addEventListener('click', (event) => {
 });
 ```
 
-## Operators
+## Combine FromOperators
+
+1. 建立類 Creation Operators
+2. 組合建立類 Join Creation Operators
+3. 轉換類 Transformation Operators
+4. 過濾類 Filtering Observables
+5. 組合類 Join Operators
+6. 多播類 Multicasting Operators
+7. 錯誤處理類 Error Handling Operators
+8. 工具類 Utility Operators
+9. 條件/布林類 Conditional and Boolean Operators
+10. 數學/聚合類 Mathematical and Aggregate Operators
 
 
-建立類 Creation Operators
-組合建立類 Join Creation Operators
-轉換類 Transformation Operators
-過濾類 Filtering Observables
-組合類 Join Operators
-多播類 Multicasting Operators
-錯誤處理類 Error Handling Operators
-工具類 Utility Operators
-條件/布林類 Conditional and Boolean Operators
-數學/聚合類 Mathematical and Aggregate Operators
-
-
-## Subscribe
+## Subscribe (LISTEN) the Subject
 
 Fetch the Data from Subject/Stream
 

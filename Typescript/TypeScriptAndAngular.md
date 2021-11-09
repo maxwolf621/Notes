@@ -1,9 +1,10 @@
 ###### tags: `Angular`
 # Brief Typescript 
 [TOC]
-## declare a type
+## Declare a type
 
-Basic Syntax `variable : DataType`
+Basic Syntax   
+`variable : DataType`  
 
 ```typescript
 S : string = "what up";
@@ -12,10 +13,8 @@ N : number = 1234;
 // array (of `any` type)
 arr0: any[] = [];
 arr : any[] = [1,2,3,4,5];
-```
 
-Or do just like python
-```typescript
+// Or do just like python
 s = "what up";
 N = 1234;
 ```
@@ -32,7 +31,7 @@ class Point{
 }
 ```
 
-Optional parameter
+### Optional parameter (`?:`)
 ```typescript
 class Point{
     private x ;
@@ -43,7 +42,7 @@ class Point{
 }
 ```
 
-Access-modifier parameter in constructor 
+### Access-modifier parameter in constructor 
 ```typescript
 class Point{
     constructor(private _x? : number , private _y? : number){
@@ -53,7 +52,7 @@ class Point{
 ```
 
 
-## Property (setter and getter)
+## Property (Setter and Getter)
 
 ```typescript
 class Point{
@@ -76,9 +75,8 @@ point.x = 3 ;    // setter
 
 ## import a module 
 
-#### Syntax
-`import { "moduleName" } from 'Where_The_Module_File_Locates'`
-
+Syntax   
+`import { "moduleName" } from 'Where_The_Module_File_Locates'`  
 
 For example
 ```typescript
