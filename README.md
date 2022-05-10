@@ -50,7 +50,7 @@
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 
 ## ERROR
-[`An unhandled exception occurred: Cannot find module '@angular-devkit/build-angular/package.json'`](https://stackoverflow.com/questions/50333003/could -not-find-module-angular-devkit-build-angular?page=2&tab=votes#tab-top)
+[`An unhandled exception occurred: Cannot find module '@angular-devkit/build-angular/package.json'`](https://reurl.cc/d270nV)
 
 ## reference
 [AJAX](https://wcc723.github.io/development/2020/10/01/about-ajax-2/)   
