@@ -1,24 +1,32 @@
+[MaxwellAlexius](https://ithelp.ithome.com.tw/articles/10216794)
 
-[Maxwell Alexius](https://ithelp.ithome.com.tw/articles/10216794)
-
-## union `|`
-
+## Union Types `|`
 
 ```typescript
-type union = A | B;
+// value of `union` may be `A` 、 `B` or **` A+B`**
+type union = A | B; 
+
+// value type as strig or array 
+var value: string | string[] = 'test'
+console.log(value.length) 
 ```
-`union` can as A or B or A + B
 
+## Intersection Types `&`
 
-## intersection `&`
+An intersection type represents an entity that is of all types. For example:
 
 ```typescript
-type intersection = A & B;
+function extend <A, B> (a: A, b: B): A & B {
+  
+  Object.keys(b).forEach(key => {
+    a[key] = b[key]
+  })
+
+  return a as A & B
+}
 ```
-members in `intersection` should exist in both A and B
 
 ##  Primitive Types Union & Intersection
-
 
 There might have problem for such situation
 ```typescript
