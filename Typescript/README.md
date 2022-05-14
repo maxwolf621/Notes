@@ -1,5 +1,4 @@
 
-[xcatliu](https://ts.xcatliu.com/advanced/class-and-interfaces.html)
 
 - [SpecialType](SpecialType.md)
 - [Class](Class.md)
