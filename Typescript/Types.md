@@ -27,11 +27,12 @@ you can optionally add a type annotation to explicitly specify the type of the v
 ```typescript
 let myName: string = "Alice";
 ```
-- TypeScript doesn’t use _types on the left_-style declarations like `int x = 0`; Type annotations will always go after the thing being typed (`variable : type`).
+- TypeScript doesn’t use _types on the left_-style declarations like `int x = 0;` Type annotations will always go after the thing being typed (`variable : type`).
 
 **Wherever possible, TypeScript tries to automatically infer the types.**   
 For example, the type of a variable is inferred based on the type of its initializer:
 ```typescript
+// Typescript knows that
 // 'myName' inferred as type string
 let myName = "Alice";
 ```
@@ -41,7 +42,6 @@ let myName = "Alice";
 TypeScript allows you to specify the types of both the input and output values of functions.
 
 ```typescript
-// Parameter type annotation
 function greet(name: string) {
   console.log("Hello, " + name.toUpperCase() + "!!");
 }
@@ -58,27 +58,26 @@ greet(42);
 Anonymous functions are a little bit different from function declarations. 
 
 When a function appears in a place where TypeScript can determine how it’s going to be called, the parameters of that function are automatically given types.
+- This process is called _contextual typing_ because the context that the function occurred within informs what type it should have.   
 ```typescript
 // No type annotations here, 
 // but TypeScript can spot the bug
 const names = ["Alice", "Bob", "Eve"];
  
-// `Contextual typing` for function
+// Contextual typing for function
 names.forEach(function (s) {
   console.log(s.toUppercase());
   // Property 'toUppercase' does not exist on type 'string'. 
   // Did you mean 'toUpperCase'?
 });
  
-// Contextual typing 
-// also applies to arrow functions
+// Contextual typing also applies to arrow functions
 names.forEach((s) => {
   console.log(s.toUppercase());
   // Property 'toUppercase' does not exist on type 'string'. /// Did you mean 'toUpperCase'?
 });
 ```
 - TypeScript used the types of the `forEach` function, along with the inferred type of the array, to determine the type s will have.   
-- This process is called _contextual typing_ because the context that the function occurred within informs what type it should have.   
 
 ## Object Types
 
@@ -87,14 +86,16 @@ The most common sort of type is an object type.
 
 For example
 ```typescript
-// The parameter's type annotation (x,y) is an object type
+// parameter pt is object type 
+// type obj = { x : number , y : number }
 function printCoord(pt: { x: number; y: number }) {
   console.log("The coordinate's x value is " + pt.x);
   console.log("The coordinate's y value is " + pt.y);
 }
+
 printCoord({ x: 3, y: 7 });
 ```
-- The type part of each property is also optional. If you don’t specify a type, it will be assumed to be `any`.
+- **The type part of each property is also optional. If you don’t specify a type, it will be assumed to be `any`.**
 
 ### Optional Properties
 
@@ -141,8 +142,10 @@ function printId(id: number | string) {
 printId(101);
 // OK
 printId("202");
+
 // Error
 printId({ myID: 22342 });
+// object type is not number | string type
 ```
 
 **TypeScript will only allow an operation if it is valid for every member of the union.**    
@@ -293,13 +296,12 @@ type Window = {
 type Window = {
   ts: TypeScriptAPI
 }
-
- // Error: Duplicate identifier 'Window'.
+// Error: Duplicate identifier 'Window'.
 ```
         
 
 
-## Type Assertions
+## Type Assertions (`as`)
 
 **Sometimes you will have information about the type of a value that TypeScript can’t know about.**
 
@@ -307,6 +309,7 @@ For example, if you’re using `document.getElementById`,TypeScript only knows t
 In this situation, you can use a type assertion to specify a more specific type:  
 ```typescript 
 const myCanvas = 
+  // typescript doesn't know "main_canvas"
   document.getElementById("main_canvas") as HTMLCanvasElement;
 ```
 - **Like a type annotation, type assertions are removed by the compiler and won’t affect the runtime behavior of your code.**
@@ -317,7 +320,8 @@ const myCanvas =
   <HTMLCanvasElement>document.getElementById("main_canvas");
 ```
 
-> Because type assertions are removed at compile-time, there is no runtime checking associated with a type assertion. There won’t be an exception or null generated if the type assertion is wrong.
+Because type assertions are removed at compile-time, there is no runtime checking associated with a type assertion.  
+There won’t be an exception or `null` generated if the type assertion is wrong.
 
 **TypeScript only allows type assertions which convert to a more specific or less specific version of a type.**
 This rule prevents “impossible” coercions like:
@@ -334,8 +338,8 @@ const a = (expr as any) as T;
 
 ## Intersection Types `&`
 
-An intersection type represents an entity that is of all types. For example:
-
+An intersection type represents an entity that is of all types. 
+- For example:
 ```typescript
 function extend <A, B> (a: A, b: B): A & B {
   
@@ -350,9 +354,9 @@ function extend <A, B> (a: A, b: B): A & B {
 ## Literal Types
 
 **In addition to the general types `string` and `number`, we can refer to specific strings and numbers in type positions(自定義型別)**.
- 
+
 ```typescript
-// let/var represents any possible string
+// let and var represent any possible string
 let changingString = "Hello World";
 changingString = "Olá Mundo";
 changingString;
@@ -361,7 +365,6 @@ let changingString: string
 
 // const has a literal type representation 
 const constantString = "Hello World";
-
 const constantString: "Hello World"
 
 // By themselves, literal types aren’t very valuable:
@@ -374,14 +377,13 @@ x = "howdy";
 ```
 - It’s not much use to have a variable that can only have one value
 
-But by combining literals into unions, you can express a much more useful concept 
-- for example, **functions that only accept a certain set of known values**:
+But by combining literals into unions, you can express a much more useful concept.
+- For example, **functions that only accept a certain set of known values**:
 ```typescript 
-// alignment only allows three value (left, right or center)
+// Alignment only allows three value (left, right or center)
 function printText(s: string, alignment: "left" | "right" | "center") {
   // ...
 }
-
 printText("Hello, world", "left");
 printText("G'day, mate", "centre");
 // Argument of type '"centre"' is not assignable to parameter of type '"left" | "right" | "center"'.
@@ -432,19 +434,18 @@ handleRequest(req.url, req.method);
 - `req.method` is inferred to be `string`, not `"GET"`.   
    The call of `handleRequest` which could assign a new string like `"GUESS"` to `req.method`, TypeScript considers this code to have an error.
 
-There are two ways to work around this.     
-
-You can change the inference by adding a type assertion in either location:
+There are two ways to work around this.        
+- You can change the inference by adding a TYPE ASSERTION in either location:
 ```typescript
-// Change 1:
+// Change 1  :
 const req = { url: "https://example.com", method: "GET" as "GET" };
 
 // Change 2
 handleRequest(req.url, req.method as "GET");
 ```
 - Change 1 means _I intend for `req.method` to always have the literal type `"GET"`_, preventing the possible assignment of `"GUESS"` to that field after. 
-
 - Change 2 means _I know for other reasons that `req.method` has the value `"GET"`_.
+
 You can use `as const` to convert the entire object to be type literals:
 ```typescript
 const req = { url: "https://example.com", method: "GET" } as const;
@@ -498,11 +499,15 @@ const anotherHundred: bigint = 100n;
 ## symbol
 There is a primitive in JavaScript used to create a globally **unique reference** via the function `Symbol()`:
 ```typescript
+// difference reference 
 const firstName = Symbol("name");
 const secondName = Symbol("name");
  
 if (firstName === secondName) {
-// This condition will always return 'false' since the types 'typeof firstName' and 'typeof secondName' have no overlap.
-// Can't ever happen
+  /**
+    * This condition will always return 'false' 
+    * since the types 'typeof firstName' 
+    * and 'typeof secondName' have no overlap.
+    */
 }
 ```
