@@ -1,14 +1,27 @@
 # Object Types 
 
-we group and pass around data is through objects
+- [Object Types](#object-types)
+  * [Optional Properties (`?`)](#optional-properties------)
+  * [`readonly` Properties](#-readonly--properties)
+  * [Index Signatures](#index-signatures)
+  * [Extending Types](#extending-types)
+    + [Intersection Types (`&`)](#intersection-types------)
+    + [Interfaces vs. Intersections](#interfaces-vs-intersections)
+  * [Generic Object Types](#generic-object-types)
+  * [The Array Type](#the-array-type)
+    + [The ReadonlyArray Type](#the-readonlyarray-type)
+  * [Tuple Types](#tuple-types)
+    + [readonly Tuple Types](#readonly-tuple-types)
+
+Object Types GROUP and PASS around data that is through objects   
 - For example
 ```typescript 
-// Using Object Types
+// Using Object Types `{ object1, object2, ... , ... }`
 function greet(person: { name: string; age: number }) {
   return "Hello " + person.name;
 }
 
-// Interface
+// via Interface
 interface Person {
   name: string;
   age: number;
@@ -18,7 +31,7 @@ function greet(person: Person) {
   return "Hello " + person.name;
 }
 
-// Type Alias 
+// via Type Alias 
 type Person = {
   name: string;
   age: number;
@@ -79,6 +92,7 @@ function paintShape({ shape, xPos = 0, yPos = 0 }: PaintOptions) {
 ```
 
 ## `readonly` Properties
+
 ```typescript
 interface SomeType {
   readonly prop: string;
@@ -94,9 +108,12 @@ function doSomething(obj: SomeType) {
 }
 ```
 
-`readonly` doesn't imply that a value is totally immutable
-
+**`readonly` doesn't imply that a value is totally immutable**
+- For example
 ```typescript
+/**
+  * update the value not the address 
+  */
 interface Home {
   readonly resident: { name: string; age: number };
 }
@@ -109,53 +126,55 @@ function visitForBirthday(home: Home) {
  
 function evict(home: Home) {
   // But we can't write to the 'resident' property itself on a 'Home'.
-  home.resident = { // Cannot assign to 'resident' because it is a read-only property.
+  // It created a new address 
+  home.resident = { 
+    // Cannot assign to 'resident' because it is a read-only property.
     name: "Victor the Evictor",
     age: 42,
   };
 }
 ```
 
-
 ## Index Signatures
 
-Sometimes you don’t know all the names of a type’s properties ahead of time, but you do know the shape of the values.   
-In those cases you can use an index signature to describe the types of possible values
+Sometimes you don’t know all the names of a type’s properties ahead of time(in advance), but you do know the shape of the values.    
+In those cases you can use an index signature to describe the types of possible values   
 - For example
 ```typescript
-// `StringArray` interface which has an index signature.  
 interface StringArray {
-  // index is number type
-  // porperties must be string type 
+  // index : is number type
+  // StringArray's porperties : must be string type 
   [index: number]: string;
 }
  
 const myArray: StringArray = getStringArray();
 const secondItem = myArray[1];
-          
 const secondItem: string
 ```
-- **This index signature states that when a `StringArray` is indexed with a `number`, it will return a `string`.**   
+- **This index signature states that when a `StringArray` is indexed with a `number`, it( will return a `string`.**   
 - **An index signature property type must be either `string` or `number`.**   
 
-It is possible to support both types of indexers...
+It is possible to support both types of indexers.   
 While `string` index signatures are a powerful way to describe the ***dictionary*** pattern, they also enforce that all properties match their return type.  
 
 This is because a `string` index declares that `obj.property` is also available as `obj["property"]`.     
 ```typescript 
 interface NumberDictionary {
   [index: string]: number;
- 
   length: number; // ok
+  
   name: string;
   // Property 'name' of type 'string' is not assignable to 'string' index type 'number'.
 }
+```
 
-// It's acceptable if the index signature is a union of the property types:
+It's acceptable if the index signature is a union of the property types:
+```typescript 
 interface NumberOrStringDictionary {
+  // indexed signature can be number or string
   [index: string]: number | string;
   length: number; // ok, length is a number
-  name: string; // ok, name is a string
+  name: string;   // ok, name is a string
 }
 ```
 
