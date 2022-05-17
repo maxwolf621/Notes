@@ -1,5 +1,4 @@
 # Functions
-
 - [Functions](#functions)
   * [Function Type Expressions](#function-type-expressions)
   * [Call Signatures](#call-signatures)
