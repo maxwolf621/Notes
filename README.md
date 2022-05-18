@@ -13,7 +13,6 @@
 - [Types](Typescript/Types.md)
 - [SpecialType](Typescript/SpecialType.md)
 - [Type Alias](Typescript/TypeAlias)
-- [Type Assertion](Typescript/TypeAssertion.md)
 - [Object Types](Typescript/Object%20Types.md)
 - [Class](Typescript/Class.md)
 - [Function](Typescript/Function.md)
