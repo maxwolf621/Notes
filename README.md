@@ -1,14 +1,24 @@
 # Inhaltsverzeichnis
 
+- [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  * [Typescript](#typescript)
+  * [Basic](#basic)
+    + [Router](#router)
+  * [RXJS](#rxjs)
+  * [ERROR](#error)
+  * [reference](#reference)
+
 ## Typescript
 - [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
-- [Class](Typescript/Class.md)
+- [Types](Typescript/Types.md)
 - [SpecialType](Typescript/SpecialType.md)
-- [TypeAlias](Typescript/TypeAlias)
-- [TypeAssertion](Typescript/TypeAssertion.md)
+- [Type Alias](Typescript/TypeAlias)
+- [Type Assertion](Typescript/TypeAssertion.md)
+- [Object Types](Typescript/Object%20Types.md)
+- [Class](Typescript/Class.md)
+- [Function](Typescript/Function.md)
 - [Generic](Typescript/Generic.md)
 - [Static and Methods](Typescript/Static&Method.md)
-- [union and intersection](Typescript/Union&Intersection.md)
 
 ## Basic
 - [Install and Uninstall Angular](Install&UninstallAngular.md)  
@@ -49,7 +59,7 @@
 - [JWT](JWT.md)    
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 
-## ERROR
+## ERROR 
 [`An unhandled exception occurred: Cannot find module '@angular-devkit/build-angular/package.json'`](https://reurl.cc/d270nV)
 
 ## reference
