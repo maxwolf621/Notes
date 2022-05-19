@@ -304,6 +304,7 @@ type Window = {
 ## Type Assertions (`as`)
 
 **Sometimes you will have information about the type of a value that TypeScript can’t know about.**
+- **Like a type annotation, type assertions are removed by the compiler and won’t affect the runtime behavior of your code.**
 
 For example, if you’re using `document.getElementById`,TypeScript only knows that this will return some kind of `HTMLElement`, but you might know that your page will always have an `HTMLCanvasElement` with a given ID.        
 In this situation, you can use a type assertion to specify a more specific type:  
@@ -312,14 +313,11 @@ const myCanvas =
   // typescript doesn't know "main_canvas"
   document.getElementById("main_canvas") as HTMLCanvasElement;
 ```
-- **Like a type annotation, type assertions are removed by the compiler and won’t affect the runtime behavior of your code.**
-
 You can also use the angle-bracket syntax (except if the code is in a `.tsx` file), which is equivalent:
 ```typescript
 const myCanvas = 
   <HTMLCanvasElement>document.getElementById("main_canvas");
 ```
-
 Because type assertions are removed at compile-time, there is no runtime checking associated with a type assertion.  
 There won’t be an exception or `null` generated if the type assertion is wrong.
 
@@ -335,6 +333,63 @@ If this happens, you can use two assertions, first to `any` (or `unknown`), then
 ```typescript
 const a = (expr as any) as T;
 ```
+
+### Type Conversion VS Type Assertion
+
+```typescript 
+```
+
+### Type Declaration VS Type Assertion
+
+
+```typescript 
+interface Animal {
+    name: string;
+}
+interface Cat {
+    name: string;
+    run(): void;
+}
+
+const animal: Animal = {
+    name: 'tom'
+};
+
+// ERROR
+// Cat is subclass of animal 
+let tom: Cat = animal;
+```
+
+### Genetics And Type Assertion
+
+```typescript
+// type assertion
+function getCacheData(key: string): any {
+    return (window as any).cache[key];
+}
+
+interface Cat {
+    name: string;
+    run(): void;
+}
+
+const tom = getCacheData('tom') as Cat;
+tom.run();
+
+// generics
+function getCacheData<T>(key: string): T {
+    return (window as any).cache[key];
+}
+
+interface Cat {
+    name: string;
+    run(): void;
+}
+
+const tom = getCacheData<Cat>('tom');
+tom.run();
+```
+
 
 ## Intersection Types `&`
 
