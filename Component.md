@@ -1,12 +1,13 @@
 ###### tags: `Angular`
-# [Angular Component CLI](https://ithelp.ithome.com.tw/articles/10240474)
-[TOC]
+# Component
+- [Code Example](https://ithelp.ithome.com.tw/articles/10240474)
 
-## 指定Component所屬模組(Module)
+## 指派Component到指定的Module
 
-**每個 Angular Component皆需要定義在 Angular Modules內**，否則是無法被使用;   
+**每個 Angular Component皆需要定義在 Angular Modules內**，否則是無法被使用   
+
 透過Angular CLI建立Component時，**CLI會從新增元件所在的目錄向上層找尋最近的模組，並將此元件(Component)定義至該模組內**  
-> 例如，當執行 `ng g c demo1` 命令時，由於在根目錄 `src/app` 下建立元件，而最接近的模組是 AppModule，故此元件會加入在 `AppModule` 內  
+- 例如，當執行 `ng g c demo1` 命令時，由於在根目錄 `src/app` 下建立元件，而最接近的模組是`AppModule`，故此元件會加入在 `AppModule` 內  
 
 若要將元件建立在特定模型之下，可以使用絕對路徑  
 ```bash
@@ -35,8 +36,7 @@ ng g c task/task --export
 
 ## Component的裝飾器
 如同module一樣，Component透過裝飾器`@Component` 可以決定此元件在執行期間該如何處理、實體化與使用  
-
-如  
+  
 - `task.component`被`app.component.html`使用
 ![](https://i.imgur.com/Tt080Iu.png)  
 
@@ -54,11 +54,11 @@ ng g c task/task --export
 - 若在Terminal建立Component時，指定了`--inlineStyle`與 `--inlineTemplate`，則會在`template`與`styles`兩屬性下撰寫頁面與樣式的程式碼而不是`templateUrl`與`styleUrls`  
 
 ## `@Component.selector`
-使其他Components的HTML內可以使用此元件  
+
+使其他Components的HTML內可以使用此元件緒染畫面  
 - **當透過Router的方式來載入的元件時，不會使用到選擇器(Selector)的設定，此時可以在建立元件時使用`--skipSelector`**  
 
 `@Component`的`selector`命名上，開頭會使用統一的前字元 (prefix)，其後則為元件名稱  
 > 而前字元可以在建立專案(`ng new`)或建立元件(`ng g c`)時，利用 `--prefix` 參數指定  
 
-
-**需要注意的是，若在專案(Project)與元件(Component)所使用(prefix)前字元不同時，除非變更Lint規則，否則會出現警告訊息**  
+**需要注意的是，若Project與Component使用(prefix)前字元不同時，除非變更Lint規則，否則會出現警告訊息**  
