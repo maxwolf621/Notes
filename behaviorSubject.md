@@ -120,8 +120,8 @@ subject.next(789);
 
 #### Update `@input` property for both child and parent component
 
-[[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)
-[[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)
+- [[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
+- [[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
 
 ## Angular BehaviorSubject
 - [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
