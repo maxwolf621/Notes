@@ -54,7 +54,6 @@
 - **[RXJS Operators](RXJS_Operators.md)**
 - [HttpClient.md](HttpClient.md)   
 - **[Interceptor](Interceptor.md)**  
- 
 - [JWT](JWT.md)    
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 
