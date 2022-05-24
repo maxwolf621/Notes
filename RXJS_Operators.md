@@ -1,21 +1,19 @@
 # RXJS operation
-
+[`Array.prototype.slice()`](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)     
 [`startwith`](https://stackoverflow.com/questions/48465361/what-does-startwith-typescript-code-do)   
-https://stackblitz.com/edit/angular-jk5usw-qb828e?file=src/app/chips-autocomplete-example.ts     
-[Learn RXJS](https://www.learnrxjs.io/learn-rxjs/operators/conditional/defaultifempty)       
-[Array.prototype](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)     
-[Operator](https://blog.angular-university.io/rxjs-error-handling/)   
-[NOTE TAKING FROM 黃升煌 Mike](https://ithelp.ithome.com.tw/users/20120614/ironman/2685?page=1)  
-
+[RXJS examples](https://stackblitz.com/edit/angular-jk5usw-qb828e?file=src/app/chips-autocomplete-example.ts)
+[learnrxjs.io operator](https://www.learnrxjs.io/learn-rxjs/operators/conditional/defaultifempty)       
+[angular university rxjs error handling](https://blog.angular-university.io/rxjs-error-handling/)   
+[讓 TypeScript 成為你全端開發的 ACE！ 系列](https://ithelp.ithome.com.tw/users/20120614/ironman/2685?page=1)  
 [希望是最淺顯易懂的 RxJS 教學](https://blog.techbridge.cc/2017/12/08/rxjs/)   
 
-[TOC]
 
 ## SwitchMap
 
-`switchMap()` 可以在收到`observable`時，轉換成另外一個`observable`，
+1. `switchMap()`可以在收到`observable`時，轉換成另外一個`observable`，   
+2. `switchMap()`用於有**順序必要的巢狀式**`subscribe()`
 
-`switchMap()`用於有順序必要的巢狀式`subscribe()`
+再沒有switchMap的情況下  
 ```typescript
 constructor(private route: ActivatedRoute, private httpClient: HttpClient) { }
 
@@ -33,17 +31,18 @@ ngOnInit() {
 }
 ```
 
-利用`switchMap()`簡化上述的Code Snippet
+利用`switchMap()`來簡化上述的Code Snippet
 ```typescript
 this.route.params.pipe(
   switchMap(params => this.httpClient.get(`.../post/${params['id']}`))
 )
 ```
 
-如果有一系列的轉換，且資料都要保存起來呢？可以再額外透過`map()`最終組成一個大物件：
+如果有一系列的轉換，且資料都要保存起來   
+可以再額外透過`map()`最終組成一個大物件
 ```typescript 
 this.postData$ = this.route.params.pipe(
-  switchMap(params => this.httpClient
+  switchMap( params => this.httpClient
     .get(`.../post/${params['id']}`).pipe(
       map(post => ({ id: params['id'], post: post }))
   )),
@@ -53,11 +52,11 @@ this.postData$ = this.route.params.pipe(
   ))
 )
 ```
-- 除了 switchMap 外，另外還有常見的 concatMap、mergeMap 和 exhaustMap，都是用來把 observable 資料轉換成另外一個 observable
+- 除了`switchMap`外，另外還有常見的`concatMap`、`mergeMap` 和 `exhaustMap`，都是用來把 observable 資料轉換成另外一種新的 observable
 
 ## combineLatest (e.g. 搜尋器)
 
-當取得的`Observable`有順序時,利用`switchMap`，而當沒有順序時，希望平行的處理這些無序的`Observable`，並將所有`Observable`有資料後才進行後續處理，這時候就可以使用`combineLatest`來同時取得資料，不會有順序問題！
+當取得的`Observable`有順序時,利用`switchMap`，而當沒有順序時，希望平行的處理這些無序的`Observable`，且當所有`Observable`有資料後才進行後續處理，這時候就可以使用`combineLatest`來同時取得資料
 ```typescript
 const posts$ = this.httpClient.get('.../posts');
 const tags$ = this.httpClient.get('.../tags');
@@ -73,11 +72,9 @@ this.products$ = combineLatest(
   this.filterChange$, // observable 1 
   this.sortChange$,  // observable  2
   this.pageChange$  // observable 3
-)
-.pipe(
-  exhaustMap(([keyword, sort, page]) =>
-    this.httpClient
-      .get(`.../products/?keyword=${keyword}&sort=${sort}&page=${page}`)
+).pipe(
+  exhaustMap(([keyword, sort, page]) => this.httpClient
+    	.get(`.../products/?keyword=${keyword}&sort=${sort}&page=${page}`)
   )
 );
 ```
