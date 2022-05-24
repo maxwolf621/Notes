@@ -1,19 +1,28 @@
 # BehaviorSubject
+- [[stackoverflow] BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
 
-[BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
+- [BehaviorSubject](#behaviorsubject)
+      - [1. It Always has a returned value](#1-it-always-has-a-returned-value)
+      - [2. It can be `observer` and `observable` (subscribe and emit)](#2-it-can-be--observer--and--observable---subscribe-and-emit-)
+      - [3. It's a subtype of `observable`](#3-it-s-a-subtype-of--observable-)
+      - [4. `BehaviorSubject` ensures that you got the last updated data](#4--behaviorsubject--ensures-that-you-got-the-last-updated-data)
+  * [Difference btw `Observable` and `BehaviorSubject`](#difference-btw--observable--and--behaviorsubject-)
+  * [Usage in Angular](#usage-in-angular)
+      - [Update `@input` property for both child and parent component](#update---input--property-for-both-child-and-parent-component)
+  * [Angular BehaviorSubject](#angular-behaviorsubject)
+      - [Step 1 Service](#step-1-service)
+      - [Step 2 Component who uses service to fetch data](#step-2-component-who-uses-service-to-fetch-data)
 
-BehaviorSubject is a type of subject, a subject is a special type of observable so you can subscribe to messages like any other observable. 
+BehaviorSubject is a type of subject,**a subject is a special type of observable** so you can subscribe to messages like any other observable. 
 
-The unique features of BehaviorSubject are
+The unique features of BehaviorSubject are the following
 
 #### 1. It Always has a returned value
 
-It needs an initial value as it must always return a value on subscription even if it hasn't received a `next()` Upon subscription,
-  > It returns the last value of the subject. 
+It needs an initial value as it must always return a value on subscription even if it hasn't received a `next()` Upon subscription, it returns the last value of the subject. 
 
 ```typescript
 // Behavior Subject
-
 /**
  * @description {@code a} is an initial value. 
  * if there is a subscription after this, 
@@ -25,14 +34,14 @@ let bSubject = new BehaviorSubject("a");
 
 bSubject.next("b");
 
-/**
- * bSubject will keep listening updates if new observable was emitted 
- */
+// bSubject will keep listening 
+// lastest emitted observable (here is b not a) 
+// if any new observable was emitted 
 bSubject.subscribe(value => {
-  console.log("Subscription got", value); // Subscription got b, 
+  console.log("Subscription got", value); // Subscription retrieve b, 
                                           // This would not happen 
-                                          // for a generic observable 
-                                          // or generic subject by default
+                                          //  for a generic observable 
+                                          //  or generic subject by default
 });
 
 bSubject.next("c"); // Subscription got c 
@@ -41,7 +50,6 @@ bSubject.next("d"); // Subscription got d
 
 A regular observable only triggers when it receives an on next
 at any point, **you can retrieve the last value of the subject in a non-observable code using the `getValue()` method.**
-
 ```typescript
 // Regular Subject
 
@@ -50,6 +58,8 @@ let subject = new Subject();
 
 subject.next("b");
 
+
+// ----- subscription starts  ---------------------------------
 subject.subscribe(value => {
   console.log("Subscription got", value); // Subscription wont get 
                                           // anything at this point
@@ -59,12 +69,12 @@ subject.next("c"); // Subscription got c
 subject.next("d"); // Subscription got d
 ```
 
-#### 2. It can be `observer` and `observable` (subscribe and send)
+#### 2. It can be `observer` and `observable` (subscribe and emit)
 
-Unique features of a subject compared to an observable are: it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
+Unique features of a subject compared to an observable are:  
+- it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
 
-- We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method on BehaviorSubject.
-
+We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method on `BehaviorSubject`.
 
 #### 3. It's a subtype of `observable`
 
@@ -76,11 +86,11 @@ Unique features of a subject compared to an observable are: it is an `observer` 
 
 ## Difference btw `Observable` and `BehaviorSubject`
 
--  Observer of `Observable` can not assign value via `.next(...)` to` observable`(origin/master).
-   - `BehaviorSubject` is bi-directional. it's observer can assign value to observable via `next(...)`
-- **`BehaviorSubject` (or `Subject` ) stores observer details, runs the code only once and gives the result to all observers .**    
-   - `observable` creates **copy of data** for each observer. so using `observable` may cause inefficiency if there were multiple observers  
+Observer of `Observable` can not assign value via `.next(...)` to` observable`(origin/master).     
+`BehaviorSubject` is bi-directional. it's observer can assign value to observable via `next(...)`    
 
+**`BehaviorSubject` (or `Subject` ) stores observer details, runs the code only once and gives the result to all observers .**       
+`observable` creates **copy of data** for each observer. so using `observable` may cause inefficiency if there were multiple observers     
 
 ```typescript
 // RxJS v6+
@@ -88,7 +98,7 @@ import { BehaviorSubject } from 'rxjs';
 
 const subject = new BehaviorSubject(123);
 
-//two new subscribers will get initial value => output: 123, 123
+// two new subscribers will get initial value => output: 123, 123
 subject.subscribe(console.log); // subscriber 1
 subject.subscribe(console.log); // subscriber 2
 
@@ -105,26 +115,24 @@ subject.next(789);
 ```
 - Observables : Observables are lazy collections of multiple values over time.
 - **BehaviorSubject: A Subject that requires an initial value and emits its current value to new subscribers.**
-## Usage
+
+## Usage in Angular
 
 #### Update `@input` property for both child and parent component
 
-[Ref](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)
-
-[](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)
+[[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)
+[[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)
 
 ## Angular BehaviorSubject
-
-[How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)
-
-
-[SoruceCode](https://dev.to/juliandierkes/two-ways-of-using-angular-services-with-the-httpclient-51ef)   
+- [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
+- [SoruceCode](https://dev.to/juliandierkes/two-ways-of-using-angular-services-with-the-httpclient-51ef)   
+- [Using Behaviorsubject To Handle **Asynchronous** Loading In Ionic](https://eliteionic.com/tutorials/using-behaviorsubject-to-handle-asynchronous-loading-in-ionic/)
 
 #### Step 1 Service
 To create `BehaviorOSubject` in Service we need
-- define a `BehaviorOSubject<DataType>` instance
-- `HttpClient` fetches the data from  backend and push it to `BehaviorSubject` to emit via `.next(dataValues)`
-- create getter for `BehaviorSubject` instance
+1. Define a `BehaviorOSubject<DataType>` instance
+2. `HttpClient` fetches the data from  backend and push it to `BehaviorSubject` to emit via `.next(dataValues)`
+3. Create Getter for `BehaviorSubject` instance
 
 ```typescript
 @Injectable({
@@ -137,7 +145,8 @@ export class ShoppingListPushService {
   /**
    * create BehaviorSubject and its observable data (type)
    */
-  // private readonly items$ : BehaviorSubject<SomeType[]> = new BehaviorSubject<SomeType[]>([]);
+  // private readonly items$ : BehaviorSubject<SomeType[]> = 
+  //                           new BehaviorSubject<SomeType[]>([]);
   // private readonly items$ = new BehaviorSubject([]);
   private readonly items$: BehaviorSubject<ShoppingItem[]> = 
                            new BehaviorSubject<ShoppingItem[]>([]);
@@ -145,10 +154,9 @@ export class ShoppingListPushService {
   constructor(private httpClient: HttpClient) {}
 
   /**
-   * @description 
-   * Fetch the data from backend and the `returnedItems` 
-   * are pushed to item$(behaviorSubject)
-   * and it emits the value via .next
+   * Fetch the data from backend 
+   * and the returned Items are pushed to item$(behaviorSubject)
+   * and it emits the value via .next()
    */
   fetchList() {
     this.httpClient.get<ShoppingItem[]>(this.ITEMS_URL)
@@ -164,15 +172,13 @@ export class ShoppingListPushService {
   }
 }
 ```
--This kind of service can easily be used with the Angular async pipe.
-   - **No need to subscribe to or unsubscribe from anything.**
+- This kind of service can easily be used with the Angular async pipe.
+- **No need to subscribe to or unsubscribe from anything.**
 
 
 #### Step 2 Component who uses service to fetch data
 
-One of Component who uses service to subscribe the data
-- Fetch the data at `ngOnInit` life hook
-
+To present the information for frontend 
 ```typescript
 @Component({
   selector: 'app-push',
@@ -184,13 +190,12 @@ One of Component who uses service to subscribe the data
 })
 export class PushComponent implements OnInit {
 
-  constructor(private shoppingListService: ShoppingListPushService) {
-  }
+  constructor(private shoppingListService: ShoppingListPushService) {}
 
   ngOnInit(): void {
     this.shoppingListService.fetchList();
   }
 ```
 
-- [Other one](https://eliteionic.com/tutorials/using-behaviorsubject-to-handle-asynchronous-loading-in-ionic/)
+
 
