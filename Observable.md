@@ -1,49 +1,45 @@
 ###### tags: `Angular`
-# [Observable](https://blog.huli.tw/2017/12/08/introduction-to-rxjs-observable/)  
+# Obserable 
+- [Observable](https://blog.huli.tw/2017/12/08/introduction-to-rxjs-observable/)  
 
-在 Reactive Programming 裡面，最重要的兩個東西叫做 Observable 跟 Observer
-
-Observable 以及 Observer
+Relationship between Observable and Observer    
 ![](https://i.imgur.com/f98nz07.png)    
+- `Observer` : Subscriber who fetchs data from stream
+- `Observable` : Data in the Stream
+- Comparing with array, `Observable` has `time` dimension  
 
-`Observable` : Each Data from Stream
 ```typescript
-
+// Observable data 
 Export class PostService{
-
     //....
 
-    // Each PostPayload[] dataType is observable from resource backend_URL
-    getAllPost():Observable<PostPayLoad[]>{
+    getAllPost(): Observable<PostPayLoad[]>{
+        // Each PostPayload[] Type is observable from resource backend_UR
         return this.http.post<PostPayLoad[]>('${backend_URL}`);
     }
 }
 ```
-`Observer` : Subscriber who want to fetch data from stream
 ```typescript
+// Observer subscribs 
+Export class SubscribeComponent{
+    constructor(private postService : PostService){}
+ 
+    //...
 
-// inject dependency
-constructor(private postService : PostService){}
-
-//...
-
-// observer 
-getAllPostFromService(){
-    this.postService.getAllPosts().subscribe
-    (
-        (posts)=>{
-            //...
-        },(error)=>{
-            //...
-        }
-    )
+    getAllPostFromService(){
+        // observer subscribs
+        this.postService.getAllPosts().subscribe
+        (
+            (posts)=>{
+                //...
+            },(error)=>{
+                //...
+            }
+        )
+    }
 }
 ```
-
-## Difference btw Observable and Array
-
-- Observable has `time` dimension
-
+ 
 ## Syntax
 ![](https://i.imgur.com/207aMtD.png)  
 `Observable.subscribe( observer )` 
