@@ -1,12 +1,12 @@
 # BehaviorSubject
 - [[stackoverflow] BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
 
-- [BehaviorSubject](#behaviorsubject)
-      - [1. It Always has a returned value](#1-it-always-has-a-returned-value)
-      - [2. It can be `observer` and `observable` (subscribe and emit)](#2-it-can-be--observer--and--observable---subscribe-and-emit-)
-      - [3. It's a subtype of `observable`](#3-it-s-a-subtype-of--observable-)
-      - [4. `BehaviorSubject` ensures that you got the last updated data](#4--behaviorsubject--ensures-that-you-got-the-last-updated-data)
-  * [Difference btw `Observable` and `BehaviorSubject`](#difference-btw--observable--and--behaviorsubject-)
+- [BehaviorSubject](#behaviorsubject)     
+   - [It Always has a returned value](#1-it-always-has-a-returned-value)   
+   - [It can be `observer` and `observable` (subscribe and emit)](#2-it-can-be--observer--and--observable---subscribe-and-emit-)   
+   - [It's a subtype of `observable`](#3-it-s-a-subtype-of--observable-)   
+   - [`BehaviorSubject` ensures that you got the last updated data](#4--behaviorsubject--ensures-that-you-got-the-last-updated-data)   
+  * [Difference btw `Observable` and `BehaviorSubject`](#difference-btw--observable--and--behaviorsubject-)  
   * [Usage in Angular](#usage-in-angular)
       - [Update `@input` property for both child and parent component](#update---input--property-for-both-child-and-parent-component)
   * [Angular BehaviorSubject](#angular-behaviorsubject)
