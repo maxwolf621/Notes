@@ -1,20 +1,16 @@
 # Router
+[[Angular 深入淺出三十天] Day 20 - 路由(三)](https://ithelp.ithome.com.tw/articles/10207918)    
+[[Angular 深入淺出三十天] Day 25 - 路由總結(一)](https://ithelp.ithome.com.tw/articles/10209035)      
 
-[TOC]
-
-### Note Taking From
-[Leo](https://ithelp.ithome.com.tw/articles/10207918)  
-[Router重點整理 By Leo](https://ithelp.ithome.com.tw/articles/10209035)  
-
-## Angular 的路由做了什麼？
+## Angular的Router角色
 - **負責重新配置頁面中應該顯示哪些 Component**
-- 負責儲存頁面中 Component 的路由狀態
-- **路由狀態定義了在某個路由的時候應該顯示哪些 Component**
-- **路由狀態最重要的就是記錄路徑與 Component 之間的關係**
+- 負責儲存頁面中Component的路由狀態
+  - **路由狀態定義了在某個路由的時候應該顯示哪些 Component**
+  - **路由狀態最重要的就是記錄路徑與 Component 之間的關係**
 
-## Router Configuration In Angular
+## Router Configuration 
 
-Root Routing module `app-routing.module.ts`
+Create Root Routing module `app-routing.module.ts`
 ```typescript
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -28,7 +24,7 @@ const routes: Routes = [];
 export class AppRoutingModule { }
 ```
 
-Routing module會被注入到root `app.module.ts`中的`@ngModule.import`內
+Sign Router module in the `@ngModule.import` of root module
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -42,7 +38,7 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule //  <---- the root Module
+    AppRoutingModule //  <----
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -53,14 +49,15 @@ export class AppModule { }
 Template In `app.component.html`
 ```html
 <!-- 
-  Plug different component's templates via outlet
+Plug different 
+component's templates via outlet
 -->
 <router-outlet></router-outlet> 
 ```
-- **Angular的路由機制靠的是我們放在Template(`.html`)裡的路由插座`<router-outlet></router-outlet>`**
-
+- **Angular的路由機制靠的是我們放在`.html`裡的`<router-outlet></router-outlet>`**
 
 ### Router In Action
+
 For Example :: 假如有兩個Routers
 ```typescript
 import { AboutComponent } from './about/about.component';
@@ -86,7 +83,7 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
-- `enableTracing : true`在console prints出監聽route's trace
+- `enableTracing : true` : 在console印出監聽Route的trace
 
 ## Directive for Routing
 
@@ -94,7 +91,7 @@ Router's directive for template `.html` 分成兩個
 1. `<a></a>` 用的 RouterLinkWithHref 
 2. 其他非`<a></a>`元素用的 RouterLink 
 
-我們可以利用directive`<.... [routerLink]="'/path_name'">`在`.html`建立路徑達到轉頁
+我們可以利用drective `<.... [routerLink]="'/path_name'">`在`.html`建立路徑達到轉頁
 ```html
 <ul>
   <li><a [routerLink]="'/home'">Home</a></li>
@@ -114,21 +111,23 @@ const routers: Routers:[
 ];
 ```
 - 上述表當所在的路徑不屬於`const routers`內所有設定的路徑則統一redirect to `home` 這個路徑
-- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers : Routers : [ {..} , {...}, ... , {path : '**' ...} ]`的尾
+- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers : Routers : [ {..} , {...}, ... , {path : '**' ...} ]`
 
-## Child Router 子路由
+## Child Router
 設定子路由的優點
-- **可讀性高的 url** ，如： /articles/10207918
+- **可讀性高的url** ，e.g. `/articles/10207918`
 - 延遲載入
 - **減少撰寫重複的程式碼**
 - 預處理層
 
-### Without child router
 
-子路由的Component與直接使用參數去定義路由，Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**。因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同的內容資料。**
+再沒有子路由的情況下
 
-但是**被創建的元件實體(Instance)會在離開頁面時被銷毀並取消註冊**，因此在前面範例的`heroes-routing`.`module.ts`檔案中裡，所使用的導航設定方式，由於在瀏覽`HeroDetailComponent`之後，一定要先回到`HeroListComponent`，才能進入下一個Detail頁面。
+子路由的Component與直接使用參數去定義路由，
 
+Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**      
+因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同的內容資料**       
+但是**被創建的元件實體(Instance)會在離開頁面時被銷毀並取消註冊**，因此在前面範例的`heroes-routing`.`module.ts`檔案中裡，所使用的導航設定方式，由於在瀏覽`HeroDetailComponent`之後，一定要先回到`HeroListComponent`，才能進入下一個Detail頁面
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },
@@ -166,17 +165,15 @@ const crisisCenterRoutes: Routes = [
 
 ### 設定相對路徑
 
-- `./` 是在目前的位置。
-- `../` 在上一層的位置。
+- `./` 是在目前的位置
+- `../` 在上一層的位置
 
 ```typescript 
 // Relative navigation back to the crises
 this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.route });
 ```
 
-### Example 
-
-我們可以設計一個component將類似或者給特定使用者使用的components放入對應的component
+- For Examle 設計一個component將類似或者給特定使用者使用的components放入對應的component
 ![](https://i.imgur.com/WAdXz1e.png)
 
 屆時我們可以將Router的路徑分成Base router以及Child router,如下
