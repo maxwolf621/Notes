@@ -99,9 +99,15 @@ Router's directive for template `.html` 分成兩個
 
 ## 萬用路由
 
-當所在的路徑不屬於`const routers`內任何設定的路徑則統Rredirect到某一路徑
+當所在的路徑不屬於`const routers`內任何路徑時則統一redirect到某一特定路徑
 ```typescript
 const routers: Routers:[
+    {
+      //...
+    },
+    
+    // ...
+    , 
     {
         path: '**', 
         redirectTo: 'home', 
@@ -118,14 +124,9 @@ const routers: Routers:[
 - **減少撰寫重複的程式碼**
 - 預處理層
 
-
-再沒有子路由的情況,ㄝ子路由的Component與直接使用參數去定義路由，
-
-Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**      
-因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同內容資料**       
-但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**
-
-- For example 由於在瀏覽某一位Hero Detail之後，一定要先回到`HeroListComponent`，才能再進入另一位Hero Detail頁面，會造成因為回到`HeroListComponent`時已把`HeroDetailComponent`刪除掉了，再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`。因此每次選擇不同的英雄時，Component都會重新創建。
+在沒有子路由的情況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**      
+因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同內容資料**但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**   
+- For example 由於在瀏覽某一位Hero Detail(`HeroDetailComponent`)之後，一定要先回到選單List(`HeroListComponent`)，才能再進入另一位Hero Detail頁面，造成回到`HeroListComponent`時已把`HeroDetailComponent`實體銷毀，當再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`實體因此每次選擇不同的英雄時，Component實體都會重新創建
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },
