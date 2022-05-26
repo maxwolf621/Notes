@@ -3,10 +3,10 @@
 [[Angular 深入淺出三十天] Day 25 - 路由總結(一)](https://ithelp.ithome.com.tw/articles/10209035)      
 
 ## Angular的Router角色
-- **負責重新配置頁面中應該顯示哪些 Component**
+- **負責重新配置頁面中應該顯示哪些Component**
 - 負責儲存頁面中Component的路由狀態
-  - **路由狀態定義了在某個路由的時候應該顯示哪些 Component**
-  - **路由狀態最重要的就是記錄路徑與 Component 之間的關係**
+  - **路由狀態定義了在某個路由的時候應該顯示哪些Component**
+  - **路由狀態最重要的就是記錄路徑與Component之間的關係**
 
 ## Router Configuration 
 
@@ -33,15 +33,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  // ...
   imports: [
     BrowserModule,
-    AppRoutingModule //  <----
+    AppRoutingModule  
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  
+  // ...
 })
 export class AppModule { }
 ```
@@ -58,7 +56,7 @@ component's templates via outlet
 
 ### Router In Action
 
-For Example :: 假如有兩個Routers
+For Example :: 假如有兩個Routers分別navigate到home或者about頁面
 ```typescript
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
@@ -83,15 +81,15 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
-- `enableTracing : true` : 在console印出監聽Route的trace
+- `enableTracing : true` : Console印出監聽Route的trace
 
-## Directive for Routing
+## Directive `[routerLink]`
 
 Router's directive for template `.html` 分成兩個
 1. `<a></a>` 用的 RouterLinkWithHref 
 2. 其他非`<a></a>`元素用的 RouterLink 
 
-我們可以利用drective `<.... [routerLink]="'/path_name'">`在`.html`建立路徑達到轉頁
+我們可以利用Drective在`.html`建立路徑達到轉頁
 ```html
 <ul>
   <li><a [routerLink]="'/home'">Home</a></li>
@@ -101,6 +99,7 @@ Router's directive for template `.html` 分成兩個
 
 ## 萬用路由
 
+當所在的路徑不屬於`const routers`內任何設定的路徑則統Rredirect到某一路徑
 ```typescript
 const routers: Routers:[
     {
@@ -110,7 +109,6 @@ const routers: Routers:[
     }
 ];
 ```
-- 上述表當所在的路徑不屬於`const routers`內所有設定的路徑則統一redirect to `home` 這個路徑
 - **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers : Routers : [ {..} , {...}, ... , {path : '**' ...} ]`
 
 ## Child Router
@@ -121,26 +119,25 @@ const routers: Routers:[
 - 預處理層
 
 
-再沒有子路由的情況下
-
-子路由的Component與直接使用參數去定義路由，
+再沒有子路由的情況,ㄝ子路由的Component與直接使用參數去定義路由，
 
 Router預設的狀況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**      
-因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同的內容資料**       
-但是**被創建的元件實體(Instance)會在離開頁面時被銷毀並取消註冊**，因此在前面範例的`heroes-routing`.`module.ts`檔案中裡，所使用的導航設定方式，由於在瀏覽`HeroDetailComponent`之後，一定要先回到`HeroListComponent`，才能進入下一個Detail頁面
+因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同內容資料**       
+但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**
+
+- For example 由於在瀏覽某一位Hero Detail之後，一定要先回到`HeroListComponent`，才能再進入另一位Hero Detail頁面，會造成因為回到`HeroListComponent`時已把`HeroDetailComponent`刪除掉了，再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`。因此每次選擇不同的英雄時，Component都會重新創建。
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },
   { path: 'hero/:id', component: HeroDetailComponent }
 ];
 ```
-- 這會造成因為在回到`HeroListComponent`時已把`HeroDetailComponent`刪除掉了，再選擇另一個英雄要查看細節時，又會再創立一個新的`HeroDetailComponent`。因此每次選擇不同的英雄時，Component都會重新創建。
 
-如果想要保留頁面的狀態，就可以改使用子路由的方式來定義, For Example ::
+如果想要保留頁面的狀態，就可以改使用子路由的方式來定義, 如
 ```typescript
 const crisisCenterRoutes: Routes = [
   {
-    path: 'crisis-center', // <---- 當使用者在該頁面時才會刪除Instances in child components
+    path: 'crisis-center', 
     component: CrisisCenterComponent,
     children: [
       {
@@ -161,7 +158,7 @@ const crisisCenterRoutes: Routes = [
   }
 ];
 ```
-- `CrisisDetailComponent`與`CrisisCenterHomeComponent`都是`CrisisListComponent`的Child Component，因此在不同的Child Component內的狀態得以被保存，直到頁面切換離開`CrisisCenterComponent`時才會將元件實體刪除，這可以讓我們在瀏覽不同CrisisDetail時，得以使用到Router預設的重用設定。
+- `CrisisDetailComponent`與`CrisisCenterHomeComponent`都是`CrisisListComponent`的Child Component，因此在不同的Child Component內的實體狀態得以被保存，直到頁面切換離開`CrisisCenterComponent`時才會將元件實體刪除，這可以讓我們在瀏覽不同CrisisDetail時，得以使用到Router預設的重用設定
 
 ### 設定相對路徑
 
@@ -193,14 +190,13 @@ this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.r
   ]
 }
 ```
-- 只要路由有設定children的route，再加上在Template裡有放`<router-outlet></router-outlet>`的話, Angular的路由機制就會自動幫你向下找。   
+- 只要路由有設定children的route，再加上在Template裡有放`<router-outlet></router-outlet>`的話, Angular的路由機制就會自動幫你向下找
 
-實際應用上，**通常我們會將相關的功能包裝成一個一個的 NgModule ，而每個 NgModule，也其實都可以有自己的 RoutingModule** (e.g. 一個網站共同的頁面layout)   
-For example :: 建立一個module以及FeatureRoutingModule給feature component使用   
+實際應用上，**通常我們會將相關的功能包裝成一個一個`NgModule` ，而每個`NgModule`，也其實都可以有自己的Routing Module** (e.g. 一個網站共同的頁面layout)   
+- For example :: 建立一個Module以及FeatureRoutingModule給feature component使用   
 ```bash
-# with --routing 則會另外建立一個FeatureRoutingModule的路由  
+# --routing 另外建立一個FeatureRoutingModule的路由  
 ng generate module feature --routing
-
 # generate feature component
 ng generate component feature
 ```
@@ -228,7 +224,7 @@ const routes: Routes = [
 })
 export class FeatureRoutingModule { }
 ```
-- 整個系統只有`AppRoutingModule`才會使用 forRoot ，其他的子路由模組都是使用`forChild`  
+- 整個系統只有`AppRoutingModule`才會使用`forRoot(..)` ，其他的子路由模組都是使用`forChild(...)`  
 
 只要在`app.module.ts`內將`FeatureModule.ts`註冊到`@ngModule.import`內就可加入child的路由路徑,**由於路由是有順序性的所以不能放在root routing module之後**, For example ::
 ```typescript
@@ -244,12 +240,14 @@ imports: [
   AppRoutingModule,
 ]
 ```
-- 故`AppRoutingModule`總是會放在`@ngModule import`的TAIL
+- 任何在`@ngModule import`的Child Module必須在`AppRoutingModule`之前
 
 
 ## Lazy Loading
 
-Lazy Loading implementation via `loadChildren`   
+```typescript 
+loadChildren:()=>import('./yyyy/xxxx.module').then(module => module.XXXXModule) 
+```
 
 In `FeatureRoutingModule.ts` 
 ```typescript
@@ -261,10 +259,7 @@ const routes: Routes = [
 ];
 ```
 
-Add it in  `app-routing.module.ts` after
-```typescript 
-loadChildren:()=>import('./yyyy/xxxx.module').then(module => module.XXXXModule) 
-```
+In `app-routing.module.ts` 
 ```typescript
 // Angular 8+
 {
@@ -275,10 +270,7 @@ loadChildren:()=>import('./yyyy/xxxx.module').then(module => module.XXXXModule)
 
 ## Pre-loading
 
-預先載入跟延遲載入很像，差別只在於，延遲模組是要進入該路由的時候即時載入；預先載入是在頁面初始化的時候就把所有可延遲載入的模組透過背景非同步地下載，不會影響畫面的顯示或使用者的操作。
-
-add new attribute `preLoadingStrategy : PreloadAllModules` in `@NgModule.imports` in root router module
-
+預先載入跟延遲載入很像，差別只在於，**延遲模組是要進入該路由的時候即時載入**；預先載入是在頁面初始化的時候就把所有可延遲載入的模組透過背景非同步地下載，不會影響畫面的顯示或使用者的操作。
 ```typescript
 import { PreloadAllModules } from '@angular/router';
 
@@ -296,30 +288,31 @@ import { PreloadAllModules } from '@angular/router';
 
 ## Path query parameter 
 
-路由參數有時候我們會需透過路由傳遞參數，而傳遞參數的方法有兩種
+有時候我們會需透過路由傳遞參數，而傳遞參數的方法有兩種
 1. query string  `?`
 2. matrix URL notation `;`
 
-### 使用 Query String 表示法
-Ex: `http://localhost:4200/products?id=101`
+### Query String 
 
-#### 前往Link Path的方式
+透過Query String表示路徑
+- Ex: `http://localhost:4200/products?id=101`
 
 In `.ts`
 ```typescript
+constructor(private route: ActivatedRoute) { }
+
 this.router.navigate(['products'], {
     queryParams: {
       id: 101
     }
 });
 ```
-
 In `.html`
 ```html
 <a [routerLink]="['products']" [queryParams]="{ id: 101 }">Link For Product</a>
 ```
 
-#### 取得path的參數的方式
+#### 取得query string參數
 
 1. using `queryParams.subscribe((queryParams) => { ...})`
 2. using `.snapshot.queryParams['..']`
@@ -330,31 +323,32 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
   
-      // 訂閱（較推薦）
-      this.route.queryParams.subscribe((queryParams) => {
-        console.log(queryParams['id']);
-      });
+      // recommend 
+      this.route.queryParams.subscribe(
+        (queryParams) => {
+          console.log(queryParams['id']);
+        }
+      );
       
-      // 利用snapshot.queryParams
+      // snapshot.queryParams
       console.log(this.route.snapshot.queryParams['id']);
   
   }
 
 }
 ```
-### matrix URL notation 表示法
 
-以`;`將parameters隔開
+### matrix URL
 
-Ex：`http://localhost:4200/products;id=101`
-
-
-#### 前往Link Path的方式
 ```typescript
 this.router.navigate(['path_name'], {queryParam_1 : xxx , queryParam_2 : yyy , ...});
-this.router.navigate(['products', { id: 101 }]);
 ```
 
+path表示方式利用`;` 將Parameters隔開    
+- Ex：`http://localhost:4200/products;id=101`
+```typescript
+this.router.navigate(['products', { id: 101 }]);
+```
 ```html
 <a [routerLink]="['products', { id: 101 }]">Products</a>
 ```
@@ -367,20 +361,20 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
   
-      // 第一種方式
+      // firsrt one 
       console.log(this.route.params['id']);
       
-      // 第二種方式
+      // second one
       console.log(this.route.snapshot.params['id']);
-  
   }
 
 }
 ```
 
-## [添加換頁效果](https://ithelp.ithome.com.tw/articles/10195347)
+## 換頁效果
+- [添加換頁效果](https://ithelp.ithome.com.tw/articles/10195347)
 
-需要`BrowserAnimationsModule`這個動態效果模組。
+需要`BrowserAnimationsModule`這個動態效果模組   
 
 ```typescript
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
@@ -410,7 +404,7 @@ export const slideInDownAnimation: AnimationEntryMetadata =
   ]);
 ```
 
-然後在`src/app/heroes/hero-detail.component.ts`增加使用這個動態效果的綁定
+接著在`src/app/heroes/hero-detail.component.ts`增加使用這個動態效果的綁定
 ```typescript
 @HostBinding('@routeAnimation') routeAnimation = true;
 @HostBinding('style.display')   display = 'block';
