@@ -1,15 +1,15 @@
-## [Guard](https://ithelp.ithome.com.tw/articles/10208485)  
+# Guard
 
-- Guard 也是 Service 的一種，因為它也有`@Injectable`的裝飾器
-- To Restrict the access to certain path 
+- https://ithelp.ithome.com.tw/articles/10208485
 
+Guard 也是 Service 的一種，因為它也有`@Injectable`的裝飾器主要用來**Restrict the access to certain path** 
 
-建立guard
+CLI建立guard
 ```
 ng generate guard layout/layout
 ```
 
-實作Interface CanActivate內的`canActivate`
+需要透過implement CanActivate客製化Guard
 ```typescript
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -47,15 +47,16 @@ canActivate(
 }
 ```
 
-將Guard註冊在`const routes`內
+將Guard註冊在`const routes : Routes` with `canActivate` properties
 ```typescript
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [LayoutGuard],  //<---------------------- HIER
+    canActivate: [LayoutGuard],  // HIER
     children: [...]
   }
+  
   // ...
 ]
 ```
@@ -79,8 +80,7 @@ export class LoginComponent implements OnInit {
 ```
 ## Ask User to redirect to other page
 
-每次使用者如果點選離開的頁面-> 可以利用Guard內的`CanDeactivate`詢問使用者是否要離開當前頁面
-
+Implement `CanDeactivate<XXXXcomponent>`來詢問使用者是否要離開當前頁面,例如關閉遊覽器時詢問使用者是否離開當前頁面
 ```typescript
 export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
 
@@ -106,7 +106,7 @@ export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
 }
 ```
 
-並將該guard加入到路由`canDeactivate`內
+並將該guard加入到路由`canDeactivate []`內
 ```typescript
 {
   path: 'login',
@@ -117,9 +117,8 @@ export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
 
 ### 互動式Deactivate
 
-當使用者有在當前頁面輸入資料時,如果使用者在未完成該網頁需要fill in的欄位會詢問是否要離開此頁面(如果都沒填任何欄位會直接離開不會詢問)
-
-假設我們的頁面需要有fill in `name`的欄位如下
+當使用者有在當前頁面輸入資料時,如果使用者在未完成該網頁需要fill in的欄位會詢問是否要離開此頁面(如果都沒填任何欄位會直接離開不會詢問)   
+假設我們的頁面需要有fill in `name`的欄位如下   
 ```html
 <input type="text" [(ngModel)]="name">
 ```
@@ -142,14 +141,10 @@ canDeactivate(
 }
 ```
 
-
-
-These guards allow us to implement policies governing possible route transitions in an Angular application. 
-
-Imagine a situation when a user tries to open a page that he has no access rights to. 
+These guards allow us to implement policies governing possible route transitions in an Angular application.    
+Imagine a situation when a user tries to open a page that he has no access rights to.    
 In such a case application should not allow this route transition. 
-To achieve this goal we can make use of `CanActivate` guard.  
-
+To achieve this goal we can make use of `CanActivate` guard.      
 ```typescript
 @Injectable({
   providedIn: 'root'
