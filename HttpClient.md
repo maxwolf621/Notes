@@ -1,7 +1,7 @@
 ###### tags: `Angular`
 # HttpClient
 
-We can get the json type content via `Httpclient` instance
+We can get the json type content via `HttpClient` instance
 ```json
 {
   "results": [
@@ -11,8 +11,8 @@ We can get the json type content via `Httpclient` instance
 }
 ```
 
+component or service subscribes data via `HttpClient` instance
 ```typescript
-@Component(...)
 export class MyComponent implements OnInit {
  
   results: string[];
@@ -51,7 +51,9 @@ http.get<ItemsResponse>('/api/items').subscribe(data => {
 });
 ```
 
-很多時候我們也會需要Http header的資料，而不光是回傳的body，這時候可以更改observe的值為response
+## 取得Http Header資料
+
+有時候我們也會需要Http header的資料，而不光是回傳的body，這時候可以更改observe的值為response
 ```typescript
 http
   .get<MyJsonData>('/data.json', {observe: 'response'})
@@ -79,7 +81,7 @@ http
 ```
 
 `err`可以有傳入更詳細的HTTP錯誤訊息物件`HttpErrorResponse`
-```
+```typescript 
 http
   .get<ItemsResponse>('/api/items')
   .subscribe(
@@ -157,11 +159,12 @@ http
 - 該HttpHeaders的內容是不變的，每次`set()`時會返回一個新的實體，並套用所設定的更改。
 
 ## 設置URL參數
+
 如果想要發送Request至`/api/items/add?id=3`
+
 ```typescript
 http
-  .post('/api/items/add', body, {
-    params: new HttpParams().set('id', '3'),
-  })
+  .post('/api/items/add', body, 
+        {params: new HttpParams().set('id', '3'),})
   .subscribe();
 ```
