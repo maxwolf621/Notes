@@ -1,15 +1,23 @@
 # Guard
 
-- https://ithelp.ithome.com.tw/articles/10208485
+-[[Angular 深入淺出三十天] Day 23 - 路由（六）](https://ithelp.ithome.com.tw/articles/10208485)
 
-Guard 也是 Service 的一種，因為它也有`@Injectable`的裝飾器主要用來**Restrict the access to certain path** 
+Guard allows us to implement policies governing possible **route transitions** in an Angular application.             
+It is also a Service because it needs `@Injectable` to **restrict the access to certain path**        
+一般常見使用路由守門員的時機大致上有兩種：   
+1. `canActivate`   : 當使用者想要造訪某個路由時，透過路由守門員來判斷要不要讓使用者造訪。   
+2. `canDeactivate` : 當使用者想要離開某個路由時，透過路由守門員來判斷要不要讓使用者離開。   
 
+## CLI
 CLI建立guard
-```
+```bash
+# ng generate guard implementation_name
 ng generate guard layout/layout
 ```
 
-需要透過implement CanActivate客製化Guard
+## Implementation (`CanActivate`)
+
+Implementation to tell Angular router whether it can or cannot activate a particular route.
 ```typescript
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -20,17 +28,19 @@ import { Observable } from 'rxjs';
 })
 export class LayoutGuard implements CanActivate {
   canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return true;
+      next: ActivatedRouteSnapshot,
+      state: RouterStateSnapshot
+    ): Observable<boolean> | Promise<boolean> | boolean {
+      return true;
   }
 }
 ```
-- `next`與`state`, 其所會對應到的資料型別是`ActivatedRouteSnapshot`與`RouterStateSnapshot`
-- 利用`next`以及`state`設定路徑的權限
 
-For example :: 需要Guard幫我們過濾`path:''`這個路徑,任何人在access該路徑之前都得經過guard檢查
+### Example
+
+Guard a path `''` only allow user whose name is `John` to access 
 ```typescript
+// ...
 canActivate(
   next: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
@@ -47,9 +57,10 @@ canActivate(
 }
 ```
 
-將Guard註冊在`const routes : Routes` with `canActivate` properties
+將Guard Implementation註冊在`const routes : Routes`
 ```typescript
 const routes: Routes = [
+
   {
     path: '',
     component: LayoutComponent,
@@ -61,7 +72,7 @@ const routes: Routes = [
 ]
 ```
 
-利用typescript的方法綁定`html`內的event進行頁面轉換
+`login()`綁定`html`內的Event進行頁面轉換   
 ```typescript
 export class LoginComponent implements OnInit {
 
@@ -70,7 +81,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
   
-  // `Router.navigate([path_name],{ queryParams:{... } ....} ) `
+  // Router.navigate([path_name],{queryParams: { ... } ....} )
   login(): void{
     this.router.navigate([''], queryParams:{
        name : 'John'; 
@@ -78,73 +89,8 @@ export class LoginComponent implements OnInit {
   });
 }
 ```
-## Ask User to redirect to other page
 
-Implement `CanDeactivate<XXXXcomponent>`來詢問使用者是否要離開當前頁面,例如關閉遊覽器時詢問使用者是否離開當前頁面
-```typescript
-export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
-
-  /**
-   * 當使用者要離開這個 Guard 所防守的路由時，會觸發這個函式
-   *
-   * @param {LoginComponent} component - 該路由的 Component
-   * @param {ActivatedRouteSnapshot} currentRoute - 當前的路由
-   * @param {RouterStateSnapshot} currentState - 當前路由狀態的快照
-   * @param {RouterStateSnapshot} [nextState] - 欲前往路由的路由狀態的快照
-   * @returns {(boolean | Observable<boolean> | Promise<boolean>)}
-   * @memberof EnsureLoginGuard
-   */
-  canDeactivate(
-    component: LoginComponent,
-    currentRoute: ActivatedRouteSnapshot,
-    currentState: RouterStateSnapshot,
-    nextState?: RouterStateSnapshot
-  ): boolean | Observable<boolean> | Promise<boolean> {
-    return false;
-  }
-
-}
-```
-
-並將該guard加入到路由`canDeactivate []`內
-```typescript
-{
-  path: 'login',
-  component: LoginComponent,
-  canDeactivate: [EnsureLoginGuard]
-}
-```
-
-### 互動式Deactivate
-
-當使用者有在當前頁面輸入資料時,如果使用者在未完成該網頁需要fill in的欄位會詢問是否要離開此頁面(如果都沒填任何欄位會直接離開不會詢問)   
-假設我們的頁面需要有fill in `name`的欄位如下   
-```html
-<input type="text" [(ngModel)]="name">
-```
-
-我們需要在`canDeactivate`內把欄位的field `name`做檢查,看使用者沒有沒做填入的動作
-```typescript
-canDeactivate(
-  component: LoginComponent,
-  currentRoute: ActivatedRouteSnapshot,
-  currentState: RouterStateSnapshot,
-  nextState?: RouterStateSnapshot
-): boolean | Observable<boolean> | Promise<boolean> {
-
-  if (component.name.trim()) {
-    return confirm('Leaving?');
-  }
-
-  return true;
-
-}
-```
-
-These guards allow us to implement policies governing possible route transitions in an Angular application.    
-Imagine a situation when a user tries to open a page that he has no access rights to.    
-In such a case application should not allow this route transition. 
-To achieve this goal we can make use of `CanActivate` guard.      
+For other case that we want to allow users to open this route(`/login`), only if they are not logged in. Otherwise, we redirect to `/secret-random-number`.
 ```typescript
 @Injectable({
   providedIn: 'root'
@@ -164,19 +110,17 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-AuthGuard implements `canActivate()` which tells Angular router whether it can or cannot activate a particular route.   
-To attach given guard to the route that it should protect, we just need to place its reference in` canActivate` property of that route as presented below.   
-In our case, we want to protect the `/login` route. We want to allow users to open this route, only if they are not logged in. Otherwise,   
-we redirect to `/secret-random-number`.  
+### `canLoad` property
+
 The same approach applies to protecting other routes, with different policies implemented for given routes.   
-Also, we can notice the `canLoad` property in below routes configuration.  
-
-
-This kind of protection allows us to prevent a lazy-loaded route from being fetched from the server.  
-Usually, `canLoad` guards implement the same policy as canActivate guards.\
+`canLoad` property allows us to prevent a lazy-loaded route from being fetched from the server.    
+Usually, `canLoad` guards implement the same policy as `canActivate` guards.    
 ```typescript
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/login' },
+  { 
+    path: '', 
+    pathMatch: 'full', 
+    redirectTo: '/login' },
   {
     path: 'login',
     component: LoginComponent,
@@ -198,4 +142,64 @@ const routes: Routes = [
   declarations: []
 })
 export class AppRoutingModule { }
+```
+
+
+## Implementation(`canDeactivate`)
+
+Implement `CanDeactivate<XXXXcomponent>`來詢問使用者是否要離開當前頁面
+```typescript
+export class EnsureLoginGuard implements CanDeactivate<LoginComponent> {
+  /**
+   * 當使用者要離開該Route的canDeactivate時，會觸發該Method
+   *
+   * @param {LoginComponent} component : 該Route內的註冊Component
+   * @param {ActivatedRouteSnapshot} currentRoute : 當前的Route
+   * @param {RouterStateSnapshot} currentState : 當前Route狀態的快照
+   * @param {RouterStateSnapshot} [nextState]  : 欲前往路由的路由狀態的快照
+   * @returns {(boolean | Observable<boolean> | Promise<boolean>)}
+   * @memberof EnsureLoginGuard
+   */
+  canDeactivate(
+    component: LoginComponent,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot
+  ): boolean | Observable<boolean> | Promise<boolean> {
+    return false;
+  }
+
+}
+```
+
+註冊到指定路由`canDeactivate [EnsureLoginGuard]`
+```typescript
+{
+  path: 'login',
+  component: LoginComponent,
+  canDeactivate: [EnsureLoginGuard]
+}
+```
+
+假設使用者有在當前頁面輸入資料(`name`)時,如果未完成需要Fill In的欄位`canDeactivate`會詢問是否要離開此頁面(如果都沒填任何欄位會直接離開不會詢問)    
+```html
+<input type="text" [(ngModel)]="name">
+```
+
+我們需要在`canDeactivate`內把欄位的`name`做檢查,看使用者沒有沒做填入的動作
+```typescript
+canDeactivate(
+  component: LoginComponent,
+  currentRoute: ActivatedRouteSnapshot,
+  currentState: RouterStateSnapshot,
+  nextState?: RouterStateSnapshot
+): boolean | Observable<boolean> | Promise<boolean> {
+
+  if (component.name.trim()) {
+    return confirm('Leaving?');
+  }
+
+  return true;
+
+}
 ```
