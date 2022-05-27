@@ -1,12 +1,17 @@
 
 # Router For Child
 
--[[Angular 深入淺出三十天] Day 26 - 路由總結（二）](https://ithelp.ithome.com.tw/articles/10209259)   
+- [[Angular 深入淺出三十天] Day 26 - 路由總結（二）](https://ithelp.ithome.com.tw/articles/10209259)   
 
 ## 子路由內的模組設定
 
+CLI創建子路由
+```bash
+`ng g m feature --routing`
+```
+
+CLI創建的子路疣會自動設定
 ```typescript
-// `ng g m feature --routing`
 const routes: Routes = [
   // ...
 ];
@@ -17,7 +22,7 @@ const routes: Routes = [
 export class FeatureRoutingModule { }
 ```
 
-加入`app-module.tx`的`@ngModule.imports : [ .., FeatureRoutingModule , AppRoutingModule]`內
+把子路由加入至`app-module.tx`的`@ngModule.imports : [ .., FeatureRoutingModule , AppRoutingModule]`內
 ```typescript
 imports: [
   BrowserModule,
@@ -28,25 +33,20 @@ imports: [
 
 ## Routes's `resolve` property and Implementation from `Resolve<T>`
 
-利用resolve來傳遞複雜資料
+
+利用`Resolve<T>`來傳遞前後端的複雜資料
 ```typescript
- const routes: Routes = [
-  {
-    path: 'products',
-    component: ProductListComponent,
-    children: [
-      {
-        path: ':id',
-        component: ProductDetailComponent
-        // resolve fetch btw backend and frontend
-        resolve: {
-          product: ProductDetailResolverService
-        }
-      }
-    ]
-  },
-  // ...
-];
+@Injectable({
+  providedIn: 'root',
+})
+                                                  // Resolve<資料>
+export class ProductDetailResolverService implements Resolve<xxxInterface> {
+  constructor(private xxxService: xxxService, private router: Router) {}
+
+  resolve(route: ActivatedRouteSnapshot, 
+          state: RouterStateSnapshot): Observable<Product> | Observable<never>{
+            // 設定前後端如何接收資料
+          }
 ```
 
 `ProductDetailResolverService` 大概會長這樣：
@@ -93,6 +93,7 @@ export class ProductDetailResolverService implements Resolve<Product> {
      }
 }
 ```
+
 在Product Detail的頁面(`ProductDetailComponent`)我們就透過這樣的方式來接值：
 ```typescript
 // ProductDetailComponent
