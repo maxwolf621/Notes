@@ -33,7 +33,6 @@ imports: [
 
 ## Routes's `resolve` property and Implementation from `Resolve<T>`
 
-
 利用`Resolve<T>`來傳遞前後端的複雜資料
 ```typescript
 @Injectable({
@@ -49,6 +48,28 @@ export class ProductDetailResolverService implements Resolve<xxxInterface> {
           }
 ```
 
+假釋我們要從Produc List頁面查詢某一特定Product Detail可以透過Resolve來進行前後端資料交流
+
+在Route內設定`ProductListComponent`,`ProductDetailComponent`跟resolver`ProductDetailResolverService`
+```typescript
+ const routes: Routes = [
+  {
+    path: 'products',
+    component: ProductListComponent,
+    children: [
+      {
+        path: ':id',
+        component: ProductDetailComponent
+        // resolve fetch btw backend and frontend
+        resolve: {
+          product: ProductDetailResolverService
+        }
+      }
+    ]
+  },
+  // ...
+];
+```
 `ProductDetailResolverService` 大概會長這樣：
 ```typescript
 import { Injectable } from '@angular/core';
