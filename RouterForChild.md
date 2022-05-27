@@ -1,12 +1,12 @@
 
-# [子路由](https://ithelp.ithome.com.tw/articles/10209259)   
+# Router For Child
+
+-[[Angular 深入淺出三十天] Day 26 - 路由總結（二）](https://ithelp.ithome.com.tw/articles/10209259)   
 
 ## 子路由內的模組設定
 
-
-先`ng g m feature --routing`
-
 ```typescript
+// `ng g m feature --routing`
 const routes: Routes = [
   // ...
 ];
@@ -17,23 +17,18 @@ const routes: Routes = [
 export class FeatureRoutingModule { }
 ```
 
-之後加入`app-module.tx`的`@ngModule.imports`內
-順序要擺在`AppRoutingModule`之前
+加入`app-module.tx`的`@ngModule.imports : [ .., FeatureRoutingModule , AppRoutingModule]`內
 ```typescript
 imports: [
   BrowserModule,
-  FeatureModule,  // <-----
+  FeatureModule,  // before AppRoutingModule
   AppRoutingModule
 ],
 ```
-## [Guard](Router_Guard.md)
 
-一般常見使用路由守門員的時機大致上有兩種：   
-`canActivate` － 當使用者想要造訪某個路由時，透過路由守門員來判斷要不要讓使用者造訪。   
-`canDeactivate` － 當使用者想要離開某個路由時，透過路由守門員來判斷要不要讓使用者離開。   
+## Routes's `resolve` property and Implementation from `Resolve<T>`
 
-## `Resolve` 傳遞複雜資料   
-
+利用resolve來傳遞複雜資料
 ```typescript
  const routes: Routes = [
   {
@@ -43,6 +38,7 @@ imports: [
       {
         path: ':id',
         component: ProductDetailComponent
+        // resolve fetch btw backend and frontend
         resolve: {
           product: ProductDetailResolverService
         }
@@ -79,28 +75,27 @@ import { mergeMap, take } from 'rxjs/operators';
 export class ProductDetailResolverService implements Resolve<Product> {
   constructor(private productService: productService, private router: Router) {}
 
-  resolve(
-      route: ActivatedRouteSnapshot, 
-      state: RouterStateSnapshot): Observable<Product> | Observable<never>
-      {    
+  resolve(route: ActivatedRouteSnapshot, 
+          state: RouterStateSnapshot): Observable<Product> | Observable<never>{    
           const id = route.paramMap.get('id');
-          return this.productService.getProduct(id)
-                              // fetch procession only do one time
-                                    .pipe(take(1),mergeMap(product => {
-                                         if (product) {
-                                             return of(product);
-                                        } else {
-                                            this.router.navigate(['products']);
-                                            return EMPTY;
-                                        }})
-                                    );
+          return this.productService
+                     .getProduct(id)
+                     // fetch procession only execute one time
+                     .pipe(take(1),
+                           mergeMap(product => {
+                               if (product) { 
+                                   return of(product);
+                                } else {
+                                    this.router.navigate(['products']);
+                                    return EMPTY;
+                                }})
+                     );
      }
 }
 ```
-
-
-最後在`ProductDetailComponent`的頁面我們就透過這樣的方式來接值：
+在Product Detail的頁面(`ProductDetailComponent`)我們就透過這樣的方式來接值：
 ```typescript
+// ProductDetailComponent
 ngOnInit() {
   this.route.data.subscribe((data: { product: Product }) => {
       this.name= data.product.name;
