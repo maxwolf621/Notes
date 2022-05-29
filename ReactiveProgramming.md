@@ -1,9 +1,7 @@
 ###### tags: `Angular`
-# [Reactive Programming](https://blog.techbridge.cc/2016/05/28/reactive-programming-intro-by-rxjs/)
-
- - [Angular RXJS](https://ithelp.ithome.com.tw/articles/10222014)
-
-
+# Reactive Programming  
+- [Reactive Programming 簡介與教學(以 RxJS 為例)](https://blog.techbridge.cc/2016/05/28/reactive-programming-intro-by-rxjs/)
+- [[DAY-12] Angular-RXJS非同步事件的好幫手2](https://ithelp.ithome.com.tw/articles/10222014)   
 
 `Reactive Programming = Observer Pattern + Iterator pattern + Functional Programming`
 
@@ -14,8 +12,8 @@
 - Listen : `Subscribe`
 
 
-```java
--O-O-O-O-|->  // each O is a Subject which is Observable
+```typescript
+-O-O-O-O-|  // each O is a Subject which is Observable
  ' ' ' ' '  
  Operators() // Each Operators Combine Subjects
  ' ' ' ' '
@@ -26,19 +24,17 @@
 
 ## Subject
 
-A Subject (STREAM) is `Observable`
+A Subject is `Observable`
 
 The Subject have these default methods
 - `next`：用來觸發新的事件資料，呼叫` next 並傳入新的事件資訊後，在訂閱步驟就會吃到有新事件發生了。
 - `error` ：只有第一次呼叫會在訂閱步驟觸發，當整個流程發生錯誤時，可以呼叫 `error` 並傳入作物資訊，用來告知錯誤內容，同時整個 Observable 就算是結束了。
 - `complete` ：只有第一次呼叫會在訂閱步驟觸發，當整個 `Observable` 結束時，用來通知已經結束了，由於是單純的結束了，`complete()` 方法不用帶入任何參數
 
-
 ### Create The Subject 
 
-Operator `fromevent` create a observable Subject
-
 ```typescript
+// Operator `fromevent` create a observable Subject
 import { fromEvent } from 'rxjs';
 const source = fromEvent(document, 'click');
 
@@ -47,7 +43,7 @@ import { Subject } from 'rxjs';
 
 const source = new Subject();
 document.addEventListener('click', (event) => {
-  source.next(event);
+ source.next(event);
 });
 ```
 
@@ -67,7 +63,7 @@ document.addEventListener('click', (event) => {
 
 ## Subscribe (LISTEN) the Subject
 
-Fetch the Data from Subject/Stream
+Fetch the Data(Observables) from Data Stream
 
 Default methods from Observable
 ```typescript
@@ -76,10 +72,11 @@ const observer = {
   error: (err) => console.log(err),
   complete: () => console.log('complete')
 };
-```
 
-````typescript
-source.subscribe({
-  next: (data) => console.log(data)
+// Subscribe the observables
+obsevables.subscribe({
+  next: (data) => console.log(data),
+  error: (err) => console.log(err),
+  complete: () => console.log('complete')
 });
 ```
