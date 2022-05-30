@@ -403,14 +403,14 @@ export class VoterComponent {
 
   // OnVoted emit the boolean type value to base component
   // Emitter 
-  @Output() onVoted = new EventEmitter<boolean>();
+  @Output() voteEmitter = new EventEmitter<boolean>();
   
   voted = false;
   
   // Emit the value to base
   vote(agreed: boolean) {
 
-    this.onVoted.emit(agreed);
+    this.voteEmitter.emit(agreed);
     this.voted = true;
   }
 }
@@ -426,7 +426,7 @@ import { Component } from '@angular/core';
     <app-voter *ngFor="let voter of voters"
               [name]="voter"
               <!--@output annotation child varaible = father method($event)-->
-              (onVoted)="onVoted($event)">
+              (voteEmitter)="onVoted($event)">
     </app-voter>'                 
 })
 export class VoteTakerComponent {
