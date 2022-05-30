@@ -12,8 +12,6 @@
     + [`@Input`](#--input-)
     + [`@Output`](#--output-)
 
-
-
 Angular Component主要有三種檔案
 1. `.css`(`scss`) 
 2. `.html`
@@ -368,30 +366,22 @@ Base Component's `.html`
 
 In contrast with `@input` we can also pass the value from child component to Base component
 
-the Base listens child component event,
-
-Child Component
-- The Child must declare a `EventEmitter<Object>` type variable with `@output()` annotation to emit the value to Base 
+Firstly the child component shall declare a `EventEmitter<T>()` type variable with `@output()` annotation to emit the value to Base component
 ```typescript
-@output() x = EventEmitter<Object>();
+@output() x = EventEmitter<T>();
 
-filed(y : type){
+filed(y : T){
   this.x = emit(y);
 }
 ```
 
-Base Component
-- Base's html to receive the value emitted by child ... 
+- Second,base component's (`.html`) to receive the value emitted by child ... 
 ```html    
-<child> 
-  ... 
-  (Field With @output() In Child) = "Method($event)"
-  ...
+<child>  
+  (dield With @output() anootation in child) = "Method_of_Base($event)"
 </child>
 ```
 - `($event)` will be assigned the valued emitted from child
-
-
 
 - For example :: 
 ```typescript
@@ -411,7 +401,8 @@ export class VoterComponent {
   //receive the value from the Base 
   @Input()  name: string;
 
-  // onVoted passed the value to the Base 
+  // OnVoted emit the boolean type value to base component
+  // Emitter 
   @Output() onVoted = new EventEmitter<boolean>();
   
   voted = false;
@@ -420,7 +411,6 @@ export class VoterComponent {
   vote(agreed: boolean) {
 
     this.onVoted.emit(agreed);
-    
     this.voted = true;
   }
 }
@@ -435,7 +425,7 @@ import { Component } from '@angular/core';
     <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
     <app-voter *ngFor="let voter of voters"
               [name]="voter"
-              <!--child=father-->
+              <!--@output annotation child varaible = father method($event)-->
               (onVoted)="onVoted($event)">
     </app-voter>'                 
 })
