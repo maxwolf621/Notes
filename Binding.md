@@ -1,6 +1,7 @@
 ###### tags: `Angular`
 # Bind 
 - [Code Example](https://ithelp.ithome.com.tw/articles/10241010)  
+- [angular.io](https://angular.io/guide/attribute-binding)
 
 - [Bind](#bind)
   * [Interpolation](#interpolation)
@@ -64,11 +65,9 @@ Bind the attribute and field in `.ts` with `.html`
 ```
 
 ## Event Binding  
-Class's methods are called via `<button ... (event) = "classMethod">` in html
-
-當Button被Pressed後會觸發`(event)`，會呼叫`.ts`內指定的Method
+methods in the component are called via `<button ... (event) = "classMethod">` in html
 ```html
-(event)="SPECIFIC_METHOD_In_Component.ts"
+(event)="METHOD_In_Component.ts"
 ```
 
 - For example even binds with `onSetTaskState` 
@@ -82,10 +81,7 @@ export class TaskComponent implements OnInit {
   task : Task;
   TaskState = TaskState;
   
-  /**
-   * @Description
-   *   To define State of the Task
-   */
+  // define State of the Task
   onSetTaskState(state: TaskState): void {
     this.task.state = state;
   }
@@ -120,28 +116,29 @@ export class TaskComponent implements OnInit {
 ## Property and Attribute Binding 
 
 *Component's Attribute* is Binding to HTML's *Attribute*
-
 ```html
 <!-- 
 (DOM) Property Binding 
 -->
 [property]="Field_In_Component"
+```
 
+```html 
 <!--
 (HTML) Attribute Binding 
 -->
-[attr.name]="Value_Passed_To_Attribute"
+<tag [attr.attribute-you-are-targeting]="expression"></tag>
+<tr> <td [attr.colspan]="1 + 1">One-Two</td></tr>
 ```
+- When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.
  
-- Attribute Binding
-  > [ ATTRIBUTE ] : the ATTRIBUTE is Defined By HTML
+- Attribute Binding : the ATTRIBUTE is Defined By HTML 
+ - for example :: `[attr.colspan]` ... 
 
-- Property Binding
-  > [PROPERTY ] : the PROPERTY is Defined By 文件物件模型 (Document Object Model, DOM) 
+- Property Binding : the PROPERTY is Defined By 文件物件模型 (Document Object Model, DOM) 
 
-- Attribute and Property並非是互相對應的，且名稱也不一定會相同  
-  > 例如, `<td>`標籤內的 `colspan` 屬性 (Attribute) 所對應的 DOM 屬性 (Property) 是 `HTMLTableCellElement.colSpan`，因此在使用的時候還是先查詢一下MDN文件。
 
+> Sometimes there are differences between the name of property and an attribute. `colspan` is an attribute of `<td>`, while `colSpan` with a capital "S" is a property.  When using attribute binding, use colspan with a lowercase "s". 
 
 ```html
 <div class="content">
@@ -159,61 +156,75 @@ export class TaskComponent implements OnInit {
 </div>
 ```
 
-## Style Binding 
-Style Binding 是Component針對HTML中style屬性的`CSS`樣式進行Binding
-```html
-[style.Css_Property] = "Attribute_OR_Method_In_typescript"
-```
-- `style` : style屬性的css 
-- `Css_Property`  該component `.css`內某個attribute 
-- `attribute_OR_method_In_Component.ts` : 利用Component內的attribute或者method來達成對CSS內Attributes賦值
-
-- FOR EXAMPLE :: 改變`[style.color]`利用`.ts`內的method
-```typescript
-getStateColor(): string {
-    switch (this.task.state) {
-          case TaskState.Doing:
-            return "green";
-          case TaskState.Finish:
-            return "blue";
-    }
-}
-```
-
-```html
-<div class="content">  
-  <!-- To assign .color via getStateColor -->
-  <span [style.color]="getStateColor()">
-  {{ getStateDesc() }}
-  </span>
-</div>
-```
-## Class Binding
 - [class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
 
-To bind different classes
+## Binding to the style attribute 
 
 ```html
-<!-- 
-透過 Attribute in the Component  
-Assign certain CSS_Attribute 
--->
-[class.CSS_Attribute]="Attribute_In_This_Component"
+[style.css_Property] = "Attribute_OR_Method_In_typescript"
+```
+- css_Property can be `width` (`[style.width]`) ...
 
-<!--
-use Method/Attribute defined in .ts file 
-which can assign a CSS Attribute to .css
+Binding to multiple styles
+```html 
+[style]="styleExpression"
 
-It's same as <tag class="css_attribute"> ... </tag>
---> 
-[class] = "Method_OR_Attribute_IN_Component"
+<!--  navStyle = 'font-size: 1.2rem; color: cornflowerblue;'; -->
+[style]='navStyle'
+```
 
+## Binding to the class attribute
+
+-[Style Percedence](https://angular.io/guide/style-precedence#styling-delegation)
+
+### Binding to a single CSS class
+```html
+[class.name_of_css_class]="Field_In_Component"
+```
+
+### Binding to multiple CSS classes
+- [Examples](https://angular.io/guide/attribute-binding#binding-to-multiple-css-classes)
+```html
+[class]="classExpression"
+```
+
+
+## Injecting `@attribute` values
+
+**Use `@Attribute()` when you want to inject the value of an HTML attribute to a component or directive constructor.**
+
+There are cases where you need to differentiate the behavior of a Component or Directive based on a static value set on the host element as an HTML attribute. 
+> For example, you might have a directive that needs to know the type of a `<button>` or `<input>` element.
+
+**The Attribute parameter decorator is great for passing the value of an HTML attribute to a component/directive constructor using dependency injection.**   
+
+```typescript
+import { Attribute, Component } from '@angular/core';
+
+@Component({
+  selector: 'app-my-input-with-attribute-decorator',
+  template: '<p>The type of the input is: {{ type }}</p>'
+})
+
+
+/**
+  * <app-my-input-with-attribute-decorator type="number">
+  * </app-my-input-with-attribute-decorator>
+  */
+export class MyInputWithAttributeDecoratorComponent {
+  constructor(@Attribute('type') public type: string) { }
+}
+```
+- The injected value captures the value of the specified HTML attribute at that moment.  
+Future updates to the attribute value are not reflected in the injected value.  
+
+
+```html
 <!-- 
 Assign multiple CSS attributes from Component's Array
 -->
 [ngclass] = "Array_Containing_Css_Attribute_IN_Component"
 ```
-
 ```typescript
 @Component({
 template:'
@@ -222,14 +233,15 @@ template:'
     /** 
       * Pass Attributes in .ts to .html 
       * for render css property 
-      * (indirect change the css property)        
+      * (indirectly change the css property)        
       */
     // this is equal to <h2 class ="text-success"> 
-    <h2 [class]="successClass"> Code Volution </h2>
+   //  "text-success" is defined in the css.style 
+   <h2 [class]="successClass"> Code Volution </h2>
     
     /**
      * Using expression 
-     *       if hasError is true 
+     *       if "hasError" is true 
      *       then render Code Volution with 
      *       css property `text-danger`
      */
@@ -257,9 +269,13 @@ styles:['
 ']
 })
 export class test implements OnInit{
+
     public name = "Code Volution";
+   
     public successClass = "text-success";
+    
     public hasError = true ;
+    
     public isSpecial = true;
 
     public MessageClass ={
@@ -280,7 +296,6 @@ More Specific for `[ngClass]`
   </li>
 </ul>
 ```
-
 ```scss
 .primary {
   color: red;
@@ -291,7 +306,7 @@ More Specific for `[ngClass]`
 ```
 
 
-## Pass the value to another Component
+## Component pass the value to another Component
 
 ### `@Input` 
 
@@ -361,6 +376,8 @@ Base Component's `.html`
           [state]="task.state">
 </app-task>
 ```
+
+**Use `@Input()` when you want to keep track of the attribute value and update the associated property.** 
 
 ### `@Output`
 
