@@ -29,7 +29,7 @@
 - [Module](ngModule.md)  
 - **[ModuleDesignPattern](moduleDesignPattern.md)**
 - **[Bind](Binding.md)**
-- **[Two Way Binding via `@input` and `output`](TwoWayBinding.md)**
+- **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`](TwoWayBinding.md)**
 - **[Structural Directives](Structural%20Directives.md)**  
   > [`ng-template`](ng-template.md)
   > [`ng-container`](ng-container.md)
