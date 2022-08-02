@@ -1,17 +1,31 @@
 ###### tags: `Angular`
 # Bind 
-- [Code Example](https://ithelp.ithome.com.tw/articles/10241010)  
-- [angular.io](https://angular.io/guide/attribute-binding)
 
 - [Bind](#bind)
-  * [Interpolation](#interpolation)
-  * [Event Binding](#event-binding)
-  * [Property and Attribute Binding](#property-and-attribute-binding)
-  * [Style Binding](#style-binding)
-  * [Class Binding](#class-binding)
-  * [Pass the value to another Component](#pass-the-value-to-another-component)
-    + [`@Input`](#--input-)
-    + [`@Output`](#--output-)
+  - [Reference](#reference)
+  - [- angular.io](#--angulario)
+  - [Interpolation](#interpolation)
+  - [Event Binding](#event-binding)
+  - [Property and Attribute Binding](#property-and-attribute-binding)
+  - [Binding to the style attribute](#binding-to-the-style-attribute)
+  - [Binding to the class attribute](#binding-to-the-class-attribute)
+    - [Binding to a single CSS class](#binding-to-a-single-css-class)
+    - [Binding to multiple CSS classes](#binding-to-multiple-css-classes)
+  - [Injecting `@attribute` values](#injecting-attribute-values)
+  - [Component pass the value to another Component](#component-pass-the-value-to-another-component)
+    - [`@Input`](#input)
+    - [`@Output`](#output)
+
+## Reference
+
+Update `@input` property for both child and parent component
+- [[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
+- [[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
+
+
+- [Code Example](https://ithelp.ithome.com.tw/articles/10241010)  
+- [angular.io](https://angular.io/guide/attribute-binding)
+---
 
 Angular Component主要有三種檔案
 1. `.css`(`scss`) 
@@ -25,7 +39,7 @@ Bind class's methods or attributes from`.ts`with`.html`
 {{ component.method }}  
 {{ component.attribute }}
 ```
-- For Example ::  
+
 ```typescript
 import { TaskState } from "../../enum/task-state.enum";
 export class TaskComponent implements OnInit {
@@ -66,11 +80,10 @@ Bind the attribute and field in `.ts` with `.html`
 
 ## Event Binding  
 methods in the component are called via `<button ... (event) = "classMethod">` in html
-```html
+```typescript
 (event)="METHOD_In_Component.ts"
 ```
-
-- For example even binds with `onSetTaskState` 
+ 
 ```typescript
 import { TaskState } from "../../enum/task-state.enum";
 
@@ -96,7 +109,7 @@ export class TaskComponent implements OnInit {
     <span>{{ getStateDesc() }}</span>
   </div>
   
-  <!-- Add Buttion Attirbute To implement event binding  -->
+  <!-- Add Button Attribute To implement event binding  -->
   <div class="button">
     <span>
       <button type="button" (click)="onSetTaskState(TaskState.None)">
@@ -115,12 +128,14 @@ export class TaskComponent implements OnInit {
 
 ## Property and Attribute Binding 
 
+- [[YOUTUBE] class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
+- [DOM properties and HTML attributes](domPropHTMLattr.md) 
+
 *Component's Attribute* is Binding to HTML's *Attribute*
-```html
-<!-- 
+```java
 (DOM) Property Binding 
--->
-[property]="Field_In_Component"
+
+[DOM_property]="Field_In_Component"
 ```
 
 ```html 
@@ -128,17 +143,17 @@ export class TaskComponent implements OnInit {
 (HTML) Attribute Binding 
 -->
 <tag [attr.attribute-you-are-targeting]="expression"></tag>
-<tr> <td [attr.colspan]="1 + 1">One-Two</td></tr>
+
+<tr> 
+  <td [attr.colspan]="1 + 1"> 2 </td>
+</tr>
 ```
 - When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.
- 
-- Attribute Binding : the ATTRIBUTE is Defined By HTML 
- - for example :: `[attr.colspan]` ... 
+- Attribute Binding : the ATTRIBUTE is Defined By HTML  
+- Property Binding : the PROPERTY is Defined By Document Object Model, DOM 
 
-- Property Binding : the PROPERTY is Defined By 文件物件模型 (Document Object Model, DOM) 
-
-
-> Sometimes there are differences between the name of property and an attribute. `colspan` is an attribute of `<td>`, while `colSpan` with a capital "S" is a property.  When using attribute binding, use colspan with a lowercase "s". 
+Sometimes there are differences between the name of property and an attribute. `colspan` is an attribute of `<td>`, while `colSpan` with a capital `S` is a property.  
+When using attribute binding, use colspan with a lowercase `s`. 
 
 ```html
 <div class="content">
@@ -156,14 +171,12 @@ export class TaskComponent implements OnInit {
 </div>
 ```
 
-- [class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
-
 ## Binding to the style attribute 
 
 ```html
 [style.css_Property] = "Attribute_OR_Method_In_typescript"
 ```
-- css_Property can be `width` (`[style.width]`) ...
+- `css_Property` can be `width` (`[style.width]`) ... etc
 
 Binding to multiple styles
 ```html 
@@ -174,16 +187,17 @@ Binding to multiple styles
 ```
 
 ## Binding to the class attribute
-
--[Style Percedence](https://angular.io/guide/style-precedence#styling-delegation)
+-[Style precedence](https://angular.io/guide/style-precedence#styling-delegation)
 
 ### Binding to a single CSS class
+
 ```html
 [class.name_of_css_class]="Field_In_Component"
 ```
 
 ### Binding to multiple CSS classes
 - [Examples](https://angular.io/guide/attribute-binding#binding-to-multiple-css-classes)
+
 ```html
 [class]="classExpression"
 ```

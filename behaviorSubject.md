@@ -1,23 +1,24 @@
 # BehaviorSubject
-- [[stackoverflow] BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
 
-- [BehaviorSubject](#behaviorsubject)     
-   - [It Always has a returned value](#1-it-always-has-a-returned-value)   
-   - [It can be `observer` and `observable` (subscribe and emit)](#2-it-can-be--observer--and--observable---subscribe-and-emit-)   
-   - [It's a subtype of `observable`](#3-it-s-a-subtype-of--observable-)   
-   - [`BehaviorSubject` ensures that you got the last updated data](#4--behaviorsubject--ensures-that-you-got-the-last-updated-data)   
-  * [Difference btw `Observable` and `BehaviorSubject`](#difference-btw--observable--and--behaviorsubject-)  
-  * [Usage in Angular](#usage-in-angular)
-      - [Update `@input` property for both child and parent component](#update---input--property-for-both-child-and-parent-component)
-  * [Angular BehaviorSubject](#angular-behaviorsubject)
+[[stackoverflow] BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
+
+- [BehaviorSubject](#behaviorsubject)
+  - [The unique features of BehaviorSubject are the following](#the-unique-features-of-behaviorsubject-are-the-following)
+    - [It Always has a returned value](#it-always-has-a-returned-value)
+    - [It can be `observer` and `observable` (subscribe and emit)](#it-can-be-observer-and-observable-subscribe-and-emit)
+    - [It's a subtype of `observable`](#its-a-subtype-of-observable)
+    - [`BehaviorSubject` ensures that you got the last updated data](#behaviorsubject-ensures-that-you-got-the-last-updated-data)
+  - [Difference btw `Observable` and `BehaviorSubject`](#difference-btw-observable-and-behaviorsubject)
+  - [Usage in Angular](#usage-in-angular)
+      - [Update `@input` property for both child and parent component](#update-input-property-for-both-child-and-parent-component)
+      - [Angular BehaviorSubject](#angular-behaviorsubject)
       - [Step 1 Service](#step-1-service)
       - [Step 2 Component who uses service to fetch data](#step-2-component-who-uses-service-to-fetch-data)
 
 BehaviorSubject is a type of subject,**a subject is a special type of observable** so you can subscribe to messages like any other observable. 
 
-The unique features of BehaviorSubject are the following
-
-#### 1. It Always has a returned value
+## The unique features of BehaviorSubject are the following
+### It Always has a returned value
 
 It needs an initial value as it must always return a value on subscription even if it hasn't received a `next()` Upon subscription, it returns the last value of the subject. 
 
@@ -28,14 +29,14 @@ It needs an initial value as it must always return a value on subscription even 
  * if there is a subscription after this, 
  * it would get {@code a} value immediately
  */
-let bSubject = new BehaviorSubject("a"); 
+let bSubject = new BehaviorSubject<string>("a"); 
 
 // ... no subscription ...
 
 bSubject.next("b");
 
 // bSubject will keep listening 
-// lastest emitted observable (here is b not a) 
+// Latest emitted observable (here is b not a) 
 // if any new observable was emitted 
 bSubject.subscribe(value => {
   console.log("Subscription got", value); // Subscription retrieve b, 
@@ -69,18 +70,18 @@ subject.next("c"); // Subscription got c
 subject.next("d"); // Subscription got d
 ```
 
-#### 2. It can be `observer` and `observable` (subscribe and emit)
+### It can be `observer` and `observable` (subscribe and emit)
 
 Unique features of a subject compared to an observable are:  
 - it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
 
 We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method on `BehaviorSubject`.
 
-#### 3. It's a subtype of `observable`
+### It's a subtype of `observable`
 
 `observable` is a Generic, and **`BehaviorSubject` is technically a sub-type of Observable** because `BehaviorSubject` is an observable with specific qualities.
 
-#### 4. `BehaviorSubject` ensures that you got the last updated data
+### `BehaviorSubject` ensures that you got the last updated data
 
 - Use `BehaviorSubject` for a data service as an angular service often initializes before component and **behavior subject ensures that the component consuming the service receives the last updated data** even if there are no new updates since the component's subscription to this data. 
 
@@ -123,7 +124,7 @@ subject.next(789);
 - [[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
 - [[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
 
-## Angular BehaviorSubject
+#### Angular BehaviorSubject
 - [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
 - [SoruceCode](https://dev.to/juliandierkes/two-ways-of-using-angular-services-with-the-httpclient-51ef)   
 - [Using Behaviorsubject To Handle **Asynchronous** Loading In Ionic](https://eliteionic.com/tutorials/using-behaviorsubject-to-handle-asynchronous-loading-in-ionic/)
@@ -159,8 +160,7 @@ export class ShoppingListPushService {
    * and it emits the value via .next()
    */
   fetchList() {
-    this.httpClient.get<ShoppingItem[]>(this.ITEMS_URL)
-      .subscribe(
+    this.httpClient.get<ShoppingItem[]>(this.ITEMS_URL).subscribe(
           // update the data
           receivedItems => this.items$.next(receivedItems)
     );

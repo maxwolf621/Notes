@@ -1,12 +1,63 @@
 # RXJS operation
-[`Array.prototype.slice()`](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)      
+
+- [RXJS operation](#rxjs-operation)
+  - [Reference](#reference)
+  - [pipe](#pipe)
+  - [Creator Operator](#creator-operator)
+    - [of](#of)
+    - [iff](#iff)
+    - [throwError](#throwerror)
+    - [from](#from)
+    - [range](#range)
+    - [Promise](#promise)
+    - [fromEvent](#fromevent)
+    - [fromEventPattern](#fromeventpattern)
+  - [interval](#interval)
+  - [setTimeout](#settimeout)
+  - [timer](#timer)
+  - [defer](#defer)
+  - [fusionner/verschmelzen](#fusionnerverschmelzen)
+    - [concat](#concat)
+    - [merge](#merge)
+    - [zip](#zip)
+  - [map](#map)
+  - [SwitchMap](#switchmap)
+  - [combineLatest (e.g. 搜尋器)](#combinelatest-eg-搜尋器)
+  - [startWith (initialize observable)](#startwith-initialize-observable)
+  - [forkJoin](#forkjoin)
+  - [filter](#filter)
+  - [Subjekt/matière](#subjektmatière)
+    - [Subject](#subject)
+    - [`BehaviorSubject<TYPE>(initializedVal)`](#behaviorsubjecttypeinitializedval)
+    - [`ReplaySubject<TYPE>(replayVal)`](#replaysubjecttypereplayval)
+    - [AsyncSubject](#asyncsubject)
+  - [Error Handling](#error-handling)
+    - [catchError && throwError](#catcherror--throwerror)
+    - [finalize](#finalize)
+## Reference
+
 [RXJS examples](https://stackblitz.com/edit/angular-jk5usw-qb828e?file=src/app/chips-autocomplete-example.ts)   
 [angular university rxjs error handling](https://blog.angular-university.io/rxjs-error-handling/)   
 [RxJS 轉換類型 Operators (1) - map / scan / pairwise](https://ithelp.ithome.com.tw/articles/10248366)
 [讓 TypeScript 成為你全端開發的 ACE！ 系列](https://ithelp.ithome.com.tw/users/20120614/ironman/2685?page=1)  
 [希望是最淺顯易懂的 RxJS 教學](https://blog.techbridge.cc/2017/12/08/rxjs/)  
 **[learnrxjs.io](https://www.learnrxjs.io/)**         
-**[rxjs.dev](https://rxjs.dev/api/operators/)**  
+**[rxjs.dev](https://rxjs.dev/api/operators/)**     
+[RxJS 轉換類型 Operators (2) - switchMap / concatMap / mergeMap / exhaustMap](https://ithelp.ithome.com.tw/articles/10248745)   
+[[Angular 大師之路] Day 30 - 在 Angular 中應用 RxJS 的 operators (2) - 進階應用](https://ithelp.ithome.com.tw/articles/10209906)    
+[ReplaySubject](https://blog.angulartraining.com/how-to-cache-the-result-of-an-http-request-with-angular-f9aebd33ab3)
+
+
+```typescript
+stream.pipe(
+  op1(data =>{ ... }),
+  op2(data =>{.... }),
+  op3(data =>{.... }),
+).subscribe( obs => {
+   //...
+}
+)
+```
 
 ## pipe 
 **Use the `pipe()` function to make new operators**    
@@ -184,37 +235,41 @@ setTimeout(() => {
 
 ## interval
 
-interval 會依照的參數設定的時間 (毫秒) 來建議 Observable，當被訂閱時，就會每隔一段指定的時間發生一次資料流，資料流的值就是為事件是第幾次發生的 (從0開始)
+interval 會依照的參數設定的時間(毫秒)來建議 Observable，當被訂閱時，就會每隔一段指定的時間發生一次資料流，資料流的值就是為事件是第幾次發生的 (從0開始)
 
 建立一個每一秒發生一次的資料流 
 ```typescript
-// |_1_|__1_|__1_|__1_|___........
-// ----0----1----2----3----.......
+|_1_|__1_|__1_|__1_|___........
+----0----1----2----3----.......
 interval(1000).subscribe(
           data => console.log(data)
         );
 ```
 
-當然我們可以在一段時間後取消訂閱
+
+## setTimeout
+
+在一段時間後取消訂閱
 ```typescript
 const subscription = interval(1000).subscribe(
                       data => console.log(`interval 示範: ${data}`)
                     );
 
-setTimeout(() => {
-   // ----0----1----2----3----4---|
-   subscription.unsubscribe();
-}, 5500);
+setTimeout( () => {
+   ----0----1----2----3----4---|
+   subscription.unsubscribe(); }, 
+   5500
+);
 ```
 
 ## timer
-`timer` 跟 `interval` 有點類似，但它多一個參數， 用來設定經過多久時間後開始依照指定的間隔時間計時。  
+`timer` 跟 `interval` 有點類似，但**它多一個參數**， 用來設定經過多久時間後開始依照指定的間隔時間計時
+
 設定Observable在3秒後開始以每1秒一個新事件的頻率計時
 ```typescript
-/**
-  * |__________3_________|__1__|__1__|__1__|__....
-  * |--------------------0-----1-----2-----......
-  */
+time   |~~~~~~~~~~3~~~~~~~~~|~~1~~|-~1~~|~~1~~|.....
+stream |--------------------0-----1-----2-----......
+
 timer(3000, 1000).subscribe(
       data => console.log(data)
     );
@@ -226,9 +281,8 @@ timer(3000, 1000).subscribe(
 // ....
 ```
 
-interval的缺點，就是一開始一定會先等待一個指定時間，才會發生第一個事件，但有時候我們會希望一開始就發生事件，這個問題可以透過 timer 解決，只要等待時間設為0
+interval的缺點，就是一開始一定會先等待一個指定時間，才會發生第一個事件，但有時候我們會希望一開始就發生事件，這個問題可以透過 timer 解決，只要等待時間設為`0`
 ```typescript 
-// 0----1----2----3----......
 timer(0, 1000).subscribe(
       data => console.log(`timer 示範: ${data}`)
     );
@@ -236,23 +290,28 @@ timer(0, 1000).subscribe(
 
 timer 如果沒有設定第二個參數，代表在指定的時間發生第一次事件後，就不會再發生任何事件了。
 ```typescript
-// --------------------0|
+|~~~~~~~~~3~~~~~~~~~~~|
+|--------------------0|
+
 timer(3000).subscribe(
       data => console.log(data)
     );
 //  0
 ```
 
-### defer
-defer 會將建立 Observable 的邏輯包裝起來，提供更一致的使用感覺，使用 defer 時需要傳入一個 factory function 當作參數，這個 function 裡面需要回傳一個 Observable (或 Promise )，當 defer 建立的 Observable 被訂閱時，會呼叫這個 factory function，並以裡面回傳的 Observer 當作資料流：
+## defer
+defer 會將建立 Observable 的邏輯包裝起來，提供更一致的使用感覺，**使用 defer 時需要傳入一個 factory function 當作參數**，這個 function 裡面需要回傳一個 Observable (或 Promise )，當 defer 建立的 Observable 被訂閱時，會呼叫這個 factory function，並以裡面回傳的 Observer 當作Stream
 ```typescript
-const factory = () => of(1, 2,
+const factory = () => of(1, 2);
 const source$ = defer(factory);
+
 source$.subscribe(data => console.log(`defer 示範: ${data}`));
 ```
 - `source$` 每次被訂閱時才會去呼叫裡面 factory function，這麼做的好處是建立 Observable 的邏輯被包裝起來了，同時也可以達成延遲執行的目標。
 
-那麼為什麼還要用 defer 呢？如同剛才所說的，有一個很重要的目標是「延遲執行」，如果今天產生 Observable 的邏輯希望在「訂閱」時才去執行的話，就很適合使用 defer，最常見的例子應該非 Promise 莫屬了！Promise 雖然是非同步執行程式，但在 Promise 產生的一瞬間相關程式就已經在運作了：
+使用`defe`核心目標是「延遲執行」，如果今天產生 Observable 的邏輯希望在「訂閱」時才去執行的話，就很適合使用 defer，最常見的例子應該非 Promise   
+
+Promise 雖然是非同步執行程式，但在 Promise 產生的一瞬間相關程式就已經在運作了：
 ```typescript
 const p = new Promise((resolve) => {
   console.log('Promise 內被執行了');
@@ -266,7 +325,8 @@ p.then(result => {
   console.log(`Promise 處理結果: ${result}`);
 });
 ```
-就算用 from 包起來變成 Observable，已經執行的程式依然已經被執行了，呼叫 `.then()` 不過是再把 `resolve()` 的結果拿出來而已；在設計 Observable 時如果可以延遲執行，直到被訂閱時才真的去執行相關邏輯，通常會比較好釐清整個流程，
+
+就算用 from 包起來變成 Observable，已經執行的程式依然已經被執行了，呼叫 `.then()` 只是再把 `resolve()` 的結果拿出來而已；在設計 Observable 時如果可以延遲執行，直到被訂閱時才真的去執行相關邏輯，通常會比較好釐清整個流程
 ```typescript
 // 將 Promise 包成起來
 // 因此在此 function 被呼叫前，都不會執行 Promise 內的程式
@@ -285,24 +345,23 @@ deferSource$.subscribe(result => {
 });
 ```
 
+##  fusionner/verschmelzen 
+
 ### concat
 
-Concat multiple observable stream into one 
 ```typescript
 sourceA$: 1------2------|
 sourceB$: 3------4------|
 sourceC$: 5------6------|
-
-concat(sourceA$, sourceB$, source$)
+concat(sourceA$, sourceB$, sourceC$)
+  .subscribe(data => {
+    console.log(data);
+}); 
 
 1------2----'-3------4-----'-5------6------|
             ^ End of       ^ End of 
               sourceA$       sourceB$
-                            
-concat(sourceA$, sourceB$, sourceC$)
-  .subscribe(data => {
-    console.log(data);
- }); 
+
 ```
 
 
@@ -312,9 +371,7 @@ concat(sourceA$, sourceB$, sourceC$)
 sourceA$: --A1--A2--A3--A4--A5--A6--....
 sourceB$: ----------B1----------B2--...
 sourceC$: ------------------C1------....
-
 merge(sourceA$, sourceB$, sourceC$)
-
 --A1--A2--(A3,B1)--A4--(A5,C1)--(A6,B2)----
 ```
 
@@ -325,19 +382,58 @@ sourceA$: --A1--A2--A3--A4--............
 sourceB$:   ----B1  ----B2  ----B3--....
 sourceC$:     ------C1    ------C2    ------C3......
 
-zip(sourceA$, sourceB$, sourceC$)
-              ------**    ------**    ------**.......
-                [A1,B1,C1]  [A2,B2,C2]  [A3,B3,C3]
-
-// `A4` is there are no corresponding observable in `sourceB$` and `sourceC$`
-
 zip(sourceA$, sourceB$, sourceC$).subscribe(data => {
   console.log(data)
 }); 
+
+              ------**    ------**    ------**.......
+                [A1,B1,C1]  [A2,B2,C2]  [A3,B3,C3]
+```
+- `A4` is there are no corresponding observable in `sourceB$` and `sourceC$`
+
+
+## map 
+
+
+- Observable 的 map 是每次有事件發生時進行轉換。
+- Array 的 map 會立刻把整個了陣列的資料勁行轉換。
+
+
+```typescript
+of(1, 2, 3, 4).pipe(
+  map((value, index) => `第 ${index} 次事件資料為 ${value}`)
+).subscribe(message => console.log(`map 示範 (2): ${message}`));
+// map 示範 (2): 第 0 次事件資料為 1
+// map 示範 (2): 第 1 次事件資料為 2
+// map 示範 (2): 第 2 次事件資料為 3
+// map 示範 (2): 第 3 次事件資料為 4
 ```
 
+```typescript
+const studentScore = [
+  { name: '小明', score: 100 },
+  { name: '小王', score: 49 },
+  { name: '小李', score: 30 }
+];
+
+of(...studentScore).pipe(
+  // 專注處理開根號邏輯
+  map(student => ({...student, newScore: Math.sqrt(student.score)})),
+  // 專注處理乘以十邏輯
+  map(student => ({...student, newScore: student.newScore * 10})),
+  // 專注處理取整數
+  map(student => ({...student, newScore: Math.ceil(student.newScore)})),
+  // 專注處理判斷是否及格
+  map(student => ({...student, pass: student.newScore >= 60}))
+).subscribe(student => {
+  // 轉著處理如何顯示
+  console.log(
+    `map 示範 (3): ${student.name} 成績為 ${student.newScore} (${student.pass ? '及格': '不及格'})`);
+});
+```
+
+
 ## SwitchMap
-- [RxJS 轉換類型 Operators (2) - switchMap / concatMap / mergeMap / exhaustMap](https://ithelp.ithome.com.tw/articles/10248745)
 
 1. `switchMap()`可以在收到`observable`時，轉換成另外一個`observable`，   
 2. `switchMap()`用於有**順序必要的巢狀式**`subscribe()`
@@ -537,7 +633,7 @@ this.data$ = forkJoin(posts$, tags$).pipe(
 ```
 
 ## filter
-- [[Angular 大師之路] Day 30 - 在 Angular 中應用 RxJS 的 operators (2) - 進階應用](https://ithelp.ithome.com.tw/articles/10209906)  
+
 
 Rxjs的filter與array的filter非常類似
 ```typescript
@@ -549,7 +645,9 @@ data$ = this.searchControl.valueChanges.pipe(
 );
 ```
 
-## Subject
+## Subjekt/matière
+
+### Subject
 
 為了達到資料共享給多個Components我們可以利用`Subject`來存放資料，當資料變更時，在呼叫`next()`方法，通知所有Subscribers
 
@@ -564,11 +662,11 @@ export class ChatService {
   messages$ = new Subject();
 
   constructor() {
-    // 推送Observable to subscriber
+    // 推送 Observable 給 subscriber
     this.messages$.next(this._message);
   }
 
-  // 推送新的message
+  // 推送新的 message
   addMessage(message) {
     this._message = [...this._message, message];
     this.messages$.next(this._message);
@@ -576,7 +674,7 @@ export class ChatService {
 }
 ```
 
-單純使用`Subject`時，最大的問題是在訂閱時(`subscribe(..)`)若沒有發生任何的`next()`呼叫，會完全收不到過去的資料, 例如
+單純使用`Subject`時，最大的問題是在訂閱時(`subscribe(..)`)若沒有發生任何的`next()`呼叫，會完全收不到過去的資料, For Example
 ```typescript
 const subject = new Subject<string>();
 
@@ -601,20 +699,20 @@ subject.next('2');
 ```
 
 
-## BehaviorSubject
+### `BehaviorSubject<TYPE>(initializedVal)`
 
 我們可以利用`BehaviorSubject`以及`ReplaySubject`取得之前的`Observable`
 
 `BehaviorSubject` 可以在資料被訂閱前，給予初始資料(**一定得給**)，這樣在任何`next()`發生前執行`subscribe()`都會得到初始資料
 ```typescript
 // 建立 BehaviorSubject 時，給予初始資料值
+
 const subject = new BehaviorSubject<string>('1'); 
 
 // 分別印出 1, 2, 3
 subject.subscribe(data => {
     console.log(`Sub1 => ${data}`);
 });
-
 
 subject.next('2');
 
@@ -627,7 +725,7 @@ subject.next('3');
 ```
 
 
-## [ReplaySubject](https://blog.angulartraining.com/how-to-cache-the-result-of-an-http-request-with-angular-f9aebd33ab3)
+### `ReplaySubject<TYPE>(replayVal)`
 
 `ReplaySubject`會記錄所有呼叫`next()`變更的資料，在被`subscribe()`時，重新播放所有紀錄(可設定紀錄最近的`N`筆)
 
@@ -654,9 +752,10 @@ subject.next('4');
 ```
 
 
-## AsyncSubject
+### AsyncSubject
 
-另外還有一個比較不常用的 `Subject` 類型叫做 `AsyncSubject` 他只有在 `complete()` 方法被呼叫時，才能訂閱到「最後一次 next() 的資料」
+`AsyncSubject`比較不常用
+他只有在 `complete()` 方法被呼叫時，才能訂閱到「`最後一次 next()` 的資料」
 
 ```typescript
 const subject = new AsyncSubject();
@@ -690,7 +789,8 @@ subject.subscribe(
   - 若希望不要中斷整個 `observable`可以使用RxJS 內有提供`catchError`來攔截錯誤
 
 
-### catchError
+### catchError && throwError
+
 
 `catchError`可以攔截發生的錯誤，並回傳另外一個`observable`，讓整個`observable`可以順利繼續運作，透過這種方式可以避免`observable`運作中斷，也能記錄到錯誤訊息
 
@@ -703,10 +803,6 @@ this.httpClient.get(`.../posts`).pipe(
   })
 )
 ```
-
-
-## throwError
-
 使用`throwError`錯誤時就整個中斷，或主動拋出錯誤   
 常常搭配`if` condition
 ```typescript
@@ -725,7 +821,7 @@ this.httpClient.get(`.../posts`).pipe(
 ```
 
 
-## finalize
+### finalize
 
 在`try ... catch`的程式中，通常會提供一個`finally {}`來放置最後一定要執行的程式，在RsJX中則使用`finalize`
 
@@ -738,43 +834,4 @@ this.httpClient.get(`.../posts`).pipe(
 	  this.isLoading = false;        
   })
 )
-```
-
-## map 
-
-```typescript
-of(1, 2, 3, 4).pipe(
-  map((value, index) => `第 ${index} 次事件資料為 ${value}`)
-).subscribe(message => console.log(`map 示範 (2): ${message}`));
-// map 示範 (2): 第 0 次事件資料為 1
-// map 示範 (2): 第 1 次事件資料為 2
-// map 示範 (2): 第 2 次事件資料為 3
-// map 示範 (2): 第 3 次事件資料為 4
-```
-
-- Observable 的 map 是每次有事件發生時進行轉換。
-- 陣列的 map 會立刻把整個了陣列的資料勁行轉換。
-
-```typescript
-const studentScore = [
-  { name: '小明', score: 100 },
-  { name: '小王', score: 49 },
-  { name: '小李', score: 30 }
-];
-
-of(...studentScore).pipe(
-  // 專注處理開根號邏輯
-  map(student => ({...student, newScore: Math.sqrt(student.score)})),
-  // 專注處理乘以十邏輯
-  map(student => ({...student, newScore: student.newScore * 10})),
-  // 專注處理取整數
-  map(student => ({...student, newScore: Math.ceil(student.newScore)})),
-  // 專注處理判斷是否及格
-  map(student => ({...student, pass: student.newScore >= 60}))
-).subscribe(student => {
-  // 轉著處理如何顯示
-  console.log(
-    `map 示範 (3): ${student.name} 成績為 ${student.newScore} (${student.pass ? '及格': '不及格'})`);
-});
-
 ```
