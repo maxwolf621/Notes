@@ -10,7 +10,6 @@
     - [`BehaviorSubject` ensures that you got the last updated data](#behaviorsubject-ensures-that-you-got-the-last-updated-data)
   - [Difference btw `Observable` and `BehaviorSubject`](#difference-btw-observable-and-behaviorsubject)
   - [Usage in Angular](#usage-in-angular)
-      - [Update `@input` property for both child and parent component](#update-input-property-for-both-child-and-parent-component)
       - [Angular BehaviorSubject](#angular-behaviorsubject)
       - [Step 1 Service](#step-1-service)
       - [Step 2 Component who uses service to fetch data](#step-2-component-who-uses-service-to-fetch-data)
@@ -118,12 +117,6 @@ subject.next(789);
 - **BehaviorSubject: A Subject that requires an initial value and emits its current value to new subscribers.**
 
 ## Usage in Angular
-
-#### Update `@input` property for both child and parent component
-
-- [[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
-- [[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
-
 #### Angular BehaviorSubject
 - [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
 - [SoruceCode](https://dev.to/juliandierkes/two-ways-of-using-angular-services-with-the-httpclient-51ef)   

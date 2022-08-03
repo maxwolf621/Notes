@@ -155,7 +155,7 @@ from(of(1, 2, 3, 4)).subscribe(data => {
 
 ```typescript
 // 使用 generator 建立 iterable
-function* range(start, end) {
+function range(start, end) {
   for(let i = start; i <= end; ++i){
     yield i;
   }

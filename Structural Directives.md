@@ -1,12 +1,25 @@
-# Structural Directive
+# Structural Directive `*`
+- [Structural Directive `*`](#structural-directive-)
+  - [Reference](#reference)
+  - [在HTML套用Multiple Structural Directives](#在html套用multiple-structural-directives)
+  - [Custom Structural Directive](#custom-structural-directive)
 
+## Reference
 - [`*` Structural Directives](https://ithelp.ithome.com.tw/articles/10195273)
+- [https://angular.io/guide/structural-directives](https://angular.io/guide/structural-directives)
 
-在Angular我們利用利用`*`來實現Structural Directive  
+---
+
+Angular利用`*`來實現Structural Directive  
+structural directives are applied they generally are prefixed by an asterisk
+
+For example
 ```html
 <div *ngIf="hero" >{{hero.name}}</div>
-
-<!-- is equivalent to -->
+```
+is equivalent to
+```html
+<!-- Selector ngiF -->
 <ng-template [ngIf]="hero">
   <div>{{hero.name}}</div>
 </ng-template>
@@ -17,7 +30,7 @@
   - **因為這可以避免過多的dom元素拖累網頁效能，若單純使用css去hide、show元素(只是隱藏而已)，所有的監聽器、物件依舊會在背景執行，這會讓效能變得不佳**
 - `ng-template`並不會一開始就顯示在畫面上，而是通過Directive操作裡面的dom並將要顯示的template添加在dom之中
 
-## 在`.html`套用Multiple Structural Directives 
+## 在HTML套用Multiple Structural Directives 
 
 **我們可以將許多`屬性Directives`寫在同一個host element上，但同一個host element只能夠有一個Structural Directives**   
 所以在一般的狀態下,**如果需要兩個TAGS,則會將HTML利用一些不會影響結構的TAG來做多層的Structural Directives控制**   
@@ -41,8 +54,7 @@
 <div>
   Pick your favorite hero
   (<label>
-    <input type="checkbox" 
-           checked (change)="showSad = !showSad">
+    <input type="checkbox" checked (change)="showSad = !showSad">
     show sad
   </label>)
 </div>
@@ -58,7 +70,7 @@
 ```
 ![image](https://user-images.githubusercontent.com/68631186/129431539-5f8ffb4c-92e4-4dd8-b8eb-b78a687f6ba6.png)
 
-這時候就可以改用`<ng-container *structural directive"...">`來實現多層結構指令
+這時候就可以改用`<ng-container *ng...=".." >`來實現多層結構指令
 ```html
 <select [(ngModel)]="hero">
   <ng-container *ngFor="let h of heroes">
@@ -85,9 +97,11 @@ export class UnlessDirective {
 
   constructor(
     private templateRef: TemplateRef<any>,
+
     private viewContainer: ViewContainerRef) { }
 
-  @Input() set appUnless(condition: boolean) {
+  @Input() 
+  set appUnless(condition: boolean) {
     if (!condition && !this.hasView) {
       this.viewContainer.createEmbeddedView(this.templateRef);
       this.hasView = true;

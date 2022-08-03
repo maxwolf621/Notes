@@ -1,9 +1,10 @@
 # Inhaltsverzeichnis
-- [DOM properties and HTML attributes](domPropHTMLattr.md) 
 
 - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Typescript](#typescript)
-  - [Basic](#basic)
+  - [Angular Basics](#angular-basics)
+    - [Template Passing data btw HTML, Component & CSS](#template-passing-data-btw-html-component--css)
+    - [Angular Reactive Forms](#angular-reactive-forms)
   - [Router](#router)
   - [RXJS](#rxjs)
   - [ERROR](#error)
@@ -16,25 +17,33 @@
 - [Class](Typescript/Class.md)
 - [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
 
-## Basic
+## Angular Basics
 - [Install and Uninstall Angular](Install&UninstallAngular.md)  
 - [Angular CLI](AngularCLI.md)  
   > [CLI command](https://blog.poychang.net/note-angular-cli/)    
 - [Flow of boosting Angular Application](ApplicationActs.md)  
 - [Component](Component.md)  
-- [Life hooks](lifeHooks.md)  
 - [Module](ngModule.md)  
+- **[`@ngModule.Provider` And Dependency Injection](Dependency%20Injection.md)**
 - **[ModuleDesignPattern](moduleDesignPattern.md)**
+- **[Life hooks](lifeHooks.md)**  
+### Template Passing data btw HTML, Component & CSS 
+
+[angular.io Template Overview](https://angular.io/guide/template-overview)
+
+- [DOM properties and HTML attributes](domPropHTMLattr.md) 
+- **[Template Variable](hashtag.md)**
+- **[ViewChild and ViewChildren](viewchild.md)**
 - **[Bind](Binding.md)**
   - **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](TwoWayBinding.md)**
 - **[Structural Directives](Structural%20Directives.md)**  
-  > [`ng-template`](ng-template.md)
-  > [`ng-container`](ng-container.md)
-- **[ElementRef, ViewChild and AfterViewInit](ElementRef_ViewChild_AfterViewInit.md)**
-- [TemplateReferenceValue](TemplateReferenceValue.md) 
+  - [`ng-template`](ng-template.md)
+  - [`ng-container`](ng-container.md)
+  - [`ng-templateOutlet`](ngTemplateOutlet.md)
+
+### Angular Reactive Forms
 - **[ReactiveFormsModule](ReactiveFormsModule.md)** 
 - **[Custom Form Validator](Validator.md)**
-- **[`@ngModule.Provider` And Dependency Injection](Dependency%20Injection.md)**
 
 ## Router
 

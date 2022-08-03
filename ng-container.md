@@ -1,34 +1,40 @@
 # ng-container
 
+- [ng-container](#ng-container)
+  - [Binding Multiple Structural Directives `*ng..`](#binding-multiple-structural-directives-ng)
+  - [Invisibility of ng-container for CSS](#invisibility-of-ng-container-for-css)
+## Binding Multiple Structural Directives `*ng..`
 
-What for? 
+`<ng-container ..>` helps us to bind multiple `*ng....`.
 
-For example :: if we got `*ngFor` and `*ngIf` in the same line. it causes error `Template parse error`
+It causes error `Template parse error` without ng-container to bind multiple structural directives, for example
 ```html
+<!-- Error -->
 <ul>
   <li *ngFor="let item of list; let odd = odd" * ngIf="odd">
     {{ item }}
   </li>
 </ul>
-```
 
-What if there is a way to show if item is odd and come in visible when the item is not?   
-that is what `ng-container` about
-
-The power of `<ng-container ..>` is it help us to do multiple `*ngXX` template binding and hides itself.
-```html
+<!-- using ng-container bind multiple structural directive-->
 <ul>
   <ng-container *ngFor="let item of list; let odd = odd">
     <li *ngIf="odd">{{ item }}</li>
   </ng-container>
 </ul>
 ```
-Now it only shows up `<li>{{item}}</li>` while the `item` is `odd`      
-and `ng-container` will also hide itself    
+
+The above code actually looks like the following when it is executed
+```html
+<!-- <ng-container> is invisible -->
+<ul>
+    <li *ngIf="odd">{{ item }}</li>
+</ul>
+```
 
 
-Another advance is css-render    
-for example    
+## Invisibility of ng-container for CSS 
+
 ```html
 <div class="body">
   <div *ngFor="let item of list; let odd = odd">
@@ -36,6 +42,32 @@ for example
   </div>
 </div>
 ```
-For rendering it by CSS we have to know how many `class="content"` was wrapped start from `class="body"`.   
-with `ng-container` it simply solves such problem.
+```css
+/*
+              Nested Condition for render
+              <.. class = "body">
+                <... class = "content">
+                  ....
+                </...>
+              </..>
+*/
 
+.body > .content {
+  color: red;
+}
+```
+It might cause some problem, because there is a extra layer `<div *ngFor=...>...</div>` btw `<div class="body"> ... </div>` and `<div class="content"> ... </div>`
+
+Using `ng-container` to hide `*ngFor` Structural Directives 
+```html
+<div class="body">
+  <ng-container *ngFor="let item of list; let odd = odd">
+    <div class="content" *ngIf="odd">{{ item }}</div>
+  </ng-container>
+</div>
+
+<!-- what page is displayed -->
+<div class="body">
+    <div class="content" *ngIf="odd">{{ item }}</div>
+</div>
+```

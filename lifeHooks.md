@@ -1,5 +1,22 @@
 ###### tags: `Angular`
-# [Life Hooks](https://ithelp.ithome.com.tw/articles/10203203)
+# Life Hooks
+
+- [Life Hooks](#life-hooks)
+  - [Reference](#reference)
+  - [Introduction of Life hooks](#introduction-of-life-hooks)
+  - [宣告Lifecycle Hooks](#宣告lifecycle-hooks)
+  - [`OnChanges`](#onchanges)
+    - [`ngOnChanges(parameter : SimpleChanges)`](#ngonchangesparameter--simplechanges)
+  - [`OnInit`](#oninit)
+  - [`DoCheck`](#docheck)
+  - [`AfterContentInit` and `AfterContentChecked`](#aftercontentinit-and-aftercontentchecked)
+  - [`AfterViewInit` 與 `AfterViewChecked` for `@ViewChild` in 父Component](#afterviewinit-與-afterviewchecked-for-viewchild-in-父component)
+  - [`OnDestroy`](#ondestroy)
+
+
+## Reference
+
+- [[Angular 大師之路] Day 04 - 認識 Angular 的生命週期]((https://ithelp.ithome.com.tw/articles/10203203))
 
 ## Introduction of Life hooks
 

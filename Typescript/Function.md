@@ -276,7 +276,8 @@ function filter2<Type, Func extends (arg: Type) => boolean>(arr: Type[], func: F
 }
 ```
 - We’ve created a type parameter `Func` that doesn’t relate two values. 
-That’s always a red flag, because it means callers wanting to specify type arguments have to manually specify an extra type argument for no reason. Func doesn’t do anything but make the function harder to read and reason about!
+That’s always a red flag, because it means callers wanting to specify type arguments have to manually specify an extra type argument for no reason.   
+Func doesn’t do anything but make the function harder to read and reason about!
 
 > Rule: Always use as few type parameters as possible
 

@@ -1,14 +1,14 @@
 ###### tags: `Angular`
 # Module
 - [Module](#module)
-  * [Generate Module in CLI](#generate-module-in-cli)
-  * [Module內的 `@NgModule`](#module-----ngmodule-)
-    + [`imports` (Modules)](#-imports---modules-)
-  * [`declarations` (Components)](#-declarations---components-)
-  * [exports (Component) to other module to use](#exports--component--to-other-module-to-use)
-  * [providers](#providers)
-  * [bootstrap](#bootstrap)
-    + [entryComponents](#entrycomponents)
+  - [Generate Module in CLI](#generate-module-in-cli)
+  - [Module內的 `@NgModule`](#module內的-ngmodule)
+    - [`imports` (Modules)](#imports-modules)
+  - [`declarations` (Components)](#declarations-components)
+  - [exports (Component) to other module to use](#exports-component-to-other-module-to-use)
+  - [providers](#providers)
+  - [bootstrap](#bootstrap)
+    - [entryComponents](#entrycomponents)
 
 ## Generate Module in CLI
 ```bash

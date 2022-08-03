@@ -1,6 +1,15 @@
 ###### tags: `Angular`
 # Component
-- [Code Example](https://ithelp.ithome.com.tw/articles/10240474)
+
+[Code Example](https://ithelp.ithome.com.tw/articles/10240474)
+
+- [Component](#component)
+  - [指派Component到指定的Module](#指派component到指定的module)
+  - [`export` component到指定的module](#export-component到指定的module)
+  - [Component的裝飾器](#component的裝飾器)
+    - [Selector](#selector)
+    - [Web Page 以及 Template](#web-page-以及-template)
+  - [`@Component.selector`](#componentselector)
 
 ## 指派Component到指定的Module
 
@@ -37,9 +46,26 @@ ng g c task/task --export
 ## Component的裝飾器
 如同module一樣，Component透過裝飾器`@Component` 可以決定此元件在執行期間該如何處理、實體化與使用  
   
-- `task.component`被`app.component.html`使用
+
+### Selector 
+
+`task.component`被`app.component.html`使用
 ![](https://i.imgur.com/Tt080Iu.png)  
 
+```typescript
+task.component.ts
+@Component({
+    selector : 'app-task',
+    template : './task.component.html',
+    styleUrls: ['./task.component.css']
+})
+export class TaskComponent implements OnInit {
+    // ...
+}
+
+app.component.html use this component
+<task></task>
+```
 
 ### Web Page 以及 Template
 當 Angular Component的頁面檢視寫在 HTML 檔案內，頁面Template放在 CSS 等樣式檔案時，會將 HTML 檔案與樣式檔案路徑定義在`@Component`中的 `templateUrl`與`styleUrls`  
@@ -60,5 +86,4 @@ ng g c task/task --export
 
 `@Component`的`selector`命名上，開頭會使用統一的前字元 (prefix)，其後則為元件名稱  
 > 而前字元可以在建立專案(`ng new`)或建立元件(`ng g c`)時，利用 `--prefix` 參數指定  
-
-**需要注意的是，若Project與Component使用(prefix)前字元不同時，除非變更Lint規則，否則會出現警告訊息**  
+- **需要注意的是，若Project與Component使用(prefix)前字元不同時，除非變更Lint規則，否則會出現警告訊息**  

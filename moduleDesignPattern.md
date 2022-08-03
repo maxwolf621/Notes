@@ -118,14 +118,12 @@ export class MainModule { }
 })
 export class AppModule { }
 ```
+
 - 在 Angular 6 之後，service 的`@Injectable`內多了一個 `providedIn`的設定，我們可以直接設定為 root 字串，就可以達到如同 `CoreModule`的效果，不再需要加入到任何模組的`providers: []`中  
 - **當設定為`providedIn: 'root'`時，代表這個 service 一定會被註冊在根模組之下，因此也能確保 service 是 singleton 的**
 
-  
-:::danger  
 `providedIn`的設定的原本用意為，此服務是屬於哪個模組之內，在過去我們會將 service 放到`providers: []`中，但這種方式若模組內沒有任何一個程式使用到此service 時，在打包程式是無法過濾掉這支程式的，而改用 `providedIn`的方式則可以確保當沒有任何程式使用到此service時，確實過濾掉這支程式，進一步減少程式的大小  
 
 `providedIn`除了設定為 root 字串以外，也可以指定使用的模組，如 `providedIn: SomeModule`，但可能會產生一樣的問題，甚至不小心衍生更多問題，因此建議直接都設定為root 就好，尤其是當有明確singleton需求時  
 
 在 Angular CLI 6+ 之後，建立的 service 自動會加上`provided: 'root'`  
-:::  
