@@ -11,14 +11,23 @@
   - [Reference](#reference)
 
 ## Typescript
+
+- [Iterators and Generators](iter.md)
+- [Enums](enums.md)
+
 - [Types](Typescript/Types.md)
   - [Object Types](Typescript/Object%20Types.md)
+  - [Special Types](specialType.md)
 - [Function](Typescript/Function.md)
 - [Class](Typescript/Class.md)
-- [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
+- [Module](module.md)
+- [NameSpace](namespace.md)
+- [Typescript Questions](tyInterview.md)
 
 ## Angular Basics
+
 - [Install and Uninstall Angular](Install&UninstallAngular.md)  
+- [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
 - [Angular CLI](AngularCLI.md)  
   > [CLI command](https://blog.poychang.net/note-angular-cli/)    
 - [Flow of boosting Angular Application](ApplicationActs.md)  
@@ -32,7 +41,7 @@
 [angular.io Template Overview](https://angular.io/guide/template-overview)
 
 - [DOM properties and HTML attributes](domPropHTMLattr.md) 
-- **[Template Variable](hashtag.md)**
+- **[Template Reference Variable `](hashtag.md)**
 - **[ViewChild and ViewChildren](viewchild.md)**
 - **[Bind](Binding.md)**
   - **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](TwoWayBinding.md)**

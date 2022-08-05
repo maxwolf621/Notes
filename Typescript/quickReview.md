@@ -18,6 +18,10 @@
   - [Literal Types](#literal-types)
 - [Function](#function)
   - [Function Type Expressions and function type alias](#function-type-expressions-and-function-type-alias)
+  - [call Signature && Construct Signature](#call-signature--construct-signature)
+  - [Enum](#enum)
+    - [Literal Enum](#literal-enum)
+    - [object with as const](#object-with-as-const)
 
 ## Object Types as Function Parameter
 ### with (`?`) Optional Member
@@ -78,7 +82,8 @@ function paintShape(opts: PaintOptions) {
 interface Home {
   readonly resident: { name: string; age: number };
 }
- 
+
+// ok!
 function visitForBirthday(home: Home) {
   home.resident.age++;
 }
@@ -94,10 +99,7 @@ function evict(home: Home) {
 }
 ```
 
-
 ## Index Signatures
-
-
 - **This index signature states that when a `StringArray` is indexed with a `number`, it( will return a `string`.**   
 - **An index signature property type must be either `string` or `number`.**   
 
@@ -130,7 +132,6 @@ let myArray: ReadonlyStringArray = getReadOnlyStringArray();
 myArray[2] = "Mallory";
 ```
 
-
 ## Intersection Types `&`
 
 ```typescript
@@ -162,9 +163,7 @@ function setContents<T>(box: Box<T>, newContents: T) {
   box.contents = newContents;
 }
 
-
 type OrNull<Type> = Type | null;
-
 type OneOrMany<Type> = Type | Type[];
  
 type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
@@ -183,8 +182,7 @@ function serContent<OrNull>(a : orNull){
 
 ## assertions (`as`)
 
-using `as` if you already know the variable type (the type you know but typescript doesn't know)
-
+using `as` if you already know the variable type (the type you know but typescript doesn't know
 
 ## Tuple Type 
 
@@ -290,6 +288,17 @@ parameter of type '"left" | "right" | "center"'.
 
 # Function
 
+```typescript 
+// Named function
+function add(x, y) {
+  //..
+}
+ 
+// Anonymous function
+let myAdd = function (x, y) {
+  // ..
+};
+```
 ## Function Type Expressions and function type alias
 
 ```typescript 
@@ -307,5 +316,106 @@ type GreetFunction = (a: string) => void;
 function greeter(fn: GreetFunction) {
   // ...
 }
+```
+
+
+
+## call Signature && Construct Signature
+
+```typescript
+type A :{
+  //{callSignature : dataType} : returnType;
+  {callSignature : }
+}
+
+function fn( aFn : A){
+  a.callSignature()
+}
+
+```
+
+
+## Enum
+### Literal Enum
+
+**A literal enum member is a constant enum member with no initialized value, or with values that are initialized to**
+
+```typescript
+enum ShapeKind {
+  Circle,
+  Square,
+}
+ 
+interface Circle {
+  kind: ShapeKind.Circle;
+  radius: number;
+}
+ 
+interface Square {
+  kind: ShapeKind.Square;
+  sideLength: number;
+}
+```
+
+### object with as const
+
+```typescript
+const userStatus = {
+// key      :  values
+  REGISTERED: 'registered',
+  INACTIVE: 'inactive',
+  NOT_FOUND: 'notFound',
+  BANNED: 'banned',
+} as const;
+
+
+type TypeUserStatus = typeof userStatus;
+/* 
+type TypeUserStatus = {
+  readonly REGISTERED: "registered";
+  readonly INACTIVE: "inactive";
+  readonly NOT_FOUND: "notFound";
+  readonly BANNED: "banned";
+}
+
+Note without `as const`:
+
+type TypeUserStatus = {
+    REGISTERED: string;
+    INACTIVE: string;
+    NOT_FOUND: string;
+    BANNED: string;
+}
+*/
+
+
+// to Key Part
+type UserStatus = keyof TypeUserStatus;
+/* 
+type UserStatus = "REGISTERED" | "INACTIVE" | "NOT_FOUND" | "BANNED"
+*/
+
+// to value part  
+type TypeUserStatus = typeof userStatus;
+type UserStatus = TypeUserStatus[keyof TypeUserStatus];
+/*
+ type UserStatus = "registered" | "inactive" | "notFound" | "banned"
+ */
+```
+
+For the case to change all value to uppercase, all we need to do now is
+```typescript 
+const userStatus = {
+  REGISTERED: 'REGISTERED',
+  INACTIVE: 'INACTIVE',
+  NOT_FOUND: 'NOT_FOUND',
+  BANNED: 'BANNED',
+} as const;
+
+type TypeUserStatus = typeof userStatus;
+type UserStatus = TypeUserStatus[keyof TypeUserStatus];
+/**
+ * type UserStatus = "REGISTERED" | "INACTIVE" | "NOT_FOUND" | "BANNED" 
+  */
 ```
 
