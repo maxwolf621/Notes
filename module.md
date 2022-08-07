@@ -1,23 +1,26 @@
 # Module
 
 - [Module](#module)
+  - [Reference](#reference)
   - [Export](#export)
     - [Exporting a declaration (variable, function, class, type alias, or interface)](#exporting-a-declaration-variable-function-class-type-alias-or-interface)
     - [Export `as` statements](#export-as-statements)
     - [Re-export](#re-export)
     - [export default and default import](#export-default-and-default-import)
   - [Import](#import)
+    - [Inline type imports](#inline-type-imports)
     - [Import a single export from a module](#import-a-single-export-from-a-module)
     - [Import the entire module into a single variable](#import-the-entire-module-into-a-single-variable)
-  - [export = and import = require()](#export--and-import--require)
+  - [`export = module` and `import = require('module')`](#export--module-and-import--requiremodule)
+  - [(CommonJS Syntax) module.exports](#commonjs-syntax-moduleexports)
   - [Guidance for structuring modules](#guidance-for-structuring-modules)
 
 In TypeScript, just as in ECMAScript 2015, any file containing a top-level import or export is considered a module. Conversely, a file without any top-level import or export declarations is treated as a script whose contents are available in the global scope (and therefore to modules as well).
 
+## Reference
+- [Day27 :【TypeScript 學起來】Module 模組](https://ithelp.ithome.com.tw/articles/10280543)
 ## Export
-
 ### Exporting a declaration (variable, function, class, type alias, or interface)
-
 
 You can have multiple `export` per `.ts` file
 ```typescript 
@@ -37,6 +40,20 @@ export class ZipCodeValidator implements StringValidator {
     return s.length === 5 && numberRegexp.test(s);
   }
 }
+```
+
+```typescript
+// @filename: animal.ts
+export type Cat = { breed: string; yearOfBirth: number };
+ 
+export interface Dog {
+  breeds: string[];
+  yearOfBirth: number;
+}
+ 
+// @filename: app.ts
+import { Cat, Dog } from "./animal.js";
+type Animals = Cat | Dog;
 ```
 
 ### Export `as` statements
@@ -88,6 +105,28 @@ console.log(f());
 
 ## Import 
 
+### Inline type imports
+
+```typescript
+// @filename: animal.ts
+export type Cat = { breed: string; yearOfBirth: number };
+export type Dog = { breeds: string[]; yearOfBirth: number };
+export const createCatName = () => "fluffy";
+ 
+// @filename: valid.ts
+import type { Cat, Dog } from "./animal.js";
+export type Animals = Cat | Dog;
+ 
+// @filename: app.ts
+import type { createCatName } from "./animal.js";
+const name = createCatName();
+
+// @filename: app.ts
+import { createCatName, type Cat, type Dog } from "./animal.js";
+ 
+export type Animals = Cat | Dog;
+const name = createCatName();
+```
 
 ### Import a single export from a module
 
@@ -110,18 +149,20 @@ import * as validator from "./ZipCodeValidator";
 let myValidator = new validator.ZipCodeValidator();
 ```
 
-## export = and import = require()
+## `export = module` and `import = require('module')`
 
 When exporting a module using `export =`, TypeScript-specific import `module = require("module") `must be used to import the module.
 
 ```typescript
 // ZipCodeValidator.ts
 let numberRegexp = /^[0-9]+$/;
+
 class ZipCodeValidator {
   isAcceptable(s: string) {
     return s.length === 5 && numberRegexp.test(s);
   }
 }
+
 export = ZipCodeValidator;
 
 
@@ -141,8 +182,31 @@ strings.forEach((s) => {
 });
 ```
 
-## Guidance for structuring modules
+## (CommonJS Syntax) module.exports
 
+```typescript 
+function absolute(num: number) {
+  if (num < 0) return num * -1;
+  return num;
+}
+ 
+module.exports = {
+  pi: 3.14,
+  squareTwo: 1.41,
+  phi: 1.61,
+  absolute,
+};
+
+const maths = require("maths");
+maths.pi;
+
+// structure
+const { squareTwo } = require("maths");
+squareTwo;
+
+```
+
+## Guidance for structuring modules
 
 If you’re only exporting a single `class` or `function`, use `export default`.
 

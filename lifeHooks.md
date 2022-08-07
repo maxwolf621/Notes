@@ -5,19 +5,17 @@
   - [Reference](#reference)
   - [Introduction of Life hooks](#introduction-of-life-hooks)
   - [宣告Lifecycle Hooks](#宣告lifecycle-hooks)
-  - [`OnChanges`](#onchanges)
-    - [`ngOnChanges(parameter : SimpleChanges)`](#ngonchangesparameter--simplechanges)
+  - [`OnChanges` (`@Input`)](#onchanges-input)
+    - [`ngOnChanges(changes : SimpleChanges)`](#ngonchangeschanges--simplechanges)
   - [`OnInit`](#oninit)
   - [`DoCheck`](#docheck)
   - [`AfterContentInit` and `AfterContentChecked`](#aftercontentinit-and-aftercontentchecked)
   - [`AfterViewInit` 與 `AfterViewChecked` for `@ViewChild` in 父Component](#afterviewinit-與-afterviewchecked-for-viewchild-in-父component)
   - [`OnDestroy`](#ondestroy)
 
-
 ## Reference
 
 - [[Angular 大師之路] Day 04 - 認識 Angular 的生命週期]((https://ithelp.ithome.com.tw/articles/10203203))
-
 ## Introduction of Life hooks
 
 一個Component完整的Life Hooks順序  
@@ -49,7 +47,7 @@ export class AppComponent implements OnInit {
 - 我們加入了`OnInit`的介面，在宣告元件類別時，加上了 implements OnInit，讓 TypeScript 在處理程式時，知道我們需要實作 `OnInit`介面中宣告的方法
 
 
-## `OnChanges`
+## `OnChanges` (`@Input`)
 
 **An life hook that keeps eyes on the `@Input` variable**
 
@@ -115,20 +113,19 @@ export class AppComponent{
 }
 ```
 
-### `ngOnChanges(parameter : SimpleChanges)`
+### `ngOnChanges(changes : SimpleChanges)`
 
-`ngOnChanges`的Parameter，為一個`SimpleChanges`型別的參數，`SimpleChanges`是一個`key-value` array type
+`ngOnChanges`的Parameter，為一個`SimpleChanges`型別的參數，`SimpleChanges`是一個key-value(`changes['keyName'] =  value`)
 - key 代表的是每個 `@Input() variable`中的`variable`
 
-SimpleChanges中key有三種狀態(values)
+SimpleChanges中三個key為
 ```typescript
 firstChange：boolean // 只有在第一次呼叫時為true，之後都是 false
-previousValue        //上次key's vaule
+previousValue        // 上次key's value
 currentValue         // key's updated value
 ```
 
-For Example
-- 我們可以利用`SimpleChanges`將一個將賠率/股價等類型的資訊，放到`PriceComponent`中，並依照資訊的增減呈現不同變化的Project
+For Example 我們可以利用`SimpleChanges`將一個將賠率/股價等類型的資訊，放到`PriceComponent`中，並依照資訊的增減呈現不同變化的Project
 ```typescript
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
@@ -148,6 +145,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
   ,
   styles: [
     ` .price { background: black;  color: white; }
+
+      // dynamically control <span class"price"> element  via [ngClass]
       .increase { color: red; }
       .decrease { color: green; }`
   ]
@@ -267,7 +266,7 @@ export class AppComponent {
   }
 }
 ```
-- 由於是`@input`的資料型態為`Object`所以除了第一次以外，該`@Input`完全不再進入`pricecomponent`'s `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
+- **由於是`@input`的資料型態為`Object`所以除了第一次以外，該`@Input`完全不再進入`pricecomponent`'s `OnChanges`生命週期中，因此偵測不到資料是否真的有變化了，這是因為在變更偵測時，我們的`priceObj`本身的**參考位置(Reference)**沒有改變的關係**，因此在變更偵測時Angular認為`priceObj`這個`Input`並沒有變更。  
 
 要改變這個結果有兩種方式，一種是複製一個新的物件再改變新物件的內容，並把`price`指派為新的物件(Object)，此時因為物件的參考位置修改了，變更偵測就能夠認得；當然每次都建立新物件是有成本的，另一個方法則是利用`DoCheck`週期進行判斷
 ```typescript

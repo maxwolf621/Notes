@@ -3,61 +3,55 @@
 [[stackoverflow] BehaviorSubject-vs-observable](https://stackoverflow.com/questions/39494058/behaviorsubject-vs-observable)
 
 - [BehaviorSubject](#behaviorsubject)
-  - [The unique features of BehaviorSubject are the following](#the-unique-features-of-behaviorsubject-are-the-following)
-    - [It Always has a returned value](#it-always-has-a-returned-value)
-    - [It can be `observer` and `observable` (subscribe and emit)](#it-can-be-observer-and-observable-subscribe-and-emit)
-    - [It's a subtype of `observable`](#its-a-subtype-of-observable)
-    - [`BehaviorSubject` ensures that you got the last updated data](#behaviorsubject-ensures-that-you-got-the-last-updated-data)
+  - [features of BehaviorSubject](#features-of-behaviorsubject)
+    - [It can be `observer` and `observable` (subscribe and (`.next()` emit)](#it-can-be-observer-and-observable-subscribe-and-next-emit)
   - [Difference btw `Observable` and `BehaviorSubject`](#difference-btw-observable-and-behaviorsubject)
   - [Usage in Angular](#usage-in-angular)
       - [Angular BehaviorSubject](#angular-behaviorsubject)
       - [Step 1 Service](#step-1-service)
       - [Step 2 Component who uses service to fetch data](#step-2-component-who-uses-service-to-fetch-data)
 
-BehaviorSubject is a type of subject,**a subject is a special type of observable** so you can subscribe to messages like any other observable. 
 
-## The unique features of BehaviorSubject are the following
-### It Always has a returned value
+BehaviorSubject is a type of subject, **a subject is a special type of observable** so you can subscribe to messages like any other observable. 
 
-It needs an initial value as it must always return a value on subscription even if it hasn't received a `next()` Upon subscription, it returns the last value of the subject. 
+Observable is a Generic, and BehaviorSubject is technically a sub-type of Observable because BehaviorSubject is an observable with specific qualities.
+
+## features of BehaviorSubject
+
+- BehaviorSubject is needed to be initialized 
+  - `BehaviorSubject` ensures that you got the last updated data
+- always return the last value of the subject
+- any point, **you can retrieve the last value of the subject in a non-observable code using the `getValue()` method.**
+
 
 ```typescript
-// Behavior Subject
-/**
- * @description {@code a} is an initial value. 
- * if there is a subscription after this, 
- * it would get {@code a} value immediately
- */
+/**********************
+ *  Behavior Subject  *
+ **********************/
+
+// require initial value (return last value)
 let bSubject = new BehaviorSubject<string>("a"); 
 
 // ... no subscription ...
 
 bSubject.next("b");
 
-// bSubject will keep listening 
-// Latest emitted observable (here is b not a) 
-// if any new observable was emitted 
+// --------------------- subscriberX starts ------------------------------------------
 bSubject.subscribe(value => {
-  console.log("Subscription got", value); // Subscription retrieve b, 
-                                          // This would not happen 
-                                          //  for a generic observable 
-                                          //  or generic subject by default
+  console.log("Subscription got", value); // subscriberX retrieved b
 });
 
-bSubject.next("c"); // Subscription got c 
-bSubject.next("d"); // Subscription got d
-```
+bSubject.next("c"); // subscriberX got c 
+bSubject.next("d"); // subscriberX got d
 
-A regular observable only triggers when it receives an on next
-at any point, **you can retrieve the last value of the subject in a non-observable code using the `getValue()` method.**
-```typescript
-// Regular Subject
+/*******************************************
+ *  Regular Subject                        *
+ *******************************************/
 
 // we don't need a initial value
 let subject = new Subject(); 
 
 subject.next("b");
-
 
 // ----- subscription starts  ---------------------------------
 subject.subscribe(value => {
@@ -69,28 +63,22 @@ subject.next("c"); // Subscription got c
 subject.next("d"); // Subscription got d
 ```
 
-### It can be `observer` and `observable` (subscribe and emit)
 
-Unique features of a subject compared to an observable are:  
-- it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
+### It can be `observer` and `observable` (subscribe and (`.next()` emit)
 
-We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method on `BehaviorSubject`.
+Unique features of a subject compared to an observable are:    
+it is an `observer` **in addition to being an observable so you can also send values to a subject in addition to subscribing to it.**
 
-### It's a subtype of `observable`
-
-`observable` is a Generic, and **`BehaviorSubject` is technically a sub-type of Observable** because `BehaviorSubject` is an observable with specific qualities.
-
-### `BehaviorSubject` ensures that you got the last updated data
-
-- Use `BehaviorSubject` for a data service as an angular service often initializes before component and **behavior subject ensures that the component consuming the service receives the last updated data** even if there are no new updates since the component's subscription to this data. 
+- **We can get an **observable value** from `BehaviorSubject` using the `asObservable()` method**
 
 ## Difference btw `Observable` and `BehaviorSubject`
 
-Observer of `Observable` can not assign value via `.next(...)` to` observable`(origin/master).     
-`BehaviorSubject` is bi-directional. it's observer can assign value to observable via `next(...)`    
+Observer of `Observable` can not assign value via `.next(...)` to `observable`(origin/master).     
 
-**`BehaviorSubject` (or `Subject` ) stores observer details, runs the code only once and gives the result to all observers .**       
-`observable` creates **copy of data** for each observer. so using `observable` may cause inefficiency if there were multiple observers     
+
+**`BehaviorSubject` is bi-directional. it's observer can assign value to observable via `next(...)` and `BehaviorSubject` (or `Subject` ) stores observer details, runs the code only once and gives the result to all observers .**   
+
+- `observable` creates **copy of data** for each observer. so using `observable` may cause inefficiency if there were multiple observers     
 
 ```typescript
 // RxJS v6+
@@ -108,14 +96,14 @@ subject.next(456); // send value to subject
 //new subscriber will get latest value (456) => output: 456
 subject.subscribe(console.log); // subscriber 3
 
+
 //all three subscribers will get new value => output: 789, 789, 789
 subject.next(789);
 
 // output: 123, 123, 456, 456, 456, 789, 789, 789
 ```
 - Observables : Observables are lazy collections of multiple values over time.
-- **BehaviorSubject: A Subject that requires an initial value and emits its current value to new subscribers.**
-
+- **BehaviorSubject: A Subject that requires an initial value and emits(`.next`) its (last) current value to new subscribers.**
 ## Usage in Angular
 #### Angular BehaviorSubject
 - [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
@@ -143,6 +131,7 @@ export class ShoppingListPushService {
   //                           new BehaviorSubject<SomeType[]>([]);
   // private readonly items$ = new BehaviorSubject([]);
   private readonly items$: BehaviorSubject<ShoppingItem[]> = 
+                           // empty array (initial value)
                            new BehaviorSubject<ShoppingItem[]>([]);
 
   constructor(private httpClient: HttpClient) {}

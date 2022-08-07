@@ -22,6 +22,9 @@
   - [Enum](#enum)
     - [Literal Enum](#literal-enum)
     - [object with as const](#object-with-as-const)
+    - [Computed and constant members](#computed-and-constant-members)
+    - [Sting enums](#sting-enums)
+    - [const enmu](#const-enmu)
 
 ## Object Types as Function Parameter
 ### with (`?`) Optional Member
@@ -417,5 +420,72 @@ type UserStatus = TypeUserStatus[keyof TypeUserStatus];
 /**
  * type UserStatus = "REGISTERED" | "INACTIVE" | "NOT_FOUND" | "BANNED" 
   */
+```
+
+### Computed and constant members
+
+**Enums without initializers either required to be first or have to come after the numeric enums initialized with numeric constants or other constant enum members.**   
+
+```typescript
+// Error
+enum Millie {
+  x = 19,
+  z = fetchValue('Eleven'),
+  y
+}
+
+// No Error
+enum Millie {
+  x = 19,
+  y,
+  z = fetchValue('Eleven'),
+}
+
+enum Millie {
+  y,
+  x = 19,
+  z = fetchValue('Eleven'),
+}
+```
+
+### Sting enums
+
+
+Unlike numeric enum string enums don’t have auto-incrementing behavior, but string enums have the benefit that they serialize well.
+
+```typescript
+enum StrangerThings {
+  Character = "Eleven",
+  Father,
+   Enum member must have initializer.(1061)
+  Power = "Telekenesis",
+  Town = "Hawkins"
+}
+
+// instead 
+//using with empty string 
+enum StrangerThings {
+  Character = "Eleven",
+  Father = "",
+  Power = "Telekenesis",
+  Town = "Hawkins"
+}
+```
+
+### const enmu
+
+```typescript
+const enum Dark { Mikkel, Jonas }
+
+console.log(Dark.Mikkel)    // 0
+console.log(Dark['Mikkel']) // 0
+
+console.log(Dark.Jonas)   // 1
+console.log(Dark['Jonas'] // 1
+```
+
+```typescript
+// Error
+console.log(Dark.[1])
 ```
 

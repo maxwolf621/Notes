@@ -11,7 +11,7 @@ Enums are one of the few features TypeScript has which is not a type-level exten
   - [Heterogeneous enums (NOT RECOMMEND)](#heterogeneous-enums-not-recommend)
   - [Computed and constant members](#computed-and-constant-members)
   - [literal enum members](#literal-enum-members)
-    - [Union Enum](#union-enum)
+  - [Union Enum](#union-enum)
   - [Enums at runtime](#enums-at-runtime)
   - [Enums at compile time](#enums-at-compile-time)
   - [Reverse Mapping](#reverse-mapping)
@@ -26,6 +26,8 @@ Enums are one of the few features TypeScript has which is not a type-level exten
 - [Inlining constants with const enums in TypeScript](https://www.growingwiththeweb.com/2021/01/typescript-inline-const-enums.html)
 - [TypeScript string enums, and when and how to use them](https://blog.logrocket.com/typescript-string-enums-guide/)
 - [Introduction to TypeScript Enums — Const and Ambient Enums](https://levelup.gitconnected.com/introduction-to-typescript-enums-const-and-ambient-enums-1fe686b67495)
+- [Understanding TypeScript enum: Const and Ambient Enum](https://appdividend.com/2020/06/27/understanding-typescript-enum/)
+- [TypeScript | 善用 Enum 提高程式的可讀性 - 基本用法 feat. JavaScript](https://medium.com/enjoy-life-enjoy-coding/typescript-%E5%96%84%E7%94%A8-enum-%E6%8F%90%E9%AB%98%E7%A8%8B%E5%BC%8F%E7%9A%84%E5%8F%AF%E8%AE%80%E6%80%A7-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-feat-javascript-b20d6bbbfe00)
 ## Numeric enums
 
 If the first member has no initializer then they are auto-incremented by default from 0
@@ -51,11 +53,10 @@ enum Direction {
 
 ## String enums
 
-While string enums don’t have auto-incrementing behavior, string enums have the benefit that they “serialize” well.
+**While string enums don’t have auto-incrementing behavior, string enums have the benefit that they serialize well.**
 
-if you were debugging and had to read the runtime value of a numeric enum, the value is often opaque - it doesn’t convey any useful meaning on its own (though reverse mapping can often help).    
-
-String enums allow you to give a meaningful and readable value when your code runs, independent of the name of the enum member itself.
+if you were debugging and had to read the runtime value of a numeric enum, the value is often opaque - it doesn’t convey any useful meaning on its own (though reverse mapping can often help).      
+String enums allow you to give a meaningful and readable value when your code runs, independent of the name of the enum member itself.   
 ```typescript
 enum Direction {
   Up = "UP",
@@ -96,6 +97,34 @@ enum FileAccess {
 }
 ```
 
+**Enums without initializers either required to be first or have to come after the numeric enums initialized with numeric constants or other constant enum members.**   
+In other words, when the enum includes computed and constant members, the uninitiated enum members either must come first or must come after other initialized members with numeric constants.   
+
+```typescript
+// Error
+enum Millie {
+  x = 19,
+  z = fetchValue('Eleven'),
+  y
+}
+
+function fetchValue(val: String) {
+  if (val == 'Eleven') {
+    return 11
+  }
+  else {
+    return 21
+  }
+}
+
+// No Error
+enum Millie {
+  x = 19,
+  y,
+  z = fetchValue('Eleven'),
+}
+```
+
 ## literal enum members
 
 **A literal enum member is a constant enum member with no initialized value, or with values that are initialized to**
@@ -129,7 +158,7 @@ let c: Circle = {
 ```
 
 
-### Union Enum
+## Union Enum
 
 **The other change is that enum types themselves effectively become a union of each enum member.**   
 With union enums, the type system is able to leverage the fact that it knows the exact set of values that exist in the enum itself. 
@@ -163,7 +192,6 @@ f(E.Bar);
 f(E.Foo)
 ```
 
-
 ## Enums at runtime
 
 Enums are real objects that exist at runtime
@@ -182,6 +210,7 @@ function f(obj: { X: number }) {
 // Works, since 'E' has a property named 'X' which is a number.
 f(E);
 ```
+
 
 ## Enums at compile time
 
@@ -325,15 +354,33 @@ let directions = [
   Direction.Right,
 ];
 
-// Code will become
+// Complied 
 "use strict";
-// 
+
+// CONST ENUM is removed from compile Time
+
 let directions = [
     0 /* Direction.Up */,
     1 /* Direction.Down */,
     2 /* Direction.Left */,
     3 /* Direction.Right */,
 ];
+```
+
+**A const enum member can only be accessed using a string literal.**
+```typescript
+const enum Dark { Mikkel, Jonas }
+
+console.log(Dark.Mikkel)
+console.log(Dark['Mikkel'])
+
+console.log(Dark.Jonas)
+console.log(Dark['Jonas'])
+
+
+// Errors
+console.log(Data[0])
+console.log(Data[1])
 ```
 
 ## The Union Types vs Enum
@@ -368,7 +415,8 @@ Ambient enums can’t have values assigned to any members and they won’t be in
 declare enum Fruit {
   Orange,
   Apple,
-  Grape
+  Grape,
+  Strawberry = "STARWBERRY",
 }
 ```
 If we try to reference an ambient enum that’s not defined anywhere, we’ll get a run-time error since no lookup object is included in the compiled code.
