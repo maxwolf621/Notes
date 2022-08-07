@@ -1,11 +1,11 @@
 # ng-container
 
 - [ng-container](#ng-container)
-  - [Binding Multiple Structural Directives `*ng..`](#binding-multiple-structural-directives-ng)
+  - [Binding Multiple Structural Directives `*ng`](#binding-multiple-structural-directives-ng)
   - [Invisibility of ng-container for CSS](#invisibility-of-ng-container-for-css)
-## Binding Multiple Structural Directives `*ng..`
+## Binding Multiple Structural Directives `*ng`
 
-`<ng-container ..>` helps us to bind multiple `*ng....`.
+`<ng-container ..>` helps us to bind multiple `*` and this template wont show itself on the page
 
 It causes error `Template parse error` without ng-container to bind multiple structural directives, for example
 ```html

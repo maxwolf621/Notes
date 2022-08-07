@@ -3,7 +3,7 @@
 - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Typescript](#typescript)
   - [Angular Basics](#angular-basics)
-    - [Template Passing data btw HTML, Component & CSS](#template-passing-data-btw-html-component--css)
+    - [Bind data with Template, HTML and Component & CSS](#bind-data-with-template-html-and-component--css)
     - [Angular Reactive Forms](#angular-reactive-forms)
   - [Router](#router)
   - [Material](#material)
@@ -16,7 +16,6 @@
 - [Iterators and Generators](iter.md)
 - [Enums](enums.md)
 - [typeof](typeof.md)
-
 
 - [Types](Typescript/Types.md)
   - [Object Types](Typescript/Object%20Types.md)
@@ -32,14 +31,12 @@
 - [Install and Uninstall Angular](Install&UninstallAngular.md)  
 - [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
 - [Angular CLI](AngularCLI.md)  
-  > [CLI command](https://blog.poychang.net/note-angular-cli/)    
-- [Flow of boosting Angular Application](ApplicationActs.md)  
+  - [CLI command](https://blog.poychang.net/note-angular-cli/)    
+- [Root Module and Root Component](ApplicationActs.md)  
 - [Component](Component.md)  
 - [Module](ngModule.md)  
-- **[`@ngModule.Provider` And Dependency Injection](Dependency%20Injection.md)**
-- **[ModuleDesignPattern](moduleDesignPattern.md)**
 - **[Life hooks](lifeHooks.md)**  
-### Template Passing data btw HTML, Component & CSS 
+### Bind data with Template, HTML and Component & CSS 
 
 [angular.io Template Overview](https://angular.io/guide/template-overview)
 
@@ -68,7 +65,6 @@
 - **[Route Guard](Route_Guard.md)**  
 - **[Router For Content](RouterForContentLoading.md)** 
 
-
 ## Material 
 
 - [CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/YXjDnl)
@@ -81,21 +77,22 @@
 - [mat-list](matlist.md)
 - [menu](menu.md)
 - [grid-list](gridlist.md)
-- [card](car.md)
+- [mat-card](car.md)
+- [mat-progress](matprogress.md)
+- [tag](tag.md)
+- [mat-expansion-panel](matexpansionpanel.md)
+- [mat-tab-group](matTabGroup.md)
+- [CDK](cdk.md)
 ## RXJS
 
 `Reactive Programming = Observer Pattern + Iterator pattern + Functional Programming`
 
 ![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
-- **[Observable & Observer](Observable&Observer.md)**  
-  - Create (`Observable` DATA): 
-  - Listen (OBSERVER `Subscribe`):  
-- **[RXJS Operators](RXJS_Operators.md)** - Combine (`Operator` OBSERVABLE)
-
+- Create (`Observable` DATA)&Listen (OBSERVER `Subscribe`) **[Observable & Observer](Observable&Observer.md)** 
+- Combine (`Operator` OBSERVABLE) **[RXJS Operators](RXJS_Operators.md)** 
 - **[AsyncPipe](AsyncPipe.md)**
 - **[behaviorSubject](behaviorSubject.md)**
 - [HttpClient.md](HttpClient.md)   
-- [Reactive Programming](ReactiveProgramming.md)   
 - **[Interceptor](Interceptor.md)**  
 
 ## ERROR 

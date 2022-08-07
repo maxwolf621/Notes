@@ -1,14 +1,14 @@
 ###### tags: `Angular`
 # Component
 
-[Code Example](https://ithelp.ithome.com.tw/articles/10240474)
+[第 5 型 - Angular 元件](https://ithelp.ithome.com.tw/articles/10240474)
 
 - [Component](#component)
   - [指派Component到指定的Module](#指派component到指定的module)
   - [`export` component到指定的module](#export-component到指定的module)
   - [Component的裝飾器](#component的裝飾器)
-    - [Selector](#selector)
-    - [Web Page 以及 Template](#web-page-以及-template)
+  - [Selector](#selector)
+  - [Template](#template)
   - [`@Component.selector`](#componentselector)
 
 ## 指派Component到指定的Module
@@ -47,13 +47,10 @@ ng g c task/task --export
 如同module一樣，Component透過裝飾器`@Component` 可以決定此元件在執行期間該如何處理、實體化與使用  
   
 
-### Selector 
-
-`task.component`被`app.component.html`使用
-![](https://i.imgur.com/Tt080Iu.png)  
+## Selector 
 
 ```typescript
-task.component.ts
+// task.component.ts
 @Component({
     selector : 'app-task',
     template : './task.component.html',
@@ -62,12 +59,13 @@ task.component.ts
 export class TaskComponent implements OnInit {
     // ...
 }
-
-app.component.html use this component
+```
+app.component's template use this component.selector
+```html
 <task></task>
 ```
 
-### Web Page 以及 Template
+## Template
 當 Angular Component的頁面檢視寫在 HTML 檔案內，頁面Template放在 CSS 等樣式檔案時，會將 HTML 檔案與樣式檔案路徑定義在`@Component`中的 `templateUrl`與`styleUrls`  
 
 ```typescript
