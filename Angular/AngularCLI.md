@@ -1,18 +1,38 @@
 ###### tags: `Angular`
 # Basic Angular CLI   
 
-[basic Setting in CLI](https://ithelp.ithome.com.tw/articles/10238044)  
+- [Basic Angular CLI](#basic-angular-cli)
+  - [Reference](#reference)
+  - [`ng [new|n]` A project](#ng-newn-a-project)
+    - [Dependency Tree Problem](#dependency-tree-problem)
+  - [project's `src` directory](#projects-src-directory)
+    - [`package-lock.json`](#package-lockjson)
+    - [`angular.json`](#angularjson)
+    - [`tsconfig.json`](#tsconfigjson)
+      - [POTENTIAL PROBLEM](#potential-problem)
+    - [Page and Template for Angular](#page-and-template-for-angular)
+  - [Router](#router)
+  - [Generate a `enum` type](#generate-a-enum-type)
+  - [`test` the Application](#test-the-application)
+  - [`e2e` test](#e2e-test)
+  - [Angular Package Management](#angular-package-management)
+  - [ng serve](#ng-serve)
+  - [Generate Component](#generate-component)
+  - [Compile the Application to `ECMAScript`](#compile-the-application-to-ecmascript)
+  - [Deploy our Application](#deploy-our-application)
+  - [Install dependencies](#install-dependencies)
+    - [update packages](#update-packages)
+  - [Linting](#linting)
 
-[TOC]
+## Reference
+- [basic Setting in CLI](https://ithelp.ithome.com.tw/articles/10238044)  
 
-## `npm new` A project
-```console
-np new <project> [params]
-```
+##  `ng [new|n]` A project
+```bash
+ng new <project> [params]
 
-or `n` instead of `new`
-```console
-np n <project> [params]
+# or `n` instead of `new`
+ng n <project> [params]
 ```
 - parameter `--help` to get more info for command `new` or `n`
 - `--createApplication=false` 可以建立一個Empty的 Angular WorkSpace，再依照需求建立應用程式 (application) 或函式庫 (library)。
@@ -20,8 +40,7 @@ np n <project> [params]
 - `--skipInstall=false` 取消套件的安裝
 - `--skipGit=false` and `--commit=false` 取消Git版本control與commit。
 
-
-##### Dependency Tree Problem
+### Dependency Tree Problem
 [Solution](https://stackoverflow.com/questions/64573177/unable-to-resolve-dependency-tree-error-when-installing-npm-packages)  
 
 Dependency Tree Error while `ng new <project>`   
@@ -30,12 +49,12 @@ cd project
 npm install --legacy-peer-deps
 ```
 
-## `src` directory 
+## project's `src` directory 
 
 after `new` a WorksSpace of Angular, it will create a root directory `src` 
 > All dependencies (files, pictures ... etc) will be stored under the `src/`  
 
-```console
+```typescript 
 target
 e2e
 src
@@ -55,12 +74,14 @@ package.json
 tslint.json
 tsconfig.json
 ...
+....
 ```
 
 ### `package-lock.json`
 
 紀錄Application的基本資訊，例如Application的Name、Version，還有Application會使用到的相依套件(Dependencies)等等資訊  
-- When `npm install` is executed , then it will look up `package-lock.json` to install the packages that `package-lock.json` lists  
+
+When `npm install` is executed , then it will look up `package-lock.json` to install the packages that `package-lock.json` lists  
 
 
 ### `angular.json`
@@ -74,10 +95,10 @@ For example a work-space of angular application would have multiple projects fil
 ### `tsconfig.json`
 
 將Typescript編譯成Javascript時的編譯設定
-#### 潛在問題  
+#### POTENTIAL PROBLEM  
 一般開發網頁程式為了減少程式檔案大小，來降低程式傳輸至客戶端的時間，常常會將 JavaScript 進行程式碼壓縮；但也因此讓程式人員無法在系統錯誤時，直接知道哪一行程式拋出的錯誤訊息  
 
-所以我們可以利用`SourceMap`即用來記錄程式碼在壓縮前後位置對應的檔案，讓程式人員可以更方便地除錯  
+所以我們可以設定`SourceMap : true`即用來記錄程式碼在壓縮前後位置對應的檔案，讓程式人員可以更方便地除錯  
 ```json
 {
   "compileOnSave": true,
@@ -91,11 +112,11 @@ For example a work-space of angular application would have multiple projects fil
     "sourceMap": true
   }
   /**
-   * 多行註解
+   * ......
    */
 }
 ```
-[More Details](https://yiyingloveart.blogspot.com/2016/07/typescript-tsconfigjson.html)   
+- [More Details](https://yiyingloveart.blogspot.com/2016/07/typescript-tsconfigjson.html)   
 
 ### Page and Template for Angular
 **Angular以元件(Component)來開發單位**，封裝了應用程式的頁面、樣式與邏輯，而預設上 Angular 元件會將這三部份拆分至 HTML、CSS 與 TypeScript 三種檔案之內  
@@ -118,7 +139,7 @@ using `--routing=true` to create route module
 
 ## Generate a `enum` type 
 
-```console
+```bash
 ng g enum directory/enum_name
 ```
 
@@ -161,14 +182,14 @@ we also can use
 ## `e2e` test
 
 End To End Testing
-```console
+```bash
 ng e2e <Project> [Parameter]
 ng e <Project> [Parameter]
 ```
 
 ## Angular Package Management 
 
-```conosle
+```bash
 # add the package (module)
 np add <Name_Of_Package> [Parameter]
 
@@ -178,14 +199,15 @@ ng add @angular/material
 # update the package
 np update @angular/material
 ```
-## [Dynamically Boost up Angular Application](https://www.howtoing.com/install-angular-cli-on-linux)    
+## ng serve
 
+- [Dynamically Boost up Angular Application](https://www.howtoing.com/install-angular-cli-on-linux)    
 - [More Cli](https://ithelp.ithome.com.tw/articles/10238044)   
 
 To open Application (e.g Web Application ...etc )  
-```console
+```bash
 ng serve <Name_Of_Project> [parameter]
-
+# or serve with s
 ng s <Name_Of_Project> [parameter]
 
 # In Application Directory
@@ -228,17 +250,21 @@ ng generate @angular/material:table <component-name>
 
 ## Compile the Application to `ECMAScript`
 
+當應用程式開發完後，會使用此命令將應用程式編繹成  `dist/該專案的名稱` 目錄下，就可以將其佈署到正式環境上
+
 ```bash
 ng build <Name_Of_Project> [parameter]
 ng b <Name_Of_Project> [parameter]
 ```
-- After compiling successfully it will be stored in the `dist/ProjectName` 
+
 
 [difference btw `ng b` and `ng s`](https://stackoverflow.com/questions/47150724/what-is-difference-between-ng-build-and-ng-serve)  
 
 
-# Deploy our Application 
-Deploy Complied Application to specified Environment (e.g. `Azure` ... etc) 
+## Deploy our Application 
+
+不同於 build 命令將應用程式編譯至輸出目錄，可以利用該此命令將程式編譯並佈署至特定環境下。
+- e.g. Deploy Complied Application to specified Environment (e.g. `Azure` ... etc) 
 
 ```bash
 # Deploy our Application to Azure
@@ -255,4 +281,21 @@ cd project
 npm install -save bootstrap
 ```
 
+### update packages
 
+
+```bash
+ng update [parameter]
+```
+
+
+## Linting
+
+在專案中加入如 TsLint 或 ESLint 等工具，來統一程式風格。此命令就是在檢查專案下的程式，是否有依 Lint 的規則進行撰寫。
+
+```bash
+ng lint <nameOfProject> [parameter]
+
+# lint with l
+ng l <nameOfProject> [parameter]
+```

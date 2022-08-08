@@ -1,29 +1,37 @@
 # RXJS operation
 
+![](https://i.imgur.com/KBLtKXd.png)
+
+- [](https://rxjs.dev/api)
+
 - [RXJS operation](#rxjs-operation)
   - [Reference](#reference)
   - [pipe](#pipe)
+  - [take(firstCountValues)](#takefirstcountvalues)
+    - [takeLast(lastNValues)](#takelastlastnvalues)
+    - [takeWhile((val) => condition)](#takewhileval--condition)
+    - [takeUntil(EVENTHAPPEN)](#takeuntileventhappen)
   - [Creator Operator](#creator-operator)
     - [of](#of)
-    - [iff](#iff)
+    - [iff((val) => expr)](#iffval--expr)
     - [throwError](#throwerror)
-    - [from](#from)
-    - [range](#range)
-    - [Promise](#promise)
+    - [from(`array[]` || `Observable<T>`)](#fromarray--observablet)
+    - [range(start, end)](#rangestart-end)
+    - [~~Promise~~](#promise)
     - [fromEvent](#fromevent)
     - [fromEventPattern](#fromeventpattern)
   - [interval](#interval)
   - [setTimeout](#settimeout)
-  - [timer](#timer)
+  - [timer(delayXtimeToStart, ?interval)](#timerdelayxtimetostart-interval)
   - [defer](#defer)
   - [fusionner/verschmelzen](#fusionnerverschmelzen)
     - [concat](#concat)
-    - [merge](#merge)
+    - [~~merge~~](#merge)
     - [zip](#zip)
   - [map](#map)
   - [SwitchMap](#switchmap)
   - [combineLatest (e.g. 搜尋器)](#combinelatest-eg-搜尋器)
-  - [startWith (initialize observable)](#startwith-initialize-observable)
+  - [~~startWith (initialize observable)~~](#startwith-initialize-observable)
   - [forkJoin](#forkjoin)
   - [filter](#filter)
   - [Subjekt/matière](#subjektmatière)
@@ -73,14 +81,64 @@ obs.pipe(op1(),
          op4());
 ```
 
+## take(firstCountValues)
+
+- [code](https://stackblitz.com/edit/xdidqm?devtoolsheight=50&file=index.ts)
+
+Emits only the first count values emitted by the source Observable.
+
+```typescript
+|~1~|~1~|~1~|~1~|~1~|~1~|~1~|~1~|
+|---1---2---3---4---5---7---8---|
+|-----------take(2)-------------|
+|---1---2---|
+
+const intervalCount = interval(1000);
+const takeFive = intervalCount.pipe(first());  // same as pipe(take(1));
+takeFive.subscribe((x) => console.log(x));
+```
+Related ::
+
+`skip(firstCountValues)` skips the first count items emitted by the source Observable.
+
+### takeLast(lastNValues)
+
+```
+|--1--2--3--4--5--6--7--|
+|--------takeLast(2)----|
+|-----------------------6
+|-----------------------7
+```
+
+### takeWhile((val) => condition)
+
+```typescript 
+const clicks = fromEvent<PointerEvent>(document, 'click');
+const result = clicks.pipe(takeWhile(ev => ev.clientX > 200));
+result.subscribe(x => console.log(x));
+```
+
+### takeUntil(EVENTHAPPEN)
+
+- [guide](https://rxjs.dev/api/index/function/takeUntil)
+
+```typescript 
+Stop fetching the observable data when click event happens
+const source = interval(1000);
+const clicks = fromEvent(document, 'click');
+const result = source.pipe(takeUntil(clicks));
+result.subscribe(x => console.log(x));
+```
+
+
 ## Creator Operator
 - `EMPTY` ：Create A EMPTY subject/observable   
 - `of` ：Create A Subject 
 - `range` ：用一定範圍內的數值資料作為事件的資料。
 - `iif`：依照第一個參數的條件，決定要使用不同的 Observable 資料流。
 - `throwError` ：讓 Observable 發生錯誤。
-- `from` ：使用陣列、Promise、Observable 等來源建立新的 Observable。
-- `fromEvent` ：封裝 DOM 的 addEventListener 事件處理來建立 Observable。
+- `from` ：使用array、~~Promise~~、Observable 等來源建立新的 Observable。
+- `fromEvent` ：封裝 DOM 的 `addEventListener` 事件處理來建立 Observable。
 - `fromEvenPattern` ：可依照自行定義的事件來建立 Observable。
 - `interval` ：每隔指定的時間發出一次事件值。
 - `timer` ：與 interval 相同，但可以設定起始的等待時間。
@@ -100,7 +158,7 @@ of(1, 2, 3, 4).subscribe(data => console.log(data));
 // 4
 ```
 
-### iff
+### iff((val) => expr)
 
 Depending the `data` to create `Subject/Observable`
 ```typescript
@@ -115,16 +173,16 @@ emitOneIfEven(2).subscribe(data => console.log(data)); // Hello
 
 ### throwError
 ```typescript
-const source$ = throwError('發生錯誤了');
+const source$ = throwError('1234');
 source$.subscribe({
-  next: (data) => console.log(`throwError 範例 (next): ${data}`),
-  error: (error) => console.log(`throwError 範例 (error): ${error}`),
-  complete: () => console.log('throwError 範例 (complete)'),
+  next: (data) => console.log(`throwError (next): ${data}`),
+  error: (error) => console.log(`throwError (error): ${error}`),
+  complete: () => console.log('throwError (complete)'),
 });
-// throwError 範例 (error): 發生錯誤了
+// throwError (error): 1234
 ```
 
-### from
+### from(`array[]` || `Observable<T>`)
 similar with `of`
 
 ```typescript
@@ -151,16 +209,18 @@ from(of(1, 2, 3, 4)).subscribe(data => {
 // 4
 ```
 
-### range 
+### range(start, end)
 
 ```typescript
-// 使用 generator 建立 iterable
 function range(start, end) {
   for(let i = start; i <= end; ++i){
     yield i;
   }
 }
+```
 
+
+```typescript
 from(range(1, 4)).subscribe(data => {
   console.log(`from 示範 (2): ${data}`);
 });
@@ -170,9 +230,9 @@ from(range(1, 4)).subscribe(data => {
 // from 示範 (2): 4
 ```
 
-### Promise
+### ~~Promise~~
 
-Promise 是前端處理非同步最常見的手段，搭配 `from` 將一個 Promise 物件建立為新的 Observable:
+~~Promise 是前端處理非同步最常見的手段，搭配 `from` 將一個 Promise 物件建立為新的 Observable:~~
 ```typescript
 // 傳入 Promise 當參數
 from(Promise.resolve(1)).subscribe(data => {
@@ -183,21 +243,27 @@ from(Promise.resolve(1)).subscribe(data => {
 
 ### fromEvent
 
-`fromEvent` 能將事件包裝成 `Observable`
+- [guide](https://rxjs.dev/guide/overview)
+
+`fromEvent` 能將(DOM)事件包裝成 `Observable`
 ```typescript
-/**
- * target：實際上要監聽事件的 DOM 元素
- * eventName：事件名稱
- */
-fromEvent(document, 'click').subscribe(data => {
-  console.log('滑鼠事件觸發了');
-});
+import { fromEvent, throttleTime, map, scan } from 'rxjs';
+
+//        DOM     ,  eventName
+fromEvent(document, 'click')
+  .pipe(
+    throttleTime(1000),
+    map((event) => event.clientX),
+    scan((count, clientX) => count + clientX, 0)
+  )
+  .subscribe((count) => console.log(count));
 ```
 
 ### fromEventPattern
+- [guide](https://rxjs.dev/api/index/function/fromEventPattern)
 fromEventPattern 可以根據自訂的邏輯解決複雜的監聽事件及退訂邏輯
 
-有傳入兩個參數：
+兩個參數：
 - `addHandler`   ：當 subscribe 時，呼叫此方法決定如何處理事件邏輯
 - `removeHandler`：當 unsubscribe 時，呼叫次方法將原來的事件邏輯取消
 
@@ -237,7 +303,7 @@ setTimeout(() => {
 
 interval 會依照的參數設定的時間(毫秒)來建議 Observable，當被訂閱時，就會每隔一段指定的時間發生一次資料流，資料流的值就是為事件是第幾次發生的 (從0開始)
 
-建立一個每一秒發生一次的資料流 
+建立一個每一秒發生一次的資料流
 ```typescript
 |_1_|__1_|__1_|__1_|___........
 ----0----1----2----3----.......
@@ -262,14 +328,17 @@ setTimeout( () => {
 );
 ```
 
-## timer
+## timer(delayXtimeToStart, ?interval)
+
+- [code](https://stackblitz.com/edit/sqdvzz?devtoolsheight=50&file=index.ts)
+
 `timer` 跟 `interval` 有點類似，但**它多一個參數**， 用來設定經過多久時間後開始依照指定的間隔時間計時
 
 設定Observable在3秒後開始以每1秒一個新事件的頻率計時
 ```typescript
 time   |~~~~~~~~~~3~~~~~~~~~|~~1~~|-~1~~|~~1~~|.....
 stream |--------------------0-----1-----2-----......
-
+ 
 timer(3000, 1000).subscribe(
       data => console.log(data)
     );
@@ -277,8 +346,24 @@ timer(3000, 1000).subscribe(
 // 1
 // 2
 // 3
-// ....
-// ....
+// 4
+// 5
+
+
+// This could be any observable
+const source = of(1, 2, 3);
+
+timer(3000,1000)
+  .pipe(concatMap(() => source))
+  .subscribe(console.log);
+
+// 1
+// 2
+// 3
+
+// 1
+// 2
+// 3
 ```
 
 interval的缺點，就是一開始一定會先等待一個指定時間，才會發生第一個事件，但有時候我們會希望一開始就發生事件，這個問題可以透過 timer 解決，只要等待時間設為`0`
@@ -288,7 +373,7 @@ timer(0, 1000).subscribe(
     );
 ```
 
-timer 如果沒有設定第二個參數，代表在指定的時間發生第一次事件後，就不會再發生任何事件了。
+timer如果沒有設定第二個參數，代表在指定的時間發生第一次事件後，就不會再發生任何事件了。
 ```typescript
 |~~~~~~~~~3~~~~~~~~~~~|
 |--------------------0|
@@ -300,18 +385,17 @@ timer(3000).subscribe(
 ```
 
 ## defer
-defer 會將建立 Observable 的邏輯包裝起來，提供更一致的使用感覺，**使用 defer 時需要傳入一個 factory function 當作參數**，這個 function 裡面需要回傳一個 Observable (或 Promise )，當 defer 建立的 Observable 被訂閱時，會呼叫這個 factory function，並以裡面回傳的 Observer 當作Stream
+defer 會將建立 Observable 的邏輯包裝起來，提供更一致的使用感覺，**使用 defer 時需要傳入一個 factory function 當作參數**，這個 function 裡面需要回傳一個 Observable，當 defer 建立的 Observable 被訂閱時，會呼叫這個 factory function，並以裡面回傳的 Observer 當作Stream
 ```typescript
 const factory = () => of(1, 2);
 const source$ = defer(factory);
+// or const source$ = defer(() => of(1, 2););
 
 source$.subscribe(data => console.log(`defer 示範: ${data}`));
 ```
-- `source$` 每次被訂閱時才會去呼叫裡面 factory function，這麼做的好處是建立 Observable 的邏輯被包裝起來了，同時也可以達成延遲執行的目標。
+- `source$` 每次被訂閱時才會去呼叫裡面 factory function，這麼做的好處是建立 Observable 的邏輯被包裝起來了，同時也可以達成延遲執行(lazily)的目標。
 
-使用`defe`核心目標是「延遲執行」，如果今天產生 Observable 的邏輯希望在「訂閱」時才去執行的話，就很適合使用 defer，最常見的例子應該非 Promise   
-
-Promise 雖然是非同步執行程式，但在 Promise 產生的一瞬間相關程式就已經在運作了：
+~~Promise 雖然是非同步執行程式，但在 Promise 產生的一瞬間相關程式就已經在運作了~~
 ```typescript
 const p = new Promise((resolve) => {
   console.log('Promise 內被執行了');
@@ -326,7 +410,7 @@ p.then(result => {
 });
 ```
 
-就算用 from 包起來變成 Observable，已經執行的程式依然已經被執行了，呼叫 `.then()` 只是再把 `resolve()` 的結果拿出來而已；在設計 Observable 時如果可以延遲執行，直到被訂閱時才真的去執行相關邏輯，通常會比較好釐清整個流程
+~~就算用 from 包起來變成 Observable，已經執行的程式依然已經被執行了，呼叫 `.then()` 只是再把 `resolve()` 的結果拿出來而已；在設計 Observable 時如果可以延遲執行，直到被訂閱時才真的去執行相關邏輯，通常會比較好釐清整個流程~~
 ```typescript
 // 將 Promise 包成起來
 // 因此在此 function 被呼叫前，都不會執行 Promise 內的程式
@@ -365,7 +449,7 @@ concat(sourceA$, sourceB$, sourceC$)
 ```
 
 
-### merge
+### merge && mergeAll
 
 ```typescript
 sourceA$: --A1--A2--A3--A4--A5--A6--....
@@ -374,6 +458,19 @@ sourceC$: ------------------C1------....
 merge(sourceA$, sourceB$, sourceC$)
 --A1--A2--(A3,B1)--A4--(A5,C1)--(A6,B2)----
 ```
+
+```typescript
+--------------------------------|
+ \   \
+  a   \
+   \   d
+    b   \
+     \   g
+      \   \
+       c   \
+            k
+```
+
 
 ### zip
 
@@ -393,12 +490,8 @@ zip(sourceA$, sourceB$, sourceC$).subscribe(data => {
 
 
 ## map 
-
-
-- Observable 的 map 是每次有事件發生時進行轉換。
+- Observable 的 map 是每次有事件發生時進行轉換(tansform new observable data)。
 - Array 的 map 會立刻把整個了陣列的資料勁行轉換。
-
-
 ```typescript
 of(1, 2, 3, 4).pipe(
   map((value, index) => `第 ${index} 次事件資料為 ${value}`)
@@ -546,7 +639,7 @@ this.products$ = combineLatest(
 );
 ```
 
-## startWith (initialize observable)
+## ~~startWith (initialize observable)~~
 
 - [`startwith`](https://stackoverflow.com/questions/48465361/what-does-startwith-typescript-code-do)    
 

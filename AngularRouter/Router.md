@@ -3,7 +3,8 @@
 [[Angular 深入淺出三十天] Day 25 - 路由總結(一)](https://ithelp.ithome.com.tw/articles/10209035)      
 
 ## Angular的Router角色
-- **負責重新配置頁面中應該顯示哪些Component**
+- **負責重新配置頁面中應該顯示哪些Components**
+  - e.g. home page 會有那些components在該頁面顯示
 - 負責儲存頁面中Component的路由狀態
   - **路由狀態定義了在某個路由的時候應該顯示哪些Component**
   - **路由狀態最重要的就是記錄路徑與Component之間的關係**

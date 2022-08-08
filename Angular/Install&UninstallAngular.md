@@ -6,7 +6,7 @@
 
 ## Reinstall angular  
 
-```console
+```bash
 # old version
 npm uninstall -g @angular/cli
 
@@ -16,12 +16,12 @@ npm cache verify
 # install latest angular cli version
 npm install -g @angular/cli@latest
 
-# create (dependecies)node_module's fold and package.lock-json
+# create (dependencies)node_module's fold and package.lock-json
 npm install
 ```
 
 Angular will be installed in this directory
-- node_modules contains denpedencies of `packages.json` needs 
+- node_modules contains dependencies of `packages.json` needs 
 ```bash 
 /usr/lib/node_modules
 ```
@@ -31,34 +31,38 @@ Angular will be installed in this directory
 Create a `package.json` for the local npm package
 [ref1](https://www.sitepoint.com/npm-guide/)  
 [ref2](https://stackoverflow.com/questions/9484829/npm-cant-find-package-json)  
+
 ```bash
 npm init
 ```
 
-npm ERR! enoent ENOENT: no such file or directory, open '/usr/lib/node_modules/package.json'
+`npm ERR! enoent ENOENT: no such file or directory, open '/usr/lib/node_modules/package.json'`
 ```bash
-# Follwing the below steps you well get package.json file.
+# Following the below steps you well get package.json file.
 npm --version
 npm install express
 npm init -y
 ```
 
-## [`npm WARN ... requires a peer of ... but none is installed. You must install peer dependencies yourself`](https://stackoverflow.com/questions/38817571/npm-install-multiple-package-names)
+## ERRORS
 
-delete `node_module` file and `package-lock.json` and redo 
-```
+[`npm WARN ... requires a peer of ... but none is installed. You must install peer dependencies yourself`](https://stackoverflow.com/questions/38817571/npm-install-multiple-package-names)    
+Delete `node_module` file and `package-lock.json` and redo 
+```bash
 npm install
 ```
-- https://stackoverflow.com/questions/35207380/how-to-install-npm-peer-dependencies-automatically#comment97140066_35207380
+
+- [How to install npm peer dependencies automatically?](https://stackoverflow.com/questions/35207380/how-to-install-npm-peer-dependencies-automatically#comment97140066_35207380)   
+- [An unhandled exception occurred: Cannot find module `'@angular-devkit/build-angular/package.json'`](https://reurl.cc/d270nV)   
 
 ## install `node`
 
 ```bash
-nvm install node # "node" is an alias for the latest version
+nvm install node
+# "node" is an alias for the latest version
 ```
 
 ## (Update dependencies)[https://angular.io/cli/update]
-
 
 https://stackoverflow.com/questions/10068592/how-do-i-update-devdependencies-in-npm
 ```console
@@ -97,8 +101,6 @@ update latest npm
 ```bash
 nvm install-latest-npm
 ```
-
-
 ## `.nvmrc`
 
 default path : `~/.nvmrc`

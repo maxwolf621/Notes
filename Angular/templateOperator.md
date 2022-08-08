@@ -8,7 +8,7 @@ Angular's non-null assertion operator to prevent TypeScript from reporting that 
 <p>The item's color is: {{item.color!.toUpperCase()}}</p>
 ```
 
-## The $any() type cast function
+## `The $any()` type cast function
 
 Sometimes a binding expression triggers a type error during AOT compilation.
 Use the `$any()` cast function to cast the expression to the any type.

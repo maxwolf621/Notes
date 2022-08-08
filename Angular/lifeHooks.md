@@ -139,7 +139,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
    */
   template: `
     <span class="price" [ngClass]="{increase: price > lastPrice, decrease: price < lastPrice }">
-      {{ price }
+      {{ price }lazily
     <span>{{ firstChange ? '' : (price > lastPrice ? '↑' : '↓') }}</span>
   </span>`
   ,

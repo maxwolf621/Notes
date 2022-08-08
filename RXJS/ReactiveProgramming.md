@@ -1,23 +1,24 @@
 ###### tags: `Angular`
 # Reactive Programming  
+- [Reactive Programming](#reactive-programming)
+  - [Reference](#reference)
+  - [Subject](#subject)
+    - [Create The Subject](#create-the-subject)
+  - [Combine FromOperators](#combine-fromoperators)
+  - [Subscribe (LISTEN) the Subject](#subscribe-listen-the-subject)
+## Reference 
 - [Reactive Programming 簡介與教學(以 RxJS 為例)](https://blog.techbridge.cc/2016/05/28/reactive-programming-intro-by-rxjs/)
 - [[DAY-12] Angular-RXJS非同步事件的好幫手2](https://ithelp.ithome.com.tw/articles/10222014)   
 
-`Reactive Programming = Observer Pattern + Iterator pattern + Functional Programming`
 
-![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
-- Create : `Observable`
-- Combine : `Operator`
-![](https://i.imgur.com/KBLtKXd.png)
-- Listen : `Subscribe`
 
 
 ```typescript
 -O-O-O-O-|  // each O is a Subject which is Observable
  ' ' ' ' '  
- Operators() // Each Operators Combine Subjects
+ Operators() // Each Operators combine observables to new observables
  ' ' ' ' '
--0-0-0-0-|-> // subscribe
+-1-1-1-1-|-> // subscribe
 ```
 ![](https://i.imgur.com/1uzXLNR.png)   
 
