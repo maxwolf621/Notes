@@ -10,7 +10,6 @@
 
 - [[Day13] TS：什麼！這個 typeof 和我想的不一樣？](https://ithelp.ithome.com.tw/articles/10274229)
 
-
 ## type of object 
 
 ```typescript

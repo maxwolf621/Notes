@@ -10,18 +10,23 @@
     - [Angular Reactive Forms](#angular-reactive-forms)
     - [Router](#router)
     - [Material](#material)
-    - [RXJS](#rxjs)
+  - [RXJS](#rxjs)
   - [CSS && SASS](#css--sass)
+    - [Flex](#flex)
+    - [Position](#position)
+    - [CSS cheatSheet](#css-cheatsheet)
+    - [scss](#scss)
 
 ## Reference
 [AJAX](https://wcc723.github.io/development/2020/10/01/about-ajax-2/)   
-[Frontend Framework](https://developer.mozilla.org/zh-TW/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Introduction)
+
 ## Typescript
 Properties of Typescript 
 Type inference : types can be determined from the context, making type annotations optional.
 
-[Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)
-[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)
+[Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)   
+[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)    
+[Do ✅ and Don't ❌ ](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 
 - [Typescript Instruction](Typescript/TypescriptIntroduction.md)
 - [Iterators and Generators](Typescript/iter.md)
@@ -32,19 +37,36 @@ Type inference : types can be determined from the context, making type annotatio
   - [Special Types](Typescript/specialType.md) 
 - [Function](Typescript/Function.md)
 - [Class](Typescript/Class.md)
+  - [Static](Typescript/static.md) 
+  - [this](Typescript/this.md)
 - [Module](Typescript/module.md)
 - [NameSpace](Typescript/namespace.md)
-
-
 ## Kotlin
-
+[](kotlin.md)
+- [Kotlin & Java](kotlinAndJava.md)
 ## Angular
 ### Basics
 - [Install and Uninstall Angular](Angular/Install&UninstallAngular.md)  
-- [Typescript In Angular](Typescript/TypeScriptAndAngular.md)
 - [Angular CLI](AngularCLI.md)  
   - [CLI command](https://blog.poychang.net/note-angular-cli/)    
+  ```bash
+  ng g component componentName # prefix-componentName 
+  ng g directive directiveName # prefix-directiveName
+  ng g pipe my-new-pipe # 產生 Pipe 管道程式碼
+  ng g service my-new-service #產生 Service 服務程式碼
+  ng g class my-new-class #產生 Class 程式碼
+  ng g interface my-new-interface #產生 Interface 介面程式碼
+  ng g enum my-new-enum #產生 Enum 程式碼
+  ng g module my-module #產生 Module 模組程式碼
+  ng g guard my-guard #產生 Guard 守衛程式碼
+  ng g app-shell [ --universal-app <universal-app-name>] [ --route <route>] 建立 App Shell
+  ```
 - [Root Module and Root Component](ApplicationActs.md)  
+  ```typescript
+  main.ts#platformBrowserDynamic().bootstrapModule(AppModule)
+  '---AppModule#@NgModule.bootstrap[AppComponent]
+    '---AppComponent#@Component.Selector:<app-root>
+  ```
 - [Component](Angular/Component.md)  
 - [Module](Angular/ngModule.md)  
 - **[Life hooks](Angular/lifeHooks.md)**  
@@ -111,7 +133,7 @@ Type inference : types can be determined from the context, making type annotatio
 - [mat-expansion-panel](Material/matexpansionpanel.md)
 - [mat-tab-group](Material/matTabGroup.md)
 - [CDK](Material/cdk.md)
-### RXJS
+## RXJS
 
 `Reactive Programming = (Observer Pattern + Iterator pattern) + Functional Programming`   
 [Observable = Observer Pattern + Iterator pattern](https://ithelp.ithome.com.tw/articles/10186832)
@@ -128,13 +150,27 @@ Type inference : types can be determined from the context, making type annotatio
 
 ## CSS && SASS
 
-[CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/AORWkK)
-[Day 5 : HTML - 網頁排版超強神器，CSS Flex到底是什麼？](https://ithelp.ithome.com.tw/articles/10267398)  
-justify-content : justify-content是用來控制Flex「水平對齊」的位置，也就是主軸方向
-以主軸的「起點」和「終點」來做依據
-```css
-  ustify-content:flex-start | flex-end | center | space-between | space-around | space-evenly;
-```
-[SCSS Cheatsheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
-- [SCSS usage](SCSS/scssUsage.md)
 
+### Flex
+- [CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/AORWkK)
+- [Day 5 : HTML - 網頁排版超強神器，CSS Flex到底是什麼？](https://ithelp.ithome.com.tw/articles/10267398)  
+
+注意當flex以行爲方向時，justify-content控制縱向對齊，align-items控制橫向對齊。
+```css
+#pond {
+  display: flex;
+  flex-direction : column;
+  justify-content : flex-end; // justify-content控制縱向對齊
+}
+  ```
+
+### Position
+[Position 基本用法](https://reurl.cc/AOKkZ8)
+### CSS cheatSheet
+
+[CSS Cheat Sheet](https://simplecheatsheet.com/tag/css-cheat-sheet/)   
+[CSS quickReview](https://github.com/dekadentno/css-cheat-sheet)  
+
+### scss
+[SCSS Cheatsheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
+- [SCSS Noting](SCSS/scssUsage.md)

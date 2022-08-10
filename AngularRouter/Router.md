@@ -2,6 +2,26 @@
 [[Angular 深入淺出三十天] Day 20 - 路由(三)](https://ithelp.ithome.com.tw/articles/10207918)    
 [[Angular 深入淺出三十天] Day 25 - 路由總結(一)](https://ithelp.ithome.com.tw/articles/10209035)      
 
+- [Router](#router)
+  - [Angular的Router角色](#angular的router角色)
+  - [Router Configuration](#router-configuration)
+    - [create `app-routing.module.ts`](#create-app-routingmodulets)
+    - [register (@ngModule.import[...])](#register-ngmoduleimport)
+    - [Template's outlet `<router-outlet>`](#templates-outlet-router-outlet)
+  - [Router In Action](#router-in-action)
+  - [Directive `[routerLink]`](#directive-routerlink)
+  - [萬用路由](#萬用路由)
+  - [Child Router](#child-router)
+    - [設定相對路徑](#設定相對路徑)
+  - [Lazy Loading](#lazy-loading)
+  - [Pre-loading](#pre-loading)
+  - [Path query parameter](#path-query-parameter)
+    - [Query String](#query-string)
+      - [取得query string參數](#取得query-string參數)
+    - [matrix URL](#matrix-url)
+      - [取得Path的參數的方式：](#取得path的參數的方式)
+  - [換頁效果](#換頁效果)
+
 ## Angular的Router角色
 - **負責重新配置頁面中應該顯示哪些Components**
   - e.g. home page 會有那些components在該頁面顯示
@@ -10,6 +30,8 @@
   - **路由狀態最重要的就是記錄路徑與Component之間的關係**
 
 ## Router Configuration 
+
+### create `app-routing.module.ts`
 
 Create Root Routing module `app-routing.module.ts`
 ```typescript
@@ -24,6 +46,8 @@ const routes: Routes = [];
 })
 export class AppRoutingModule { }
 ```
+
+### register (@ngModule.import[...])
 
 Sign Router module in the `@ngModule.import` of root module
 ```typescript
@@ -45,17 +69,18 @@ import { AppComponent } from './app.component';
 export class AppModule { }
 ```
 
+### Template's outlet `<router-outlet>`
+
 Template In `app.component.html`
 ```html
 <!-- 
-Plug different 
-component's templates via outlet
+Plug different component's templates via outlet
 -->
 <router-outlet></router-outlet> 
 ```
 - **Angular的路由機制靠的是我們放在`.html`裡的`<router-outlet></router-outlet>`**
 
-### Router In Action
+## Router In Action
 
 For Example :: 假如有兩個Routers分別navigate到home或者about頁面
 ```typescript
@@ -82,7 +107,7 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
-- `enableTracing : true` : Console印出監聽Route的trace
+- `enableTracing : true` : log監聽Route的trace
 
 ## Directive `[routerLink]`
 
@@ -90,7 +115,7 @@ Router's directive for template `.html` 分成兩個
 1. `<a></a>` 用的 RouterLinkWithHref 
 2. 其他非`<a></a>`元素用的 RouterLink 
 
-我們可以利用Drective在`.html`建立路徑達到轉頁
+我們可以利用Directive在`.html`建立路徑達到轉頁
 ```html
 <ul>
   <li><a [routerLink]="'/home'">Home</a></li>
@@ -104,10 +129,9 @@ Router's directive for template `.html` 分成兩個
 ```typescript
 const routers: Routers:[
     {
-      //...
+      // routers
     },
-    
-    // ...
+      // ...
     , 
     {
         path: '**', 
@@ -125,9 +149,9 @@ const routers: Routers:[
 - **減少撰寫重複的程式碼**
 - 預處理層
 
-在沒有子路由的情況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**      
+在沒有子路由的情況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**  
 因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同內容資料**但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**   
-- For example 由於在瀏覽某一位Hero Detail(`HeroDetailComponent`)之後，一定要先回到選單List(`HeroListComponent`)，才能再進入另一位Hero Detail頁面，造成回到`HeroListComponent`時已把`HeroDetailComponent`實體銷毀，當再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`實體因此每次選擇不同的英雄時，Component實體都會重新創建
+- For example 由於在瀏覽某位Hero Detail(`HeroDetailComponent`)之後，一定要先回到選單List(`HeroListComponent`)，才能再進入另一位Hero Detail頁面，造成回到`HeroListComponent`時已把`HeroDetailComponent`實體銷毀，當再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`實體因此每次選擇不同的英雄時，Component實體都會重新創建
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },

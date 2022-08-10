@@ -1,5 +1,4 @@
 # QuickReview
-
 - [QuickReview](#quickreview)
   - [Object Types as Function Parameter](#object-types-as-function-parameter)
     - [with (`?`) Optional Member](#with--optional-member)
@@ -19,6 +18,7 @@
 - [Function](#function)
   - [Function Type Expressions and function type alias](#function-type-expressions-and-function-type-alias)
   - [call Signature && Construct Signature](#call-signature--construct-signature)
+    - [overload](#overload)
   - [Enum](#enum)
     - [Literal Enum](#literal-enum)
     - [object with as const](#object-with-as-const)
@@ -320,9 +320,6 @@ function greeter(fn: GreetFunction) {
   // ...
 }
 ```
-
-
-
 ## call Signature && Construct Signature
 
 ```typescript
@@ -334,8 +331,25 @@ type A :{
 function fn( aFn : A){
   a.callSignature()
 }
-
 ```
+
+### overload
+
+**the implementation signature of the function cannot be called directly, you have to call one of the overload signatures**
+
+```typescript
+function example(str: string): string;
+function example(num: number): number;
+
+// implementation should has types of signature
+function example(arg: string | number): number | string {}
+
+
+function example(str: string): void;
+function example(num: number, num2: number): void;
+function example(strOrNum: string | number, num2?: number) {}
+```
+
 
 
 ## Enum

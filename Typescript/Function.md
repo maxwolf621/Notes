@@ -1,4 +1,7 @@
 # Functions
+
+[Function overload](https://bobbyhadz.com/blog/typescript-overload-signature-not-compatible-implementation)
+
 - [Functions](#functions)
   - [writing out the whole function type](#writing-out-the-whole-function-type)
   - [Function type expressions ( `functionName : ( parameters ) => returnType`)](#function-type-expressions--functionname---parameters---returntype)
@@ -20,6 +23,7 @@
     - [Overload Signatures and the Implementation Signature](#overload-signatures-and-the-implementation-signature)
     - [Writing Good Overloads](#writing-good-overloads)
     - [Declaring `this` in a Function](#declaring-this-in-a-function)
+
 
 
 ```typescript 
@@ -380,7 +384,7 @@ myForEach([1, 2, 3], (a, i) => {
 
 ## Function Overloads
 
-In TypeScript, we can specify a function that can be called in different ways by writing overload signatures.    
+In TypeScript, **the implementation signature of the function cannot be called directly, you have to call one of the overload signatures**
 ```typescript 
 // overload signatures
 function makeDate(timestamp: number): Date;
@@ -419,9 +423,7 @@ Often people will write code like this and not understand why there is an error:
 function fn(x: string): void;
 
 // Implementation Signature
-function fn() {
-  // ...
-}
+function fn() {}
 
 // Expected to be able to call with zero arguments
 fn();
@@ -433,9 +435,9 @@ fn();
 
 the following functions have errors because the implementation signature doesn’t match the overloads in a correct way
 ```typescript
-function fn(x: boolean): void; // first overload func
+function fn(x: boolean): void;
 
-// Argument type isn't right
+// parameter isn't compatible with the first overload signature.
 function fn(x: string): void; 
 This overload signature is not compatible with its implementation signature.
 
@@ -444,7 +446,7 @@ function fn(x: boolean) {}
 
 function fn(x: string): string;
 
-// Return type isn't right
+// Return type isn't right should be boolean
 function fn(x: number): boolean;
 This overload signature is not compatible with its implementation signature.
 
@@ -460,7 +462,6 @@ Like generics, there are a few guidelines you should follow when using function 
 **Always prefer parameters with union types instead of overloads when possible.**
 
 ```typescript
-// function that returns length 
 function len(s: string): number;
 function len(arr: any[]): number;
 
@@ -471,12 +472,12 @@ function len(x: any) {
 
 we can’t invoke it with A value that MIGHT BE(Ambiguous) A string or AN array, because TypeScript can only resolve a function call to a single overload:
 ```typescript 
-len(""); // OK
+len("");  // ok
 len([0]); // OK
 
 // Ambiguous
 len(Math.random() > 0.5 ? "hello" : [0]);
-No overload matches this call.
+' No overload matches this call.
 Overload 1 of 2, '(s: string): number', gave the following error.
 Argument of type 'number[] | "hello"' is not assignable to parameter of type 'string'.
 Type 'number[]' is not assignable to type 'string'.

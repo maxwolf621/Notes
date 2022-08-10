@@ -1,6 +1,6 @@
 # Root Module and Root Component
 
-[Note](https://ithelp.ithome.com.tw/articles/10202823)
+[[Angular 大師之路] Day 03 - Angular 應用程式啟動過程](https://ithelp.ithome.com.tw/articles/10202823)
 
 - [Root Module and Root Component](#root-module-and-root-component)
   - [main.ts](#maints)
@@ -10,14 +10,12 @@
   - [Load Multiple Root Components](#load-multiple-root-components)
   - [多個根模組或根元件的優/劣勢](#多個根模組或根元件的優劣勢)
 
-
 Application啟動FLOW
 ```typescript 
 main.ts#platformBrowserDynamic().bootstrapModule(AppModule)
   '---AppModule#@NgModule.bootstrap[AppComponent]
       '---AppComponent#@Component.Selector:<app-root></app-root>
 ```
-
 
 ## main.ts
 `main.ts`是所有程式的進入口(The Entry of the Angular Application Project)
