@@ -15,7 +15,6 @@ let   name : type ;
 const name : dataType[];
 ```
 
-
 ## void Type
 
 ```typescript

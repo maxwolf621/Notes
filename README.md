@@ -43,7 +43,10 @@ Type inference : types can be determined from the context, making type annotatio
 - [NameSpace](Typescript/namespace.md)
 ## Kotlin
 [](kotlin.md)
-- [Kotlin & Java](kotlinAndJava.md)
+
+- [New](kotlin/new.md)
+- [Class](kotlin/class.md)
+- [Kotlin & Java](Kotlin/kotlinAndJava.md)
 ## Angular
 ### Basics
 - [Install and Uninstall Angular](Angular/Install&UninstallAngular.md)  

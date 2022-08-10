@@ -325,3 +325,27 @@ fun <T> singletonList(item: T): List<T> { /*...*/ }
 ```
 
 ### Tail recursive functions
+
+You cannot use tail recursion when there is more code after the recursive call, within try/catch/finally blocks, or on open functions. 
+
+
+
+```java
+val eps = 1E-10 // "good enough", could be 10^-15
+
+tailrec fun findFixPoint(x: Double = 1.0): Double =
+    if (Math.abs(x - Math.cos(x)) < eps) x else findFixPoint(Math.cos(x))
+
+
+// transitional style
+val eps = 1E-10 // "good enough", could be 10^-15
+
+private fun findFixPoint(): Double {
+    var x = 1.0
+    while (true) {
+        val y = Math.cos(x)
+        if (Math.abs(x - y) < eps) return x
+        x = Math.cos(x)
+    }
+}
+```

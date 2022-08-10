@@ -100,7 +100,6 @@ function fn(x) {
 ```
 TypeScript checks that calling a function with a this parameter is done so with a correct context.  
 
-
 Instead of using an arrow function, we can add a this parameter to method definitions to statically enforce that the method is called correctly:
 ```java
 class MyClass {

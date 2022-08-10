@@ -474,9 +474,14 @@ we can’t invoke it with A value that MIGHT BE(Ambiguous) A string or AN array,
 ```typescript 
 len("");  // ok
 len([0]); // OK
+```
 
+```typescript
 // Ambiguous
 len(Math.random() > 0.5 ? "hello" : [0]);
+```
+the above code gets the following error message
+```typescript
 ' No overload matches this call.
 Overload 1 of 2, '(s: string): number', gave the following error.
 Argument of type 'number[] | "hello"' is not assignable to parameter of type 'string'.
@@ -486,7 +491,7 @@ Argument of type 'number[] | "hello"' is not assignable to parameter of type 'an
 Type 'string' is not assignable to type 'any[]'.
 ```
 
-Because both overloads have the same argument count and same return type, we can instead write a non-overloaded version of the function:
+Because **both overloads have the same argument count and same return type**, we can instead write a non-overloaded version of the function:
 ```typescript 
 function len(x: any[] | string) {
   return x.length;
@@ -520,7 +525,7 @@ const admins = db.filterUsers(function (this: User) {
 ```
 This pattern is common with callback-style APIs, where another object typically controls when your function is called. 
 
-Note that you need to use function and not arrow functions to get this behavior:
+**Note that you need to use function and not arrow functions to get this behavior:**
 ```typescript
 interface DB {
   filterUsers(filter: (this: User) => boolean): User[];
@@ -528,8 +533,8 @@ interface DB {
  
 const db = getDB();
 const admins = db.filterUsers(() => this.admin);
-// The containing arrow function captures the global value of 'this'.
-// Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
+  The containing arrow function captures the global value of 'this'.
+  Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
 ```
 
 

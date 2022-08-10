@@ -196,7 +196,7 @@ const crisisCenterRoutes: Routes = [
 this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.route });
 ```
 
-- For Examle 設計一個component將類似或者給特定使用者使用的components放入對應的component
+- For Example 設計一個component將類似或者給特定使用者使用的components放入對應的component
 ![](https://i.imgur.com/WAdXz1e.png)
 
 屆時我們可以將Router的路徑分成Base router以及Child router,如下

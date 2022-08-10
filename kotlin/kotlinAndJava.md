@@ -52,6 +52,7 @@ public class MyClass extends BaseClass {                                class My
 final MyClass myClass = new MyClass();                                  val myClass = MyClass()
 ```
 
+- `voud` -> `Unit`
 - `extends || implements` -> `:` ( multiple inheritance with `,` to combine)
 - `final` -> `val`
 - `@Override` -> `override fun`
@@ -343,7 +344,6 @@ class MyClass<T>
           T: Comparable { // multiple generic bounds
 
 ```
-
 
 ## nullable 
 
