@@ -31,7 +31,7 @@
 
 ## UTIL
 ![圖 1](images/63a996fabec2ccf491ee0ad618bc0d5ff4fbb0b5b033cb48029dedffb5de9d49.png) 
-![圖 3](../images/dc563b068bcbf5a3d7c08d6ddad0426b59abb6eef83470eaddede660cd58cc91.png)  
+![圖 3](images/dc563b068bcbf5a3d7c08d6ddad0426b59abb6eef83470eaddede660cd58cc91.png)  
 
 ```java
 boolean	add(E e)
