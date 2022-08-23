@@ -1,8 +1,15 @@
 # Inhaltsverzeichnis
 
 - [Inhaltsverzeichnis](#inhaltsverzeichnis)
-  - [Reference](#reference)
+  - [Git](#git)
+  - [Linux](#linux)
+  - [Java&Spring](#javaspring)
+  - [Database](#database)
+  - [Design Pattern](#design-pattern)
+  - [LeetCode](#leetcode)
   - [Typescript](#typescript)
+    - [Methods](#methods)
+    - [Properties of Typescript](#properties-of-typescript)
   - [Kotlin](#kotlin)
   - [Angular](#angular)
     - [Basics](#basics)
@@ -12,29 +19,70 @@
     - [Material](#material)
   - [RXJS](#rxjs)
   - [CSS && SASS](#css--sass)
-    - [Flex](#flex)
-    - [Position](#position)
     - [CSS cheatSheet](#css-cheatsheet)
+    - [Flex](#flex)
     - [scss](#scss)
 
-## Reference
 [AJAX](https://wcc723.github.io/development/2020/10/01/about-ajax-2/)   
 
-## Typescript
-Properties of Typescript 
-Type inference : types can be determined from the context, making type annotations optional.
 
-[Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)   
-[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)    
-[Do ✅ and Don't ❌ ](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
+## Git
+- [git](git/README.md)
+## Linux 
+
+- [Basic Shell Command](LinuxNote/BasicShellCommand.md)
+- [Grep](LinuxNote/grep.md)
+- [Basic Shell Script](LinuxNote/BasicShellScript.md)
+- [Environment Path](LinuxNote/environmentPath.md)
+## Java&Spring
+
+- [Java](JavaNote/README.md)
+- [Spring](SpringNote/README.md)
+
+## Database
+
+- [Database](database/README.md)
+## Design Pattern
+
+- [Design Pattern Java](DesignPattern/README.md)
+## LeetCode 
+
+- [LeetCode Exercises](LeetCode/README.md)
+## Typescript
+
+[What is `new() :T`](https://reurl.cc/O4Anb9)   
+[Exercises](https://exercism.org/tracks/typescript/exercises)   
+[Cheat Sheet](https://rmolinamir.github.io/typescript-cheatsheet/)     
+[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)      
+[Do ✅ and Don't ❌ ](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)  
+### Methods
+[Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html#thisparametertypetype)  
+[Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+[Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)     
+
+### Properties of Typescript 
+
+Type inference : types can be determined from the context, making type annotations optional.  
+Function Type expression : `functionName : ( parameters ) => returnType`
+
+[Typescript Exercises](Typescript/exercises.md)
 
 - [Typescript Instruction](Typescript/TypescriptIntroduction.md)
 - [Iterators and Generators](Typescript/iter.md)
 - [Enums](Typescript/enums.md)
 - [typeof](Typescript/typeof.md)
+- [What is the difference between type and class in Typescript?](Typescript/classVStype.md)
+- [Dictionary](Typescript/dictionary.md)
+- [Generics](Typescript/Generic.md) 
 - [Types](Typescript/Types.md)
   - [Object Types](Typescript/Object%20Types.md)
+    `{ properties }`,Interface,TypeAlias and Index Signature
+  - [Tuple](Typescript/tuple.md)
   - [Special Types](Typescript/specialType.md) 
+  - [Indexed Access Types](Typescript/indexedAccessTypes.md)
+  - [Conditional Types](Typescript/conditionalType.md)
+  - [Mapped Types](Typescript/mappedTypes.md)
+  - [Template Literal Type](Typescript/templateLiteralType.md)
 - [Function](Typescript/Function.md)
 - [Class](Typescript/Class.md)
   - [Static](Typescript/static.md) 
@@ -44,6 +92,10 @@ Type inference : types can be determined from the context, making type annotatio
 ## Kotlin
 [](kotlin.md)
 
+[Kotlin Cheat Sheet (IMAGE)](https://blog.kotlin-academy.com/kotlin-cheat-sheet-1137588c75a)
+[Day 07. Kotlin 語言學習 - Nullable 安全性](https://ithelp.ithome.com.tw/articles/10203705)    
+[Collections](https://medium.com/mobile-app-development-publication/kotlin-collection-functions-cheat-sheet-975371a96c4b)   
+- [References](kotlin/reference.md)
 - [New](kotlin/new.md)
 - [Class](kotlin/class.md)
 - [Kotlin & Java](Kotlin/kotlinAndJava.md)
@@ -152,28 +204,21 @@ Type inference : types can be determined from the context, making type annotatio
 
 
 ## CSS && SASS
-
-
-### Flex
-- [CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/AORWkK)
-- [Day 5 : HTML - 網頁排版超強神器，CSS Flex到底是什麼？](https://ithelp.ithome.com.tw/articles/10267398)  
-
-注意當flex以行爲方向時，justify-content控制縱向對齊，align-items控制橫向對齊。
-```css
-#pond {
-  display: flex;
-  flex-direction : column;
-  justify-content : flex-end; // justify-content控制縱向對齊
-}
-  ```
-
-### Position
-[Position 基本用法](https://reurl.cc/AOKkZ8)
+- [Position 基本用法](https://reurl.cc/AOKkZ8)
+  - [CSS POSITION](SCSS/position.md)
+- [CSS PADDING AND MARGIN](SCSS/boxModel.md)
+- [CSS BOARD/BOX SIZE](SCSS/board.md)
+- [CSS OVERFLOW&FLOW](SCSS/overflow&FLOW.md)
+- [CSS 選擇器](https://medium.com/ui-ux%E7%B7%B4%E5%8A%9F%E5%9D%8A/css%E9%81%B8%E6%93%87%E5%99%A8%E4%BB%8B%E7%B4%B9-1-ec19bc5b33a)
+- [Click a selector to see which element(s) that gets selected in the result:](https://www.w3schools.com/cssref/trysel.asp)
 ### CSS cheatSheet
-
 [CSS Cheat Sheet](https://simplecheatsheet.com/tag/css-cheat-sheet/)   
 [CSS quickReview](https://github.com/dekadentno/css-cheat-sheet)  
+### Flex
+[CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/AORWkK)  
+[Day 5 : HTML - 網頁排版超強神器，CSS Flex到底是什麼？](https://ithelp.ithome.com.tw/articles/10267398)   
 
+- [CSS FLEX](SCSS/flex.md)
 ### scss
-[SCSS Cheatsheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
-- [SCSS Noting](SCSS/scssUsage.md)
+[SCSS Cheat Sheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
+- [SCSS Notes](SCSS/scssUsage.md)

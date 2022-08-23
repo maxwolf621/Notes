@@ -1,5 +1,4 @@
 # features
-
 - [features](#features)
   - [`lateinit`](#lateinit)
   - [kotlin single line function](#kotlin-single-line-function)
@@ -32,7 +31,6 @@ If you know that a value in Kotlin will be initialized later so you can guarante
 Notes 
 - **Accessing an uninitialized lateinit variable results in an exception.**
 - It's fairly common to use lateinit var inside Activity/Fragment calls (because you commonly initialize things in `onCreate`/`onViewCreated`), so it's best to know about this.
-
 
 ## kotlin single line function
 
@@ -330,7 +328,7 @@ You cannot use tail recursion when there is more code after the recursive call, 
 
 
 
-```java
+```java 
 val eps = 1E-10 // "good enough", could be 10^-15
 
 tailrec fun findFixPoint(x: Double = 1.0): Double =

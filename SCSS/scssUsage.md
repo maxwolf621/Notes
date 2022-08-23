@@ -1,25 +1,74 @@
-# ScssUsage
+# Scss
 
+- [Scss](#scss)
+  - [variable scope](#variable-scope)
+  - [global variable (`!global`)](#global-variable-global)
+  - [@mixin and @include](#mixin-and-include)
+  - [@extend](#extend)
+  - [@import](#import)
+  - [operator](#operator)
+  - [functions](#functions)
+  - [loops](#loops)
+    - [for .. from .. through ...](#for--from--through-)
+  - [condition (@if {} @else if {} @else )](#condition-if--else-if--else-)
 ```scss
 /**
-  * loop and condition
+  * loop 
   */
 @for $v from x through y {}
+
+/**
+  * Condition
+  */
 @if condition {} @else if condition {} @else {}
 
 /**
-  * variable with $
+  * define variable with $
   */
 $variable
 ```
 
+## variable scope
+
+```scss
+$myColor: red;
+
+h1 {
+  // local variable
+  $myColor: green;
+  // green
+  color: $myColor;
+}
+
+p {
+  // red
+  color: $myColor;
+}
+```
+
+## global variable (`!global`)
+
+```scss
+$myColor: red;
+
+h1 {
+  $myColor: green !global;
+  // green
+  color: $myColor;
+}
+
+p {
+  // green
+  color: $myColor;
+}
+```
 
 ## @mixin and @include
 
 ```scss
 // SCSS 
 
-// allowing parameter and default val
+// allowing parameter and default value
 @mixin fontSize ($params: 10px){
   font-size: $params;
 }

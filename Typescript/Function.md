@@ -3,11 +3,10 @@
 [Function overload](https://bobbyhadz.com/blog/typescript-overload-signature-not-compatible-implementation)
 
 - [Functions](#functions)
-  - [writing out the whole function type](#writing-out-the-whole-function-type)
-  - [Function type expressions ( `functionName : ( parameters ) => returnType`)](#function-type-expressions--functionname---parameters---returntype)
+  - [Function type expressions (`functionName : ( parameters ) => returnType`)](#function-type-expressions-functionname---parameters---returntype)
   - [Function Type Alias](#function-type-alias)
   - [Call Signatures](#call-signatures)
-  - [Construct(`new`) Signatures](#constructnew-signatures)
+  - [Construct Signatures](#construct-signatures)
   - [Generic Functions](#generic-functions)
   - [(type) Inference](#type-inference)
   - [Constraints `T extends A` (Generic Function)](#constraints-t-extends-a-generic-function)
@@ -18,13 +17,11 @@
     - [Type Parameters Should Appear Twice](#type-parameters-should-appear-twice)
   - [Optional Parameters](#optional-parameters)
     - [default parameter](#default-parameter)
-    - [Optional Parameters in Callbacks](#optional-parameters-in-callbacks)
+    - [Optional Parameters in Callbacks](#optional-parameters-in-callbacks) 
   - [Function Overloads](#function-overloads)
     - [Overload Signatures and the Implementation Signature](#overload-signatures-and-the-implementation-signature)
     - [Writing Good Overloads](#writing-good-overloads)
     - [Declaring `this` in a Function](#declaring-this-in-a-function)
-
-
 
 ```typescript 
 // Named function
@@ -33,13 +30,6 @@ function add(x, y) {
 }
  
 // Anonymous function
-let myAdd = function (x, y) {
-  // ..
-};
-```
-## writing out the whole function type
-
-```typescript 
 let myAdd: (x: number, y: number) => number = function (
   x: number,
   y: number
@@ -47,7 +37,7 @@ let myAdd: (x: number, y: number) => number = function (
   return x + y;
 };
 ```
-## Function type expressions ( `functionName : ( parameters ) => returnType`)
+## Function type expressions (`functionName : ( parameters ) => returnType`)
 
 The simplest way to describe a function is with a function type expression.
 ```typescript 
@@ -92,21 +82,19 @@ function doSomething(fn: DescribableFunction) {
 }
 ```
 - Note that the syntax is slightly different compared to a function type expression - here uses `:`
-
-## Construct(`new`) Signatures
+## Construct Signatures
 
 You can write a construct signature by adding the `new` keyword in front of a call signature
 ```typescript
 type SomeConstructor = {
   new (s: string): SomeObject;
 };
-
 function fn(ctor: SomeConstructor) {
   return new ctor("hello");
 }
 ```
 
-Some objects, like JavaScript’s Date object, can be called with or without new
+Some objects, like JavaScript’s Date object, can be called with or without `new`
 ```typescript
 interface CallOrConstruct {
   new (s: string): Date;
@@ -482,7 +470,7 @@ len(Math.random() > 0.5 ? "hello" : [0]);
 ```
 the above code gets the following error message
 ```typescript
-' No overload matches this call.
+No overload matches this call.
 Overload 1 of 2, '(s: string): number', gave the following error.
 Argument of type 'number[] | "hello"' is not assignable to parameter of type 'string'.
 Type 'number[]' is not assignable to type 'string'.
@@ -533,8 +521,8 @@ interface DB {
  
 const db = getDB();
 const admins = db.filterUsers(() => this.admin);
-  The containing arrow function captures the global value of 'this'.
-  Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
+  ^The containing arrow function captures the global value of 'this'.
+   Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
 ```
 
 

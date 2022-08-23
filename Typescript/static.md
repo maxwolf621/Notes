@@ -1,17 +1,20 @@
 # static
-
 - [static](#static)
   - [static member](#static-member)
-  - [static names can't be used](#static-names-cant-be-used)
+  - [the names can't be used by `static`](#the-names-cant-be-used-by-static)
   - [Why No Static Classes?](#why-no-static-classes)
   - [Blocks in Classes](#blocks-in-classes)
-## static member
 
-- static member can use public, protected, and private visibility modifiers
+- Typescript done not have static class only staticmember with visibility modifiers and static blocks
+
+## static member
+- static member can use `public`, `protected`, and `private` visibility modifiers
 - Static members are also inherited
+
 ```typescript
 class MyClass {
   static x = 0;
+  private static y = 0;
   static printX() {
     console.log(MyClass.x);
   }
@@ -21,13 +24,6 @@ console.log(MyClass.x);
 MyClass.printX();
 
 ----
-
-class MyClass {
-  private static x = 0;
-}
-console.log(MyClass.x);
-
----
 
 class Base {
   static getGreeting() {
@@ -40,9 +36,10 @@ class Derived extends Base {
 ```
 
 
-## static names can't be used
+## the names can't be used by `static`
 
-certain static names can’t be used. Function properties like name, length, and call aren’t valid to define as static members:
+certain static names can’t be used.  
+Function properties like `name`, `length`, and `call` aren’t valid to define as static members:
 ```java
 class S {
   static name = "S!";
@@ -53,13 +50,13 @@ class S {
 ## Why No Static Classes?
 TypeScript (and JavaScript) don’t have a construct called static class the same way as, for example, C# does.
 
-Those constructs only exist because those languages force all data and functions to be inside a class; because that restriction doesn’t exist in TypeScript, there’s no need for them. 
+**Those constructs only exist because those languages force all data and functions to be inside a class; because that restriction doesn’t exist in TypeScript, there’s no need for them.**
 
 A class with only a single instance is typically just represented as a normal object in JavaScript/TypeScript.
 
-For example, we don’t need a “static class” syntax in TypeScript because a regular object (or even top-level function) will do the job just as well:
+For example, we don’t need a static class syntax in TypeScript because a regular object (or even top-level function) will do the job just as well:
 ```typescript 
-// Unnecessary "static" class
+// Unnecessary static class
 class MyStaticClass {
   static doSomething() {}
 }
@@ -87,6 +84,7 @@ class Foo {
     }
  
     static {
+        // static member only
         try {
             const lastInstances = loadLastInstances();
             Foo.#count += lastInstances.length;

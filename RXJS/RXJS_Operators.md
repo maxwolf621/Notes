@@ -26,7 +26,7 @@
   - [defer](#defer)
   - [fusionner/verschmelzen](#fusionnerverschmelzen)
     - [concat](#concat)
-    - [~~merge~~](#merge)
+    - [merge && mergeAll](#merge--mergeall)
     - [zip](#zip)
   - [map](#map)
   - [SwitchMap](#switchmap)
@@ -490,7 +490,7 @@ zip(sourceA$, sourceB$, sourceC$).subscribe(data => {
 
 
 ## map 
-- Observable 的 map 是每次有事件發生時進行轉換(tansform new observable data)。
+- Observable 的 map 是每次有事件發生時進行轉換(transform new observable data)。
 - Array 的 map 會立刻把整個了陣列的資料勁行轉換。
 ```typescript
 of(1, 2, 3, 4).pipe(
@@ -557,7 +557,7 @@ switched.subscribe(x => console.log(x));
 Each time it observes one of these inner Observables, the output Observable begins emitting the items emitted by that inner Observable. 
 
 **When a new inner Observable is emitted, `switchMap` stops emitting items from the earlier-emitted inner Observable and begins emitting items from the new one.** It continues to behave like this for subsequent inner Observables.
-- For the case to get the leastest data we can use `switchMap`
+- For the case to get the latest data we can use `switchMap`
 
 利用`switchMap`簡化前後端巢狀式資料交換
 ```typescript

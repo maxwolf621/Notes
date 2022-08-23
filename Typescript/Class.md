@@ -1,27 +1,23 @@
 # Class 
-
 - [Class](#class)
   - [Class Expressions](#class-expressions)
   - [Field of Class](#field-of-class)
     - [field with readOnly](#field-with-readonly)
-  - [this](#this)
-  - [consturctor](#consturctor)
-    - [Parameter Properties](#parameter-properties)
-  - [accessor](#accessor)
+  - [constructor](#constructor)
+  - [Accessor](#accessor)
   - [Index Signatures](#index-signatures)
   - [implements Class](#implements-class)
     - [pitfalls](#pitfalls)
-  - [extending Class](#extending-class)
+      - [Always add type annotation of parameter in override function](#always-add-type-annotation-of-parameter-in-override-function)
+      - [Implementing an interface with an optional property doesn't create that property](#implementing-an-interface-with-an-optional-property-doesnt-create-that-property)
     - [override](#override)
   - [Initialization Order](#initialization-order)
   - [Abstract Class](#abstract-class)
   - [Cross-hierarchy protected access](#cross-hierarchy-protected-access)
   - [Cross-instance private access](#cross-instance-private-access)
-  - [Caveats](#caveats)
-    - [Abstract Construct Signatures](#abstract-construct-signatures)
+    - [Caveats](#caveats)
+  - [Abstract Construct Signatures](#abstract-construct-signatures)
   - [Relationships Between Classes](#relationships-between-classes)
-  - [Generic Class](#generic-class)
-    - [Type Parameter in Static Member isn’t legal](#type-parameter-in-static-member-isnt-legal)
 
 [Type-only Field Declarations](https://www.typescriptlang.org/docs/handbook/2/classes.html#type-only-field-declarations)   
 [Inheriting Built-in Types, version below ES6/ES2015](https://www.typescriptlang.org/docs/handbook/2/classes.html#inheriting-built-in-types)   
@@ -39,9 +35,7 @@ const someClass = class<Type> {
   }
 };
  
-const m = new someClass("Hello, world");
-     
-const m: someClass<string>;
+const m = new someClass("Hello, world"); // const m: someClass<string>;
 ``` 
 ## Field of Class
 
@@ -78,29 +72,7 @@ g.name = "also not ok";
 const c = new Greeter("hello");
 console.log(c.name); // hello
 ```
-
-## this
-
-```typescript
-let x: number = 0;
- 
-class C {
-  x: string = "hello";
- 
-  m() {
-    // This is trying to modify 'x' from first line, not the class property x
-    x = "world";
-    'Type 'string' is not assignable to type 'number'.(2322)
-  }
-}
-
-// using this.x
-m() {
-  this.x = "world";
-}
-```
-
-## consturctor
+## constructor
 
 No type parameter and return type annotation allowing 
 ```typescript
@@ -114,10 +86,8 @@ class Point {
 }
 ```
 
-### Parameter Properties
 TypeScript offers special syntax for turning a constructor parameter into a class property (field) with the same name and value. 
-
-These are called parameter properties and are created by prefixing a constructor argument with one of the visibility modifiers `public`, `private`, `protected`, or `readonly`. 
+- These are called parameter properties and are created by prefixing a constructor argument with one of the visibility modifiers `public`, `private`, `protected`, or `readonly`. 
 ```typescript
 class Params {
   constructor(
@@ -132,12 +102,10 @@ const a = new Params(1, 2, 3);
 console.log(a.x);
 ```
 
-
-
-## accessor
+## Accessor
 
 TypeScript has some special inference rules for accessors:
-- If get exists but no set, the property is automatically readonly
+- If `get` exists but no `set`, the property is automatically `readonly`
 - If the type of the setter parameter is not specified, it is inferred from the return type of the getter
 - Getters and setters must have the same Member Visibility
 
@@ -166,7 +134,9 @@ class Thing {
 
 ## Index Signatures
 
-Because the index signature type needs to also capture the types of methods, it’s not easy to usefully use these types. Generally it’s better to store indexed data in another place instead of on the class instance itself.
+Because the index signature type needs to also capture the types of methods, it’s not easy to usefully use these types. 
+
+**Generally it’s better to store indexed data in another place instead of on the class instance itself.**
 ```typescript 
 class MyClass {
   [s: string]: boolean | ((s: string) => boolean);
@@ -179,8 +149,7 @@ class MyClass {
 
 ## implements Class
 
-allowing mutiple implementating
-
+allowing multiple implementing
 ```typescript
 class Animal {
     public name: string;
@@ -212,15 +181,16 @@ class Cat extends Animal implements Meow, Hi{
         return 'Meow~';
     }
 }
+
 let c = new Cat('Tom'); // Tom
 console.log(c.sayHi()); // Meow, My name is Tom
 ```
 
+### pitfalls 
 
-### pitfalls
+#### Always add type annotation of parameter in override function
 
-**Always add type annotation of parameter in overrided function**   
-Here we may assume `s`’s type would be influenced by the name `: string` parameter of check, but it is not.
+Here we may assume `s`'s type would be influenced by the `name : string` parameter of check, but it is not.
 ```typescript
 interface Checkable {
   check(name: string): boolean;
@@ -228,15 +198,16 @@ interface Checkable {
  
 class NameChecker implements Checkable {
   check(s) {
-        ' Parameter 's' implicitly has an 'any' type.
+        ^ Parameter 's' implicitly has an 'any' type.
+        
     // Notice no error here
-            // It could be any type
-    return s.toLowercse() === "ok";
+    // It could be any type
+    return s.toLowercase() === "ok";
   }
 }
 ```
+#### Implementing an interface with an optional property doesn't create that property
 
-**Implementing an interface with an optional property doesn’t create that property**
 ```java
 interface A {
   x: number;
@@ -247,36 +218,7 @@ class C implements A {
 }
 const c = new C();
 c.y = 10;
-  ' Property 'y' does not exist on type 'C'.    
-```
-## extending Class
-
-Classes may extend from a base class. A derived class has all the properties and methods of its base class, and also define additional members.
-
-```typescript
-class Animal {
-    public name: string;
-    constructor(name: string) {
-        this.name = name;
-    }    
-    sayHi() {
-        return `My name is ${this.name}`;
-    }
-}
-class Cat extends Animal{
-    constructor(name: string) {
-        super(name); 
-        console.log(this.name);    
-    }
-    sayHi() {
-        return 'Meow, ' + super.sayHi(); 
-    }
-    sayMeow(){
-        return 'Meow~';
-    }
-}
-let c = new Cat('Tom'); // Tom
-console.log(c.sayHi()); // Meow, My name is Tom
+  ^ Property 'y' does not exist on type 'C'.    
 ```
 
 ### override 
@@ -298,13 +240,14 @@ class Derived extends Base {
   }
 }
  
+// Derived
 const d = new Derived();
-
 d.greet("mother");
 
+// Base 
 const b : Base = d;
 b.greet("love");
-        'Expected 0 arguments, but got 1.(2554)
+        ^ Expected 0 arguments, but got 1.(2554)
 ```
 
 ## Initialization Order
@@ -317,7 +260,9 @@ The order of class initialization, as defined by JavaScript, is:
 
 ## Abstract Class
 
-An abstract method or abstract field is one that hasn’t had an implementation provided. These members must exist inside an abstract class, which cannot be directly instantiated.
+An abstract method or abstract field is one that hasn’t had an implementation provided. 
+
+These members must exist inside an abstract class, **which cannot be directly instantiated**.
 
 ```typescript
 abstract class Animal {
@@ -334,11 +279,12 @@ abstract class Animal {
 }
 class Cat extends Animal{
     constructor(name: string) {
-        super(name); // 呼叫父類別的 constructor(name)
+        super(name); 
         console.log(this.name);    
     }
+    // override 
     sayHi() {
-        return 'Meow, ' + super.sayHi(); // 呼叫父類別的 sayHi()    
+        return 'Meow, ' + super.sayHi();  
     }
     sayMeow(){
         return 'Meow~';
@@ -372,6 +318,7 @@ console.log(b.valueX()); //1
 console.log(d.valueX()); //5
 ```
 
+---
 
 ```typescript
 class Base {
@@ -386,15 +333,15 @@ class Derived2 extends Base {
   }
   f2(other: Base) {
     other.x = 10;
-    ' Property 'x' is protected and only accessible through an instance of class 'Derived2'. 
-    ' This is an instance of class 'Base'.
+          ^ Property 'x' is protected and only accessible 
+            through an instance of class 'Derived2'. 
+            This is an instance of class 'Base'.
   }
 }
 ```
-
-Java, for example, considers this to be legal. On the other hand, C# and C++ chose that this code should be illegal.
-TypeScript sides with C# and C++ here, because accessing x in Derived2 should only be legal from Derived2’s subclasses, and Derived1 isn’t one of them. Moreover, if accessing x through a Derived1 reference is illegal (which it certainly should be!), then accessing it through a base class reference should never improve the situation.
-
+- Java, for example, considers this to be legal. On the other hand, C# and C++ chose that this code should be illegal.  
+TypeScript sides with C# and C++ here, because **accessing `x` in `Derived2` should only be legal from `Derived2`’s subclasses**, and `Derived1` isn't one of them.   
+Moreover, if accessing `x` through a `Derived1` reference is illegal, then accessing it through a base class reference should never improve the situation.
 
 ## Cross-instance private access
 
@@ -409,25 +356,25 @@ class A {
 }
 ```
 
-## Caveats
+### Caveats
 
-private and protected are only enforced during type checking.
-If you need to protect values in your class from malicious actors, you should use mechanisms that offer hard runtime privacy, such as closures, WeakMaps, or private fields. Note that these added privacy checks during runtime could affect performance
+`private` and `protected` are only enforced during type checking.     
+If you need to protect values in your class from malicious actors, you should use mechanisms that offer hard runtime privacy, such as closures, WeakMaps, or `private` fields. 
 
+**Note that these added privacy checks during runtime could affect performance**
 
-### Abstract Construct Signatures
+## Abstract Construct Signatures
  
 Sometimes you want to accept some class constructor function that produces an instance of a class which derives from some abstract class.
 ```typescript
 abstract class Base {
   abstract getName(): string;
- 
   printName() {
     console.log("Hello, " + this.getName());
   }
 }
 
-// istead 
+// instead  
 class Derived extends Base {
   getName() {
     return "world";
@@ -472,7 +419,6 @@ class Point1 {      class Point2 {
  
 const p: Point1 = new Point2(); // OK
 
-  
 class Employee {                    class Person {                            
   name: string;                       name: string;                                   
   age: number;                        age: number;                            
@@ -482,28 +428,4 @@ class Employee {                    class Person {
 // OK
 const p: Person = new Employee();
 ```
-
-
-## Generic Class
-
-```typescript
-class Box<Type> {
-  contents: Type;
-  constructor(value: Type) {
-    this.contents = value;
-  }
-}
- 
-const b = new Box("hello!");
-```
-
-### Type Parameter in Static Member isn’t legal
-
-```typescript
-class Box<Type> {
-  static defaultValue: Type;
-            ' Static members cannot reference class type parameters.
-}
-```
-
 

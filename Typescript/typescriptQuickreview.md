@@ -1,11 +1,12 @@
 # QuickReview
 - [QuickReview](#quickreview)
-  - [Object Types as Function Parameter](#object-types-as-function-parameter)
-    - [with (`?`) Optional Member](#with--optional-member)
+  - [(`?`) Optional](#-optional)
     - [Union Type (`|`)](#union-type-)
   - [narrowing `undefined`](#narrowing-undefined)
-  - [readonly](#readonly)
+  - [readonly (address)](#readonly-address)
+  - [readonlyArray](#readonlyarray)
   - [Index Signatures](#index-signatures)
+  - [Index signature vs `Record<Keys, Type>`](#index-signature-vs-recordkeys-type)
   - [Intersection Types `&`](#intersection-types-)
   - [Generic Type](#generic-type)
   - [assertions (`as`)](#assertions-as)
@@ -25,18 +26,24 @@
     - [Computed and constant members](#computed-and-constant-members)
     - [Sting enums](#sting-enums)
     - [const enmu](#const-enmu)
+  - [Using constructor Function in Generics `c : { new () : Type}`](#using-constructor-function-in-generics-c---new---type)
+  - [`Array<T>` and `T[]`](#arrayt-and-t)
+  - [string or number index signature](#string-or-number-index-signature)
 
-## Object Types as Function Parameter
-### with (`?`) Optional Member
+## (`?`) Optional 
 
 ```typescript
+class getShape{
+  //...
+}
+
 interface PaintOptions {
   shape: Shape;
   xPos?: number; // xPos is optional
   yPos?: number; // yPos is optional
 }
  
-// or
+// or type
 type PaintOptions {
   shape: Shape;
   xPos?: number; // xPos is optional
@@ -57,12 +64,14 @@ paintShape({ shape, xPos: 100, yPos: 100 });
 ### Union Type (`|`) 
 
 **TypeScript will only allow an operation if it is valid for every member of the union.**    
+
 ```typescript
+// Methods can be used only if 
+// these are defined in each member of the union 
 function printId(id: number | string) {
   console.log(id.toUpperCase());
-  
-  Property 'toUpperCase' does not exist on type 'string | number'.
-  Property 'toUpperCase' does not exist on type 'number'.
+               'Property 'toUpperCase' does not exist on type 'string | number'.
+               'Property 'toUpperCase' does not exist on type 'number'.
 }
 ```
 
@@ -77,7 +86,7 @@ function paintShape(opts: PaintOptions) {
 }
 ```
 
-## readonly
+## readonly (address)
 
 **`readonly` doesn't imply that a value is totally immutable**
 
@@ -86,36 +95,47 @@ interface Home {
   readonly resident: { name: string; age: number };
 }
 
-// ok!
+// ok! change the value not address
 function visitForBirthday(home: Home) {
   home.resident.age++;
 }
  
 function evict(home: Home) {
-  // But we can't write to the 'resident' property itself on a 'Home'.
+  
   // It created a new address 
   home.resident = { 
-    // Cannot assign to 'resident' because it is a read-only property.
     name: "Victor the Evictor",
+            'Cannot assign to 'resident' because it is a read-only property.
     age: 42,
   };
 }
 ```
 
+## readonlyArray
+
+Unlike Array, there isn’t a `ReadonlyArray` constructor that we can use.
+```typescript 
+new ReadonlyArray("red", "green", "blue");
+```
+Instead, we can assign regular Arrays to `ReadonlyArrays` type variable.
+```typescript
+const roArray: ReadonlyArray<string> = ["red", "green", "blue"];
+```
+
 ## Index Signatures
-- **This index signature states that when a `StringArray` is indexed with a `number`, it( will return a `string`.**   
+- **This index signature states that when a `StringArray` is indexed with a `number`, it will return a `string`.**   
 - **An index signature property type must be either `string` or `number`.**   
 
-A `string` index declares that `obj.property` is also available as `obj["property"]`.     
+A `string` index declares that `obj.property`(`NumberDictionary.xxxx`) is also available as `obj["property"]`(`NumberDictionary["xxxx"]`).     
 ```typescript 
 interface NumberDictionary {
+//    member     :  type 
   [index: string]: number;
-  length: number; // ok
   
+  length: number; // ok
   name: string;
-  // Property 'name' of type 'string' is not assignable to 'string' index type 'number'.
+        ' Property 'name' of type 'string' is not assignable to 'string' index type 'number'.
 }
-
 
 // union index signature
 interface NumberOrStringDictionary {
@@ -126,13 +146,44 @@ interface NumberOrStringDictionary {
   name: string;   // ok, name is a string
 }
 
-// readonly
-interface ReadonlyStringArray {
-  readonly [index: number]: string;
+type valueType = number | string;
+
+interface c {
+    [key : string] : valueType | undefined;
+    name ?: string;
+    age  ?: number;
 }
+
+const obj : c = {
+    "love" : "is verb",
+    "neon" : "color blind",
+    "my stupid mouth" : "getting me in trouble",
+    name : "jian",
+    age : 18,
+    };
+
+
+for(let key in obj){
+    console.log(`${key}: ${obj[key]}`);
+}
+```
+
+## Index signature vs `Record<Keys, Type>`
+
+Index Signature is not allow literal type
+
+```typescript
+interface Salary {
+  [key: 'yearlySalary' | 'yearlyBonus']: number
+          ' An index signature parameter type cannot be a literal type or generic type. 
+          ' Consider using a mapped object type instead.
+}
+type SpecificSalary = Record<'yearlySalary'|'yearlyBonus', number>
  
-let myArray: ReadonlyStringArray = getReadOnlyStringArray();
-myArray[2] = "Mallory";
+const salary1: SpecificSalary = { 
+  'yearlySalary': 120_000,
+  'yearlyBonus': 10_000
+}; // OK
 ```
 
 ## Intersection Types `&`
@@ -145,9 +196,9 @@ interface Circle {
   radius: number;
 }
  
-type ColorfulCircle = Colorful & Circle;
 
-function draw(circle: Colorful & Circle) {
+type ColorfulCircle = Colorful & Circle;
+function draw(circle: ColorfulCircle) {
     //....
 }
  
@@ -182,10 +233,9 @@ function serContent<OrNull>(a : orNull){
 }
 ```
 
-
 ## assertions (`as`)
 
-using `as` if you already know the variable type (the type you know but typescript doesn't know
+using `as` if you already know the variable type (the type you know but typescript doesn't know)
 
 ## Tuple Type 
 
@@ -197,12 +247,12 @@ type StringNumberBooleans = [string, number, ...boolean[]];
 type StringBooleansNumber = [string, ...boolean[], number];
 type BooleansStringNumber = [...boolean[], string, number];
 ```
-- **Tuples tend to be created and left un-modified in most code**, so annotating types as readonly tuples when possible is a good default.
+
+**Tuples tend to be created and left un-modified in most code**, so annotating types as `readonly` tuples when possible is a good default.
 ```typescript
 function doSomething(pair: readonly [string, number]) {
     pair[0] = "hello!" ;
-    
-    Cannot assign to '0' because it is a read-only property.
+    // ^?Cannot assign to '0' because it is a read-only property.
 }
 ```
 
@@ -211,7 +261,6 @@ function doSomething(pair: readonly [string, number]) {
 ### `never`
 
 `never` is not `void` and it built for function that **having not returned value** (e.g. throw Error) or **infinity loop**
-
 ```typescript
 // Not have a reachable end point
 function error(message: string): never {
@@ -231,8 +280,7 @@ function infiniteLoop(): never {
 
 ### `unknown`
 
-What is the Difference btw `any` and `unknown` ? **`unknown` which is the type-safe counterpart of `any`**. 
-
+**`unknown` is the type-safe counterpart of `any`**. 
 - **Anything is assignable to `unknown`, but `unknown` isn't assignable to anything but itself** and `any` without a type assertion or a control flow based narrowing.   
 
 ```typescript
@@ -266,7 +314,7 @@ value2.substring(); // OK (may cause accidents)
 value.substring();  // Error : Object is of type 'unknown'
 ```
 
-###  `typeof variableName` and `instanceof className`
+### `typeof variableName` and `instanceof className`
 
 ```typescript
 typeof value === ''
@@ -275,7 +323,7 @@ someObject instanceof ObjectBelongingClass
 
 ## Literal Types
 
-By combining literals into unions, you can express a much more useful concept. For example, **functions that only accept a certain set of known values**:
+By combining literals into unions, you can express a much more useful concept. For example, **functions that only accept a certain set of known (literal) values**:
 ```typescript 
 // Alignment only allows three value (left, right or center)
 function printText(s: string, alignment: "left" | "right" | "center") {
@@ -322,16 +370,6 @@ function greeter(fn: GreetFunction) {
 ```
 ## call Signature && Construct Signature
 
-```typescript
-type A :{
-  //{callSignature : dataType} : returnType;
-  {callSignature : }
-}
-
-function fn( aFn : A){
-  a.callSignature()
-}
-```
 
 ### overload
 
@@ -503,3 +541,52 @@ console.log(Dark['Jonas'] // 1
 console.log(Dark.[1])
 ```
 
+## Using constructor Function in Generics `c : { new () : Type}`
+
+constructor function
+```typescript
+function create<Type>(c: { new (): Type }): Type {
+  return new c();
+}
+
+class BeeKeeper {
+  hasMask: boolean = true;
+}
+ 
+class ZooKeeper {
+  nametag: string = "Mikle";
+}
+ 
+class Animal {
+  numLegs: number = 4;
+}
+ 
+class Bee extends Animal {
+  keeper: BeeKeeper = new BeeKeeper();
+}
+ 
+class Lion extends Animal {
+  keeper: ZooKeeper = new ZooKeeper();
+}
+ 
+function createInstance<A extends Animal>(c: new () => A): A {
+  return new c();
+}
+ 
+createInstance(Lion).keeper.nametag;
+createInstance(Bee).keeper.hasMask;
+```
+
+
+## `Array<T>` and `T[]`
+
+In TypeScript, the type annotation on these parameters is implicitly `any[]` instead of `any`, and `any` type annotation given must be of the form `Array<T>` or `T[]`, or a tuple type
+
+## string or number index signature
+
+JavaScript object keys are always coerced to a string, so `obj[0]` is always the same as `obj["0"]`.
+
+```java
+type Mapish = { [k: string]: boolean };
+type M = keyof Mapish; // type M = string | number
+```
