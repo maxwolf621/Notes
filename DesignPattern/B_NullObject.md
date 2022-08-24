@@ -1,7 +1,7 @@
 ###### tags : `Design Pattern`
 # Null Object
 [Reference](https://github.com/CyC2018/CS-Notes/blob/master/notes/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%20-%20%E7%A9%BA%E5%AF%B9%E8%B1%A1.md)  
-[Another Example](https://github.com/iluwatar/java-design-patterns/tree/master/null-object)  
+[iluwatar](https://github.com/iluwatar/java-design-patterns/tree/master/null-object)  
 
 > Pattern UML
 > ![image](https://user-images.githubusercontent.com/68631186/126873687-19af1fb5-a0ca-4b87-bf90-f72b6ed6ec94.png)

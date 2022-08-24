@@ -1,11 +1,22 @@
 ###### tags: `Design Pattern`
 
 # Adapter-Muster
-[Another Example](https://github.com/iluwatar/java-design-patterns/tree/master/adapter)  
+[Another Example](https://github.com/iluwatar/java-design-patterns/tree/master/adapter)     
+[Typescript Example](https://refactoring.guru/design-patterns/adapter/typescript/example#lang-features)   
 
-> Konzept  
-![](https://i.imgur.com/U8q6gUs.png)  
-![image](https://user-images.githubusercontent.com/68631186/126260564-e78ee25e-725c-4cca-b818-c02387c06122.png)  
+- [Adapter-Muster](#adapter-muster)
+  - [Konzept](#konzept)
+  - [Objekt-Adapter](#objekt-adapter)
+  - [Klassen-Adapter](#klassen-adapter)
+    - [Objekt- oder Klassen nutzet ?](#objekt--oder-klassen-nutzet-)
+      - [Mit dem Klassen-Adapter](#mit-dem-klassen-adapter)
+      - [Mit dem Object-Adapter](#mit-dem-object-adapter)
+  - [Verwendung eines einfachen Adapters](#verwendung-eines-einfachen-adapters)
+  - [Review von Musters](#review-von-musters)
+
+## Konzept    
+![](https://i.imgur.com/U8q6gUs.png)     
+![image](https://user-images.githubusercontent.com/68631186/126260564-e78ee25e-725c-4cca-b818-c02387c06122.png)     
 
 ```java
 /**

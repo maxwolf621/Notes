@@ -1,7 +1,14 @@
 ###### tags: `Design Pattern`
 # Singleton
-[TOC]
-   
+
+- [Singleton](#singleton)
+  - [Lazy Initialization](#lazy-initialization)
+  - [Responsibilities](#responsibilities)
+    - [lazy Initialization singleton pattern](#lazy-initialization-singleton-pattern)
+  - [`synchronized` singleton pattern](#synchronized-singleton-pattern)
+    - [`new` a private instance of singleton](#new-a-private-instance-of-singleton)
+    - [Double-checked Locking](#double-checked-locking)
+
 **The Singleton Pattern ensures a class has only one instance, and provides a global point of access to it.**
 > pattern UML  
 > ![](https://i.imgur.com/ZhgkHCD.png)  
@@ -28,8 +35,8 @@ Instead, ***the singleton can be created only when it is needed, which can avoid
 1. Managing its one instance (and providing global access) 
 2. It is also responsible for whatever its main role is intended. 
 
-## `synchronized` singleton pattern
-- `synchronized` 以免共用存取時，發生資料的競速（Race condition）問題。
+
+### lazy Initialization singleton pattern
 
 a singleton pattern without **synchronized**
 ```java
@@ -54,7 +61,7 @@ public class singleton{
       *   else
       *   @return {@code unique}
       */
-    pubic static singleton getsingleton()
+    pubic static singleton getSingleton()
     {
         if(unique == null){
             unique = new Singleton();
@@ -65,12 +72,13 @@ public class singleton{
     //..
 }
 ```
-- In this case, Singleton is instantiated through its private constructor and assigned to to `unique` Instance. 
-- If `unique` Instance wasn’t `null`, then it was previously created and is therefore returned. Because the `getInstance()` is a `static` method, it allows access from anywhere in the code using `Singleton::getInstance()`. This is just as easy as accessing a global variable but with the advantage of lazy instantiaion.
 
-Add `synchronized` for gett method for thread Safe  
+
+## `synchronized` singleton pattern
+
+- `synchronized` 以免共用存取時，發生資料的競速（Race condition）問題。
 ```java
-public static synchronized singleton getsingleton(){
+public static synchronized singleton getSingleton(){
     //...
 }
 ```
@@ -78,15 +86,13 @@ public static synchronized singleton getsingleton(){
   > the synchronization is only relevant the first time when there was no instance created yet. 
 - ***Once we've set the `unique` to an instance of singleton, we have no further need to synchronize this method.***
 
-To reduce the cost of `synchronize`.
-There are two way to handle as the following 
-
+There are two way to handle reduce the cost of `synchronize` as the following 
 ### `new` a private instance of singleton
 
 ```java
 public class Singleton {
 
-    // Default constructor does notrhing
+    // private constructor 
     private Singleton() {}
     
     /**
@@ -119,7 +125,7 @@ public class Singleton {
     private Singleton() {}
     
     /**
-      * <p> using {@code synhronized} only once
+      * <p> using {@code synchronized} only once
       *     while creating a instance
       */
     public static Singleton getInstance() {
@@ -132,7 +138,9 @@ public class Singleton {
         }
         return unique;
     }
+
+    public void someBusiness(){
+      // some logic to execute on the unique instance
+    }
 }
 ```
-
-
