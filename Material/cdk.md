@@ -17,7 +17,7 @@ CDK : mutual parts of each material
   - [Portal](#portal)
     - [TemplatePortal](#templateportal)
 
-![圖 18](images/7adcd5d3edf3411b427ca5ed77d1c29d87392be497ad09997c19cac892a2f6d3.png)  
+![圖 18](../images/7adcd5d3edf3411b427ca5ed77d1c29d87392be497ad09997c19cac892a2f6d3.png)  
 
 
 ## Reference 
