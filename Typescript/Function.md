@@ -5,7 +5,7 @@
 - [Functions](#functions)
   - [Function type expressions (`functionName : ( parameters ) => returnType`)](#function-type-expressions-functionname---parameters---returntype)
   - [Function Type Alias](#function-type-alias)
-  - [Call Signatures](#call-signatures)
+  - [Call Signatures in Ojbect Types](#call-signatures-in-ojbect-types)
   - [Construct Signatures](#construct-signatures)
   - [Generic Functions](#generic-functions)
   - [(type) Inference](#type-inference)
@@ -16,8 +16,8 @@
     - [Use Fewer Type Parameters](#use-fewer-type-parameters)
     - [Type Parameters Should Appear Twice](#type-parameters-should-appear-twice)
   - [Optional Parameters](#optional-parameters)
-    - [default parameter](#default-parameter)
-    - [Optional Parameters in Callbacks](#optional-parameters-in-callbacks) 
+    - [Default parameter](#default-parameter)
+    - [Optional Parameters in Callbacks](#optional-parameters-in-callbacks)
   - [Function Overloads](#function-overloads)
     - [Overload Signatures and the Implementation Signature](#overload-signatures-and-the-implementation-signature)
     - [Writing Good Overloads](#writing-good-overloads)
@@ -61,10 +61,10 @@ function greeter(fn: GreetFunction) {
   // ...
 }
 ```
-## Call Signatures
+## Call Signatures in Ojbect Types
 
-Functions can have properties in addition to being callable.   
-However, the function type expression syntax doesn’t allow for declaring properties. 
+Functions can have properties in addition to being callable.    
+However, the function type expression syntax doesn't allow for declaring properties. 
 
 If we want to describe something callable with properties, we can write a call signature in an object type
 ```typescript
@@ -72,7 +72,7 @@ If we want to describe something callable with properties, we can write a call s
 type DescribableFunction = {
   description: string;
 
-  // Call Signatures
+  // Call Signatures (function without name)
   (someArg: number): boolean;
 };
 
@@ -81,14 +81,14 @@ function doSomething(fn: DescribableFunction) {
   console.log(fn.description + " returned " + fn(6));
 }
 ```
-- Note that the syntax is slightly different compared to a function type expression - here uses `:`
-## Construct Signatures
+## Construct Signatures 
 
 You can write a construct signature by adding the `new` keyword in front of a call signature
 ```typescript
 type SomeConstructor = {
   new (s: string): SomeObject;
 };
+
 function fn(ctor: SomeConstructor) {
   return new ctor("hello");
 }
@@ -218,7 +218,7 @@ function combine<Type>(arr1: Type[], arr2: Type[]): Type[] {
 }
 
 const arr = combine([1, 2, 3], ["hello"]);
-Type 'string' is not assignable to type 'number'.
+      ^ Type 'string' is not assignable to type 'number'.
 ```
 
 If you intended to do this, however, you could manually specify Type via `|`
@@ -227,8 +227,7 @@ If you intended to do this, however, you could manually specify Type via `|`
 const arr = combine<string | number>([1, 2, 3], ["hello"]);
 ```
 
-**Having too many type parameter using constraints where they aren’t needed can make inference less successful, frustrating callers of your function.**  
-
+**Having too many type parameter using constraints where they aren't needed can make inference less successful, frustrating callers of your function.**     
 Here are two ways of writing a function with type parameter and `any` type
 ```typescript 
 function firstElement1<Type>(arr: Type[]) {
@@ -247,29 +246,25 @@ const a = firstElement1([1, 2, 3]);
 const b = firstElement2([1, 2, 3]);
 ```
 `firstElement1` is a much better way to write this function.  
-Its inferred return type is `Type`, but `firstElement2`’s inferred return type is `any` because TypeScript has to resolve the `arr[0]` expression using the constraint type, rather than waiting to resolve the element during a call.
+Its inferred return type is `Type`, but `firstElement2`'s inferred return type is `any` because TypeScript has to resolve the `arr[0]` expression using the constraint type, rather than waiting to resolve the element during a call.
 
 ## Guidelines for Writing Good Generic Functions
 
 ### Use Fewer Type Parameters
 
-Always use as few type parameters as possible
-
+Always use as few type parameters as possible   
 ```typescript
 // one parameter and one function parameter
 function filter1 <Type> (arr: Type[], func : (arg: Type) => boolean): Type[] {
   return arr.filter(func);
 }
 
-function filter2<Type, Func extends (arg: Type) => boolean>(arr: Type[], func: Func): Type[] 
-{
+function filter2<Type, Func extends (arg: Type) => boolean>(arr: Type[], func: Func): Type[] {
   return arr.filter(func);
 }
 ```
-- We’ve created a type parameter `Func` that doesn’t relate two values. 
-That’s always a red flag, because it means callers wanting to specify type arguments have to manually specify an extra type argument for no reason.   
-Func doesn’t do anything but make the function harder to read and reason about!
-
+ means callers wanting to specify type arguments have to manually specify an extra type argument for no reason.   
+`Func` doesn’t do anything but make the function harder to read and reason about!
 
 ### Type Parameters Should Appear Twice   
 
@@ -278,7 +273,6 @@ If a type parameter only appears in one location, strongly reconsider if you act
 function greet<Str extends string>(s: Str) {
   console.log("Hello, " + s);
 }
- 
 greet("world");
 ```
 
@@ -293,11 +287,6 @@ function greet(s: string) {
 
 ## Optional Parameters
 
-Functions in JavaScript often take a variable number of arguments. 
-
-- For example, the `toFixed` method of number takes an optional digit count:
-
-We can model this in TypeScript by marking the parameter as optional with `?`:
 ```typescript 
 function f(x?: number) {
   console.log(n.toFixed());  // 0 arguments
@@ -318,9 +307,9 @@ f(10);
 f(undefined);
 ```
 
-### default parameter 
+### Default parameter 
 
-Provide a parameter default instead
+Provide a default parameter instead of using Optional Parameter
 ```typescript 
 function f(x = 10) {
   // ...
@@ -331,7 +320,6 @@ function f(x = 10) {
 ### Optional Parameters in Callbacks
 
 **When writing a function type for a `callback`, never write an optional parameter (`?`) unless you intend to call the function without passing that argument**   
-
 
 This is very easy to make the following mistakes when writing functions that invoke callbacks with optional Parameters:
 ```typescript 
@@ -347,25 +335,23 @@ What people usually intend when writing `index?` as an optional parameter is tha
 myForEach([1, 2, 3], (a) => console.log(a));
 myForEach([1, 2, 3], (a, i) => console.log(a, i));
 ```
-What this actually means is that callback might get invoked with one argument.     
-In other words, the function definition says that the implementation might look like this:
+
+if `callback` gets invoked with one argument.     
 ```typescript 
 function myForEach(arr: any[], callback: (arg: any, index?: number) => void) {
   for (let i = 0; i < arr.length; i++) {
-    // I don't feel like providing the index today
     callback(arr[i]);
   }
 }
 ```
-
 In turn, TypeScript will enforce this meaning and issue errors that aren’t really possible:
 ```typescript
-myForEach([1, 2, 3], (a, i) => {
+//                       index
+myForEach([1, 2, 3], (a, index) => {
   console.log(i.toFixed());
-  "Object is possibly 'undefined'.
+  ^ Object is possibly 'undefined'.
 });
 ```
-
 - In JavaScript, if you call a function with more arguments than there are parameters, the extra arguments are simply ignored. TypeScript behaves the same way.   
 
 - Functions with fewer parameters (of the same types) can always take the place of functions with more parameters.    
@@ -378,7 +364,6 @@ In TypeScript, **the implementation signature of the function cannot be called d
 function makeDate(timestamp: number): Date;
 // overload signatures
 function makeDate(m: number, d: number, y: number): Date;
-
 
 // implementation signature
 function makeDate(mOrTimestamp: number, d?: number, y?: number): Date {
