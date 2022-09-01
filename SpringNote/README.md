@@ -44,6 +44,11 @@
 - **[`@Embedded` and `@Emenddable`](SpringWithDatabase/AnnotationEmbeddedAndEmbeddable.md)**    
 - [Different btw OneToMany and ManyToMany ](SpringWithDatabase/ManyToMany&OneToMany.md)   
 
+### Swagger
+
+- [Spring boot 自動產生 OpenAPI 3.0 文件 (Swagger UI) 教學](https://www.ruyut.com/2022/05/spring-boot-openapi-3-swagger-ui.html)
+- [SpringBoot 使用 Springfox Swagger 3.0 ](http://www.mydlq.club/article/108/)
+
 #### Cache 
 - [Cache Annotation](SpringWithDatabase/Cache.md)
 - [Caffeine](SpringWithDatabase/Caffeine.md)

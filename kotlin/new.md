@@ -2,7 +2,7 @@
 - [features](#features)
   - [`lateinit`](#lateinit)
   - [kotlin single line function](#kotlin-single-line-function)
-  - [check for null](#check-for-null)
+  - [check for null (`?`)](#check-for-null-)
   - [nullable (with `?`)](#nullable-with-)
   - [string interpolation](#string-interpolation)
   - [data class](#data-class)
@@ -42,7 +42,7 @@ fun getRepository(): Repository {
 fun getRepository(): Repository = repository
 ```
 
-## check for null
+## check for null (`?`)
 
 ```java
 val name: String? = "Adam"

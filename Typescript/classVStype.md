@@ -5,13 +5,15 @@ Typescript has two different universes that come into contact in some points: Va
 - Value space contains values and will obviously exist at runtime.  
 
 ## What is a value? 
-Value literals, variables, constants and parameters are obviously values.    
+
+- **Value literals, variables, constants and parameters** are obviously values.    
+
 Functions and class declarations are also values as they do have a runtime object backing them up, namely the function object and the class constructor (also a function).   
 Enums are also values as they are backed up by an object at runtime.   
 
 ## What is a type? 
 
-Any definition with a `type` keyword is a type as well as interfaces, class declarations and enums
+**Any definition with a `type` keyword is a type as well as interfaces, class declarations and enums**
 
 Classes exist in both type space, and value space. 
 

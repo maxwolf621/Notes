@@ -12,11 +12,14 @@ type spaceXLength = Length<spaceX> // expected 5
 const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const
 
 const l = typeof tuple
+// const l: "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function"
 
 type resultTupleToObject = TupleToObject<typeof tuple> 
 // expected { tesla: 'tesla', 'model 3': 'model 3', 'model X': 'model X', 'model Y': 'model Y'}
 
+//                 Only Allow readonly tuple 
 type TupleToObject<T extends readonly any[]> = {
+//        iteration
     [P in T[number]]: P
 }
 
@@ -38,8 +41,6 @@ type ResultMyExclude = MyExclude<'a' | 'b' | 'c', 'a'>  // 'b' | 'c'
 // 'age'|'address'
 type ExtractResult = ExtractImp<keyof Person, 'age'|'address'|'sex'>
 type ExtractImp<T, K> = T extends K ? T : never;
-
-
 
 /**
  * Readonly 
@@ -213,9 +214,19 @@ type result = Last<[1, 2, 3]> // 3
 type Last<T extends any[]> = T extends [...any, infer R] ? R : never;
 
 // Add new element at the first index
-type LastAddN<T extends any[]> = [any, ...T][T['length']]
+type LastAddELement<T extends any[]> = [any, ...T][T['length']]
 /**
 const T = [1, 2, 3]
 const arr = [any, 1, 2, 3]
 const result = arr[T['length']] 
 */
+
+/**
+ * POP
+ */
+type resultPop = Pop<[1,2,3]> // [1,2]
+type Pop<T extends any[]> =  T extends [...infer Rest, infer L]
+? Rest
+: never
+
+

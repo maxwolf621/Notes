@@ -139,5 +139,14 @@ class C {
     }
 }
 ```
-
 ## Method and Constructor References
+
+```java
+Class :: Method
+```
+
+```java
+Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
+// equals
+Converter<String, Integer> converter = Integer::valueOf;
+```

@@ -1,7 +1,7 @@
 # mapped Types
 - [mapped Types](#mapped-types)
   - [index signature](#index-signature)
-  - [`[Proeprty keyOf Type]`](#proeprty-keyof-type)
+  - [`[Property keyof T]`](#property-keyof-t)
   - [Mapping Modifiers (`-` & `+`)](#mapping-modifiers----)
   - [Key Remapping via `as`](#key-remapping-via-as)
     - [working with conditional types](#working-with-conditional-types)
@@ -23,12 +23,11 @@ const conforms: OnlyBoolsAndHorses = {
 };
 ```
 
-## `[Proeprty keyOf Type]`
+## `[Property keyof T]`
 
 ```typescript
-type OptionsFlags<Type> = {
-    // take key from TYPE
-    [Property in keyof Type]: boolean;
+type OptionsFlags<T> = {
+    [Property in keyof T]: boolean;
 };
 
 type FeatureFlags = {
@@ -63,7 +62,7 @@ type LockedAccount = {
  
 type UnlockedAccount = CreateMutable<LockedAccount>;
 /** 
- * readonly properties are removeed
+ * readonly properties are removed
  * 
  * type UnlockedAccount = {
  *     id: string;
@@ -76,7 +75,7 @@ type UnlockedAccount = CreateMutable<LockedAccount>;
 
 ```typescript 
 type Getters<Type> = {
-    [Property in keyof Type as `get${Capitalize<string & Property>}`]: () => Type[Property]
+    [key in keyof Type as `get${Capitalize<string & key>}`]: () => Type[key]
 };
 
 interface Person {
@@ -84,15 +83,19 @@ interface Person {
     age: number;
     location: string;
 }
- 
+```
+
+```typescript
 type LazyPerson = Getters<Person>;
      ^ Type LazyPerson = {
         getName: () => string;
         getAge: () => number;
         getLocation: () => string;
       }
+```
 
 
+```typescript
 // Remove the 'kind' property
 type RemoveKindField<Type> = {
     [key in keyof Type as Exclude<Property, "kind">]: Type[key]
@@ -104,13 +107,13 @@ interface Circle {
 }
  
 type KindlessCircle = RemoveKindField<Circle>;
-/**           
-    type KindlessCircle = {
-        radius: number;
-    }
-*/
+     ^ type KindlessCircle = {
+            radius: number;
+        }
+```
 
 
+```typescript
 type EventConfig<Events extends { kind: string }> = {
     [E in Events as E["kind"]]: (event: E) => void;
 }
@@ -121,8 +124,8 @@ type CircleEvent = { kind: "circle", radius: number };
 type Config = EventConfig<SquareEvent | CircleEvent>
        
 type Config = {
-    square: (event: SquareEvent) => void;
-    circle: (event: CircleEvent) => void;
+  square: (event: SquareEvent) => void;
+  circle: (event: CircleEvent) => void;
 }
 ```
 
@@ -140,7 +143,7 @@ type ExtractPII<Type> = {
 };
 /**
  * {format : "incrementing"} extends {pii : true}
- * {type : string; pii : ture} extends {pii : true}
+ * {type : string; pii : true} extends {pii : true}
  */
 
 

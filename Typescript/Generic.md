@@ -29,32 +29,15 @@ createArray(3, 'x');
 ## Syntax
 
 ```typescript
-interface name<T>{
+interface/class/function name<T>{
   //...
-}
-
-class name<T>{
-  //...
-}
-
-function name<T> (/* parameters */){
-  // ...
 }
 
 interface name {
     // function
     <T> (/*parameter*/): Type;
 }
-
-createArray = function <T> (length: number, value: T): Array<T> {
-  let result: T[] = [];
-  for (let i = 0; i < length; i++) {
-    result[i] = value;
-  }
-  return result;
-}
 ```
-
 
 ## Generic Constraints (`extends`)
 
@@ -68,7 +51,7 @@ function loggingIdentity<Type>(arg: Type): Type {
 }
 ```
 
-We cans `<T extends CONSTRAINT>` tells compiler that `T` type must be sub-class of CONSTRAINT (inherit CONSTRAINT's properties)
+We can `<T extends X>` tells compiler that `T` type must contain `X`
 ```typescript
 interface Lengthwise {
     length: number;
@@ -130,7 +113,6 @@ getProperty(x, "a");
 
 ## Using Class Types in Generics `c : { new () : Type}`
 
-constructor function
 ```typescript
 function create<Type>(c: { new (): Type }): Type {
   return new c();

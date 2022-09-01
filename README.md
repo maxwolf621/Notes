@@ -14,6 +14,7 @@
   - [Angular](#angular)
     - [Basics](#basics)
     - [Bind data with Template, HTML and Component & CSS](#bind-data-with-template-html-and-component--css)
+    - [Directive](#directive)
     - [Angular Reactive Forms](#angular-reactive-forms)
     - [Router](#router)
     - [Material](#material)
@@ -75,7 +76,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Dictionary](Typescript/dictionary.md)
 - [Generics](Typescript/Generic.md) 
 - [Types](Typescript/Types.md)
-  - [Object Types](Typescript/Object%20Types.md)
+  - [Object Types/Interface](Typescript/Object%20Types.md)
     `{ properties }`,Interface,TypeAlias and Index Signature
   - [Tuple](Typescript/tuple.md)
   - [Special Types](Typescript/specialType.md) 
@@ -100,7 +101,11 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Class](kotlin/class.md)
 - [Kotlin & Java](Kotlin/kotlinAndJava.md)
 ## Angular
+
+[Tutorial](https://www.tektutorialshub.com/angular-tutorial/#pipes)
+
 ### Basics
+
 - [Install and Uninstall Angular](Angular/Install&UninstallAngular.md)  
 - [Angular CLI](AngularCLI.md)  
   - [CLI command](https://blog.poychang.net/note-angular-cli/)    
@@ -124,21 +129,24 @@ Function Type expression : `functionName : ( parameters ) => returnType`
   ```
 - [Component](Angular/Component.md)  
 - [Module](Angular/ngModule.md)  
+- **[Providers Array And Dependency Injection](Angular/DependencyInjection.md)**
 - **[Life hooks](Angular/lifeHooks.md)**  
 ### Bind data with Template, HTML and Component & CSS 
-[angular.io Template Overview](https://angular.io/guide/template-overview)
-
 - [DOM properties and HTML attributes](Angular/domPropHTMLattr.md) 
 - **[Template Reference Variable](Angular/templateVariable.md)**
 - [Template expression operators](Angular/templateOperator.md)
-- **[ViewChild and ViewChildren](Angular/viewchild.md)**
 - **[Bind](Angular/Binding.md)**
 - **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](Angular/TwoWayBinding.md)**
+### Directive
+- [Angular Directive](Angular/directive.md)
+- [ElementRef](Angular/ElementRef.md)
+- [Renderer2(Proxy of ElementRef)](Angular/Renderer2.md)
+- **[ViewChild and ViewChildren](Angular/viewchild.md)**
+- [ContentChild and ContentChildren](Angular/viewContainerRef.md)
 - **[Structural Directives](Angular/Structural%20Directives.md)**  
-  - [`ng-template`](Angular/ng-template.md)
+  - [`ng-template` with TemplateRef & ViewContainerRef](Angular/ng-template.md)
   - [`ng-container`](Angular/ng-container.md)
   - [`ng-templateOutlet`](Angular/ngTemplateOutlet.md)
-
 ### Angular Reactive Forms
 [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 

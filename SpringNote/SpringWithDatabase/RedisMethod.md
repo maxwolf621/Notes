@@ -1,23 +1,23 @@
 # RedisTemplate
 
 - [RedisTemplate](#redistemplate)
-  - [Reference](#reference)
-  - [BoundXXXXOperation methods](#boundxxxxoperation-methods)
-    - [RedisTemplate operation for key](#redistemplate-operation-for-key)
-      - [redisTemplate.`optForHash`](#redistemplateoptforhash)
-      - [`opsForSet`](#opsforset)
-      - [`opsForList`](#opsforlist)
-  - [`RedisUtil` Class](#redisutil-class)
-      - [Override `opsForValue`](#override-opsforvalue)
-      - [Override `opsForHash`](#override-opsforhash)
+  - [BoundXXXXOps](#boundxxxxops)
+  - [opsForXXXX](#opsforxxxx)
+    - [ostForHash](#ostforhash)
+    - [`opsForSet`](#opsforset)
+    - [`opsForList`](#opsforlist)
+  - [Create `RedisUtil` Class](#create-redisutil-class)
+    - [Override `opsForValue`](#override-opsforvalue)
+    - [Override `opsForHash`](#override-opsforhash)
     - [Override `opsForSet()`](#override-opsforset)
     - [Override `opsForList()`](#override-opsforlist)
 
 
-![圖 1](../images/4d977474d0350aed41916aba72c9ab7a94e16df3c7d5278667a438e9a8279cfc.png)  
-
-
-## Reference
+`value` :(key-value pairs)
+`hash`  : (key -> (hashkey-value pairs))
+`list`  : (key -> values)
+`Set`  un-sorted set : (key -> values)
+`ZSet` sorted set : (key -> values)
 
 [Spring.io redisTemplate specification](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/RedisTemplate.html)
 [RedisTemplate操作Redis](https://blog.csdn.net/lydms/article/details/105224210)
@@ -26,52 +26,44 @@
 [(METHODS) How to use Redis-Template in Java Spring Boot?](https://medium.com/@hulunhao/how-to-use-redis-template-in-java-spring-boot-647a7eb8f8cc)   
 **[springboot-redis-demo](https://github.com/MiracleTanC/springboot-redis-demo)**   
 
+## BoundXXXXOps 
 
-## BoundXXXXOperation methods
+BoundXXXXops generates `key` instance
 
 ```java
-BoundValueOperations
-BoundSetOperations
-BoundListOperations
-BoundSetOperations
-BoundHashOperations
-
-boundGeoOps(K key)
-boundHashOps(K key)
-boundListOps(K key)
-boundSetOps(K key)
-boundStreamOps(K key)
-boundValueOps(K key)
-boundZSetOps(K key)
-```
+boundGeoOps(K key)    
+boundHashOps(K key)       
+boundListOps(K key)      
+boundSetOps(K key)       
+boundStreamOps(K key)   
+boundValueOps(K key)     
+boundZSetOps(K key)     
+``` 
 
 ```java
 @Autowired
 RedisTemplate<String,Object> redisTemplate;
 ​
-/*************************************
- * <p> Key Bound Operations </p> *
- *************************************/
+// Instance of key 
+BoundValueOperations keyInstance = redisTemplate.boundValueOps(String key);
 
-template.boundValueOps(String key).set(String value);
-template.boundValueOps(String key).set(String value , time, TimeUnit.SECONDS);
-
-// use instance of BoundValueOperations instead of redisTemplate
-BoundValueOperations key = template.boundValueOps(String key);
 key.set(String value); 
 
 ValueOperations ops = redisTemplate.opsForValue();
 ops.set(String value); 
+
+redisTemplate.boundValueOps(String key).set(String value);
+redisTemplate.boundValueOps(String key).set(String value , time, TimeUnit.SECONDS);
 ```
 
-### RedisTemplate operation for key 
+## opsForXXXX
 
 ```java
-redisTemplate.opsForValue();    // op for string
-redisTemplate.opsForHash();     // op for hash 
-redisTemplate.opsForList();     // op for list
-redisTemplate.opsForSet();      // op for un-sorted set
-redisTemplate.opsForZSet();     // op for sorted set
+redisTemplate.opsForValue(); 
+redisTemplate.opsForHash();  
+redisTemplate.opsForList();  
+redisTemplate.opsForSet();   
+redisTemplate.opsForZSet();  
 ```
 
 ```java
@@ -97,25 +89,23 @@ redisTemplate.delete(key);
 ```
 
 
-#### redisTemplate.`optForHash`
+### ostForHash
 - [optForHash](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/HashOperations.html)
+
 ```java
+bucket#num | entries(HashKey, value)
+    key1   +-- hashKey1 : value1
+           +-- hashKey2 : value2
+           +-- hashKey3 : value3
+    key2   +--- ....  : .....
 
-bucket#key 
-|   ...      |
-|   ...      | 
-|key_forCache| --> |   |  --> |   |
-|  ....      |
+String key = "key1"
+String hashKey = "field1";      
+String value = "value1";    
+redisTemplate.opsForHash().put(key, hashKey, value);
+```
 
-String key = "key_forCache"; // Bucket#key
-
-// item and value equals key-value pairs in HashMap
-String item = "map_key";      
-String value = "map_value";    
-redisTemplate.opsForHash().put(key, item, value);
-
-
-// bucket#name key_forCache
+```java
 String key = "key_forCache";
 
 // Entries to put in the buckets
@@ -124,80 +114,87 @@ maps.put("map_key_1", "map_value_1");
 maps.put("map_key_2", "map_value_2");
 redisTemplate.putAll(key, maps);
 
-/**
-  * Get all Entries of a bucket#key via hash (entry)
-  */
+// get entries
 String key = "bucket_name"
 Map<String, String> entries = redisTemplate.opsForHash().entries(key);
+// get values
+List<String> values = redisTemplate.opsForHash.values(key);
 
-/**
-  * {@code optForHash.get(key, entry)}
-  * Get Entry via key 
-  */
+// get specific value
 String key = "key_forCache";
-String item = "map_key_1";
-Object value = redisTemplate.opsForHash().get(key, item); // return value map_value_1
+String hashKey = "map_key_1";
+Object value = redisTemplate.opsForHash().get(key, hashKey); 
 
-// delete one of entries in bucket#key 
-redisTemplate.opsForHash().delete(key, item);
+// delete(H key, Object... hashKeys)
+redisTemplate.opsForHash().delete(key, hashKey, hashkey2);
 
 // check if entry exists via bucket#key 
-String key = "map_forCache";
-String entryName = "map_key_1";
-Boolean exist = redisTemplate.opsForHash().hasKey(key, entryName);
+Boolean exist = redisTemplate.opsForHash().hasKey(key, hashKey);
+
+// get hashKeySet in bucket#key
+Set<Object> hashKeySet = redisTemplate.opsForHash().keys(key);  
+
+size(H key)
+putIfAbsent(H key, HK hashKey, HV value)
+putAll(H key, Map<? extends HK,? extends HV> entries)
+multiGet(H key, Collection<HK> hashKeys)
+
+increment(H key, HK hashKey, long delta)
+increment(H key, HK hashKey, double delta)
 ```
 
-#### `opsForSet`
+### `opsForSet`
 
 ```java
 Long add(K key, V... values)
-Map<Object,Boolean>	isMember(K key, Object... objects)
-Long size(K key)
-
-Boolean	isMember(K key, Object o)
-// Check if set at key contains value.
-
-// Get all elements of set at key.
-Set<V> members(K key)
-
-// Move value from key to destKey
-Boolean	move(K key, V value, K destKey)
-
-// Remove and return a random member from set at key.
-V pop(K key)
-
-// Remove and return count random members from set at key.
-List<V>	pop(K key, long count)
-
-// Get random element from set at key.
-V randomMember(K key)
-
-// Get count random elements from set at key.
-List<V> randomMembers(K key, long count)
-
-// Remove given values from set at key and return the number of removed elements.
-Long remove(K key, Object... values)
-
-// Use a Cursor to iterate over entries set at key.
-Cursor<V> scan(K key, ScanOptions options)
-
-```java
-​// .add(key, ... values) values in the set whose name is cacheName
 String key = "cacheName";
 String value1 = "2";
 String value2 = "1";
 redisTemplate.opsForSet().add(key, value1, value2);
 
+
+// Check if set#key contains value.
+Boolean	isMember(K key, Object o)
+// is value exists in set#key
+String value = "2";
+Boolean member = redisTemplate.opsForSet().isMember(key, value);
+
+Map<Object,Boolean>	isMember(K key, Object... objects)
+
+
+// Get all elements of set at key.
+Set<V> members(K key)
 // get set of values [1,2]
 Set<Object> members = redisTemplate.opsForSet().members(key);
 
+// Move value from key to destKey
+Boolean	move(K key, V value, K destKey)
 
-// is value exists in set
-String value = "2";
-Boolean member = redisTemplate.opsForSet().isMember(key, value);
+// Remove and return a random member
+// from set at key.
+V pop(K key)
+
+// Remove and 
+// return count random members
+// from set#key.
+List<V>	pop(K key, long count)
+
+// Get random element from set at key.
+V randomMember(K key)
+// Get count random elements from set at key.
+List<V> randomMembers(K key, long count)
+
+// Remove given values from set#key 
+// and return the number of removed elements.
+Long remove(K key, Object... values)
+
+// Use a Cursor to iterate over entries set at key.
+Cursor<V> scan(K key, ScanOptions options)
+
+Long size(K key)
 ```
 
-#### `opsForList`
+### `opsForList`
 
 - [opsForList](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/ListOperations.html)
 
@@ -335,7 +332,7 @@ System.out.println(redisTemplate.opsForList().range("test", 0, -1)); // [1, 2, 3
 System.out.println(redisTemplate.opsForList().range("test2", 0, -1)); // [4, 1, 2, 3]
 ```
 
-## `RedisUtil` Class
+## Create `RedisUtil` Class
 
 ```java
 /**
@@ -404,7 +401,7 @@ public final class RedisUtil {
 ```
 
 
-#### Override `opsForValue`
+### Override `opsForValue`
 ```java
 /**
  * Get cache via {@code key}
@@ -429,7 +426,7 @@ public boolean set(String key, Object value) {
 /**
  * Set cache with TTL
  * @param time  seconds if 0 or <0 then this cache live forever
- * @return true成功 false 失败
+ * @return true | false 
  */
 public boolean set(String key, Object value, long time) {
     try {
@@ -466,7 +463,7 @@ public long decr(String key, long delta) {
 }
 ```
 
-#### Override `opsForHash`
+### Override `opsForHash`
 
 ```java
 /**
@@ -787,6 +784,4 @@ public long setRemove(String key, Object... values) {
             return 0;
         }
     }
-}
-
 ```

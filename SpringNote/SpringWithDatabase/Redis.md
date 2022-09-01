@@ -12,14 +12,14 @@
     - [2. `RedisConnectionFactory` Configuration](#2-redisconnectionfactory-configuration)
       - [Redis Connectors](#redis-connectors)
       - [Lettuce Connector](#lettuce-connector)
-        - [Unix domain sockets](#unix-domain-sockets)
+      - [Unix domain sockets](#unix-domain-sockets)
       - [Jedis Connector](#jedis-connector)
     - [3. `CacheManager` Configuration](#3-cachemanager-configuration)
       - [Configure Cache Manager Behavior for Redis](#configure-cache-manager-behavior-for-redis)
       - [lockingRedisCacheWriter](#lockingrediscachewriter)
-      - [Redis Configuration by extending CachingConfigurerSupport](#redis-configuration-by-extending-cachingconfigurersupport)
+  - [Redis Configuration by extending CachingConfigurerSupport](#redis-configuration-by-extending-cachingconfigurersupport)
+  - [RedisTemplate's Serializer Types](#redistemplates-serializer-types)
   - [`RedisTemplate` Configuration](#redistemplate-configuration)
-    - [RedisTemplate's Serializer Types](#redistemplates-serializer-types)
   - [Multiple Redis Configuration](#multiple-redis-configuration)
     - [Application Properties and YML](#application-properties-and-yml)
     - [Property Class for Different Redis Servers](#property-class-for-different-redis-servers)
@@ -48,15 +48,17 @@
 **[RedisCacheAutoConfiguration](https://github.com/justauth/justauth-spring-boot-security-starter/blob/master/src/main/java/top/dcenter/ums/security/core/oauth/config/RedisCacheAutoConfiguration.java)**   
 - [Install wsl window 10](https://redis.com/blog/redis-on-windows-10/)   
 - [Disable wsl window 10](https://www.windowscentral.com/install-windows-subsystem-linux-windows-10)      
-## Dependency
 
+`Redis Connection Factory = RedisDataBaseConfiguration(PoolConfiguration)`
+`RedisTemplate = Redis Connection Factory + Serializer(key-value + hashkey-hashvalue)`
+
+## Dependency
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-redis</artifactId>
 </dependency>
 ```
-
 
 ## application.properties
 
@@ -230,7 +232,7 @@ An object of Connector
 ![圖 1](../images/8ff0ee9dcf7f46be16192c6dc1682e29ade5d6504b0aafc8bb9c75438427eb59.png)  
 
 
-##### Unix domain sockets
+#### Unix domain sockets
 
 Lettuce integrates with Netty’s native transports, letting you use Unix domain sockets to communicate with Redis via `RedisSocketConfiguration`
 ```java
@@ -250,6 +252,7 @@ class AppConfig {
 <dependency>
 
     <!-- ... -->    
+
     <groupId>redis.clients</groupId>
     <artifactId>jedis</artifactId>
     <version> ..... </version>  
@@ -257,25 +260,23 @@ class AppConfig {
 </dependency>
 ```
 
-```java
-@Bean
-public JedisConnectionFactory redisConnectionFactory() {
-  return new JedisConnectionFactory();
-}
-```
 
 ```java
 @Configuration
 class RedisConfiguration {
+    @Bean
+    public JedisConnectionFactory redisConnectionFactory() {
+    return new JedisConnectionFactory();
+    }   
 
-  @Bean
-  public JedisConnectionFactory redisConnectionFactory() {
-
-    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration("server", 6379);
+    @Bean
+    public JedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration("server", 6379);
         return new JedisConnectionFactory(config);
-  }
+    }
 }
 ```
+
 - [Redis:Sentinel](https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:sentinel)
 
 ### 3. `CacheManager` Configuration  
@@ -299,19 +300,19 @@ public class CacheConfig {
       */
     @Bean
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-        
         // Cache Configuration
         var redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                                                              .entryTtl(Duration.ofMinutes(30));
         
         // Redis Cache Manager configuration
-        return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory)).cacheDefaults(redisCacheConfiguration)
-                                .build();
+        return RedisCacheManager.builder(RedisCacheWriter
+                                            .nonLockingRedisCacheWriter(redisConnectionFactory))
+                                            .cacheDefaults(redisCacheConfiguration).build();
     }
 }
 ```
 
-`RedisCacheManager` can be configured with `RedisCacheManagerBuilder` 
+`RedisCacheManager` configuration via `RedisCacheManagerBuilder` 
 ```java
 var cm = RedisCacheManager.builder(connectionFactory)
                           .cacheDefaults(defaultCacheConfig())
@@ -320,7 +321,6 @@ var cm = RedisCacheManager.builder(connectionFactory)
                           .transactionAware()
                           .build();
 ```
-
 - `RedisCacheManager` defaults to a lock-free `RedisCacheWriter` for reading and writing binary values. 
 
 
@@ -340,7 +340,7 @@ RedisCacheManager cm = RedisCacheManager.build(RedisCacheWriter.lockingRedisCach
 
 
 
-#### Redis Configuration by extending CachingConfigurerSupport
+## Redis Configuration by extending CachingConfigurerSupport
 - [Configuration Example with `CachingConfigurerSupport`](https://www.tpisoftware.com/tpu/articleDetails/1525)   
 ```java
 @Configuration
@@ -399,13 +399,26 @@ public class RedisConfig extends CachingConfigurerSupport {
 				                 .serializeValuesWith(pair) 
 				                 .entryTtl(Duration.ofHours(1)); 
 
-		return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(factory))
-				.cacheDefaults(defaultCacheConfig).build();
+		return RedisCacheManager.builder(RedisCacheWriter
+                                    .nonLockingRedisCacheWriter(factory))
+                                    .cacheDefaults(defaultCacheConfig).build();
 
 	}
 
 }
 ```
+
+## RedisTemplate's Serializer Types
+
+These types are implementation of `RedisSerializer<T>`    
+- ***(Redis DEFAULT) JDK*** (e.g.  key : `\xac\xed\x00\x05t\x00\x05KeyName`, value : `\xac\xed\x00\x05t\x00\x05Value` )
+- **String (MOST USED)** ( e.g. `1 -> 1 `, `test -> test`)
+- **JACKSON2JSON** ( e.g. `2016 -> "2016"` )
+- XML     
+
+[Get Set value from Redis using RedisTemplate](https://stackoverflow.com/questions/31608394/get-set-value-from-redis-using-redistemplate)   
+[redis使用Jackson2JsonRedisSerializer問題](https://blog.csdn.net/weixin_44167627/article/details/108516013)   
+[`serializeValuesWith`](https://stackoverflow.com/questions/48991608/how-to-use-spring-cache-redis-with-a-custom-resttemplate)
 
 ## `RedisTemplate` Configuration
 
@@ -413,41 +426,36 @@ public class RedisConfig extends CachingConfigurerSupport {
 - Any object written or read by the template is `serialized` and `deserialized` through Java
 
 The Redis modules provides two extensions to `RedisConnection` and `RedisTemplate`, respectively the `StringRedisConnection` (and its `DefaultStringRedisConnection` implementation) and `StringRedisTemplate` as a convenient one-stop solution for intensive String operations. 
-
 - **In addition to being bound to String keys, the template and the connection use the `StringRedisSerializer` underneath, which means the stored keys and values are human-readable**
 
-### RedisTemplate's Serializer Types
+```java
+Connection Factory Configuration = Connect Pool configuration + Redis Database Configuration
+RedisTemplate = Connection Factory Configuration + key-vale serialized + hashkey-hashvalue serialized
+```
 
-These types are implementation of `RedisSerializer<T>`    
-- ***(Redis DEFAULT) JDK***
-  - (e.g.  key : `\xac\xed\x00\x05t\x00\x05KeyName`, value : `\xac\xed\x00\x05t\x00\x05Value` )
-- **String (MOST USED)** 
-  - ( e.g. `1 -> 1 `, `test -> test`)
-- **JACKSON2JSON**  
-  - ( e.g. `2016 -> "2016"` )
-- XML     
-
-[Get Set value from Redis using RedisTemplate](https://stackoverflow.com/questions/31608394/get-set-value-from-redis-using-redistemplate)   
-[redis使用Jackson2JsonRedisSerializer問題](https://blog.csdn.net/weixin_44167627/article/details/108516013)   
-[`serializeValuesWith`](https://stackoverflow.com/questions/48991608/how-to-use-spring-cache-redis-with-a-custom-resttemplate)
 
 ```java
 @Configuration
 public class RedisConfig {
 
-    // Factory Configuration 
-    // Factory = Connect Pool + Redis Database
+    // Factory Configuration = Connect Pool configuration + Redis Database Configuration
     @Bean
     @Primary
-    public LettuceConnectionFactory redis1LettuceConnectionFactory(RedisStandaloneConfiguration redis1RedisConfig, GenericObjectPoolConfig redis1PoolConfig) {
+    public LettuceConnectionFactory redis1LettuceConnectionFactory(
+            // redis database configuration
+            RedisStandaloneConfiguration redis1RedisConfig, 
+            // redis pool connection
+            GenericObjectPoolConfig redis1PoolConfig) 
+    {
         var clientConfig = LettucePoolingClientConfiguration.builder()
-                           .commandTimeout(Duration.ofMillis(100))
-                           .poolConfig(redis1PoolConfig).build();
-
+                            .commandTimeout(Duration.ofMillis(100))
+                            // REDIS CONNECT POOL CONFIGURATION
+                            .poolConfig(redis1PoolConfig).build();
+                                        //  REDIS DATABASE CONFIGURATION
         return new LettuceConnectionFactory(redis1RedisConfig, clientConfig);
     }
 
-    // RedisTemplate<String, String>  Set Up
+    // RedisTemplate<String, String> Configuration
     @Bean
     public RedisTemplate<String, String> redis1Template(
             @Qualifier("redis1LettuceConnectionFactory") LettuceConnectionFactory redis1LettuceConnectionFactory) {
@@ -475,7 +483,7 @@ public class RedisConfig {
     }
 
 
-    // RedisTemplate<String, Object> Set Up
+    // RedisTemplate<String, Object> Configuration
     @Bean
     public RedisTemplate<String, Object> redisTemplate1(RedisConnectionFactory factory) throws UnknownHostException {
         
@@ -488,10 +496,10 @@ public class RedisConfig {
         // Create Json Serializer
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         
+
         var objectMapper = new ObjectMapper();
         
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        
         objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
@@ -503,16 +511,13 @@ public class RedisConfig {
           * <p> Configure Template via String and Json Serializer 
           *     for Redis Template<.. , ..> to handle different Data Type</p>
           */
-
         // Keys whose data Type is String will serialize as String
         template.setKeySerializer(stringRedisSerializer);
-        /
-        / Keys whose Data Type is hash will serialize as String 
+        // Keys whose Data Type is hash will serialize as String 
         template.setHashKeySerializer(stringRedisSerializer);
 
         // Value will serialize as jackson2Json
         template.setValueSerializer(jackson2JsonRedisSerializer);
-        
         // Values of Hash will serialize as jackson2Json
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
 
@@ -570,9 +575,6 @@ public class RedisConfig {
 ```
 - [`ObjectMapper`](https://www.baeldung.com/jackson-object-mapper-tutorial)
 - [`Redis Via ObjectMapper Code Example`](https://www.jianshu.com/p/5b7296445a0e)
-
-
-
 
 ## Multiple Redis Configuration
 
@@ -663,6 +665,7 @@ public class Redis1Configuration {
         @Qualifier("redis1ConnectionFactory") RedisConnectionFactory cf)
     {    
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+
         stringRedisTemplate.setConnectionFactory(cf);
         return stringRedisTemplate;
     }
@@ -694,14 +697,14 @@ public class Redis2Configuration {
         return jedisPoolConfig;
     }
 
-
+    // roleRedisConnectionFactory = jedisPoolConfig + database configuration
     @Bean(name = "redis2ConnectionFactory")
     public RedisConnectionFactory roleRedisConnectionFactory() {
         JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
         redisConnectionFactory.setHostName(redis2Property.getHost());
         redisConnectionFactory.setPort(redis2Property.getPort());
         redisConnectionFactory.setDatabase(redis2Property.getDatabase());
-        redisConnectionFactory.setPoolConfig(getPoolConfig());
+        redisConnectionFactory.setPoolConfig(getPoolConfig()); // call get PoolConfig
         return redisConnectionFactory;
     }
 
@@ -1091,15 +1094,15 @@ If you want to fetch data only once a minute, just guard it with a` @Cacheable` 
 ## `@Transactional` Support
 
 For use this annotations by enabling explicitly transaction support for each `RedisTemplate` by setting `setEnableTransactionSupport(true)`
+- Enabling transaction support binds RedisConnection to the current transaction backed by a ThreadLocal. 
 
-Enabling transaction support binds RedisConnection to the current transaction backed by a ThreadLocal. 
+If the transaction finishes without errors, the Redis transaction gets committed with `EXEC`, otherwise rolled back with `DISCARD`. 
 
-- If the transaction finishes without errors, the Redis transaction gets committed with `EXEC`, otherwise rolled back with `DISCARD`. 
+Redis transactions are batch-oriented. 
+- Commands issued during an ongoing transaction are queued and only applied when committing the transaction.
 
-Redis transactions are batch-oriented. Commands issued during an ongoing transaction are queued and only applied when committing the transaction.
-
-Spring Data Redis distinguishes between read-only and write commands in an ongoing transaction.  
-- Read-only commands, such as `KEYS`, are **PIPED** to a fresh (non-thread-bound) `RedisConnection` to allow reads. 
-- Write commands are **QUEUED** by `RedisTemplate` and applied upon commit.
+Spring Data Redis distinguishes between **read-only and write** commands in an ongoing transaction.  
+- `Read-only` commands, such as `KEYS`, are **PIPED** to a fresh (non-thread-bound) `RedisConnection` to allow reads. 
+- `Write` commands are **QUEUED** by `RedisTemplate` and applied upon commit.
 
 
