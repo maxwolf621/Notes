@@ -1,40 +1,31 @@
 # Object Types 
+## Reference
+[unknown vs any](https://stackoverflow.com/questions/51439843/unknown-vs-any)
 - [Object Types](#object-types)
   - [Reference](#reference)
-  - [Interface](#interface)
-  - [Type Alias (Literal Type)](#type-alias-literal-type)
   - [Object Type As Type Annotation](#object-type-as-type-annotation)
-  - [Optional Properties in Object Types](#optional-properties-in-object-types)
+  - [Optional Properties (`?`) in Object Types](#optional-properties--in-object-types)
   - [`readonly` Properties in object type](#readonly-properties-in-object-type)
   - [Index Signatures in object type](#index-signatures-in-object-type)
     - [array is indexed with `number`](#array-is-indexed-with-number)
     - [array is indexed with `string`](#array-is-indexed-with-string)
     - [array is indexed with `number | string`](#array-is-indexed-with-number--string)
     - [readonly index signature](#readonly-index-signature)
-    - [The Array Type](#the-array-type)
-    - [The ReadonlyArray Type](#the-readonlyarray-type)
+  - [The Array Type](#the-array-type)
+  - [The ReadonlyArray Type](#the-readonlyarray-type)
+    - [readonly cant be assigned to mutable](#readonly-cant-be-assigned-to-mutable)
 
 
-Object Types **GROUP** and **PASS** around data that is through objects   
-## Reference
-[unknown vs any](https://stackoverflow.com/questions/51439843/unknown-vs-any)   
-
-## Interface
+Object Types **GROUP** and **PASS** around data that is through objects, for example :
 ```typescript
-interface Person {
-  name: string;
-  age: number;
+const std = {
+  name : string;
+  age : number;
 }
-``` 
-
-## Type Alias (Literal Type)
-```typescript
-type Person = {
-  name: string;
-  age: number;
-};
-function greet(person: Person) {
-  return "Hello " + person.name;
+// or 
+interface std = {
+  name : string;
+  age : number;
 }
 ```
 
@@ -45,7 +36,7 @@ function greet(person: { name: string; age: number }) {
 }
 ```
 
-## Optional Properties in Object Types
+## Optional Properties (`?`) in Object Types
 when we do under `strictNullChecks = ON`, TypeScript will tell us they’re potentially `undefined`.
 - For example
 ```typescript
@@ -172,7 +163,7 @@ myArray[2] = "Mallory";
         ^ Index signature in type 'ReadonlyStringArray' only permits reading.
 ```
 
-### The Array Type
+## The Array Type
 
 Generic object types are often some sort of container type that work independently of the type of elements they contain.   
 
@@ -211,7 +202,7 @@ interface Array<Type> {
 }
 ```
 
-### The ReadonlyArray Type
+## The ReadonlyArray Type
 
 The `ReadonlyArray` is a special type that describes arrays that shouldn’t be changed.
 ```typescript 
@@ -242,7 +233,8 @@ Instead, we can assign regular Arrays to `ReadonlyArrays` type variable.
 const roArray: ReadonlyArray<string> = ["red", "green", "blue"];
 ```
 
-Just as TypeScript provides a shorthand syntax for `Array<Type>` with `Type[]`, it also provides a shorthand syntax for `ReadonlyArray<Type>` with readonly `Type[]`.
+
+TypeScript provides a shorthand syntax for `Array<Type>` with `Type[]`, it also provides a shorthand syntax for `ReadonlyArray<Type>` with `readonly Type[]`.
 ```typescript 
 function doStuff(values: readonly string[]) {
   // We can read from 'values'...
@@ -255,6 +247,8 @@ function doStuff(values: readonly string[]) {
 }
 ```
 
+### readonly cant be assigned to mutable 
+
 Unlike the `readonly` property modifier, assignability isn’t bidirectional between regular Arrays and `ReadonlyArrays`.
 ```typescript 
 let x: readonly string[] = [];
@@ -262,5 +256,7 @@ let y: string[] = [];
  
 x = y;
 y = x;
-    ' The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+    ^ The type 'readonly string[]' is 
+      readonly' and cannot be assigned 
+      to the mutable type 'string[]'.
 ```
