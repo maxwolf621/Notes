@@ -4,7 +4,10 @@
 - [Bind](#bind)
   - [Reference](#reference)
   - [Interpolation](#interpolation)
-  - [Event Binding](#event-binding)
+  - [Event Binding `(event) = expr`](#event-binding-event--expr)
+    - [$event Payload](#event-payload)
+    - [Template reference variable](#template-reference-variable)
+    - [Key event filtering (with key.enter)](#key-event-filtering-with-keyenter)
   - [Property and Attribute Binding](#property-and-attribute-binding)
     - [Property binding](#property-binding)
       - [Toggling button functionality](#toggling-button-functionality)
@@ -82,15 +85,11 @@ Bind the attribute and field in `.ts` with `.html`
 </div>
 ```
 
-## Event Binding
+## Event Binding `(event) = expr`
 
-methods in the component are called via `<button ... (event) = "classMethod">` in html
+- [Event Binding](https://www.tektutorialshub.com/angular/event-binding-in-angular/)
 
-```typescript
-(event)="METHOD_In_Component.ts"
-```
- 
-```typescript
+ ```typescript
 import { TaskState } from "../../enum/task-state.enum";
 
 export class TaskComponent implements OnInit {
@@ -130,6 +129,74 @@ export class TaskComponent implements OnInit {
     </span>
   </div>
 </div>
+```
+
+
+
+```html
+<button on-click="clickMe()">Click Me</button>
+<button click = "clickMe()">On-Click Me</button>
+
+<!-- once clickCount changes then clickCount1 will be assigned clickCount value-->
+<button (click)="clickMe() ; clickCount1=clickCount">Click Me</button>
+<p>You have clicked {{clickCount}}</p>
+<p>You have clicked {{clickCount1}}</p>
+```
+```typescript
+clickCount1= 7 ;
+clickCount=0
+  clickMe() {
+    this.clickCount++;
+  }
+```
+
+### $event Payload
+
+The properties of a `$event` object vary depending on the type of DOM event
+
+```typescript
+<input (input)="handleInput($event)">
+<p>You have entered {{value}}</p>
+
+value=""
+handleInput(event) {
+  this.value = (event.target as HTMLInputElement).value;
+}
+```
+[source code](https://stackblitz.com/edit/event-binding-in-angular-ex-3?file=src%2Fapp%2Fapp.component.ts)
+
+
+### Template reference variable
+
+```typescript
+<h2>Template Reference Variable</h2>
+<input #el (input)="handleInput1(el)">
+<p>You have entered {{val}}</p>
+
+val="";
+handleInput1(element) {
+  this.val=element.value;
+}
+```
+### Key event filtering (with key.enter)
+
+using `keyup`/`keydown` events to listen for keystrokes.
+
+```typescript
+// value1 will be updated of any value is passed
+<input (keyup)="value1= $any($event.target).value" />
+<p>You entered {{value1}}</p>
+
+// pass enter => value2 will be displayed
+<input (keyup.enter)="value2=$any($event.target).value">
+<p>You entered {{value2}}</p>
+
+// pass enter => value2 will be displayed
+<input (keyup.enter)="value3=$any($event.target).value" (keyup.escape)="$any($event.target).value='';value3=''">
+<p>You entered {{value3}}</p>
+
+<input (keyup.control.shift.enter)="value4=$any($event.target).value">
+<p>You entered {{value4}}</p>
 ```
 
 ## Property and Attribute Binding 
