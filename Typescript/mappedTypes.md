@@ -144,7 +144,7 @@ type ExtractPII<Type> = {
 /**
  * {format : "incrementing"} extends {pii : true}
  * {type : string; pii : true} extends {pii : true}
- */
+p */
 
 
 type ObjectsNeedingGDPRDeletion = ExtractPII<DBFields>;

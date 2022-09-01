@@ -139,8 +139,10 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](Angular/TwoWayBinding.md)**
 ### Directive
 - [Angular Directive](Angular/directive.md)
+- [Custom Directive](Angular/customDirective.md)
 - [ElementRef](Angular/ElementRef.md)
 - [Renderer2(Proxy of ElementRef)](Angular/Renderer2.md)
+- [HostBinding and HostListener](Angular/Host.md)
 - **[ViewChild and ViewChildren](Angular/viewchild.md)**
 - [ContentChild and ContentChildren](Angular/viewContainerRef.md)
 - **[Structural Directives](Angular/Structural%20Directives.md)**  
