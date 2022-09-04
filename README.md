@@ -25,7 +25,6 @@
     - [CSS & SCSS cheatSheet](#css--scss-cheatsheet)
 
 
-
 ## Git
 - [git](git/README.md)
 ## Linux 
@@ -128,21 +127,24 @@ Function Type expression : `functionName : ( parameters ) => returnType`
   ```
 - [Component](Angular/Component.md)  
 - [Module](Angular/ngModule.md)  
-- **[Providers Array And Dependency Injection](Angular/DependencyInjection.md)**
-- **[Life hooks](Angular/lifeHooks.md)**  
+- [Providers Array And Dependency Injection](Angular/DependencyInjection.md)
+- [Life hooks](Angular/lifeHooks.md)**  
 ### Bind data with Template, HTML and Component & CSS 
 - [DOM properties and HTML attributes](Angular/domPropHTMLattr.md) 
 - **[Template Reference Variable](Angular/templateVariable.md)**
 - [Template expression operators](Angular/templateOperator.md)
-- **[Bind](Angular/Binding.md)**
-- **[Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](Angular/TwoWayBinding.md)**
+- [Bind](Angular/Binding.md)
+
+```typescript
+<childComponent [input] = "value" (outputEvent) = getEvent($Event)></childComponent>>
+```
+- [Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](Angular/TwoWayBinding.md)
 ### Directive
 - [Angular Directive](Angular/directive.md)
 - [Custom Directive](Angular/customDirective.md)
-- [ElementRef](Angular/ElementRef.md)
+- [ElementRef & TemplateRef & ViewRef & ViewContainerRef](Angular/ElementRef.md)
 - [Renderer2(Proxy of ElementRef)](Angular/Renderer2.md)
 - [HostBinding and HostListener](Angular/Host.md)
-
 `<ng-content>` : Child Template 內的`<ng-content></ng-content>`，就是Parent Template要嵌入的地方   
 `@ViewChild` : 從View裡取得特定Component/Template variable Reference的實體給Component用   
 `@ContentChild` : Child Component 可以操作`<ng-content></ng-content>` Parent Template嵌入的元素   
