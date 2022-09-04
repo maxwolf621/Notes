@@ -1,5 +1,7 @@
 # Inhaltsverzeichnis
 
+- [AJAX](https://wcc723.github.io/development/2020/10/01/about-ajax-2/)   
+
 - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Git](#git)
   - [Linux](#linux)
@@ -20,11 +22,8 @@
     - [Material](#material)
   - [RXJS](#rxjs)
   - [CSS && SASS](#css--sass)
-    - [CSS cheatSheet](#css-cheatsheet)
-    - [Flex](#flex)
-    - [scss](#scss)
+    - [CSS & SCSS cheatSheet](#css--scss-cheatsheet)
 
-[AJAX](https://wcc723.github.io/development/2020/10/01/about-ajax-2/)   
 
 
 ## Git
@@ -143,15 +142,19 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [ElementRef](Angular/ElementRef.md)
 - [Renderer2(Proxy of ElementRef)](Angular/Renderer2.md)
 - [HostBinding and HostListener](Angular/Host.md)
-- **[ViewChild and ViewChildren](Angular/viewchild.md)**
-- [ContentChild and ContentChildren](Angular/viewContainerRef.md)
-- **[Structural Directives](Angular/Structural%20Directives.md)**  
+
+`<ng-content>` : Child Template 內的`<ng-content></ng-content>`，就是Parent Template要嵌入的地方   
+`@ViewChild` : 從View裡取得特定Component/Template variable Reference的實體給Component用   
+`@ContentChild` : Child Component 可以操作`<ng-content></ng-content>` Parent Template嵌入的元素   
+- [ViewChild and ViewChildren](Angular/viewchild.md)
+- [ContentChild and ContentChildren](Angular/contentChild.md)
+- [Structural Directives](Angular/Structural%20Directives.md)
   - [`ng-template` with TemplateRef & ViewContainerRef](Angular/ng-template.md)
   - [`ng-container`](Angular/ng-container.md)
   - [`ng-templateOutlet`](Angular/ngTemplateOutlet.md)
 ### Angular Reactive Forms
-[Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 
+[Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
 - **[ReactiveFormsModule](Angular/ReactiveFormsModule.md)** 
 - **[Custom Form Validator](Angular/Validator.md)**
 - [JWT](Angular/JWT.md)    
@@ -204,31 +207,39 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 [Observable = Observer Pattern + Iterator pattern](https://ithelp.ithome.com.tw/articles/10186832)
 
 ![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
-- Create (`Observable` DATA)&Listen (OBSERVER `Subscribe`) **[Observable & Observer](RXJS/Observable&Observer.md)**  
+- Create : (`Observable` DATA)&Listen (OBSERVER `Subscribe`)   
+**[Observable & Observer](RXJS/Observable&Observer.md)**  
 ![](images/c642d93d99c835876a635ba71e0a45f31703f47de9b8823f71445a5a00be8954.png)
-- Combine (`Operator` OBSERVABLE) **[RXJS Operators](RXJS_Operators.md)** 
+- Combine:  **[RXJS Operators](RXJS_Operators.md)** 
 - **[AsyncPipe](RXJS/AsyncPipe.md)**
 - **[behaviorSubject](RXJS/behaviorSubject.md)**
+
+```typescript
+this.httpClient.get(BackendURL).pipe(
+  tap( ... ),
+  retry(...),
+  catchError(...),
+  finalize(... )
+)
+```
 - [HttpClient.md](Angular/HttpClient.md)   
 - **[Interceptor](Angular/Interceptor.md)**  
 
 
 ## CSS && SASS
-- [Position 基本用法](https://reurl.cc/AOKkZ8)
-  - [CSS POSITION](SCSS/position.md)
+
+- [CSS POSITION](SCSS/position.md)
 - [CSS PADDING AND MARGIN](SCSS/boxModel.md)
 - [CSS BOARD/BOX SIZE](SCSS/board.md)
 - [CSS OVERFLOW&FLOW](SCSS/overflow&FLOW.md)
-- [CSS 選擇器](https://medium.com/ui-ux%E7%B7%B4%E5%8A%9F%E5%9D%8A/css%E9%81%B8%E6%93%87%E5%99%A8%E4%BB%8B%E7%B4%B9-1-ec19bc5b33a)
-- [Click a selector to see which element(s) that gets selected in the result:](https://www.w3schools.com/cssref/trysel.asp)
-### CSS cheatSheet
-[CSS Cheat Sheet](https://simplecheatsheet.com/tag/css-cheat-sheet/)   
-[CSS quickReview](https://github.com/dekadentno/css-cheat-sheet)  
-### Flex
-[CSS Flexbox — 伸縮自如的排版|基礎觀念](https://reurl.cc/AORWkK)  
-[Day 5 : HTML - 網頁排版超強神器，CSS Flex到底是什麼？](https://ithelp.ithome.com.tw/articles/10267398)   
-
-- [CSS FLEX](SCSS/flex.md)
-### scss
-[SCSS Cheat Sheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
+- [CSS Grid](SCSS/grid.md)
+- [CSS FLEX vs Angular Flex-Layout](SCSS/flex.md)
+- [CSS 選擇器](https://reurl.cc/gMRZMQ)
+- [SELECTORS](https://reurl.cc/GEneEG)
+- [Display](https://reurl.cc/V1Y8EY)
 - [SCSS Notes](SCSS/scssUsage.md)
+  
+### CSS & SCSS cheatSheet
+- [CSS Cheat Sheet](https://reurl.cc/W10D1y)   
+- [CSS quickReview](https://reurl.cc/MN3RNL)  
+- [SCSS Cheat Sheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
