@@ -2,11 +2,14 @@
 
 - [Java 8](#java-8)
   - [Reference](#reference)
-  - [Funcitonal Interface](#funcitonal-interface)
+  - [Functional Interface](#functional-interface)
   - [Default methods for interfaces](#default-methods-for-interfaces)
   - [lambda expression](#lambda-expression)
+  - [type interference](#type-interference)
+    - [threads](#threads)
   - [Syntax of Lambda Expressions](#syntax-of-lambda-expressions)
     - [lambda expression as parameter](#lambda-expression-as-parameter)
+  - [函數合成](#函數合成)
   - [Method and Constructor References](#method-and-constructor-references)
 ## Reference
 
@@ -16,12 +19,15 @@
 - [Lambda Conversion](https://mkyong.com/java8/java-8-flatmap-example/)
 - [How to pass a function as a parameter in Java?](https://stackoverflow.com/questions/4685563/how-to-pass-a-function-as-a-parameter-in-java)
 
+- [15 Practical Exercises Help You Master Java Stream API](https://blog.devgenius.io/15-practical-exercises-help-you-master-java-stream-api-3f9c86b1cf82)
 
-## Funcitonal Interface 
+## Functional Interface  
 
 A functional interface is an interface that has one and only one abstract method, **although it can contain any number of default methods (new in Java 8) and static methods.**
 
-To ensure that your interface meet the rquirements, you should add the `@FunctionalInterface`(optional) annotation. The compiler is aware of this annotation and throws a compiler error as soon as you try to add a second abstract method declaration to the interface.
+**To ensure that your interface meet the requirements, you should add the `@FunctionalInterface`(optional) annotation.**
+
+The compiler is aware of this annotation and throws a compiler error as soon as you try to add a second abstract method declaration to the interface.
 ```java 
 @FunctionalInterface
 interface Converter<F, T> {
@@ -58,8 +64,26 @@ formula.sqrt(16);           // 4.0
 
 ## lambda expression
 
-**A lambda expression can quickly implement the abstract method, without all the unnecessary syntax needed if you don't use a lambda expression.**
+```java 
+// sum of x, y
+(int x, int y) -> x + y
 
+// no parameter return 42 directly
+() -> 42
+
+// it's ok without return value 
+(String s) -> { out.println(s); }
+
+
+(Integer x) -> {
+    Integer result;
+    ...other statements
+    ...
+    return result;
+};
+```
+
+**A lambda expression can quickly implement the abstract method, without all the unnecessary syntax needed if you don't use a lambda expression.**
 ```java
 List<String> names = Arrays.asList("p", "a", "m", "x");
 
@@ -76,11 +100,46 @@ Collections.sort(names, (String a, String b) -> {
 });
 ```
 
+## type interference
+
+**Lambda 表示式本身是中性的，它本身無關乎函式介面的名稱，它只關心方法簽署，但忽略方法名稱**
+
+```java
+public interface Function<P, R> {
+    R call(P p);
+}
+
+Func<Integer, Integer> func = x -> x * 2;
+```
+
+### threads
+
+```java
+import static java.lang.System.out;
+
+public class Hello {
+    Runnable r1 = new Runnable() {
+        public void run() {
+            out.println(this);
+        }
+    };
+    Runnable r2 = new Runnable() {
+        public void run() {
+            out.println(toString());
+        }
+    };
+
+    public String toString() { return "Hello, world!"; }
+
+    public static void main(String[] args) {
+        new Hello().r1.run();
+        new Hello().r2.run();
+    }
+}
+```
 
 ## Syntax of Lambda Expressions
 A lambda expression consists of the following:
-
-
 You can omit the data type of the parameters in a lambda expression.    
 In addition, you can omit the parentheses `(param1, param2, ...)` if there is only one parameter.  
 
@@ -139,6 +198,31 @@ class C {
     }
 }
 ```
+
+## 函數合成
+
+[認識 Lambda/Closure（7）JDK8 Lambda 語法](https://openhome.cc/Gossip/CodeData/JavaLambdaTutorial/Java8Lambda.html)
+
+```java
+compose(
+    new Func<Integer, Integer>() {
+        public Integer apply(Integer x) {
+            return x + 2;
+        }
+    },
+    new Func<Integer, Integer>() {
+        public Integer apply(Integer y) {
+            return y * 3;
+        }
+    }
+);
+
+public static <A, B, C> Func<A, C> compose(Func<A, B> f, Func<B, C> g) {
+    return x -> g.apply(f.apply(x));
+}
+```
+
+
 ## Method and Constructor References
 
 ```java
