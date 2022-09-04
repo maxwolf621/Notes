@@ -1,13 +1,27 @@
-# Two way binding of `[(ngMOdel)]`, `@Input` and `Output`
+# Two way binding
 
-- [[Angular 大師之路] Day 07 - 一個簡易實踐 two way binding 的方法](https://ithelp.ithome.com.tw/articles/10204241)
+
+
+
+- [Two way binding](#two-way-binding)
+  - [Reference](#reference)
+  - [ngModel](#ngmodel)
+
+
+![圖 1](../images/a57fb78afebc6cb3b9b610f403fa5ec7e1c2e975023cb0c8408dde227522d83c.png)  
+
+
+## Reference 
+[[Angular 大師之路] Day 07 - 一個簡易實踐 two way binding 的方法](https://ithelp.ithome.com.tw/articles/10204241)   
+[ngModel & Two way Data binding in Angular](https://www.tektutorialshub.com/angular/ngmodel-two-way-data-binding-in-angular/)   
 
 Two-way binding combines property binding with event binding :
 ```html
 <app-sizer [(size)]="fontSizePx"></app-sizer>
+<!-- same as -->
+<app-sizer [size] = "fontSizePx" (sizeChange) ="fontSizePx = $event">
 ```
-
-----
+this means `app-sizer` has `@input() sizer` and `@output() sizeChange()`
 
 `sizer.component.ts`
 ```typescript
@@ -35,35 +49,74 @@ export class SizerComponent {
 </div>
 ```
 
-In the AppComponent template, `fontSizePx` is two-way bound to the SizerComponent.
-
-`src/app/app.component.html`
-```html
+In the (Parent)AppComponent template, `fontSizePx` is two-way bound to the (child)SizerComponent.
+```typescript
+// 
 <app-sizer [(size)]="fontSizePx"></app-sizer>
 <div [style.font-size.px]="fontSizePx">Resizable Text</div>
-```
 
-In the AppComponent, fontSizePx establishes the initial SizerComponent.size value by setting the value to 16.
-
-`src/app/app.component.ts`
-```typescript
+// app.component.ts
 fontSizePx = 16;
 ```
 - Clicking the buttons updates the `AppComponent.fontSizePx.` 
-The revised 1AppComponent.fontSizePx1 value updates the style binding, which makes the displayed text bigger or smaller.
+The revised `AppComponent.fontSizePx` value updates the style binding, which makes the displayed text bigger or smaller.
 
-The two-way binding syntax is shorthand for a combination of property binding and event binding. The SizerComponent binding as separate property binding and event binding is as follows.
 
-`src/app/app.component.html`
+The (Child)SizerComponent binding as separate property binding and event binding is as follows.
 ```html
+<!-- app.component.html -->
 <app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer>
 ```
 The `$event` variable contains the data of the `SizerComponent.sizeChange` event.   
 Angular assigns the `$event` value to the `AppComponent.fontSizePx` when the user clicks the buttons.
 
-## Two way binding via `@Input` and `@Output`
+## ngModel
 
-We can use `Output()` to emit new value to `name` in `AppComponent` once value of `name` in `InfoComponent` is modified/changed
+The Angular uses the ngModel directive to achieve the two-way binding on HTML Form elements. It binds to a form element like `input`, `select`. etc...
+
+Internally It uses the `ngModel` in property, binding to bind to the value property and `ngModelChange` which binds to the input event.
+
+```typescript
+// InfoComponent
+@component({
+  selector: 'app-info',
+  template: `
+    Name <input type="text" 
+          [(ngModel)]="name">
+  `
+})
+export class InfoComponent {
+  @Input() name;
+}
+
+
+// AppComponent
+@Component({
+  selector: 'app-root',
+  template: `
+    <app-info [name]="name"></app-info>
+    Result: {{ name }}
+  `
+})
+export class AppComponent  {
+  name = 'Mike'
+}
+```
+
+Because `name` in `InfoComponent.ts` and `name` in `AppComponent.ts` has it own address.  
+
+We can then use even binding to listen the binding value, for example
+```html
+<!-- 
+  if ngModel is modified 
+  then call doSomething()
+-->
+<input type="text" 
+       [(ngModel)]="name" 
+       (ngModelChange)="doSomething()">
+```
+
+
 ```typescript
 
 // Sub Component
@@ -95,7 +148,7 @@ export class InfoComponent {
     [name]="name"
 
     <!-- 
-       receive nameChange from child component 
+      $event : child's @output return value
     -->
     (nameChange)="name = $event"> 
     </app-info>
@@ -106,77 +159,4 @@ export class InfoComponent {
 export class AppComponent  {
   name = 'Mike'
 }
-```
-
-## Directive `[(sub_var)] = base_var`
-
-```typescript
-<sub_component_selector [(xxx)] ="xxx">
-</sub_component_selector> 
-```
-`[(xxx)]` is counterpart of `@input xxx` and `@Output xxxChange`.  
-
-It emits the value of `xxx` from subComponent to baseComponent Template(`.html`)'s `[(xxx)] = var_in_baseComponent`
-
-- For example
-```typescript
-/**
-  * Base  
-  */
-@Component({
-  selector: 'my-app',
-  template: `
-    <app-info [(name)]="name"> </app-info>
-    
-    Result: {{ name }}
-  `
-})
-export class AppComponent  {
-  name = 'Mike'
-}
-```
-
-## Directive `[(ngModel)]` with Event Binding
-
-The above example showed that `[(ngModel)]` is actually counterpart of `@Input ngModel` and `@Output ngModelChange`
-
-It creates a `FormControl` instance from a domain model and binds it to a form control element( `input`, `select` ...) of html
-```typescript
-// InfoComponent
-@component({
-  selector: 'app-info',
-  template: `
-    Name <input type="text" 
-          [(ngModel)]="name">
-  `
-})
-export class InfoComponent {
-  @Input() name;
-}
-
-
-// AppComponent
-@Component({
-  selector: 'app-root',
-  template: `
-    <app-info [name]="name"></app-info>
-    Result: {{ name }}
-  `
-})
-export class AppComponent  {
-  name = 'Mike'
-}
-```
-
-Because `name` in InfoComponent and `name` in AppComponent has it own address.  
-
-We can then use even binding to listen the binding value, for example
-```html
-<!-- 
-  if ngModel is modified 
-  then call doSomething()
--->
-<input type="text" 
-       [(ngModel)]="name" 
-       (ngModelChange)="doSomething()">
 ```

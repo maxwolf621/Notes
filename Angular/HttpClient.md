@@ -1,5 +1,16 @@
 ###### tags: `Angular`
+
+
 # HttpClient
+
+- [HttpClient](#httpclient)
+  - [定義回傳格式](#定義回傳格式)
+  - [取得Http Header資料](#取得http-header資料)
+  - [`retry`遇到錯誤時自動重試](#retry遇到錯誤時自動重試)
+  - [接收非JSON格式的資料 `get(url, {responseType : xxx})`](#接收非json格式的資料-geturl-responsetype--xxx)
+  - [headers](#headers)
+  - [POST request](#post-request)
+  - [URL's parameter](#urls-parameter)
 
 We can get the json type content via `HttpClient` instance
 ```json
@@ -11,7 +22,7 @@ We can get the json type content via `HttpClient` instance
 }
 ```
 
-component or service subscribes data via `HttpClient` instance
+component or service can subscribe data from backend via `HttpClient` instance
 ```typescript
 export class MyComponent implements OnInit {
  
@@ -23,13 +34,13 @@ export class MyComponent implements OnInit {
   ngOnInit(): void {
     // Make the HTTP request:
     this.http.get('/api/items').subscribe(data => {
+
       // Read the result field from the JSON response.
       this.results = data['results'];
     });
   }
 }
 ```
-
 
 ## 定義回傳格式
 
@@ -46,7 +57,7 @@ interface ItemsResponse {
   * response的資料類型為ItemResponse
   */
 http.get<ItemsResponse>('/api/items').subscribe(data => {
-  // data is now an instance of type ItemsResponse, so you can do this:
+  // data is now an instance of type ItemsResponse
   this.results = data.results;
 });
 ```
@@ -100,7 +111,8 @@ http
 ```
 
 ## `retry`遇到錯誤時自動重試
-- RxJS有一個有用的運算符`.retry()`，可以在遇到錯誤時自動重新嘗試
+
+RxJS有一個有用的運算符`.retry()`，可以在遇到錯誤時自動重新嘗試
 
 ```typescript
 http
@@ -112,7 +124,8 @@ http
   .subscribe(...);
 ```
 
-## 接收非JSON格式的資料
+## 接收非JSON格式的資料 `get(url, {responseType : xxx})`
+
 傳入`responseType`可以設定預期會接收到的資料格式，angular預設值是`json`，如果是其他格式則需要設定這個欄位。 可接受的項目有『`arraybuffer`』、『`blob`』、『`json`』、『`text`』。 下面是使用方式：
 
 ```typescript
@@ -124,6 +137,61 @@ http
   .subscribe(data => console.log(data));
 ```
 
+## headers
+
+```typescript
+const headers= new HttpHeaders()
+  .set('content-type', 'application/json')
+  .set('Access-Control-Allow-Origin', '*');
+
+// object type way
+let headers = new HttpHeaders(
+  { 'Access-Control-Allow-Origin': '*',
+    'content-type': 'application/json'} )
+
+// or 
+let headers = new HttpHeaders()
+headers=headers.set('content-type','application/json')
+headers=headers.set('Access-Control-Allow-Origin', '*');
+
+// check if header has key
+if (!headers.has('content-type')) {
+  headers=headers.append('content-type','application/json')
+}
+
+// append key-value pair
+headers=headers.append('content-type','application/json')
+headers=headers.append('Access-Control-Allow-Origin', '*')
+headers=headers.append('content-type','application/x-www-form-urlencoded')
+
+// get
+const h =headers.get('content-type')
+
+// getAll
+const h =headers.getAll('content-type')
+/**
+ * 0: "application/json"
+ * 1: "application/x-www-form-urlencoded"
+ */
+
+// keys
+const h =headers.keys()
+/**
+ * 0: "content-type"
+ * 1: "Access-Control-Allow-Origin"
+ */
+
+// delete
+headers=headers.delete("content-type","application/json")  
+//delete content-type='application/json'
+ 
+headers=headers.delete("content-type")   
+//delete all content-type headers
+
+
+this.httpClient.get(this.baseURL + 'users/' + userName + '/repos', { 'headers': headers })
+```
+Note that `httpHeaders` are immutable. i.e every method on `HttpHeaders` object does not modify it but returns a `new` HttpHeaders object.
 
 ## POST request
 
@@ -131,17 +199,17 @@ http
 const body = {name: 'Brad'};
 
 http
-  // post('後端位置', request_body)
+  // post('backendURL', request_body)
   .post('/api/developers/add', body)
   .subscribe(...);
 ``` 
 
-**所有rxjs的動作都會在有人subscribe後才會呼叫**，因此如果忽略`subscribe()`，http將不會做任何動作。
-下面為一個簡單範例：
+**所有rxjs的動作都會在被subscribed後才會被呼叫**，因此如果忽略`subscribe()`，http將不會做任何動作。
+
 ```typescript
 const req = http.post('/api/items/add', body);
 
-// 0 requests made - .subscribe() not called.
+// 0 requests made 
 req.subscribe();
 
 // 1 request made.
@@ -156,9 +224,9 @@ http
   })
   .subscribe();
 ```
-- 該HttpHeaders的內容是不變的，每次`set()`時會返回一個新的實體，並套用所設定的更改。
+- 該`HttpHeaders`的內容是不變的，每次`set()`時會返回一個新的實體，並套用所設定的更改。
 
-## 設置URL參數
+## URL's parameter
 
 如果想要發送Request至`/api/items/add?id=3`
 

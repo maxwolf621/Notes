@@ -15,7 +15,10 @@ ContentChild(selector: string | Function | Type<any>, opts: { read?: any; static
 ```
 
 ## Selector or Query Selector
-The change detector looks for the first element that matches the selector and updates the component property with the reference to the element. If the DOM changes and a new element matches the selector, the change detector updates the component property
+
+The change detector looks for the first element that matches the selector and updates the component property with the reference to the element. 
+
+If the DOM changes and a new element matches the selector, the change detector updates the component property
 
 **The query selector can be a string, a type, or a function that returns a string or type. The following selectors are supported.**
 
@@ -57,14 +60,13 @@ import { Component } from '@angular/core';
  
   `,
 })
-export class CardListComponent {
- 
-}
+export class CardListComponent {}
 ```
 
 ```typescript
 @ContentChild("header") cardContentHeader: ElementRef;
 ```
+
 
 Because of Component lifecycle hooks. 
 The angular initializes the component first.     

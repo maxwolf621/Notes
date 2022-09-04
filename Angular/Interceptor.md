@@ -1,9 +1,27 @@
-[Note Taking From](https://medium.com/angular-in-depth/top-10-ways-to-use-interceptors-in-angular-db450f8a62d6)   
-[For Angular 7](https://dev-academy.com/angular-jwt/)     
-
-[TOC]
-
 # Interceptor
+
+
+- [Interceptor](#interceptor)
+  - [Reference](#reference)
+  - [URL (`req.clone`)](#url-reqclone)
+  - [Loader](#loader)
+  - [Converting](#converting)
+  - [Headers](#headers)
+  - [Notifications (`ToastrService`)](#notifications-toastrservice)
+  - [error and retry](#error-and-retry)
+      - [Things to consider here are](#things-to-consider-here-are)
+  - [Profiling](#profiling)
+  - [Fake backend](#fake-backend)
+  - [Caching](#caching)
+  - [Authentication](#authentication)
+
+## Reference 
+[Top 10 ways to use interceptors In Angular](https://medium.com/angular-in-depth/top-10-ways-to-use-interceptors-in-angular-db450f8a62d6)   
+[Angular 7 jwt](https://dev-academy.com/angular-jwt/)     
+[httpHeaders](https://www.tektutorialshub.com/angular/angular-httpheaders/) 
+  
+---
+
 `HttpInterceptor` was introduced with Angular 4.3. 
 
 - It provides a way to intercept HTTP requests and responses to transform or handle them before passing them along.
@@ -14,10 +32,10 @@
 **If you provide interceptors A, then B, then C, requests will flow in A->B->C and responses will flow out C->B->A.**  
 ![](https://i.imgur.com/Rwxv0Y0.png)
 - You cannot change the order or remove interceptors later.  
-- Enable and Disable an `interceptor` dynamically, you’ll have to build that capability into the interceptor itself.   
+- `Enable` and `Disable` an `interceptor` dynamically, you'll have to build that capability into the interceptor itself.   
 
 
-## URL 
+## URL (`req.clone`)
 
 We could, for example, change `HTTP` to `HTTPS.`  
 It’s as easy as cloning the request and replacing` http://` with `https://` at the same time.  
@@ -42,14 +60,14 @@ After this...
 
 
 ```typescript
-constructors(private http : httpClinet){}
+constructors(private http : httpClient){}
 //...
 const url = "http://jsonplaceholder.typicode.com/todos/1";
 this.response = this.http.get(url);
 ```
 
 or switch between HTTP and HTTPS in development use the CLI:
-```console
+```bash
 ng serve -ssl
 ```
 
@@ -61,7 +79,7 @@ req.clone({
 ```
 
 Or you could again do it with the CLI:
-```console
+```bash
 ng serve — serve-path=<path> — base-href <path>/
 ```
 
@@ -154,9 +172,9 @@ It does this by reading the `XSRF-TOKEN` from a cookie and setting it as the `X-
 
 **Since only code that runs on your domain could read the cookie(cookie's domain), the backend can be sure that the HTTP request came from your client application and not an attacker.**
 
-## Notifications (for specific http status with `ToastrService`)
+## Notifications (`ToastrService`)
 
-For example :: to show/display notification (e.g. `Object created`) every time then intercept gets a (response) _201 created status_ back from the server.
+To show/display notification (e.g. `Object created`) each time when the interceptor handles a (response) _201 created status_ back from the server.
 
 ```typescript
 /**
@@ -242,7 +260,7 @@ There are a lot of possibilities here, and we could log the profiles to the data
 **A mock or fake backend can be used in development when you do not have a backend yet.**
 
 We mock the response depending on the request. And then return an observable of HttpResponse.
-```
+```typescript
 const body = { 
   firstName: "Mock", 
   lastName: "Faker" 
@@ -257,16 +275,16 @@ return of(new HttpResponse(
 ## Caching 
 
 Since interceptors can handle requests by themselves, without forwarding to `next.handle()`, we can use it for caching requests.
-> If we find a response in the map, we can return an `observable` of that response, by-passing the next handler.  
 
-
+If we find a response in the map, we can return an `observable` of that response, by-passing the next handler.  
 ```typescript
 Observable.of()
 Observable.from()
 Observable.mergeMap()
 ```
 
-By Creating CacheInterceptor
+
+CacheInterceptor
 ```typescript
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpRequest, HttpHandler, HttpInterceptor, HttpResponse } from '@angular/common/http';
@@ -276,20 +294,23 @@ import { tap, shareReplay } from 'rxjs/operators';
 @Injectable()
 export class CacheInterceptor implements HttpInterceptor {
 
-  // it store observable from backend
+  // cache
   private cache = new Map<string, any>();
 
   // only intercept request with get
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
  
-    // if request.method is sending information to backend (not HTTP.GET method)
+    // if request.method is sending information 
+    // to backend (not HTTP.GET method)
     if (request.method !== 'GET') {
       return next.handle(request);
     }
 
     // create cacheResponse
     const cachedResponse = this.cache.get(request.url);
+
     if (cachedResponse) {
+      // create response observables
       return of(cachedResponse);
     }
 

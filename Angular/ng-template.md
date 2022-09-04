@@ -1,15 +1,17 @@
-# ngTemplate (TempalateRef&CiewContainerRef)
+# ngTemplate (TemplateRef&ViewContainerRef)
 
 A template is an HTML snippet. 
 The template does not render itself on DOM.
 
-- [ngTemplate (TempalateRef&CiewContainerRef)](#ngtemplate-tempalaterefciewcontainerref)
+- [ngTemplate (TemplateRef&ViewContainerRef)](#ngtemplate-templaterefviewcontainerref)
   - [Reference](#reference)
   - [Syntax](#syntax)
-  - [Display](#display)
+  - [Display ngTemplate Element in View](#display-ngtemplate-element-in-view)
     - [TemplateRef](#templateref)
+    - [ViewChild](#viewchild)
     - [ViewContainerRef](#viewcontainerref)
     - [ComponentFactoryResolver](#componentfactoryresolver)
+  - [ng-template with `[ngIf]`, `[ngIfThen]` and `[ngIfElse]`](#ng-template-with-ngif-ngifthen-and-ngifelse)
   - [ng-template with `[ngForOf]` and `[ngForTrackBy]`](#ng-template-with-ngforof-and-ngfortrackby)
   - [ng-template with `[ngSwitch]`, `[ngSwitchCase]` and `ngSwitchDefault`](#ng-template-with-ngswitch-ngswitchcase-and-ngswitchdefault)
 
@@ -30,47 +32,49 @@ ngTemplate is controlled by TemplateName
 
 Pass parameter to this ngTemplate
 ```html
-<ngTemplate ... let-templateParameter = "parameter-NameFrom-*TemplateOutlet" ,
-                let-XXX =".."> 
+<ngTemplate #templateRefName
+            let-templateParameter = "parameter-NameFrom-*TemplateOutlet" , 
+            let-templateParameter ="...."> 
       <div>{{ templateParameter | json }}</div>
       <div>{{ XXX | json }}</div>
 </ngTemplate>
 ```
 
-## Display 
+## Display ngTemplate Element in View
 
 1. Using the `ngTemplateOutlet` directive.
 2. Using the `TemplateRef` & `ViewContainerRef`
-
-- The `TemplateRef` holds the reference template defined by ng-template.
-- `ViewContainerRef`, when injected to via DI holds the reference to the host element, that hosts the component (or directive).
+   - The `TemplateRef` holds the reference template defined by ng-template.
+   - `ViewContainerRef`, when injected to via DI holds the reference to the host element, that hosts the component (or directive).
 
 ### TemplateRef
 
-TemplateRef is a class and the way to reference the ng-template in the component or directive class. 
+`TemplateRef` is a class and the way to reference the Template in the component or directive class. 
 
-Using the TemplateRef we can manipulate the template from component code.
-- `ng-template` is a bunch of HTML tags enclosed in a HTML element `<ng-template>`
+Using the `TemplateRef` we can manipulate the Template in component.
 ```html
 <ng-template #sayHelloTemplate>
   <p> Say Hello</p>
 </ng-template>
 ```
 
-`@ViewChild('ngTemplate-Ref_Name') variable : TemplateRef<any>;`
+### ViewChild
+
+Get the element in Template and use in the Component
+
+`@ViewChild('templateRefName') field : TemplateRef<Type>;`
 ```typescript
-@ViewChild('sayHelloTemplate', 
-          )
+@ViewChild('sayHelloTemplate')
 sayHelloTemplate:TemplateRef; // or TemplateRef<any>
 ```
 
 ### ViewContainerRef
 
-To tell Angular where to render it. The way to do is to use the `ViewContainerRef`.
-
-The `ViewContainerRef` is also similar to `TemplateRef`.    
+The `ViewContainerRef` is also similar to `TemplateRef`. 
 Both hold the reference to part of the view.   
- 
+
+It helps us manipulate the Template from Component
+
 Once, we have `ViewContainerRef`, we can use the `createEmbeddedView` method to add the template to the component.
 ```typescript
 @ViewChild('sayHelloTemplate', { read: TemplateRef })
@@ -136,12 +140,12 @@ export class AppComponent implements OnInit {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(targetComponent);
 
     const viewContainerRef = this.dynamicComponentLoader.viewContainerRef;
+    
     viewContainerRef.clear();
       
     const componentRef = viewContainerRef.createComponent(componentFactory);
   }
 }
-```
 ```
 
 ## ng-template with `[ngIf]`, `[ngIfThen]` and `[ngIfElse]`
@@ -150,7 +154,8 @@ export class AppComponent implements OnInit {
 <h2>Using ngTemplate with ngIf then & else</h2>
  
 <div *ngIf="selected; 
-      then thenBlock1 else elseBlock1">
+      then thenBlock1 
+      else elseBlock1">
   <p>This content is not shown</p>
 </div>
  

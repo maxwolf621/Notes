@@ -5,7 +5,7 @@
   - [Reference](#reference)
   - [Interpolation](#interpolation)
   - [Event Binding `(event) = expr`](#event-binding-event--expr)
-    - [$event Payload](#event-payload)
+    - [`$event` Payload](#event-payload)
     - [Template reference variable](#template-reference-variable)
     - [Key event filtering (with key.enter)](#key-event-filtering-with-keyenter)
   - [Property and Attribute Binding](#property-and-attribute-binding)
@@ -150,29 +150,36 @@ clickCount=0
   }
 ```
 
-### $event Payload
+### `$event` Payload
 
-The properties of a `$event` object vary depending on the type of DOM event
+The properties of a `$event` object vary depending on the type of DOM event   
+[source code](https://stackblitz.com/edit/event-binding-in-angular-ex-3?file=src%2Fapp%2Fapp.component.ts)   
+
+```html
+    
+<input (input)="handleInput($event)">
+<!--    ^                     ^
+        '---------------------'
+-->
+
+<p>You have entered {{value}}</p>
+```
 
 ```typescript
-<input (input)="handleInput($event)">
-<p>You have entered {{value}}</p>
-
 value=""
+
 handleInput(event) {
   this.value = (event.target as HTMLInputElement).value;
 }
 ```
-[source code](https://stackblitz.com/edit/event-binding-in-angular-ex-3?file=src%2Fapp%2Fapp.component.ts)
-
 
 ### Template reference variable
 
-```typescript
-<h2>Template Reference Variable</h2>
+```html
 <input #el (input)="handleInput1(el)">
 <p>You have entered {{val}}</p>
-
+```
+```typescript
 val="";
 handleInput1(element) {
   this.val=element.value;
@@ -201,15 +208,10 @@ using `keyup`/`keydown` events to listen for keystrokes.
 
 ## Property and Attribute Binding 
 
-- [[YOUTUBE] class Binding](https://www.youtube.com/watch?v=Y6OP-lPJxgs)
-- [DOM properties and HTML attributes](domPropHTMLattr.md) 
+[DOM properties and HTML attributes](domPropHTMLattr.md) 
+- Attribute Binding : the ATTRIBUTE is Defined By HTML  
+- Property Binding : the PROPERTY is Defined By Document Object Model, DOM 
 
-*Component's Attribute* is Binding to HTML's *Attribute*
-```java
-(DOM) Property Binding 
-
-[DOM_property]="Field_In_Component"
-```
 
 ```html 
 <!--
@@ -221,18 +223,15 @@ using `keyup`/`keydown` events to listen for keystrokes.
   <td [attr.colspan]="1 + 1"> 2 </td>
 </tr>
 ```
-- When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.
-- Attribute Binding : the ATTRIBUTE is Defined By HTML  
-- Property Binding : the PROPERTY is Defined By Document Object Model, DOM 
-
 Sometimes there are differences between the name of property and an attribute. `colspan` is an attribute of `<td>`, while `colSpan` with a capital `S` is a property.  
-When using attribute binding, use colspan with a lowercase `s`. 
+When using attribute binding, use colspan with a lowercase `s`.    
+When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.   
 
 ```html
 <div class="content">
     <!-- Property Binding -->
     <button type="button"
-    <!-- disabled the buuton if task.state === TaskState.Finish> -->
+    <!-- disabled the button if task.state === TaskState.Finish> -->
     [disabled]="task.state === TaskState.Finish">
     A_Button_To_Start_Or_Close
     </button>
@@ -251,13 +250,15 @@ When using attribute binding, use colspan with a lowercase `s`.
 
 In most cases, the target name is the name of a property, even when it appears to be the name of an attribute.
 
-app.component.html
 ```html
+<!-- 
+  app.component.html 
+-->
 <img alt="item" [src]="itemImageUrl">
 ```
-
-app.component.ts
 ```typescript
+// app.component.ts
+
 // ...
 itemImageUrl = '../assets/phone.png';
 // ...

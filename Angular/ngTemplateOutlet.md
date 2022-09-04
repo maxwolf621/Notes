@@ -5,18 +5,18 @@
 - [ngTemplateOutlet](#ngtemplateoutlet)
     - [Syntax](#syntax)
   - [透過Outlet傳參數給Template](#透過outlet傳參數給template)
-  - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
+  - [Outlet傳入多個參數到Template (`context : { ... }`)](#outlet傳入多個參數到template-context----)
   - [In Action](#in-action)
-
 
 The ngTemplateOutlet, is a structural directive, which renders the template.
 `*ngTemplateOutlet` 用來放置 `<ng-template>`，概念就與 `<router-outlet>` 雷同，在 Angular 的命名中，當我們看到 `....Outlet`結尾，都能想像成一個Container儲存特定的物件
-透過 `*ngTemplateOutlet="Template's名稱"` 來顯示某個特定Template，減少的Template重複
-
+透過 `*ngTemplateOutlet="Template's名稱"` 來顯示某個特定Template，減少Template
+重複
 ### Syntax
 
 ```html 
 <ng-template #NameOfTemplate>
+  ...                ^
   ....                \
 </ng-template>         \ 
                         \
@@ -30,10 +30,8 @@ The ngTemplateOutlet, is a structural directive, which renders the template.
 <ng-template #data>
   Hello World
 </ng-template>
-
 <div *ngTemplateOutlet="data"></div>
 ```
-- 透過 *ngTemplateOutlet 來決定要呼叫某個樣板上名為 data 的樣板方法，因此我們可以在
 
 ## 透過Outlet傳參數給Template
 
@@ -50,7 +48,7 @@ The ngTemplateOutlet, is a structural directive, which renders the template.
 自ngTemplateOutlet的參數
 - `{{input | json }}` : 參數以json方式呈現
 
-## Outlet傳入多個參數到Template
+## Outlet傳入多個參數到Template (`context : { ... }`)
 
 當我們有其他的參數時，也可以直接放到 context 裡面
 ```html
@@ -66,6 +64,11 @@ The ngTemplateOutlet, is a structural directive, which renders the template.
 
 我們可以建立一個directive，並掛在每個`<ng-template>` HTML ELEMENT上，之後在程式內就可以使用 `@ViewChildren`的方式，取得`<ng-template>`的QueryList
 ```typescript
+/**
+ *  For Host Element , 
+ * <Host-Ellement CarouselPageDirective></Host-Element>
+ */
+
 @Directive({
   selector: '[appCarouselPage]'
 })
@@ -74,7 +77,7 @@ export class CarouselPageDirective {
   constructor(public templateRef: TemplateRef<any>) { }
 }
 ```
-- 這裡的 `templateRef` 表示 每個 directive 所屬的ngTemplate HTML Element，並將它設為 public，以便利用`@ViewChildren`拿到 directive 時同時可以拿到特定ngTemplate HTML Element
+- 這裡的 `templateRef` 表示 `每個CarouselPageDirective`所屬的Host Element，並將它設為`public`，以便利用`@ViewChildren`拿到 Directive 時同時可以拿到特定Host Element
 
 
 ```html
@@ -144,13 +147,13 @@ export class AppComponent implements AfterViewInit {
 <ng-template appCarouselPage let-bg="background">
   <span [style.background-color]="bg">Page 3</span>
 </ng-template>
-<div *ngTemplateOutlet="displayPage; context: {background: backgroundColor}"></div>
 
-                                            <!--background : field from component -->
-<div *ngTemplateOutlet="displayPage; context: {background: backgroundColor}"></div>
+<div *ngTemplateOutlet="displayPage; 
+                        context: {background: backgroundColor}"></div>
 
 <br/>
 <button (click)="next()">Next</button>
+
 <br/>
 <button (click)="setBackground()">Set Blue Background</button>
 ```

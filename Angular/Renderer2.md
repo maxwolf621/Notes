@@ -3,19 +3,15 @@
 - [Renderer2 Example: Manipulating DOM in Angular](https://www.tektutorialshub.com/angular/renderer2-angular/#creating-new-element-createelement-appendchild)
 
 - [Renderer (Proxy of ElementRef)](#renderer-proxy-of-elementref)
-  - [setStyle & removeStyle](#setstyle--removestyle)
-  - [Create New Element](#create-new-element)
+  - [Methods](#methods)
+  - [Create Child Element](#create-child-element)
 
 **The Renderer2 allows us to manipulate the DOM elements, without accessing the DOM directly unlike `elementRef`.**   
 **It provides a layer of abstraction between the DOM element and the component code to prevent from XSS injection attack** 
 
-
-
 [renderer methods examples](https://reurl.cc/LM5X9y)
 
-## setStyle & removeStyle
-
-set/remove CSS style for an element
+## Methods
 
 ```typescript
 /***********************
@@ -26,6 +22,7 @@ set/remove CSS style for an element
 <div #hello>Hello !</div>
 //Component
 @ViewChild('hello', { static: false }) divHello: ElementRef;
+
 setStyle() {
     //                          element                 property , attribute
     this.renderer.setStyle(this.divHello.nativeElement, 'color', 'blue');
@@ -82,9 +79,10 @@ createText() {
  this.renderer.appendChild(this.divCreateText.nativeElement, text);
 }
 ```
+## Create Child Element
 
-
-## Create New Element
+`Renderer2#createElement('ElementName)`
+`Renderer2#createText('Text Name')`
 
 ```typescript
 //Template
@@ -95,17 +93,11 @@ createText() {
 </div>
 
 <button (click)="createElement()">Create Element</button>
-<button (click)="createElement2()">Create Element</button>
-
+<button (click)="createElement2()">Create Element 2</button>
 
 // Component
-constructor(private el: ElementRef, 
-              private renderer:Renderer2) {
-}
- 
-@ViewChild('div', { static: false }) div: ElementRef;
-
-constructor(private el: ElementRef, 
+@ViewChild('div', { static: false }) div: ElementRef; // instance of reference to Host-Element #dive
+constructor(private el: ElementRef,  // instance of reference to this component
             private renderer:Renderer2) {
 }
 
@@ -121,5 +113,4 @@ createElement2() {
   this.renderer.appendChild(div, text);
   this.renderer.appendChild(this.div.nativeElement, div);
 }
-
 ```
