@@ -7,6 +7,7 @@
 - [Garbage Collection and Object Copies](javanotes/GCandCopy.md)  
 - [Iterator](javanotes/Iterator.md) 
 - [Java 8](javanotes/java8.md)
+- [Functional Programming](javanotes/functionalProgramming.md)
 ## Network
 - [Serialization](javanotes/Serialization.md)  
 - [Session](javanotes/Session.md)  
