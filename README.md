@@ -212,7 +212,11 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - Create : (`Observable` DATA)&Listen (OBSERVER `Subscribe`)   
 **[Observable & Observer](RXJS/Observable&Observer.md)**  
 ![](images/c642d93d99c835876a635ba71e0a45f31703f47de9b8823f71445a5a00be8954.png)
-- Combine:  **[RXJS Operators](RXJS_Operators.md)** 
+- Combine:  
+**[RXJS Operators](RXJS/RXJS_Operators.md)**
+  - [time](RXJS/delay.md)
+  - [filter](RXJS/filter.md)
+  - [Error](RXJSError.md)
 - **[AsyncPipe](RXJS/AsyncPipe.md)**
 - **[behaviorSubject](RXJS/behaviorSubject.md)**
 
