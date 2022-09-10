@@ -4,23 +4,32 @@
   - [Reference](#reference)
   - [Functional Interface](#functional-interface)
   - [Default methods for interfaces](#default-methods-for-interfaces)
-  - [lambda expression](#lambda-expression)
+  - [lambda](#lambda)
   - [type interference](#type-interference)
-    - [threads](#threads)
   - [Syntax of Lambda Expressions](#syntax-of-lambda-expressions)
     - [lambda expression as parameter](#lambda-expression-as-parameter)
   - [函數合成](#函數合成)
   - [Method and Constructor References](#method-and-constructor-references)
+    - [Constructor References](#constructor-references)
+  - [Lambda Scopes](#lambda-scopes)
+    - [Accessing fields and static variables](#accessing-fields-and-static-variables)
+    - [Accessing Default Interface Methods](#accessing-default-interface-methods)
+  - [Built-in Functional Interfaces](#built-in-functional-interfaces)
+    - [Predicates(`Predicate<T>`)](#predicatespredicatet)
+    - [Function<T,R>](#functiontr)
+    - [Suppliers](#suppliers)
+    - [Consumers](#consumers)
+    - [Comparators](#comparators)
 ## Reference
 
-- [cheatSheet](https://github.com/winterbe/java8-tutorial)
-- [Java 8 in Action](https://gitee.com/lihuadaiyu/read/blob/master/Java8%E5%AE%9E%E6%88%98/Java8%E5%AE%9E%E6%88%98%20%E7%AC%94%E8%AE%B0.md)
-- [Java 8 in Action Source Code](https://github.com/java8/Java8InAction)
-- [Lambda Conversion](https://mkyong.com/java8/java-8-flatmap-example/)
-- [How to pass a function as a parameter in Java?](https://stackoverflow.com/questions/4685563/how-to-pass-a-function-as-a-parameter-in-java)
-
-- [15 Practical Exercises Help You Master Java Stream API](https://blog.devgenius.io/15-practical-exercises-help-you-master-java-stream-api-3f9c86b1cf82)
-
+[oracle java lambdaexpression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
+**[cheatSheet](https://github.com/winterbe/java8-tutorial)**   
+[Java 8 in Action](https://gitee.com/lihuadaiyu/read/blob/master/Java8%E5%AE%9E%E6%88%98/Java8%E5%AE%9E%E6%88%98%20%E7%AC%94%E8%AE%B0.md)   
+[Java 8 in Action Source Code](https://github.com/java8/Java8InAction)  
+[Lambda Conversion](https://mkyong.com/java8/java-8-flatmap-example/)   
+[How to pass a function as a parameter in Java?](https://stackoverflow.com/questions/4685563/how-to-pass-a-function-as-a-parameter-in-java)   
+[15 Practical Exercises Help You Master Java Stream API](https://blog.devgenius.io/15-practical-exercises-help-you-master-java-stream-api-3f9c86b1cf82)  
+[Java 8 java.util.function 常用的Functional Interface](https://matthung0807.blogspot.com/2018/09/java-8-javautilfunction-functional.html)
 ## Functional Interface  
 
 A functional interface is an interface that has one and only one abstract method, **although it can contain any number of default methods (new in Java 8) and static methods.**
@@ -33,8 +42,9 @@ The compiler is aware of this annotation and throws a compiler error as soon as 
 interface Converter<F, T> {
     T convert(F from);
 }
-
-Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
+ 
+// Type Interference       implementation     @override convert
+Converter<String, Integer> converter =        (from) -> Integer.valueOf(from);
 Integer converted = converter.convert("123");
 System.out.println(converted);    // 123
 ```
@@ -62,7 +72,9 @@ formula.calculate(100);     // 100.0
 formula.sqrt(16);           // 4.0
 ```
 
-## lambda expression
+## lambda 
+
+**Lambda 表示式本身是中性的，它本身無關乎函式介面的名稱，它只關心方法簽署，但忽略方法名稱**
 
 ```java 
 // sum of x, y
@@ -87,6 +99,7 @@ formula.sqrt(16);           // 4.0
 ```java
 List<String> names = Arrays.asList("p", "a", "m", "x");
 
+// anonymous class
 Collections.sort(names, new Comparator<String>() {
     @Override
     public int compare(String a, String b) {
@@ -101,53 +114,24 @@ Collections.sort(names, (String a, String b) -> {
 ```
 
 ## type interference
-
-**Lambda 表示式本身是中性的，它本身無關乎函式介面的名稱，它只關心方法簽署，但忽略方法名稱**
-
 ```java
 public interface Function<P, R> {
     R call(P p);
 }
 
-Func<Integer, Integer> func = x -> x * 2;
-```
-
-### threads
-
-```java
-import static java.lang.System.out;
-
-public class Hello {
-    Runnable r1 = new Runnable() {
-        public void run() {
-            out.println(this);
-        }
-    };
-    Runnable r2 = new Runnable() {
-        public void run() {
-            out.println(toString());
-        }
-    };
-
-    public String toString() { return "Hello, world!"; }
-
-    public static void main(String[] args) {
-        new Hello().r1.run();
-        new Hello().r2.run();
-    }
-}
+Function<Integer, Integer> func = x -> x * 2;
 ```
 
 ## Syntax of Lambda Expressions
+
+
 A lambda expression consists of the following:
 You can omit the data type of the parameters in a lambda expression.    
 In addition, you can omit the parentheses `(param1, param2, ...)` if there is only one parameter.  
 
 For example, the following lambda expression is also valid:
 ```java
-p -> p.getGender() == Person.Sex.MALE 
-    && p.getAge() >= 18
-    && p.getAge() <= 25
+p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
 ```
 
 A body, which consists of a single expression or a statement block. 
@@ -165,13 +149,12 @@ p -> {
         && p.getAge() <= 25;
 }
 ```
-A return statement is not an expression; in a lambda expression, you must enclose statements in braces (`{}`). 
+**A return statement is not an expression; in a lambda expression, you must enclose statements in braces (`{}`).**
 
 However, you do not have to enclose a void method invocation in braces. 
 ```java
 email -> System.out.println(email)
 ```
-
 
 ### lambda expression as parameter
 
@@ -225,12 +208,237 @@ public static <A, B, C> Func<A, C> compose(Func<A, B> f, Func<B, C> g) {
 
 ## Method and Constructor References
 
-```java
-Class :: Method
-```
+Java 8 enables you to pass references of methods or constructors via the `::` keyword. 
 
 ```java
 Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
 // equals
 Converter<String, Integer> converter = Integer::valueOf;
+
+Integer converted = converter.convert("123");
+System.out.println(converted);   // 123
+
+class Something {
+    String startsWith(String s) {
+        return String.valueOf(s.charAt(0));
+    }
+}
+Something something = new Something();
+Converter<String, String> converter = something::startsWith;
+String converted = converter.convert("Java");
+System.out.println(converted);    // "J"
+```
+
+
+### Constructor References 
+
+
+```java 
+class Person {
+    String firstName;
+    String lastName;
+
+    Person() {}
+
+    Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}
+```
+
+Next we specify a person factory interface to be used for creating new persons:
+```java
+interface PersonFactory<P extends Person> {
+    P create(String firstName, String lastName);
+}
+```
+
+Instead of implementing the factory manually, we glue everything together via constructor references:
+```java
+PersonFactory<Person> personFactory = Person::new;
+Person person = personFactory.create("Peter", "Parker");
+```
+We create a reference to the Person constructor via `Person::new.`       
+The Java compiler automatically chooses the right constructor by matching the signature of PersonFactory.create.   
+
+
+## Lambda Scopes
+
+Accessing outer scope variables from lambda expressions is very similar to anonymous objects. 
+
+You can access `final` variables from the local outer scope as well as instance fields and static variables.
+```java
+final int num = 1;
+Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
+
+stringConverter.convert(2);  // 3
+```
+
+But different to anonymous objects the variable `num` does not have to be declared `final`. This code is also valid:
+```java
+int num = 1;
+Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
+stringConverter.convert(2); // 3
+```
+However `num` must be implicitly `final` for the code to compile. 
+
+
+**Writing to `num` from within the lambda expression is also prohibited.**
+```java
+int num = 1;
+Converter<Integer, String> stringConverter =
+        (from) -> String.valueOf(from + num);
+num = 3;
+```
+
+### Accessing fields and static variables
+
+In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. This behaviour is well known from anonymous objects.
+
+```java
+class Lambda4 {
+    static int outerStaticNum;
+    int outerNum;
+
+    void testScopes() {
+        Converter<Integer, String> stringConverter1 = (from) -> {
+            outerNum = 23;
+            return String.valueOf(from);
+        };
+
+        Converter<Integer, String> stringConverter2 = (from) -> {
+            outerStaticNum = 72;
+            return String.valueOf(from);
+        };
+    }
+}
+```
+
+### Accessing Default Interface Methods
+
+Remember the formula example from the first section? Interface `Formula` defines a default method `sqrt` which can be accessed from each formula instance including anonymous objects. This does not work with lambda expressions.
+
+Default methods **cannot** be accessed from within lambda expressions. The following code does not compile:
+
+```java
+Formula formula = (a) -> sqrt(a * 100);
+```
+
+
+## Built-in Functional Interfaces
+
+- [Consumer , Function , Predicate, ]
+
+The JDK 1.8 API contains many built-in functional interfaces. Some of them are well known from older versions of Java like `Comparator` or `Runnable`. 
+
+Those existing interfaces are extended to enable Lambda support via the `@FunctionalInterface` annotation.
+
+But the Java 8 API is also full of new functional interfaces to make your life easier. 
+Some of those new interfaces are well known from the [Google Guava](https://code.google.com/p/guava-libraries/) library.
+
+
+```java
+public static void processPersonsWithFunction(
+    List<Person> roster,                    // 1
+    Predicate<Person> tester,               // 2
+    Function<Person, String> mapper,        // 3
+    Consumer<String> block) {               // 4
+    for (Person p : roster) {
+        if (tester.test(p)) {
+            String data = mapper.apply(p);
+            block.accept(data);
+        }
+    }
+}
+processPersonsWithFunction(
+    roster,                                   //1
+    p -> p.getGender() == Person.Sex.MALE     //2
+        && p.getAge() >= 18                    
+        && p.getAge() <= 25,                   
+    p -> p.getEmailAddress(),                 //3
+    email -> System.out.println(email)        //4
+);
+```
+
+### Predicates(`Predicate<T>`)
+
+Predicates are **boolean-valued** functions of one argument. 
+
+**The interface contains various default methods for composing predicates to complex logical terms (`and`, `or`, `negate`)**
+
+useCase : `Optional.filter(Predicate<? super T> predicate)`
+```java
+// anonymous 
+Optional<String> os1 = Optional.ofNullable(str).filter(new Predicate<String>() {
+          @Override
+          public boolean test(String s) {
+              return s.length() < 10; // false
+          }
+      });
+```
+
+
+```java
+// lambda 
+Predicate<String> predicate = (s) -> s.length() > 0;
+
+predicate.test("foo");              // true
+
+// get the string-length that <= 0 
+predicate.negate().test("foo");     // false
+
+Predicate<Boolean> nonNull = Objects::nonNull;
+Predicate<Boolean> isNull = Objects::isNull;
+
+Predicate<String> isEmpty = String::isEmpty;
+Predicate<String> isNotEmpty = isEmpty.negate();
+```
+
+### Function<T,R>
+
+`Function<Target,Return>` accepts one argument and produce a result. 
+
+**Default methods can be used to chain multiple functions together (`compose`, `andThen`).**
+
+```java
+Function<String, Integer> toInteger = Integer::valueOf;
+Function<String, String> backToString = toInteger.andThen(String::valueOf);
+
+backToString.apply("123");     // "123"
+```
+
+### Suppliers
+
+Suppliers produce a result of a given generic type. 
+
+Unlike Functions, Suppliers don't accept arguments.
+
+```java
+Supplier<Person> personSupplier = Person::new;
+personSupplier.get();   // new Person
+```
+
+### Consumers
+
+Consumers represent operations to be performed on a single input argument.
+
+```java
+Consumer<Person> greeter = (p) -> System.out.println("Hello, " + p.firstName);
+greeter.accept(new Person("Luke", "Skywalker"));
+```
+
+### Comparators
+
+Comparators are well known from older versions of Java. 
+
+Java 8 adds various default methods to the interface.
+```java
+Comparator<Person> comparator = (p1, p2) -> p1.firstName.compareTo(p2.firstName);
+
+Person p1 = new Person("John", "Doe");
+Person p2 = new Person("Alice", "Wonderland");
+
+comparator.compare(p1, p2);             // > 0
+comparator.reversed().compare(p1, p2);  // < 0
 ```
