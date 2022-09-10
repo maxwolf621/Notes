@@ -1,5 +1,4 @@
 # Access Child Component Data 
-
 - [Access Child Component Data](#access-child-component-data)
   - [View Child](#view-child)
     - [Metadata Properties](#metadata-properties)
