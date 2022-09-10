@@ -8,7 +8,6 @@
   - [ContentChild's Read Token](#contentchilds-read-token)
   - [ContentChildren](#contentchildren)
 
-
 Syntax
 ```typescript
 ContentChild(selector: string | Function | Type<any>, opts: { read?: any; static: boolean; }): any
