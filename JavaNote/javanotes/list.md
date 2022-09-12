@@ -31,16 +31,25 @@
 ## List Methods
 
 ```java
-void trimToSize() // delete extra unused-space in the Array 
-// get the sub list from s to e
-arrayList.subList(int s, int e)
+// delete extra unused-space in the Array 
+void trimToSize()
 
-// ensureCapacity instead of dynamically allocating the space 
+// Returns a view of the portion of this list 
+// between the specified 
+// fromIndex, inclusive, and toIndex, exclusive.
+List<E> subList(int fromIndex, int toIndex)
+
+// ensureCapacity 
+// instead of dynamically allocating the space 
 void ensureCapacity(int minCapacity)
-arrayList.ensureCapacity(int minCapacity)
 
-// this method inserts element in specific position 
+// Inserts all of the elements 
+// in the specified collection into this list, 
+// starting at the specified position.
 E set(int index, E element)
+
+int	indexOf(Object o)
+int	lastIndexOf(Object o)
 ```
 
 ```java
@@ -62,12 +71,14 @@ arrayList.sort(Comparator.reverseOrder());
 // add/All
 boolean	add(E e)  
 void add(int index, E element)
+
+// Appends all of the elements in the specified collection to the end of this list, 
+// in the order that they are returned by the specified collection's Iterator.
 boolean	addAll(Collection<? extends E> c)
 boolean	addAll(int index, Collection<? extends E> c)
 
-// foreach
-void forEach(Consumer<? super E> action)
 // foreach has no return val
+void forEach(Consumer<? super E> action)
 numbers.forEach((num) -> {
     num = num * 10;
 });
@@ -76,28 +87,24 @@ numbers.forEach((num) -> {
 // retain all array2 the elements if array1 contains these.
 // kinda like containsAll() but returns array[]   
 boolean retainAll(Collection<?> c)
+// [1,2,3].retainAll([2,3,4]) = [2,3]
 array1.retainAll(array2);
 
 E remove(int index)
 boolean	remove(Object o) // HashSet
 boolean	removeAll(Collection<?> c)
-protected void removeRange(int fromIndex, int toIndex)
+
 // remove element the index from start to end - 1
-arrayList.removeRange(start, end);
+protected void removeRange(int fromIndex, int toIndex)
+
 // remove
 boolean	removeIf(Predicate<? super E> filter)
-// remove elements which contains "a"
-elements.removeIf(e -> e.contains("a"));;
+elements.removeIf(e -> e.contains("a")); // remove elements which contains "a"
 
 void replaceAll(UnaryOperator<E> operator)
-// replace each the num to num*2 
-numbers.replaceAll(num -> num * 2);;
+numbers.replaceAll(num -> num * 2); // replace each the num to num*2 
 
-int	indexOf(Object o)
-int	lastIndexOf(Object o)
-```
 
-```java
 List<Integer> n = new ArrayList<Integer>():
 n.add(0,1);
 n.add(1,2);
@@ -112,7 +119,7 @@ n1.addAll(1,n2); // [1, 1, 2, 3, 2]
 // remove index of 1 
 n1.remove(1); // [1, 2, 3, 2]
 
-// [5, 2, 3, 2
+// [5, 2, 3, 2]
 l1.set(0, 5); // replace 0th element with 5 
 ```
 
@@ -161,18 +168,35 @@ private static class Node<E> {
     Node<E> next;
     Node<E> prev;
 }
-```
+
+// Adds the specified element as the tail (last element) of this list.
+boolean	offer(E e)
+boolean	offerFirst(E e)
+boolean	offerLast(E e)
+
+// Retrieves, but does not remove, the head (first element) of this list.
+// return null if this list is empty
+E peek()
+E peekFirst()
+E peekLast()
+
+// Retrieves and removes the head (first element) of this list.
+// return null if this list is empty
+E poll()
+E pollFirst()
+E pollLast()
+
+// Returns the element at the specified position in this list.
+E get(int index)
+E getFirst()
+E getLast()
 
 
-```java
-addFirst()
-addLast()
-
-getFirst()
-getLast()
-
-removeFirst( )
-removeLast()
+// Appends the specified element to the end of this list.
+boolean	add(E e)
+void add(int index, E element)
+void addFirst(E e)
+void addLast(E e)
 ``` 
 
 ## Array of Array
@@ -184,10 +208,7 @@ List< List<T> > arr = new ArrayList< List<T> >(LENGTH);
 // or 
 List<T>[] arr = new ArrayList[LENGTH];
 
-/**
- * for example
-**/
+// for example
 List<List<Integer>> group = new ArrayList<List<Integer>>(4);
-// or 
 List<Integer>[] group = new ArrayList[4];
 ```

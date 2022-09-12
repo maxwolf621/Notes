@@ -2,19 +2,21 @@
 
 - [Stack From Vector](#stack-from-vector)
   - [Reference](#reference)
-  - [Methods](#methods)
-  - [ArrayDeque](#arraydeque)
+  - [Stack](#stack)
+  - [ArrayDeque & LinkedList](#arraydeque--linkedlist)
     - [ArrayDeque vs LinkedList](#arraydeque-vs-linkedlist)
-    - [Methods](#methods-1)
-    - [Iteration](#iteration)
-    - [xxxLast and xxxFirst](#xxxlast-and-xxxfirst)
-  - [LinkedList](#linkedlist)
+    - [Deque](#deque)
+  - [Linked List](#linked-list)
 
 Stack class in Java is a legacy class and inherits from Vector in Java.   
-It is a thread-safe class and hence involves overhead.     
-Use `deque` when we do not need thread safety instead   
-![圖 5](../images/ec012ce906cb97463dd1d5f49da317b488a199adcb1bf2a27e249c522cf4353e.png)     
+
+It is a **thread-safe class** and hence involves overhead.     
+Use `deque` when we do not need thread safety instead.
+
+![圖 1](../../images/1fef51ac296b998d1523e0e130d217cabc0959a6c886bfbf8766b64e5c3c9b3d.png)  
 ![圖 4](../images/278f13baf8d21fa522f728785943075c7a3952d86f055fabf10187deb1cdf047.png) 
+
+![圖 2](../../images/d6d10331410504c53fb7a559a5435a5f89452bb56d4404e6c2afb51d1190d3b0.png)  
 
 ## Reference
 
@@ -22,80 +24,91 @@ Use `deque` when we do not need thread safety instead
 [deque](https://ithelp.ithome.com.tw/articles/10229634)   
 [Java ArrayDeque](https://www.cainiaojc.com/java/java-arraydeque.html)
 
+## Stack 
+
 ```java
 Stack stk = new Stack();  
 //Or
 Stack<T> stk = new Stack<T>();  
 ```
 
-## Methods
-
 ```java 
-// STACK usage
+// STACK Methods
+E pop()
+E push(E item)
+
+// Queue 8 Stack Method
+E peek()
+
 boolean	empty()
-E	peek()
-E	pop()
-E	push(E item)
-int	search(Object o)
 // It determines whether an object exists in the stack. 
 // If the element is found, 
 // It returns the position of the element 
 // from the top of the stack. Else, it returns `-1`.
+int	search(Object o)
 
 // Vector
 boolean	add(E e)
-void	add(int index, E element)
+void add(int index, E element)
 boolean	addAll(Collection<? extends E> c)
 boolean	addAll(int index, Collection<? extends E> c)
-void	addElement(E obj)
-void	copyInto(Object[] anArray)
-void	insertElementAt(E obj, int index)
-void	setElementAt(E obj, int index)
-E	elementAt(int index)
-Enumeration<E>	elements()
-E	firstElement()
-E	lastElement()
-boolean	removeElement(Object obj)
-void	removeElementAt(int index)
-void	removeAllElements()
-void	setSize(int newSize)
+
+void copyInto(Object[] anArray)
+void setSize(int newSize)
 int	capacity()
 
+// XXXelement
+void addElement(E obj)
+void insertElementAt(E obj, int index)
+void setElementAt(E obj, int index)
+E elementAt(int index)
+Enumeration<E> elements()
+E firstElement()
+E lastElement()
+boolean removeElement(Object obj)
+void removeElementAt(int index)
+void removeAllElements()
 
-E	get(int index)
-boolean	retainAll(Collection<?> c)
-void	trimToSize()
-void	clear()
-Object	clone()
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
+
+// List
+void ensureCapacity(int minCapacity)
+void trimToSize()
+
+int	size()
+boolean	isEmpty()
+void clear()
+E get(int index)
+Object clone()
+
 boolean	equals(Object o)
 int	hashCode()
-boolean	isEmpty()
-Iterator<E>	iterator()
-E	remove(int index)
+
+boolean	retainAll(Collection<?> c)
+boolean	contains(Object o)
+boolean	containsAll(Collection<?> c)
+
+E remove(int index)
 boolean	remove(Object o)
 boolean	removeAll(Collection<?> c)
-int	size()
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-String toString()
+protected void removeRange(int fromIndex, int toIndex)
 
-void	ensureCapacity(int minCapacity)
 int	indexOf(Object o)
 int	indexOf(Object o, int index)
 int	lastIndexOf(Object o)
 int	lastIndexOf(Object o, int index)
+
+Iterator<E>	iterator()
 ListIterator<E>	listIterator()
 ListIterator<E>	listIterator(int index)
-protected void	removeRange(int fromIndex, int toIndex)
 
-// ArrayList
 List<E>	subList(int fromIndex, int toIndex)
+Object[] toArray()
+<T> T[]	toArray(T[] a)
+String toString()
 ```
 
 
-## ArrayDeque
+## ArrayDeque & LinkedList
 
 It is recommended to use `ArrayDeque` for stack implementation as it is more efficient in a single-threaded environment.
 
@@ -104,103 +117,121 @@ It is recommended to use `ArrayDeque` for stack implementation as it is more eff
 LinkedList supoorts `null` value. ArrayDeque Does not
 LinkedList needs more capacity to store the data so ArrayDeque might faster than it
 
-### Methods
+### Deque
+
+`add/remove/poll/peek/offer/get-First/Last`
+
+
+It has Queue Methods and Stack Methods
+| Queue Method |	Equivalent Deque Method  |
+|--------------| --------------------------|
+| add(e)	     |  addLast(e)
+| offer(e)	   | offerLast(e)
+| remove()	   | removeFirst()
+| poll()	     | pollFirst()
+| element()	   | getFirst()
+| peek()	     | peekFirst()           
+
+|Stack Method |	Equivalent Deque Method |
+|-------| ------------------------------|
+|push(e)| addFirst(e)                   |
+|pop()	| removeFirst()                 |
+|peek()	| peekFirst()                   |
+
 
 ```java
-boolean add(element)
-boolean offer(element)
-void push(element)
-E pop(element)
+E pop()
+void push(E e)
 
-// returns top or null
-E poll() 
-E peek() 
-```
+int	size()
+boolean	contains(Object o)
+Iterator<E>	descendingIterator()
 
-### Iteration
+E getFirst()
+E getLast()
 
-```java
-Iterator<E> iterator()  
+// Retrieves, but does not remove, 
+// the head of the queue represented by this deque 
+// (in other words, the first element of this deque).
+E element()
 
-Iterator<E> descendingIterator()
-// Returns an iterator over the elements 
-// in this deque in reverse sequential order. 
-// The elements will be returned in order 
-// from last (tail) to first (head).
-```
+boolean add(E e)
+void addFirst(E e)
+void addLast(E e)
 
+boolean offer(E e)
+boolean offerFirst(E e)
+boolean offerLast(E e)
 
-### xxxLast and xxxFirst
+E peek()
+E peekFirst()
+E peekLast()
 
-```java
-void addFirst(object o)  
-void addLast(object o)
-
-boolean offerFirst(element)   
-boolean offerLast(element)   
-
-remove()
-remove(e element)
-removeFirst()
-removeLast() 
-
-getLast()  // if null NoSuchElementException
-getFirst() // if null NoSuchElementException
-
-E pollFirst()   
+E poll()
+E pollFirst()
 E pollLast()
 
-E peekFirst()    
-E peekLast()  
+E remove()
+boolean remove(Object o)
+E removeFirst()
+E removeLast()
+
+// Removes the first occurrence of the specified element from this deque.
+boolean	removeFirstOccurrence(Object o)
+// Removes the last occurrence of the specified element from this deque.
+boolean	removeLastOccurrence(Object o)
 ```
 
-## LinkedList
+## Linked List
 
 ```java
 boolean	add(E e)
-void	add(int index, E element)
+void add(int index, E element)
 boolean	addAll(Collection<? extends E> c)
 boolean	addAll(int index, Collection<? extends E> c)
+void addFirst(E e)  
+void addLast(E e)
 
-void	addFirst(E e)
-void	addLast(E e)
-void	clear()
-Object	clone()
-boolean	contains(Object o)
+// Stack 
+E pop()
+void push(E e)
+E element()
+void clear()
+Object clone()
+
+E get(int index)
+E getFirst() // if null NoSuchElementException
+E getLast()  // if null NoSuchElementException
+
 Iterator<E>	descendingIterator()
-E	element()
-E	get(int index)
-E	getFirst()
-E	getLast()
+ListIterator<E>	listIterator(int index)
+
+boolean contains(Object o)
 
 int	indexOf(Object o)
 int	lastIndexOf(Object o)
-ListIterator<E>	listIterator(int index)
+
 boolean	offer(E e)
 boolean	offerFirst(E e)
 boolean	offerLast(E e)
 
-E	peek()
-E	peekFirst()
-E	peekLast()
+E peek()
+E peekFirst()
+E peekLast()
 
-E	poll()
-E	pollFirst()
-E	pollLast()
+E poll()
+E pollFirst()
+E pollLast()
 
-E	pop()
-void	push(E e)
-E	remove()
-E	remove(int index)
-boolean	remove(Object o)
-E	removeFirst()
-E	removeLast()
+boolean remove(Object o)
+E remove()
+E remove(int index)
+E removeFirst()
+E removeLast()
 
 boolean	removeFirstOccurrence(Object o)
 boolean	removeLastOccurrence(Object o)
 
-E	set(int index, E element)
-int	size()
-Object[]	toArray()
-<T> T[]	toArray(T[] a)
+Object[] toArray()
+<T> T[] toArray(T[] a)
 ```

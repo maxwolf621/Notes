@@ -31,44 +31,49 @@ Being an interface the queue needs a concrete class   for the declaration and th
 
 ## Methods
 
-Methods from `interface java.util.Collection`
-```java
-// Collections
-boolean	add(E e)
-boolean	addAll(Collection<? extends E> c)
-void	clear()
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-boolean	equals(Object o)
-int	hashCode()
-boolean	isEmpty()
-Iterator<E>	iterator()
-default Stream<E> parallelStream()
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-boolean	retainAll(Collection<?> c)
-int	size()
-default Stream<E> stream()
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-default void	forEach(Consumer<? super T> action)
-
----
-
-Eelement()
-boolean	offer(E e)
-E peek()
-E poll()
-E remove()
-default Spliterator<E>	spliterator()
-default boolean	removeIf(Predicate<? super E> filter)
-```
-
 |        |Throws exception	|Returns special value|
 | ---    |      ---         |      ----           |
 |Insert	 |`boolean` add(e)	|`boolean` offer(e)   |
 |Remove	 |remove()	        | poll()              |
-|Examine |	element()	    | peek()              |
+|Examine |element()	        | peek()              |
+
+```java
+boolean	offer(E e)  boolean	add(E e)
+E peek()            E element()
+E poll()            E remove()
+
+// Collections
+boolean	add(E e)
+boolean	addAll(Collection<? extends E> c)
+
+void clear()
+int	size()
+boolean	isEmpty()
+
+boolean	equals(Object o)
+int	hashCode()
+
+boolean	contains(Object o)
+boolean	containsAll(Collection<?> c)
+boolean	retainAll(Collection<?> c)
+
+E remove()
+boolean	remove(Object o)
+boolean	removeAll(Collection<?> c)
+default boolean	removeIf(Predicate<? super E> filter)
+
+default Stream<E> stream()
+default Stream<E> parallelStream()
+default void forEach(Consumer<? super T> action)
+
+Iterator<E>	iterator()
+default Spliterator<E> spliterator()
+
+Object[] toArray()
+<T> T[]	toArray(T[] a)
+```
+
+
 
 ### LinkedList (QUEUE)
 
@@ -83,8 +88,7 @@ public class QueueExample {
         Queue<Integer> q = new LinkedList<>();
   
         // queue :  {0, 1, 2, 3, 4}
-        for (int i = 0; i < 5; i++)
-            q.add(i);
+        for (int i = 0; i < 5; i++) q.add(i);
   
         // display contents of the queue.
         System.out.println("Elements of queue "
@@ -106,9 +110,29 @@ public class QueueExample {
 ```
 ## PriorityQueue (Min Heap Implementation)
 
-### Iteration
-
 ```java
+PriorityQueue()
+PriorityQueue(Collection<? extends E> c)
+PriorityQueue(int initialCapacity)
+PriorityQueue(int initialCapacity, Comparator<? super E> comparator)
+PriorityQueue(PriorityQueue<? extends E> c)
+PriorityQueue(SortedSet<? extends E> c)
+
+boolean	offer(E e)
+E peek()
+E poll()
+boolean	add(E e)
+int	size()
+boolean	remove(Object o)
+void clear()
+
+Comparator<? super E> comparator()
+boolean	contains(Object o)
+Iterator<E>	iterator()
+Object[] toArray()
+<T> T[]	toArray(T[] a)
+
+
 Iterator<E> iter = myPriorityQueue.iterator();
 
 while (iter.hasNext()) {
@@ -121,13 +145,11 @@ for (E e : myQueue) {
 }
 ```
 
+
 ### PriorityQueue (Max Heap Implementation)
 
 ```java
-PriorityQueue<Integer> queue = new PriorityQueue<>(10, Collections.reverseOrder());
-queue.offer(1);
-queue.offer(2);
-queue.offer(3);
-
+PriorityQueue<Integer> queue = new PriorityQueue<>(
+                            10, Collections.reverseOrder());
 // ...
 ```
