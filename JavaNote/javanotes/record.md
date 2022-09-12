@@ -3,7 +3,7 @@
 - [Record](#record)
     - [Constructor](#constructor)
     - [With Static Member](#with-static-member)
-  - [vs LomBok](#vs-lombok)
+  - [Record vs LomBok](#record-vs-lombok)
     - [final field](#final-field)
     - [Getter Method](#getter-method)
     - [lombok builder constructor supports](#lombok-builder-constructor-supports)
@@ -68,10 +68,13 @@ Creating immutable data in this way has some deficient problem
 
 As of JDK 14, we can replace our repetitious data classes with records.  
 `Records` are immutable data classes that require only the type and name of fields.    
-Using `records` keyword, a public constructor, with an argument for each field, is generated for us.   
+
 ```java
 public record Person(String name,String address) {}
+```
 
+Using `records` keyword, a public constructor, with an argument for each field, is generated for us : 
+```java
 // complied 
 public final class Person extends java.lang.Record{
     // all fields are private final
@@ -93,6 +96,9 @@ public final class Person extends java.lang.Record{
     public final boolean equals(java.lang.Object o){
         //..
     }
+
+
+    // Setters
     public java.lang.String name(){
         // ...
     }
@@ -105,7 +111,7 @@ public final class Person extends java.lang.Record{
 
 ### Constructor
 
-we can ensure that parameter provided to our Person record aren't `null` using the following constructor implementation:
+we can ensure that parameter provided to our Person record aren't `null` using the following constructor implementation with `Objects.requireNonNull(field_name)`
 ```java
 public record Person(String name, String address) {
     public Person {
@@ -115,7 +121,9 @@ public record Person(String name, String address) {
 }
 ```
 
-Create new constructor with different parameters
+---
+
+Create new constructor with specific fields
 ```java
 public record Person(String name, String address) {
     public Person(String name) {
@@ -123,6 +131,8 @@ public record Person(String name, String address) {
     }
 }
 ```
+
+---
 
 Creating a constructor with the same arguments as the generated public constructor is valid, but this requires that each field be manually initialized:
 ```java
@@ -134,7 +144,9 @@ public record Person(String name, String address) {
 }
 ```
 
-Declaring a no-argument constructor and one with an argument list matching the generated constructor results in a compilation error
+---
+
+**Declaring a no-argument constructor and one with an argument list matching the generated constructor results in a compilation error**
 ```java
 public record Person(String name, String address) {
     public Person {
@@ -170,13 +182,14 @@ public record Person(String name, String address) {
 // Person.unnamed("100 Linda Ln.");
 ```
 
-## vs LomBok
+## Record vs LomBok
 
 ### final field
 
-final field via lombok is optional
+`final` field via lombok is optional
 ```java
-@Value // final
+// use @value set all fields with final keyword
+@Value
 public class Car {
     private String brand;
     private String model;
@@ -186,7 +199,7 @@ public class Car {
 
 ### Getter Method
 
-record Class getter method is not named with `getFiledName`
+`record` Class getter method is not named with `getFiledName`
 
 ### lombok builder constructor supports 
 
@@ -209,18 +222,28 @@ public class Car {
 
 ### Optional Fields Support
 
-When a constructor of record class has numerous fields indicates that a new structure should be created to wrap the numerous parameters or that the function is doing too many things.
+When a constructor of `record` class has numerous fields indicates that a new structure should be created to wrap the numerous parameters or that the function is doing too many things.
 ```java 
 public record DetailedCar(
-String brand, String model, int year,
-String engineCode, String engineType, String requiredFuel,
-String fuelSystem, String maxHorsePower, String maxTorque,
-float fuelCapacity) {}
+    String brand, 
+    String model, 
+    int year,
+    String engineCode, 
+    String engineType, 
+    String requiredFuel,
+    String fuelSystem, 
+    String maxHorsePower, 
+    String maxTorque,
+    float fuelCapacity){
+        // ...
+    }
 ```
 
+With annotation `@NonNull` to choose required fields via Lombok 
 ```java
 import lombok.Builder;
 import lombok.NonNull;
+
 @Builder
 public class DetailedCar {
     @NonNull
@@ -250,8 +273,9 @@ public class DetailedCar {
 
 ### Extendable
 
-Record Class is `final`, you cant extend a record class   
-instead `@lombok` class  
+Record Class is `final` class, you cant extend a record class.
+
+lombok class is extendable : 
 ```java
 @Data
 @ToString(callSuper = true)
