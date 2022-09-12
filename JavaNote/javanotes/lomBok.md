@@ -1,7 +1,7 @@
 # LomBok
-[kucw java-lombok](https://kucw.github.io/blog/2020/3/java-lombok/)
 
 - [LomBok](#lombok)
+  - [Reference](#reference)
   - [Maven](#maven)
   - [Annotations](#annotations)
     - [@ToString](#tostring)
@@ -11,15 +11,20 @@
   - [@RequiredArgsConstructor](#requiredargsconstructor)
   - [@Data](#data)
   - [@Value](#value)
-  - [@Builder](#builder)
   - [@Slf4j](#slf4j)
+  - [@Builder](#builder)
+    - [Customizing Lombok Builders](#customizing-lombok-builders)
   - [Making Multiple @Builders Coexist](#making-multiple-builders-coexist)
   - [SuperBuilder](#superbuilder)
     - [three-tier hierarchy](#three-tier-hierarchy)
 
-`LomBok` makes code elegant  
-for example 
+`LomBok` reduces boilerplate code, for example : 
 ![](https://i.imgur.com/inZrWpM.png)  
+
+
+## Reference
+[kucw java-lombok](https://kucw.github.io/blog/2020/3/java-lombok/)
+[Codes Example](https://github.com/eugenp/tutorials/tree/master/lombok-modules/lombok)
 
 ## Maven
 [Maven Version](https://mvnrepository.com/artifact/org.projectlombok/lombok)
@@ -74,7 +79,7 @@ public int hashCode()
 
 `@EqualAndHashCode(exclude = "id")` equals  
 
-this will exclude attribute `id` from `equal` and `HashCode`
+Exclude attribute `id` from `equal` and `HashCode`
 ```java
 public boolean equals(Object o)
 {
@@ -94,22 +99,21 @@ public int hashCode
 
 equals
 ```java
-// ...
 public User(){}
 ```
 
 ##  @AllArgsConstructor  
 equals
 ```java
-//..
+// all fields
 public User(id, name){
     this.id = id;
     this.name = name;
 }
 ```
 
-If we dont create a constructor, java will create a No args Constructor by itself. 
-so do make sure add annotation `@NoArgsConstructor` while there is `@AllArgsConstrcutor`  
+If we don't create a constructor, java will create a no args Constructor by itself.    
+so do make sure add annotation `@NoArgsConstructor` while there is `@AllArgsConstructor`     
 
 ## @RequiredArgsConstructor
 
@@ -124,27 +128,102 @@ public User(id, name){
 
 ## @Data
 
-`@Data` represents
-> `@Getter/@Setter`, `@ToString`, `@EqualsAndHashCode`, `@RequiredArgsConstructor`
+`@Data` generates all the boilerplate that is normally associated with a simple POJO : 
+```java
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+```
 
 ## @Value
 
-The annotation gives the Attributes with `final` keyword
+All Attributes with `final` keyword by default.
 
-- `@Data` 適合用在 **POJO 或 DTO**上，而這個 `@Value` 注解，則是適合加在值不希望被改變的類上，像是某個類的值當創建後就不希望被更改，只希望我們讀它而已，就適合加上 `@Value` 注解
+`@value` is equivalent to
+```java
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+```
+
+
+```java
+@Value
+final class ImmutableClient { // Read Only Class
+    private int id;
+    private String name;
+}
+```
+- `@Data` 適合用在 **POJO 或 DTO**上，`@Value`則是適合加在值不希望被改變的Class上，像是某個類的值當創建後就不希望被更改，只能被讀
 - lombok 的注解 `@Value` 和另一個 Spring 的注解 `@Value` 撞名  
-
-
-## @Builder
-
-To represent with setters 
-![](https://i.imgur.com/P9u4632.png)
 
 ## @Slf4j
 
 Log the console's information
 
 ![](https://i.imgur.com/rGbxUUo.png)
+
+
+## @Builder
+
+- [Using Lombok’s @Builder Annotation](https://www.baeldung.com/lombok-builder)
+- [Lombok Builder with Default Value](https://www.baeldung.com/lombok-builder-default-value)
+To represent with setters 
+![](https://i.imgur.com/P9u4632.png)
+
+### Customizing Lombok Builders
+
+we write the parts of the builder that we want to customize and the Lombok `@Builder` annotation will simply not generate those parts
+
+
+For example add method to test fields `text` and `file`
+```java
+@Builder
+@Data
+public class Message {
+    private String sender;
+    private String recipient;
+
+    // fields with custom builder
+    private String text;
+    private File file;
+
+    public static class MessageBuilder {
+        private String text;
+        private File file;
+
+        public MessageBuilder text(String text) {
+            this.text = text;
+            verifyTextOrFile();
+            return this;
+        }
+
+        public MessageBuilder file(File file) {
+            this.file = file;
+            verifyTextOrFile();
+            return this;
+        }
+
+        private void verifyTextOrFile() {
+            if (text != null && file != null) {
+                throw new IllegalStateException("Field text and file should be null.");
+            }
+        }
+    }
+}
+
+// if we build with text and file 
+// it will throw exception
+Message message = Message.builder()
+  .sender("user@somedomain.com")
+  .recipient("someuser@otherdomain.com")
+  .text("How are you today?")
+  .file(new File("/path/to/file"))
+  .build();
+```
 
 ## Making Multiple @Builders Coexist
 
@@ -155,24 +234,22 @@ import lombok.Builder;
 
 @Builder
 public class Person {
-
     private final String firstName;
     private final String lastName;
     private final String middleName;
 }
 ```
 
-The following Configuration is wrong
+The following configuration is wrong.
 ```java
 @Builder
 public final class Student extends Person {
-
+    
     private final String rollNumber;
 }
-
 ```
 
-We must set up which properties should be built by Base
+Instead we must set up which properties should be built by base class (`Person`).
 ```java
 public final class Student extends Person {
     private final String rollNumber;
@@ -182,7 +259,9 @@ public final class Student extends Person {
                    final String lastName, 
                    final String middleName, 
                    final String rollNumber) {
+
         super(firstName, lastName, middleName);
+
         this.rollNumber = rollNumber;
     }
 }
@@ -236,13 +315,12 @@ public class Student extends Child {
     int studentAge;
 }
 
-Student std = Student
-              .builder()
+Student std = Student.builder()
               .parentAge(55)
               .childAge(13)
               .studentAge(23)
               .build()
 ```
-- Note that we have to annotate all classes.  
-`@SuperBuilder` cannot be mixed with `@Builder` within the same class hierarchy. Doing so will result in a compilation error.
+- Note that we have to annotate all classes with `@SuperBuilder`
+- `@SuperBuilder` cannot be mixed with `@Builder` within the same class hierarchy. Doing so will result in a compilation error.
 
