@@ -8,11 +8,15 @@
   - [Stream.generate(...)](#streamgenerate)
   - [Collections,List,Set Stream](#collectionslistset-stream)
   - [Stream.of](#streamof)
-  - [mapToInt, mapToLong ,mapToDouble](#maptoint-maptolong-maptodouble)
-  - [mapToObj](#maptoobj)
-  - [Filter](#filter)
-  - [Aggregate operations(filter, limit, skip, distinct, sort, map)](#aggregate-operationsfilter-limit-skip-distinct-sort-map)
-  - [Match](#match)
+  - [IntStream,DoubleStream,LongStream](#intstreamdoublestreamlongstream)
+    - [iterate](#iterate)
+    - [rangeClosed and range](#rangeclosed-and-range)
+    - [boxed()](#boxed)
+    - [mapToObj](#maptoobj)
+    - [parallel](#parallel)
+  - [mapToInt, mapToLong ,mapToDouble,](#maptoint-maptolong-maptodouble)
+  - [intermediate operations](#intermediate-operations)
+  - [Terminal Operations `___Match`](#terminal-operations-___match)
   - [Collectors](#collectors)
     - [Collectors.joining](#collectorsjoining)
     - [Collectors.toXXXX()](#collectorstoxxxx)
@@ -153,61 +157,118 @@ Arrays.asList("a1", "a2", "a3")
 ## Stream.of
 
 ```java
-Stream<T> streamOf = Stream.of(T 1, T 2, T 3, T 4, ... , T n);
+static <T> Stream<T> of(T... values)
+static <T> Stream<T> of(T t)
+
 Stream<String> streamOf = Stream.of("1", "3", "4", "5", "7","", "9");
 ```
 
-## mapToInt, mapToLong ,mapToDouble
+## IntStream,DoubleStream,LongStream
+
+### iterate
 
 ```java
-// String to Int
-Stream.of("a1", "a2", "a2")
+DoubleStream
+//       iterate(initializer,condition,iteration)
+        .iterate(1.2, d -> d < 3, d -> d + 0.5)
+        .forEach(System.out::println);
+
+// similar  to
+for (double d = 1.2; d < 3; d += 0.5) {
+    System.out.println(d);
+}
+```
+### rangeClosed and range
+
+```java
+static IntStream rangeClosed(int startInclusive, int endInclusive)
+static IntStream range(int startInclusive, int endExclusive)
+
+// same as
+for (int i = startInclusive; i <= endInclusive ; i++) 
+```
+
+### boxed()
+
+transform `T`Stream to a Stream<T>
+
+```java 
+DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
+        .boxed() // stream<Double>
+        .map(Double::intValue) // to Int
+        .forEach(System.out::println);
+```
+
+### mapToObj
+
+- [IntStream mapToObj() in Java](https://www.geeksforgeeks.org/intstream-maptoobj-java/)
+
+Transform Primitive streams to object streams
+```java
+IntStream.range(1, 4) // IntStream
+    .mapToObj(i -> "a" + i) // Stream<String>
+    .forEach(System.out::println);
+```
+
+### parallel
+
+Synchronized
+
+```java
+IntStream.range(5, 12).parallel().forEach(
+    System.out::println
+)
+/**
+ * 3
+ * 5
+ * 4
+ * 1
+ * 2
+ */
+```
+
+
+## mapToInt, mapToLong ,mapToDouble,
+
+```java
+IntStream mapToInt(ToIntFunction<? super T> mapper)
+LongStream mapToLong(ToLongFunction<? super T> mapper)
+DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper)
+```
+
+```java
+Stream
+    // Stream<String>
+    .of("a1", "a2", "a2") 
+    // Stream<R> map(Function<? super T,? extends R> mapper)
     .map(s -> s.substring(1)) // "1", "2", "2"
+    // IntStream mapToInt(ToIntFunction<? super T> mapper)
     .mapToInt(Integer::parseInt) // 1,2,2
+    // Optional<T> max(Comparator<? super T> comparator)
     .max() // 3
     .ifPresent(System.out::println);  // 2
 ```
 
-## mapToObj
 
-Transform Primitive streams to object streams
-```java
-IntStream.range(1, 4)
-    .mapToObj(i -> "a" + i)
-    .forEach(System.out::println);
-```
-
-## Filter
+## intermediate operations
 
 ```java
-Stream.of("d2", "a2", "b1", "b3", "c")
+Stream<T> filter(Predicate<? super T> predicate)
+Stream<T> limit(int maxSize)
+Stream<T> skip(long Skip_N_number)
+Stream<T> distinct()
+Stream<T> sorted(Comparator<? super T> comparator)
+Stream<R> map(Function<? super T,? extends R> mapper)
+Stream<T> peek(Consumer<? super T> action)
+long count()
+
+// filter
+Stream
+    .of("d2", "a2", "b1", "b3", "c")
     .filter(s -> {
         System.out.println("filter: " + s);
         return true;
-    });
-```
-- When executing this code snippet, nothing is printed to the console. That is because intermediate operations will only be executed when a terminal operation is present.
-
-With terminal operation `forEach` to print result to the console
-```java
-Stream.of("d2", "a2", "b1", "b3", "c")
-    .filter(s -> {
-        System.out.println("filter: " + s);
-        return true;
-    })
-    .forEach(s -> System.out.println("forEach: " + s));
-```
-
-## Aggregate operations(filter, limit, skip, distinct, sort, map)
-
-```java
-filter(expression)
-limit(size)
-skip(ElementsNum)
-distinct()
-sort()
-map(expression) and peek(expression)
-
+    }).forEach(s -> System.out.println("forEach: " + s));
 
 List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
 Integer findFirst = list.stream().findFirst().get(); //1
@@ -215,7 +276,6 @@ Integer findAny = list.stream().findAny().get(); //1
 long count = list.stream().count(); //5
 Integer max = list.stream().max(Integer::compareTo).get(); //5
 Integer min = list.stream().min(Integer::compareTo).get(); //1　　
-
 
 // peek has return void unlike .map()
 Stream<Student> stdStream = Stream.of(
@@ -226,14 +286,14 @@ stdStream.peek(o -> o.setAge(100)).forEach(System.out::println);
 // all student age are 100
 ```
 
-## Match
+## Terminal Operations `___Match`
 
 ```java
 // if all elements meet the criteria
 boolean allMatch = list.stream().allMatch(e -> e > 10); //false
 // if none meet the criteria
 boolean noneMatch = list.stream().noneMatch(e -> e > 10); //true
-// if any ...
+// if any ... 
 boolean anyMatch = list.stream().anyMatch(e -> e > 4); //true
 ```
 
@@ -252,13 +312,9 @@ Stream.of("d2", "a2", "b1", "b3", "c")
 // map:      a2
 // anyMatch: A2
 ```
-The operation `anyMatch` returns `true` as soon as the predicate applies to the given input element. 
-
-This is `true` for the second element passed `"A2"`.  
-Due to the vertical execution of the stream chain, map has only to be executed twice in this case. 
-
-So instead of mapping all elements of the stream, map will be called as few as possible.
-
+- The operation `anyMatch` returns `true` as soon as the predicate applies to the given input element.     
+Due to the vertical execution of the stream chain, map has only to be executed twice in this case.     
+So instead of mapping all elements of the stream, map will be called as few as possible.    
 
 ## Collectors
 
@@ -563,7 +619,7 @@ IntStream.range(1, 4)
     .peek(f -> IntStream.range(1, 4)
         .mapToObj(i -> new Bar("Bar" + i + " <- " f.name))
         .forEach(f.bars::add))
-    .flatMap(f -> f.bars.stream())
+    .flatMap(f -> f.bars.stream())  
     .forEach(b -> System.out.println(b.name));
 ```
 

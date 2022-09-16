@@ -43,9 +43,10 @@ interface Converter<F, T> {
     T convert(F from);
 }
  
-// Type Interference       implementation     @override convert
-Converter<String, Integer> converter =        (from) -> Integer.valueOf(from);
-Integer converted = converter.convert("123");
+// returnType,argumentType implementation            @override convert
+Converter<String, Integer> convertToInteger =        (from) -> Integer.valueOf(from);
+
+Integer converted = converter.convertToInteger("123");
 System.out.println(converted);    // 123
 ```
 
@@ -68,6 +69,9 @@ Formula formula = new Formula() {
     }
 };
 
+// lambda
+Formula formula = (a) -> return sqrt(a*100);
+
 formula.calculate(100);     // 100.0
 formula.sqrt(16);           // 4.0
 ```
@@ -89,8 +93,8 @@ formula.sqrt(16);           // 4.0
 
 (Integer x) -> {
     Integer result;
-    ...other statements
-    ...
+    //...other statements
+    // ...
     return result;
 };
 ```
@@ -113,17 +117,7 @@ Collections.sort(names, (String a, String b) -> {
 });
 ```
 
-## type interference
-```java
-public interface Function<P, R> {
-    R call(P p);
-}
-
-Function<Integer, Integer> func = x -> x * 2;
-```
-
 ## Syntax of Lambda Expressions
-
 
 A lambda expression consists of the following:
 You can omit the data type of the parameters in a lambda expression.    
@@ -187,6 +181,7 @@ class C {
 [認識 Lambda/Closure（7）JDK8 Lambda 語法](https://openhome.cc/Gossip/CodeData/JavaLambdaTutorial/Java8Lambda.html)
 
 ```java
+// anonymous 
 compose(
     new Func<Integer, Integer>() {
         public Integer apply(Integer x) {
@@ -200,6 +195,7 @@ compose(
     }
 );
 
+// lambda
 public static <A, B, C> Func<A, C> compose(Func<A, B> f, Func<B, C> g) {
     return x -> g.apply(f.apply(x));
 }
@@ -294,8 +290,9 @@ num = 3;
 
 ### Accessing fields and static variables
 
-In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. This behaviour is well known from anonymous objects.
+In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. 
 
+This behavior is well known from anonymous objects.
 ```java
 class Lambda4 {
     static int outerStaticNum;
@@ -319,16 +316,14 @@ class Lambda4 {
 
 Remember the formula example from the first section? Interface `Formula` defines a default method `sqrt` which can be accessed from each formula instance including anonymous objects. This does not work with lambda expressions.
 
-Default methods **cannot** be accessed from within lambda expressions. The following code does not compile:
-
+Default methods **cannot** be accessed from within lambda expressions.   
+The following code does not compile:
 ```java
 Formula formula = (a) -> sqrt(a * 100);
 ```
 
 
 ## Built-in Functional Interfaces
-
-- [Consumer , Function , Predicate, ]
 
 The JDK 1.8 API contains many built-in functional interfaces. Some of them are well known from older versions of Java like `Comparator` or `Runnable`. 
 

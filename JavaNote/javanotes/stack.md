@@ -5,8 +5,7 @@
   - [Stack](#stack)
   - [ArrayDeque & LinkedList](#arraydeque--linkedlist)
     - [ArrayDeque vs LinkedList](#arraydeque-vs-linkedlist)
-    - [Deque](#deque)
-  - [Linked List](#linked-list)
+  - [Linked List & ArrayDeque](#linked-list--arraydeque)
 
 Stack class in Java is a legacy class and inherits from Vector in Java.   
 
@@ -36,8 +35,6 @@ Stack<T> stk = new Stack<T>();
 // STACK Methods
 E pop()
 E push(E item)
-
-// Queue 8 Stack Method
 E peek()
 
 boolean	empty()
@@ -46,8 +43,11 @@ boolean	empty()
 // It returns the position of the element 
 // from the top of the stack. Else, it returns `-1`.
 int	search(Object o)
+```
 
-// Vector
+
+Vector
+```java
 boolean	add(E e)
 void add(int index, E element)
 boolean	addAll(Collection<? extends E> c)
@@ -78,12 +78,14 @@ int	size()
 boolean	isEmpty()
 void clear()
 E get(int index)
+
 Object clone()
 
 boolean	equals(Object o)
 int	hashCode()
 
 boolean	retainAll(Collection<?> c)
+
 boolean	contains(Object o)
 boolean	containsAll(Collection<?> c)
 
@@ -94,6 +96,7 @@ protected void removeRange(int fromIndex, int toIndex)
 
 int	indexOf(Object o)
 int	indexOf(Object o, int index)
+
 int	lastIndexOf(Object o)
 int	lastIndexOf(Object o, int index)
 
@@ -102,6 +105,7 @@ ListIterator<E>	listIterator()
 ListIterator<E>	listIterator(int index)
 
 List<E>	subList(int fromIndex, int toIndex)
+
 Object[] toArray()
 <T> T[]	toArray(T[] a)
 String toString()
@@ -110,106 +114,69 @@ String toString()
 
 ## ArrayDeque & LinkedList
 
+LinkedList & LinkedList implements deque
+
 It is recommended to use `ArrayDeque` for stack implementation as it is more efficient in a single-threaded environment.
 
 ### ArrayDeque vs LinkedList
 
-LinkedList supoorts `null` value. ArrayDeque Does not
-LinkedList needs more capacity to store the data so ArrayDeque might faster than it
+- **LinkedList supports `null` value. ArrayDeque Does not.**    
+- LinkedList needs more capacity to store the data so ArrayDeque might faster than it.    
 
-### Deque
+## Linked List & ArrayDeque
 
-`add/remove/poll/peek/offer/get-First/Last`
-
-
-It has Queue Methods and Stack Methods
-| Queue Method |	Equivalent Deque Method  |
-|--------------| --------------------------|
-| add(e)	     |  addLast(e)
-| offer(e)	   | offerLast(e)
-| remove()	   | removeFirst()
-| poll()	     | pollFirst()
-| element()	   | getFirst()
-| peek()	     | peekFirst()           
-
-|Stack Method |	Equivalent Deque Method |
-|-------| ------------------------------|
-|push(e)| addFirst(e)                   |
-|pop()	| removeFirst()                 |
-|peek()	| peekFirst()                   |
-
-
-```java
-E pop()
-void push(E e)
-
-int	size()
-boolean	contains(Object o)
-Iterator<E>	descendingIterator()
-
-E getFirst()
-E getLast()
-
-// Retrieves, but does not remove, 
-// the head of the queue represented by this deque 
-// (in other words, the first element of this deque).
-E element()
-
-boolean add(E e)
-void addFirst(E e)
-void addLast(E e)
-
-boolean offer(E e)
-boolean offerFirst(E e)
-boolean offerLast(E e)
-
-E peek()
-E peekFirst()
-E peekLast()
-
-E poll()
-E pollFirst()
-E pollLast()
-
-E remove()
-boolean remove(Object o)
-E removeFirst()
-E removeLast()
-
-// Removes the first occurrence of the specified element from this deque.
-boolean	removeFirstOccurrence(Object o)
-// Removes the last occurrence of the specified element from this deque.
-boolean	removeLastOccurrence(Object o)
-```
-
-## Linked List
-
+Collection
 ```java
 boolean	add(E e)
-void add(int index, E element)
 boolean	addAll(Collection<? extends E> c)
+boolean remove(Object o)
+boolean	removeAll(Collection<?> c)
+boolean	containsAll(Collection<?> c)
+boolean	equals(Object o)
+int	hashCode()
+
+Object[] toArray()
+<T> T[] toArray(T[] a)
+```
+
+List
+```java
+void add(int index, E element)
 boolean	addAll(int index, Collection<? extends E> c)
-void addFirst(E e)  
-void addLast(E e)
-
-// Stack 
-E pop()
-void push(E e)
-E element()
-void clear()
-Object clone()
-
 E get(int index)
-E getFirst() // if null NoSuchElementException
-E getLast()  // if null NoSuchElementException
+
+Object clone()
+int	size()
+boolean	isEmpty()
+void clear()
+boolean contains(Object o)
+
+E remove(int index)
+
+int	indexOf(Object o)
+int	lastIndexOf(Object o)
 
 Iterator<E>	descendingIterator()
 ListIterator<E>	listIterator(int index)
 
-boolean contains(Object o)
+protected void removeRange(int fromIndex, int toIndex_exclusive)
+List<E> subList(int fromIndex_Inclusive, int toIndex_Exclusive)
+```
 
-int	indexOf(Object o)
-int	lastIndexOf(Object o)
+Stack 
+```java
+E element()
+E pop()
+void push(E e)
+```
+
+Deque
+```java
+void addFirst(E e)  
+void addLast(E e)
+
+E getFirst() // if null NoSuchElementException
+E getLast()  // if null NoSuchElementException
 
 boolean	offer(E e)
 boolean	offerFirst(E e)
@@ -223,15 +190,12 @@ E poll()
 E pollFirst()
 E pollLast()
 
-boolean remove(Object o)
 E remove()
-E remove(int index)
 E removeFirst()
 E removeLast()
 
 boolean	removeFirstOccurrence(Object o)
 boolean	removeLastOccurrence(Object o)
-
-Object[] toArray()
-<T> T[] toArray(T[] a)
 ```
+
+

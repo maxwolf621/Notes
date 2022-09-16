@@ -2,18 +2,18 @@
 
 - [String](#string)
     - [`final` for String](#final-for-string)
-  - [Declaration](#declaration)
+    - [new string](#new-string)
   - [String Methods](#string-methods)
       - [equals(Object obj) and equalsIgnoreCase(String s)](#equalsobject-obj-and-equalsignorecasestring-s)
       - [compareTo(String s) and compareToIgnoreCase(String s)](#comparetostring-s-and-comparetoignorecasestring-s)
-      - [toLowerCase() and toUpperCase()](#tolowercase-and-touppercase)
       - [trim()](#trim)
       - [replace(char oldChar, char newChar)](#replacechar-oldchar-char-newchar)
       - [valueOf()](#valueof)
   - [`toCharArray` String To Chars](#tochararray-string-to-chars)
   - [`String`, `StringBuffer` and `StringBuilder`](#string-stringbuffer-and-stringbuilder)
-  - [StringBuffer](#stringbuffer)
-    - [Methods](#methods)
+  - [StringBuilder](#stringbuilder)
+    - [insert and append](#insert-and-append)
+    - [char operation](#char-operation)
 
 
 Since Java 9 `String` value is used for `byte[]` as character storage instead of (Java 8)`char`  
@@ -43,19 +43,19 @@ public final class String
 
 ### `final` for String
 
-1. Hash value  : Same Value Could Be Found via Hashcode
-2. String Pool : Reduce `new` the same value
- - String Pool keeps all literal strings, theses are stored **at the compiler time**
+1. Hash value  : Same Value Could Be Found via Hash Code
+2. String Pool : Reduce `new` the same value   |
+String Pool keeps all literal strings, theses are stored **at the compiler time**
 3. Security 
 4. Thread Safe
 
-## Declaration
 
-**Since Java 7, String Pool is in Stack for preventing from `OutOfMemoryError`**.  
+### new string
 
-`new String("stringValue")` will create 2 Objects
-1. At the Compiler time `stringValue` is created in String Pool and is referenced to
-2. `new` will create an object in the stack
+**Since Java 7, Each string in String Pool is stored in Stack to prevent from `OutOfMemoryError`**. 
+`new String("stringValue")` will create 
+1. `new` creates an object in the stack
+1. At the Compiler time `stringValue` is created in String Pool and points to new memory location.
 
 ```java
 String s1 = new String("aaa");
@@ -77,48 +77,107 @@ String s6 = "bbb";
 System.out.println(s5 == s6);  // true
 ```
 
-|`stringName.intern()` ( `stringName` exists in String Pool )| |  
-|    ---               |--|
-|  True |  return the reference  |
-|  False | Add it in pool and return value of the reference  |
+|`stringName.intern()` | ( `stringName` exists in String Pool )  |  
+|    ---                                                     |--|
+|  `true` |  return the reference  |
+|  `false` | add it in pool and return reference of the string value|
 
 
 ## String Methods
 
-`?` means it's optional parameter
+```java
+// search string pool first if the string does not exist
+// then create one
+String intern() 
+
+String[] split(String regex, ?int arrayLength)
+// IN.MA.CA.LA split("\\.")
+// IN-MA-CA-LA => String[] s = {IN,MA,CA,LA}
+
+// IN.MA.CA.LA split("\\.", arrayLength)
+// arrayLength : 2 => {IN , MA-CA-LA}
+// arrayLength : 3 =? IN, MA, CA-LA}
+// arrayLength >= 4 {IN,MA,CA,LA}
+
+int indexOf(int ch, int ?fromIndex) // search character
+int indexOf(String str, ?int fromIndex) // search string
+int lastIndexOf(int ch, ?int startFromIndex)
+int lastIndexOf(String str, ?int startFromIndex)
+
+// most used
+char[] toCharArray()
+char charAt(int index)
+
+// Equals 
+boolean contentEquals(StringBuffer sb)
+boolean equalsIgnoreCase(String anotherString)
+
+String substring(int beginIndex)
+String substring(int beginIndex, int endIndex)
+
+String toLowerCase()
+String toUpperCase()
+
+String trim() // "  abc  " => "abc"
+int length()
+Boolean isEmpty()
+boolean equals(Object anObject)
+int hashCode()
+String toString()
+Boolean contains(CharSequence chars)
+
+boolean matches(String regex)
+
+String replace(char oldChar, char newChar)
+String replaceAll(String regex, String replacement)
+String replaceFirst(String regex, String replacement)
+
+int compareTo(Object o)
+int compareTo(String anotherString) 
+int compareToIgnoreCase(String str)
+
+static String copyValueOf(char[] data)
+static String copyValueOf(char[] data, int offset, int count)
+
+// PREFIX or SUFFIX
+boolean endsWith(String chars)
+boolean startsWith(String chars, ?int toffset)
+
+byte[] getBytes()
+byte[] getBytes(String charsetName) // str.getBytes( "UTF-8" );
+```
+
 
 ```java
-String subString(int i, int ?j)
+// String toLowerCase()
+String word1 = "HeLLo";
+String word3 = word1.toLowerCase(); // returns "hello"
+// String toUpperCase()
+String word1 = "HeLLo";
+String word2 = word1.toUpperCase(); // returns “HELLO”
+
+String subString(int i, int ?j_exclusive)
 
 // Return the substring from the ith  index character to end.
 "GeeksforGeeks".substring(3); // returns "ksforGeeks"
 
 // Returns the substring from i to j-1 index.
 "GeeksforGeeks".substring(2, 5); // returns "eks"
-```
 
-Concatenates specified string to the end of this string.
-```java
+
+// Concatenates specified string to the end of this string.
 String concat( String str)
-
 String s1 = "Geeks";
 String s2 = "forGeeks";
 String output = s1.concat(s2); // returns "GeeksforGeeks"
-```
 
-```java
+
 // Returns the index within the string of the first occurrence of the specified string.
-int indexOf (String s, int ?i)
-
-String s = "Learn Share Learn";
-int output = s.indexOf(“Share”); // returns 6
-
-// Returns the index within the string of the first occurrence of the specified string, starting at the specified index.
+int indexOf (String s, int ?startAt)
+String s = "Learn Share";
+int output = s.indexOf("Share"); // returns 6
 int output = s.indexOf("ea",3);// returns 13
-```
 
-
-```java
 // Returns the index within the string of the last occurrence of the specified string.
 int lastIndexOf(String s)  
 int output = s.lastIndexOf("a"); // returns 14
@@ -126,17 +185,13 @@ int output = s.lastIndexOf("a"); // returns 14
 
 #### equals(Object obj) and equalsIgnoreCase(String s)
 
-Compares this string to the specified object.
+Compare string's content
 ```java
 boolean equals(Object otherObj)
-
 Boolean out = "Geeks".equals("Geeks"); // returns true
 Boolean out = "Geeks".equals("geeks"); // returns false
-```
 
-```java
 boolean  equalsIgnoreCase(String anotherString)
-
 Boolean out= "Geeks".equalsIgnoreCase("Geeks"); // returns true
 Boolean out = "Geeks".equalsIgnoreCase("geeks"); // returns true
 ```
@@ -155,30 +210,26 @@ out > 0  // s1 comes after s2.
 ```java
 int compareToIgnoreCase( String anotherString)
 int out = s1.compareToIgnoreCase(s2);  
-
+```
 This returns difference s1-s2. If :
+```java
 out < 0  // s1 comes before s2
 out = 0   // s1 and s2 are equal.
 out > 0   // s1 comes after s2.
 ```
 
-#### toLowerCase() and toUpperCase()
 
-```java
-// String toLowerCase()
-String word1 = "HeLLo";
-String word3 = word1.toLowerCase(); // returns "hello"
-// String toUpperCase()
-String word1 = "HeLLo";
-String word2 = word1.toUpperCase(); // returns “HELLO”
-```
 
 #### trim()
 
 Returns the copy of the String, **by removing white spaces at both ends. It does not affect white spaces in the middle.**
 ```java
-String word1 = "Learn Share Learn";
-String word2 = word1.trim(); // returns "Learn Share Learn"
+String word1 = " Learn Share Learn ";
+String word2 = word1.trim(); 
+/***
+ *  Learn Share Learn 
+ * Learn Share Learn
+ */
 ```
 
 #### replace(char oldChar, char newChar)
@@ -187,57 +238,50 @@ Returns new string by replacing all occurrences of oldChar with newChar.
 ```java
 String s1 = "feeksforfeeks";
 
-String s2 = "feeksforfeeks".replace(‘f’ ,’g’); // returns "geeksgorgeeks"
+String s2 = "feeksforfeeks".replace('f' ,'g'); // returns "geeksgorgeeks"
 ```
 - s1 is still `feeksforfeeks` and s2 is `geeksgorgeeks`
 
 #### valueOf()
 
-
 convert type `boolean` , `char`, `char[]`, `double`, `float`, `int`, `long`, `object` to `String`
 
 ```java
 // Returns the string representation of the boolean argument.
-static String	valueOf(boolean b)
+static String valueOf(boolean b)
 
 // Returns the string representation of the char argument.
-static String	valueOf(char c)
+static String valueOf(char c)
 
 // Returns the string representation of the char array argument.
-static String	valueOf(char[] data)
+static String valueOf(char[] data)
 
-// Returns the string representation of a specific subarray of the char array argument.
-static String	valueOf(char[] data, int offset, int count)
+// Returns the string representation of a specific sub-array of the char array argument.
+static String valueOf(char[] data, int offset, int count)
 
 // Returns the string representation of the double argument.
-static String	valueOf(double d)
+static String valueOf(double d)
 
 // Returns the string representation of the float argument.
-static String	valueOf(float f)
+static String valueOf(float f)
 
 // Returns the string representation of the int argument.
-static String	valueOf(int i)
+static String valueOf(int i)
 
 // Returns the string representation of the long argument.
-static String	valueOf(long l)
+static String valueOf(long l)
 
 // Returns the string representation of the Object argument.
-static String	valueOf(Object obj)
+static String valueOf(Object obj)
 ```
 
 ## `toCharArray` String To Chars
 
 ```java
-String s="hello";  
-char c=s.charAt(0); //returns h  
-String s1="hello";    
-
+String s1 ="hello";  
+char c = s.charAt(0); //returns h  
 char[] ch=s1.toCharArray();    
-for(int i=0;i<ch.length;i++){    
-    System.out.println("char at "+i+" index is: "+ch[i]);   
-}  
 ```
-
 
 ## `String`, `StringBuffer` and `StringBuilder`
 
@@ -247,45 +291,86 @@ for(int i=0;i<ch.length;i++){
     - [x] String 
     - [x] StringBuffer via `synchronized`
 
-## StringBuffer
+Use `StringBuffer` for Multiple Thread Tasks otherwise `StringBuilder`
 
-- [Examples](https://www.geeksforgeeks.org/stringbuffer-class-in-java/)
+## StringBuilder
+
+### insert and append
+
+insert = append with offset arg
 
 ```java
-StringBuffer s1 = new StringBuffer();
+StringBuilder append(boolean b)
+StringBuilder append(char c)
+StringBuilder append(char[] str)
+StringBuilder append(char[] str, int offset, int len) // Appends the string representation of a subarray of the char array argument to this sequence.
+StringBuilder append(CharSequence s) // Appends the specified character sequence to this Appendable.
+StringBuilder append(CharSequence s, int start, int end) // Appends a subsequence of the specified CharSequence to this sequence.
+StringBuilder append(double d)
+StringBuilder append(float f)
+StringBuilder append(int i)
+StringBuilder append(long lng)
+StringBuilder append(Object obj)
+StringBuilder append(String str)
+StringBuilder append(StringBuffer sb)
 
-int size = 10;
-StringBuffer s2 = new StringBuffer(size);
-
-StringBuffer s3 = new StringBuffer("this is stringBuffer);
+// Append with offset arg
+StringBuilder insert(int offset, boolean b)
+StringBuilder insert(int offset, char c)
+StringBuilder insert(int offset, char[] str)
+StringBuilder insert(int index, char[] str, int offset, int len)
+StringBuilder insert(int dstOffset, CharSequence s)
+StringBuilder insert(int dstOffset, CharSequence s, int start, int end)
+StringBuilder insert(int offset, double d)
+StringBuilder insert(int offset, float f)
+StringBuilder insert(int offset, int i)
+StringBuilder insert(int offset, long l)
+StringBuilder insert(int offset, Object obj)
+StringBuilder insert(int offset, String str)
 ```
 
-### Methods
 
-`append()` Used to add text at the end of the existing text.   
-`capacity()` Returns the current capacity.     
-`deleteCharAt()` Deletes the character at the index specified    
 ```java
- StringBuffer s = new StringBuffer("GeeksforGeeks");
- 
-        s.delete(0, 5);
-        // Returns forGeeks
-        System.out.println(s);
- 
-        s.deleteCharAt(7);
-        // Returns forGeek
-        System.out.println(s);
+int capacity() // Returns the current capacity.
+int length()
+
+void ensureCapacity(int minimumCapacity)
+void setLength(int newLength) // set new Length (not add new length with onl length)
+void trimToSize()  
+
+String substring(int start)
+String substring(int start, int end)
+
+StringBuilder reverse()
+String toString()
+
+StringBuilder delete(int start, int end) // like List#clear()
+
+void getChars(int srcBegin, int srcEnd_exclusive, char[] dst, int dstBegin)
+        StringBuilder str = new StringBuilder("GONE WRONG_01");
+        char[] array = new char[10];
+        Arrays.fill(array, '_');
+  
+        // get char from index 5 to 9
+        // and store in array start index 3
+        str.getChars(5, 10, array, 3);
+        Stream.of(array).forEach(System.out::print);
+        //___WRONG___
+
+int indexOf(String str)
+int indexOf(String str, int fromIndex)
+int lastIndexOf(String str)
+int lastIndexOf(String str, int fromIndex)
+
+StringBuilder replace(int start, int end, String str)
+
+CharSequence subSequence(int start, int end)
 ```
 
-`void ensureCapacity(int expandSize)`
-- Ensures capacity is at least equals to the given minimum.   
+### char operation
 
-`insert(...)`	
-- Inserts text at the specified index position   
-
-`reverse()`	
-- Reverse the characters within a StringBuffer object   
-
-`replace(int start, int end, String str)`	
-- Replace one set of characters with another set inside a StringBuffer object   
-
+```java
+char charAt(int index) // Returns the char value in this sequence at the specified index.
+void setCharAt(int index, char ch)
+StringBuilder deleteCharAt(int index)
+```

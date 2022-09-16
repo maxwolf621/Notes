@@ -3,19 +3,23 @@
 - [Map](#map)
   - [Reference](#reference)
   - [Usage](#usage)
+  - [Initializer](#initializer)
+    - [`{put(key,value); ... }`](#putkeyvalue--)
+    - [`stream.of(new Object{...})`](#streamofnew-object)
+    - [java 9 `Map.of`](#java-9-mapof)
+    - [java 9 `Map.ofEntries`](#java-9-mapofentries)
+    - [`Collections.singletonMap(key,value)`](#collectionssingletonmapkeyvalue)
   - [Methods](#methods)
-    - [From Collection](#from-collection)
-    - [get and put](#get-and-put)
-    - [replace/All](#replaceall)
-    - [entrySet and keySet](#entryset-and-keyset)
-    - [ComputeIfAbsent and putIfAbsent](#computeifabsent-and-putifabsent)
-    - [compute and computeIf](#compute-and-computeif)
+    - [entrySet](#entryset)
+    - [get & put](#get--put)
+    - [replace](#replace)
+    - [compute & computeIf ComputeIfAbsent](#compute--computeif-computeifabsent)
     - [Merge](#merge)
-  - [TreeMap (SORTED key-value pairs)](#treemap-sorted-key-value-pairs)
+  - [TreeMap](#treemap)
     - [Methods in SortedMap](#methods-in-sortedmap)
       - [Get FirstKey or LastKey](#get-firstkey-or-lastkey)
       - [tailMap(K equalOrLarge) and headMap(K small)](#tailmapk-equalorlarge-and-headmapk-small)
-      - [subMap(lowBound, upBound)](#submaplowbound-upbound)
+      - [subMap(lowBound_inclusive, upBound_exclusive)](#submaplowbound_inclusive-upbound_exclusive)
     - [Methods in NavigableMap](#methods-in-navigablemap)
       - [Higher/Lower-Key & Higher/Lower-Entry , ceiling/floor-Key & ceiling/floor-Entry](#higherlower-key--higherlower-entry--ceilingfloor-key--ceilingfloor-entry)
       - [PollLastEntry & PollFirstEntry](#polllastentry--pollfirstentry)
@@ -34,9 +38,10 @@
 ## Usage
 
 HashMap
-- HashMap offers 0(1) lookup and insertion. It is implemented by an array of linked lists. 
+- HashMap offers `O(1)` lookup and insertion.   
+It is implemented by an array of linked lists. 
 - It contains only unique elements.
-- It may have one null key and multiple null values.
+- **It may have one `null` key and multiple `null` values.**
 - It maintains no order.
 
 LinkedHashMap
@@ -44,36 +49,116 @@ LinkedHashMap
 
 TreeMap
 - TreeMap offers `O(log N)` lookup and insertion. Keys are ordered, this means that keys must implement the Comparable interface.  
-TreeMap is implemented by a Red-Black Tree.   
-- It cannot have null key but can have multiple null values.
-- It is same as HashMap instead maintains ascending order(Sorted using the natural order of its key).
+- TreeMap is implemented by a Red-Black Tree.   
+- It cannot have null key but multiple null values.
+- It is same as HashMap instead maintains ascending order
+(Sorted using the natural order of its key).
 
+## Initializer
+
+### `{put(key,value); ... }`
+```java
+Map<String, String> doubleBraceMap  = new HashMap<String, String>() {{
+    put("key1", "value1");
+    put("key2", "value2");
+}};
+```
+
+### `stream.of(new Object[][]{...})`
+
+```java
+Map<String, Integer> map = Stream.of(new Object[][] { 
+     { "data1", 1 }, 
+     { "data2", 2 }, 
+ }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+```
+```java
+// use collect(Collectors.collectingAndThen(..., then ...))
+Map<String, String> map = Stream.of(new String[][] { 
+    { "Hello", "World" }, 
+    { "John", "Doe" },
+}).collect(Collectors.collectingAndThen(
+    Collectors.toMap(data -> data[0], data -> data[1]), 
+    Collections::<String, String> unmodifiableMap));
+```
+
+### java 9 `Map.of`
+
+`Map.of` supports only maximum of 10 key-value pair 
+```java
+Map<String, String> emptyMap = Map.of();
+Map<String, String> map = Map.of("key1","value1", "key2", "value2");
+```
+
+### java 9 `Map.ofEntries`
+
+`Map.ofEntries` has no limitations on the number of key-value pairs:
+- no null key allowed
+- immutable maps
+```java
+Map<String, String> map = Map.ofEntries(
+  new AbstractMap.SimpleEntry<String, String>("name", "John"),
+  new AbstractMap.SimpleEntry<String, String>("city", "budapest"),
+  new AbstractMap.SimpleEntry<String, String>("zip", "000000"),
+  new AbstractMap.SimpleEntry<String, String>("home", "1231231231")
+);
+```
+
+
+### `Collections.singletonMap(key,value)`
+
+```java
+public static Map<String, String> createSingletonMap() {
+    return Collections.singletonMap("username1", "password1");
+}
+```
 
 ## Methods 
 
-### From Collection
-
+From Collection
 ```java
 void clear()
-Object clone()
 int	size()
 boolean	isEmpty()
-void forEach(BiConsumer<? super K,? super V> action)
+Object clone()
 V remove(Object key)
-boolean	remove(Object key, Object value)
-Collection<V>	values()
-
-boolean	containsKey(Object key)
-boolean	containsValue(Object value)
 ```
 
-### get and put
-- `get(object obj)`
-- `getOrDefault(Object key, V defaultValue)`
-- `put(K key, V value)`
-- `putAll(Map<? extends K,? extends V> m)` copies m to this map
 
-### replace/All
+```java
+void forEach(BiConsumer<? super K,? super V> action)
+boolean	remove(Object key, Object value)
+boolean	containsKey(Object key)
+boolean	containsValue(Object value)
+Collection<V> values()
+Set<K> keySet()
+```
+
+### entrySet
+```java
+Set<Map.Entry<K,V>> entrySet()
+Map<Integer, String> sites = Map.of(
+        1,"Google",
+        2,"Youtube",
+        3,"Github"
+    );
+sites.entrySet().forEach(System.out::println);
+```
+
+### get & put
+
+```java
+V get(Object key)
+default V getOrDefault(Object key,
+                       V defaultValue)
+default V putIfAbsent(K key,
+                      V value)
+
+V put(K key, V value) 
+void putAll(Map<? extends K,? extends V> map)
+```
+
+### replace
 
 `V replace(K key, V value)`  
 - Replaces the entry for the specified key only if it is currently mapped to some value.
@@ -85,28 +170,29 @@ boolean	containsValue(Object value)
 ```java
 maps.replaceAll((key, value) -> value.toUpperCase());
 ```
-### entrySet and keySet
 
-```java
-Set<Map.Entry<K,V>> entrySet()
-Set<K> keySet()
-```
-### ComputeIfAbsent and putIfAbsent
 
-[example](https://www.runoob.com/java/java-hashmap-computeifabsent.html)
-- `V putIfAbsent(K key,V value)`  
-- `V computeIfAbsent(K key, (key)-> value)`
+### compute & computeIf ComputeIfAbsent
 
-### compute and computeIf
+**If key is not null then compute (operate) this key,value pair.**
 
-`V compute(K key, BiFunction<? super K,? super V,? extends V> remappingFunction)`
-Attempts to compute a mapping for the specified key and its current mapped value (or null if there is no current mapping).
+`V compute(K specifiedKey, BiFunction<? super K,? super V,? extends V> remappingFunction)`
+Attempts to compute a mapping for the `specifiedKey` and its current mapped value (or null if there is no current mapping).
 ```java
 int newPrice = prices.compute("Shoes", (key, value) -> value - value * 10/100);
 ```
 
 `V computeIfAbsent(K key, Function<? super K,? extends V> mappingFunction)`
-If the specified key is not already associated with a value (or is mapped to null), attempts to compute its value using the given mapping function and enters it into this map unless null.
+If the specified key is not already associated with a value (or is mapped to `null`), attempts to compute its value using the given mapping function and enters it into this map unless `null`.
+
+```java
+Map<String, Integer> stringLength = new HashMap<>();
+// if John is absent then set a new map ["john", 4]
+assertEquals((long)stringLength.computeIfAbsent("John", s -> s.length()), 4);
+assertEquals((long)stringLength.get("John"), 4);
+```
+
+
 `V computeIfPresent(K key, BiFunction<? super K,? super V,? extends V> remappingFunction)`
 If the value for the specified key is present and non-null, attempts to compute a new mapping given the key and its current mapped value.
 
@@ -124,34 +210,36 @@ Map<String, String> countries = Map.of(
 String returnedValue = countries.merge("Washington", "USA", (oldValue, newValue) -> oldValue + "/" + newValue);
 ```
 
-## TreeMap (SORTED key-value pairs)
+## TreeMap 
 
 The class implements Map interfaces including `NavigableMap`, `SortedMap`, and extends `AbstractMap` class.
 
-The map is sorted according to the **natural ordering** of its keys, or by a **Comparator** provided at map creation time, depending on which constructor is used. 
+The map is **SORTED** according to the **natural ordering** of its keys, or by a **Comparator** provided at map creation time, depending on which constructor is used. 
 - This proves to be an efficient way of sorting and storing the key-value pairs. 
 
-The treemap implementation is **not synchronized** in the sense that if a map is accessed by multiple threads, concurrently and at least one of the threads modifies the map structurally, it must be synchronized externally. 
+TreeMap for multiple thread 
 ```java
 SortedMap m = Collections.synchronizedSortedMap(new TreeMap(...)); 
 ```
 
 A TreeMap is based upon a red-black tree data structure. 
 ```java
-3 Variables (K key=Key, V value=Value, boolean color=Color)
-3 References (Entry left = Left, Entry right = Right, Entry parent = Parent)
+Variables (K key=Key, V value=Value, boolean color=Color) 
+References (Entry left = Left, Entry right = Right, Entry parent = Parent)
 ```
 
+Constructor
 ```java
 TreeMap()
 TreeMap(Comparator comp)
-
 TreeMap(Map M)
+TreeMap(SortedMap sm)
+
+
 Map<Integer, String> hash_map = new HashMap<Integer, String>();
 
 TreeMap<Integer, String> tree_map = new TreeMap<Integer, String>(hash_map);
 
-TreeMap(SortedMap sm)
 SortedMap<Integer, String> sorted_map = new ConcurrentSkipListMap<Integer, String>();
 
 TreeMap<Integer, String> tree_map = new TreeMap<Integer, String>(sorted_map);
@@ -176,26 +264,33 @@ String lastKey = (String) sortedMap.lastKey();
 
 #### tailMap(K equalOrLarge) and headMap(K small)
 
-Return new instance of map that `>=` c in sortedMap
+```java
+     '---' tailMap("c")
+a  b c d e
+'--' 
+  headMap("c")
+```
+
+
+Return new instance of map that `>= "c"` c in sortedMap
 ```java
 SortedMap tailMap = sortedMap.tailMap("c");
 // {c=3, d=4, e=5}
 ```
 
-Return new instance of map that `<` C in the sortedMap
+Return new instance of map that `< "c"` in the sortedMap
 ```java
 SortedMap headMap = sortedMap.headMap("c");
 // {a=1, b=2}
 ```
 
-#### subMap(lowBound, upBound)
+#### subMap(lowBound_inclusive, upBound_exclusive)
 
 ```java
 // subMap >= b and < e
 SortedMap subMap = sortedMap.subMap("b", "e");
 
 // {b=2, c=3, d=4}
-System.out.println(subMap);
 ```
 
 ### Methods in NavigableMap
@@ -208,14 +303,10 @@ sortedMap.put("e", "5");
 sortedMap.put("d", "4");
 sortedMap.put("b", "2")
 
-System.out.println(sortedMap);
+System.out.println(sortedMap); // {a=1, b=2, c=3, d=4, e=5}
 
 NavigableMap descending = sortedMap.descendingMap()
-System.out.println(descending);
-
-// output
-{a=1, b=2, c=3, d=4, e=5}
-{e=5, d=4, c=3, b=2, a=1}
+System.out.println(descending); // {e=5, d=4, c=3, b=2, a=1}
 ```
 
 #### Higher/Lower-Key & Higher/Lower-Entry , ceiling/floor-Key & ceiling/floor-Entry
@@ -268,6 +359,8 @@ floorEntry(): Returns a key-value mapping associated with the greatest key less 
 Poll Last/First Entry and Delete that entry
 
 ```java
+// {a=1, b=2, c=3, d=4, e=5}
+
 sortedMap.pollFirstEntry(); // a=1
 sortedMap.pollLastEntry(); // e=1
 ```
@@ -281,6 +374,7 @@ Synchronized LinkedHashMap
 Map m = Collections.synchronizedMap(new LinkedHashMap(...));
 ```
 
+Constructor
 ```java
 LinkedHashMap<K, V> lhm = new LinkedHashMap<K, V>();
 
@@ -291,7 +385,7 @@ LinkedHashMap<K, V> lhm = new LinkedHashMap<K, V>(Map<? extends K,​? extends V
 LinkedHashMap<K, V> lhm = new LinkedHashMap<K, V>(int capacity, float fillRatio);
 ```
 
-This constructor is also used to initialize both the capacity and fill ratio for a LinkedHashMap along with whether to follow the insertion order or not.
+The following constructor is also used to initialize both the capacity and fill ratio for a LinkedHashMap along with whether to follow the insertion order or not.
 ```java
 LinkedHashMap<K, V> lhm = new LinkedHashMap<K, V>(int capacity, float fillRatio, boolean Order);
 ```

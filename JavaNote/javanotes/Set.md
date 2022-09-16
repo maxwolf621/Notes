@@ -2,16 +2,14 @@
 
 - [Set Interface](#set-interface)
   - [Reference](#reference)
-  - [Methods (FROM COLLECTION)](#methods-from-collection)
   - [TreeSet](#treeset)
-  - [Null Value](#null-value)
     - [`TreeSet#add`](#treesetadd)
     - [`treeSet#descendingIterator` & `treeSet#iterator`](#treesetdescendingiterator--treesetiterator)
     - [`treeSet#first` & `treeSet#last`](#treesetfirst--treesetlast)
-    - [null value](#null-value-1)
+    - [null value](#null-value)
     - [TreeSet's Comparator](#treesets-comparator)
   - [LinkedHashSet](#linkedhashset)
-    - [null value](#null-value-2)
+    - [null value](#null-value-1)
   - [LinkedList vs LinkedHashSet](#linkedlist-vs-linkedhashset)
     - [How work internally](#how-work-internally)
     - [Insertion](#insertion)
@@ -20,11 +18,12 @@
     - [Compare the elements](#compare-the-elements)
     - [Null Elements](#null-elements)
   - [HashSet (HashMap with Dummy key)](#hashset-hashmap-with-dummy-key)
+    - [Method](#method)
     - [Null value in HashSet](#null-value-in-hashset)
     - [HashSet vs HashMap](#hashset-vs-hashmap)
       - [Duplicates](#duplicates)
       - [Insertion Method](#insertion-method)
-    - [Storing or Adding mechanism](#storing-or-adding-mechanism)
+    - [Storing/Adding mechanism](#storingadding-mechanism)
     - [Dummy Value](#dummy-value)
   - [EnumSet](#enumset)
     - [Create EnumSet](#create-enumset)
@@ -50,48 +49,14 @@ Use `LinkedHashSet` if the insertion **order of the elements** should be preserv
 - [difference btw hashset,treeset and linkedhashset](https://www.techiedelight.com/difference-between-hashset-treeset-linkedhashset-java/)  
 - [LinkedList vs LinkedHashSet](https://www.geeksforgeeks.org/difference-between-linkedlist-and-linkedhashset-in-java/)
 - [Can we add null elements to a Set in Java?](https://www.tutorialspoint.com/can-we-add-null-elements-to-a-set-in-java)
-## Methods (FROM COLLECTION)
-
-```java
-// operation
-boolean	add(E e)
-boolean	addAll(Collection<? extends E> c)
-
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-
-void clear()
-
-Object	clone()
-
-boolean	retainAll(Collection<?> c)
-
-// Checking
-int	size()
-boolean	isEmpty()
-boolean	equals(Object o)
-int	hashCode()
-
-// to other form
-Iterator<E>	iterator()
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-default Stream<E> parallelStream()
-default Stream<E> stream()
-```
-
 ## TreeSet 
 
 ![圖 1](../images/ea4eac9a629413c36f143323ab55929008e2e363fc8529cc70e74df0661f47e6.png)  
 
-
 - Time Complexity : `O(logN)`
 - **Based on Black-Red-Tree**, Objects in a TreeSet are **stored in a sorted and ascending order**.
+- The TreeSet object doesn’t allows null values but, If you try to add them, a runtime exception will be generated at.
 - not thread-safe (but it can be synchronized)
-
 
 ```java
 Set<String> treeSet = new TreeSet<>(Comparator.comparing(String::length));
@@ -101,10 +66,23 @@ Set<String> treeSet = new TreeSet<>();
 Set<String> syncTreeSet = Collections.synchronizedSet(treeSet);
 ```
 
+```java
+boolean add(E e)
+boolean addAll(Collection<? extends E> c)
 
-## Null Value
-The TreeSet object doesn’t allows null values but, If you try to add them, a runtime exception will be generated at.
+E last()
+E first()
+
+void clear()
+boolean contains(Object o)
+
+boolean isEmpty()
+boolean remove(Object o)
+int size()
+```
+
 ### `TreeSet#add`
+
 ```java
 public boolean add(E e) {
     return m.put(e, PRESENT) == null;
@@ -137,6 +115,7 @@ public void whenIteratingTreeSet_shouldIterateTreeSetInAscendingOrder() {
 ```
 
 ### `treeSet#first` & `treeSet#last`
+
 ```java
 @Test
 public void whenCheckingFirstElement_shouldReturnFirstElement() {
@@ -158,6 +137,7 @@ public void whenCheckingLastElement_shouldReturnLastElement() {
 
 ### null value
 
+Exception is thrown.
 ```java
 @Test(expected = NullPointerException.class)
 public void whenAddingNullToNonEmptyTreeSet_shouldThrowException() {
@@ -174,10 +154,12 @@ Elements inserted into the TreeSet must either implement the Comparable interfac
 ```java
 @Data
 class Element {
+
     private Integer id;
 
     // Other methods...
 }
+
 
 Comparator<Element> comparator = (ele1, ele2) -> {
     return ele1.getId().compareTo(ele2.getId());
@@ -186,6 +168,8 @@ Comparator<Element> comparator = (ele1, ele2) -> {
 @Test
 public void apiElementTreeSet () {
     Set<Element> treeSet = new TreeSet<>(comparator);
+
+    // create element
     Element ele1 = new Element();
     ele1.setId(100);
     Element ele2 = new Element();
@@ -193,15 +177,13 @@ public void apiElementTreeSet () {
     
     treeSet.add(ele1);
     treeSet.add(ele2);
-    
-    System.out.println(treeSet);
 }
 ```
 
 ## LinkedHashSet
 - same Time Complexity as `HashSet`
 - **Store The data via Doubly Linked List** 
-- **Retains the ordering of the elements**
+- **Retains the insertion ordering of the elements**
 
 ```java 
 //This constructor is used to create a default HashSet
@@ -223,17 +205,15 @@ public class LinkedHashSetExample {
       linkedHashSet.add(3654);
       linkedHashSet.add(7854);
       linkedHashSet.add(9945);
-      System.out.println(linkedHashSet);
+      System.out.println(linkedHashSet); // [1124, 3654, 9945, 7854]
+      
       //Adding null elements
       linkedHashSet.add(null);
       linkedHashSet.add(null);
       linkedHashSet.add(null);
-      System.out.println(linkedHashSet);
+      System.out.println(linkedHashSet); // [null, 1124, 3654, 9945, 7854]
    }
 }
-
-[1124, 3654, 9945, 7854]
-[null, 1124, 3654, 9945, 7854]
 ```
 
 ## LinkedList vs LinkedHashSet
@@ -245,12 +225,12 @@ public class LinkedHashSetExample {
 
 ### Insertion
 
-LinkedList in case of doubly linked list, we can add or remove elements from both side while **LinkedHashSet insert at the end.**
+LinkedList in case of doubly linked list, we can add or remove elements from both side while **LinkedHashSet inserts at the end.**
 
 ### Constructor
-LinkedList have two constructor `LinkedList()` and `LinkedList(Collection o)`
+LinkedList have two constructor `LinkedList()` and `LinkedList(Collection o)`    
 
-LinkedHashSet have four constructor `HashSet()`, `HashSet(Collection c)`, `LinkedHashSet(int capacity)` and `LinkedHashSet(int capacity, float fillRatio)`
+LinkedHashSet have four constructor `HashSet()`, `HashSet(Collection c)`, `LinkedHashSet(int capacity)` and `LinkedHashSet(int capacity, float fillRatio)`   
 
 ### Time Complexity
 
@@ -259,10 +239,12 @@ LinkedHashSet also gives performance of order `O(1)` for insertion, removal and 
 
 ### Compare the elements
 
-LinkedList use `equals()` method LinkedHashSet also uses `equals()` and `hashCode()` methods to compare the elements.
+LinkedList uses `equals()` method.   
+
+LinkedHashSet also uses `equals()` and `hashCode()` methods to compare the elements.
 
 ### Null Elements
-LinkedList allow any number of null values while **LinkedHashSet also allows maximum one null element.**
+LinkedList allow any number of `null` values while **LinkedHashSet also allows maximum one `null` element.**
 
 ## HashSet (HashMap with Dummy key)
 
@@ -289,9 +271,34 @@ HashSet<E> hs = new HashSet<E>(int initialCapacity, float loadFactor);
 HashSet<E> hs = new HashSet<E>(Collection C);
 ```
 
+### Method
+
+```java
+boolean add(E e)
+void clear()
+Object clone()
+boolean contains(Object o)
+boolean isEmpty()
+Iterator<E> iterator()
+boolean remove(Object o)
+int size()
+
+
+int hashCode()
+boolean equals()
+
+Boolean removeAll(Collection<?> c)
+boolean addAll(Collection<? extends E> c)
+boolean containsAll(Collection<?> c)
+boolean retainAll(Collection<?> c)
+
+Object[] toArray()
+T[] toArray(T[] a)
+```
+
 ### Null value in HashSet 
 
-Null values in HashSet − The HashSet object allows null values but, you can add only one null element to it. Though you add more null values if you try to print its contents, it displays only one null
+Null values in HashSet − The HashSet object allows null values but, you can add only one null element to it. Though you add more null values if you try to print its contents, it displays only one `null`
 
 ```java
 public static void main(String args[]) {
@@ -324,7 +331,7 @@ HashMap store key, value pairs and it does not allow duplicate keys.
 HashSet : `add(Object o)`.	  
 HashMap : `put(K key, V Value)`.   
 
-### Storing or Adding mechanism	
+### Storing/Adding mechanism	
 HashSet internally uses the HashMap object to store or add the objects.	   
 HashMap internally uses hashing to store or add objects.   
 
@@ -372,6 +379,7 @@ EnumSet.range(Color.YELLOW, Color.BLUE);
 // create an EnumSet with all the Color elements except black and white:
 EnumSet.complementOf(EnumSet.of(Color.BLACK, Color.WHITE));
 // [RED, YELLOW, GREEN, BLUE]
+
 // create an EnumSet by copying all the elements from another EnumSet:
 EnumSet.copyOf(EnumSet.of(Color.BLACK, Color.WHITE));
 ```
@@ -381,6 +389,7 @@ EnumSet.copyOf(EnumSet.of(Color.BLACK, Color.WHITE));
 // from any Collection that contains enum elements
 List<Color> colorsList = new ArrayList<>();
 colorsList.add(Color.RED);
+
 EnumSet<Color> listCopy = EnumSet.copyOf(colorsList);
 
 // Create Enum
@@ -388,8 +397,6 @@ EnumSet<Color> set = EnumSet.noneOf(Color.class);
 set.add(Color.RED);
 set.add(Color.YELLOW)
 
-// Check if the collection 
-// contains a specific element:
 set.contains(Color.RED);
 set.forEach(System.out::println);
 set.remove(Color.RED);

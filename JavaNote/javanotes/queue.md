@@ -1,11 +1,10 @@
 # Queue
 - [Queue](#queue)
   - [Reference](#reference)
-  - [Class of Queue](#class-of-queue)
   - [Methods](#methods)
-    - [LinkedList (QUEUE)](#linkedlist-queue)
+    - [Interface queue](#interface-queue)
+    - [LinkedList](#linkedlist)
   - [PriorityQueue (Min Heap Implementation)](#priorityqueue-min-heap-implementation)
-    - [Iteration](#iteration)
     - [PriorityQueue (Max Heap Implementation)](#priorityqueue-max-heap-implementation)
 
 
@@ -17,65 +16,28 @@
 [PriorityQueue](https://www.geeksforgeeks.org/priority-queue-class-in-java/)
 [priorityQueue TimeComplexity](https://stackoverflow.com/questions/12719066/priority-queue-remove-complexity-time)
 
-## Class of Queue
-
-`Queue` is an INTERFACE, so objects cannot be created of the type queue.
+`Queue` is an interface, so objects cannot be created of the type queue.
 ```java
-// Obj is the type of the object to be stored in Queue 
-Queue<Obj> queue = new PriorityQueue<Obj> (); 
+Queue<T> queue = new Queue<T>();
 ```
-Being an interface the queue needs a concrete class   for the declaration and the most common classes are the `PriorityQueue` and `LinkedList` (**both the implementations are not thread safe.**) in Java.
+Use the following Instead 
+```java
+Queue<T> queue = new PriorityQueue<T> (); 
+```
+Being an interface the queue needs a concrete class for the declaration and the most common classes are the `PriorityQueue` and `LinkedList` (**both the implementations are not thread safe.**) in Java.
  
 - `PriorityBlockingQueue` is one alternative implementation if thread safe implementation is needed.
 
-
 ## Methods
 
+### Interface queue
 |        |Throws exception	|Returns special value|
 | ---    |      ---         |      ----           |
-|Insert	 |`boolean` add(e)	|`boolean` offer(e)   |
-|Remove	 |remove()	        | poll()              |
-|Examine |element()	        | peek()              |
+|Insert	 |`boolean add(E e)`|`boolean offer(E e)` |
+|Remove	 |`E remove()`	        |`E poll()`       |
+|Examine |`E element()`	        |`E peek()`       |
 
-```java
-boolean	offer(E e)  boolean	add(E e)
-E peek()            E element()
-E poll()            E remove()
-
-// Collections
-boolean	add(E e)
-boolean	addAll(Collection<? extends E> c)
-
-void clear()
-int	size()
-boolean	isEmpty()
-
-boolean	equals(Object o)
-int	hashCode()
-
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-boolean	retainAll(Collection<?> c)
-
-E remove()
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-default boolean	removeIf(Predicate<? super E> filter)
-
-default Stream<E> stream()
-default Stream<E> parallelStream()
-default void forEach(Consumer<? super T> action)
-
-Iterator<E>	iterator()
-default Spliterator<E> spliterator()
-
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-```
-
-
-
-### LinkedList (QUEUE)
+### LinkedList
 
 ```java
 import java.util.LinkedList;
@@ -118,21 +80,28 @@ PriorityQueue(int initialCapacity, Comparator<? super E> comparator)
 PriorityQueue(PriorityQueue<? extends E> c)
 PriorityQueue(SortedSet<? extends E> c)
 
+// queue
 boolean	offer(E e)
 E peek()
 E poll()
+
+// collection
 boolean	add(E e)
-int	size()
 boolean	remove(Object o)
+int	size()
 void clear()
 
 Comparator<? super E> comparator()
+
 boolean	contains(Object o)
 Iterator<E>	iterator()
+
 Object[] toArray()
 <T> T[]	toArray(T[] a)
+```
 
-
+Iteration
+```java
 Iterator<E> iter = myPriorityQueue.iterator();
 
 while (iter.hasNext()) {

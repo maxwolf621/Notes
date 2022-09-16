@@ -2,17 +2,15 @@
 
 - [java and typescript utils](#java-and-typescript-utils)
   - [Java 8 Method References](#java-8-method-references)
-  - [Collection](#collection)
-  - [Array](#array)
-  - [Java HashSet,PriorityQueue, ArrayList, Stack](#java-hashsetpriorityqueue-arraylist-stack)
-  - [Map](#map)
-    - [Java Map](#java-map)
+  - [Java Collection](#java-collection)
+  - [Interface List](#interface-list)
+  - [Typescript MAP](#typescript-map)
+  - [Java Map](#java-map)
   - [Queue](#queue)
   - [String](#string)
     - [Typescript](#typescript)
+  - [Array](#array)
     - [Java](#java)
-  - [Array](#array-1)
-    - [Java](#java-1)
       - [remove](#remove)
       - [replace](#replace)
       - [indexOf](#indexof)
@@ -29,11 +27,9 @@
       - [Accumulation (`reduce`)](#accumulation-reduce)
       - [Join](#join)
   - [Typescript Tuple](#typescript-tuple)
-  - [Java `Char[]`](#java-char)
-  - [Set](#set)
-    - [Java#Set](#javaset)
-    - [Typescript#Set](#typescriptset)
-  - [Stack](#stack)
+  - [Java Character](#java-character)
+  - [Typescript#Set](#typescriptset)
+  - [Java#Stack](#javastack)
 
 ## Java 8 Method References
 
@@ -46,13 +42,15 @@ cars.forEach( Car::collide );
 cars.forEach( Car::repair );
 ```
 
-## Collection
-
+## Java Collection
 ```java
 boolean	add(E e)
 boolean	addAll(Collection<? extends E> c)
+
 boolean	contains(Object o)
 boolean	containsAll(Collection<?> c)
+
+void clear()
 
 boolean	remove(Object o)
 boolean	removeAll(Collection<?> c)
@@ -60,179 +58,118 @@ default boolean	removeIf(Predicate<? super E> filter)
 
 boolean	retainAll(Collection<?> c)
 
+Iterator<E>	iterator()
 default Spliterator<E> spliterator()
 
 
 int	size()
-void clear()
 boolean	equals(Object o)
 int	hashCode()
 boolean	isEmpty()
-Iterator<E>	iterator()
-default Stream<E>	parallelStream()
-default Stream<E> stream()
+
 Object[] toArray()
 <T> T[] toArray(T[] a)
+
+default Stream<E> parallelStream()
+default Stream<E> stream()
 ```
 
-## Array
+## Interface List
 
+Interface List supports methods from collection with `int index` arg
 ```java
-boolean	add(E e)
-void	add(int index, E element)
-boolean	addAll(Collection<? extends E> c)
-boolean	addAll(int index, Collection<? extends E> c)
+E set(int index, E element)
+void add(int index, E element) 
+E get(int index)
 
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-E	get(int index)
+boolean addAll(int index, Collection<? extends E> c)
+[1,2].addAll(1,[1,2,3]); // [1, 1, 2, 3, 2] 
+[1,1,2,3,2].remove(1); // [1, 2, 3, 2]
 
-int	lastIndexOf(Object o)
+[5,2,3,2].set(0, 5); // replace 0th element with 5 
+
+List<E> subList(int fromIndex_Inclusive, int toIndex_Exclusive)
+
+// use them if necessary
+E remove(int index)
+protected void removeRange(int fromIndex, int toIndex_exclusive)
+
+default void replaceAll(UnaryOperator<E> operator)
+[1,2,3,4,5].replaceAll(num -> num * 2); // [2,3,6,8,10]
+
 ListIterator<E>	listIterator()
 ListIterator<E>	listIterator(int index)
 
-E	remove(int index)
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-default void	replaceAll(UnaryOperator<E> operator)
-boolean	retainAll(Collection<?> c)
-E	set(int index, E element)
+default void sort(Comparator<? super E> c)
 
-
-default void	sort(Comparator<? super E> c)
-default Spliterator<E>	spliterator()
-List<E>	subList(int fromIndex, int toIndex)
-
-void	clear()
-boolean	equals(Object o)
-int	hashCode()
 int	indexOf(Object o)
-boolean	isEmpty()
-Iterator<E>	iterator()
-int	size()
-Object[]	toArray()
-<T> T[]	toArray(T[] a)
+int	lastIndexOf(Object o)
 ```
 
-## Java HashSet,PriorityQueue, ArrayList, Stack
 
-Common 
-
-```java
-add/All     -- [Most Used HashSet,ArrayList]
-contains/All 
-size
-clear
-toString
-isEmpty
-forEach
-getClass
-equals
-hashCode
-toArray
-stream
-
-clone  
-iterator  ArrayList, HashSet, PriorityQueue
-retainAll  
-remove/If/All
-```
-
-## Map 
+## Typescript MAP
 ```typescript
 const obj = { name: 'Tom', country: 'Chile' };
 const map2 = new Map<string, string>(Object.entries(obj));
+```
 
+```typescript
 const mapEx: Map<keyType, valueType> = new Map([               
     [ k1 , v1],                                                     
     [ k2 , v2]                                                  
 ]);                                                             
 ```
 
-```java
-+------------------------------------------------------+
-| Ty                                                   | Java 
-+------------------------------------------------------+
-|clear()                                               |void clear()
-|set(key: string, value: number): Map<string, number>  |Object put(Object key, Object v)  
-|get(key: string): string | undefined                  |Object get(Object key)             
-|has(key: string): boolean                             |boolean containsKey(Object key) 
-|delete(key: string): boolean                          |Object remove(Object key)    
-|keys(): IterableIterator<string>                      |Set keySet()   
-|values(): IterableIterator<string>                    |Collection values() 
-|size : number                                         |int size( )
-+------------------------------------------------------+
-```
+| Ty                                                   | Java               |
+|------------------------------------------------------| -------------------|
+|`clear()`                                               |`void clear()`
+|`set(key: string, value: number): Map<string, number>`  |`Object put(Object key, Object v)`  
+|`get(key: string): string | undefined`                  |`Object get(Object key)`
+|`has(key: string): boolean`                             |`boolean containsKey(Object key)`
+|`delete(key: string): boolean`                          |`Object remove(Object key)`    
+|`keys(): IterableIterator<string>`                      |`Set keySet()`   
+|`values(): IterableIterator<string>`                    |`Collection<V> values()` 
+|`size : number`                                         |`int size()`
 
-### Java Map 
+## Java Map 
 
 ```java 
-void	clear()
-default V	compute(K key, BiFunction<? super K,? super V,? extends V> remappingFunction)
-default V	computeIfAbsent(K key, Function<? super K,? extends V> mappingFunction)
-default V	computeIfPresent(K key, BiFunction<? super K,? super V,? extends V> remappingFunction)
-boolean	containsKey(Object key)
 boolean	containsValue(Object value)
-Set<Map.Entry<K,V>>	entrySet()
-boolean	equals(Object o)
-default void	forEach(BiConsumer<? super K,? super V> action)
-V	get(Object key)
-default V	getOrDefault(Object key, V defaultValue)
-int	hashCode()
-boolean	isEmpty()
-Set<K>	keySet()
-default V	merge(K key, V value, BiFunction<? super V,? super V,? extends V> remappingFunction)
+Set<Map.Entry<K,V>>	entrySet() // Each Map<K,V>
 
-V	remove(Object key)
+default void forEach(BiConsumer<? super K,? super V> action) // For each (key , value)
+
+boolean	isEmpty()
+
+V remove(Object key)
 default boolean	remove(Object key, Object value)
 
-default V	replace(K key, V value)
-default boolean	replace(K key, V oldValue, V newValue)
-default void	replaceAll(BiFunction<? super K,? super V,? extends V> function)
-int	size()
-Collection<V>	values()
+default V replace(K key, V newValue) // if k exists then replace old value to newValue
+default boolean	replace(K key, V oldValue, V newValue) // if key,oldValue pair is existing then replace it with newValue
 
-V	put(K key, V value)
-void	putAll(Map<? extends K,? extends V> m)
-default V	putIfAbsent(K key, V value)
+V get(Object key)
+default V getOrDefault(Object key, V defaultValue)
 
-Object clone()	
+V put(K key, V value)
+void putAll(Map<? extends K,? extends V> m)
+default V putIfAbsent(K key, V value)
+
 String toString()
 ```
 
 ## Queue 
 
+LinkedList implements Queue extends Collection
 ```java
-boolean	add(E e)
+boolean add(E e) // throwing exception
+boolean offer(E e) 
 
-E	element()
-boolean	offer(E e)
+// Retrieves but does not remove the head of element in quque
+E element() // throwing exception if empty
+E peek() // return null if empty
 
-E	peek()
-E	poll()
-E	remove()
-
-boolean	addAll(Collection<? extends E> c)
-void	clear()
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-boolean	equals(Object o)
-int	hashCode()
-boolean	isEmpty()
-Iterator<E>	iterator()
-default Stream<E>	parallelStream()
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-default boolean	removeIf(Predicate<? super E> filter)
-boolean	retainAll(Collection<?> c)
-
-int	size()
-default Spliterator<E>	spliterator()
-default Stream<E>	stream()
-Object[]	toArray()
-<T> T[]	toArray(T[] a)
-
-default void	forEach(Consumer<? super T> action)
+E poll() 
+E remove()
 ```
 
 
@@ -240,36 +177,46 @@ default void	forEach(Consumer<? super T> action)
 
 ### Typescript
 ```typescript 
-var str = new String("sdfas fas");   
-str.length 
-str.charAt(index : number) : string
-str.concat(s : string) : string
-str.lastIndexOf("fas"); // 6 if non-existing -1
-str.indexOf("fas"); // 2 if non-existing -1
-str.substring(start: number, end?: number | undefined): string
+let objStr = new String("abc def"); // object type not string 
+const valueOfObject = objStr.valueOf();  // ObjectType to String
+const objToSting = objStr.toString() // const objToSting: string
+
+objStr.length; // 7
+
+let str = "abc def" // string type
+
+// charAt(index : number) : string
+str.charAt(1) // b
+
+// str.concat(s : string) : string
+const concatStr = str.concat(" New Strings") // "abc def New Strings" 
+
+str.lastIndexOf("abc"); // return -1 if it is non existent
+str.indexOf("abc"); // return -1 if it is non existent
+
+// str.substring(start: number, end_exclusive?: number | undefined): string
+str.substring(2,4) // "c "
+
 str.toUpperCase() 
 str.toLowerCase()
-str.toString(): string  // "sdfas fas"
 
-//  ["sdfas", "fas"] 
-str.split(splitter: { [Symbol.split](string: string, limit?: number | undefined): string[]; }, limit?: number | undefined): string[]
-console.log(str.split(" " ,2)); 
+// str.split(splitter: { [Symbol.split](string: string, limit?: number | undefined): string[]; }, 
+//           limit?: number | undefined): string[]
+console.log("I have".split(" " ,2));  // ["I", "have"] 
 
-// check if str contains fas fas
-str.match("fas fas")
+// return null if nothing matches
+str.match("abc") // ["abc"]
 
-// console.log(str1) : "sdfas fas" 
-str.valueOf(): string  
-const str1 = str.valueOf(); 
 
----------------------------------------------------------------------------
-str.charCodeAt(index: number): number // return unicode
+// charCodeAt(index: number): number  return unicode
+
 // Finds the first substring match in a regular expression search.
-str.search(searcher: { [Symbol.search](string: string): number; }): number
-str.slice(start?: number | undefined, end?: number | undefined): string
-```
+// search(searcher: { [Symbol.search](string: string): number; }): number
+str.search("asdf") // -1 
 
-### Java
+// slice(start?: number | undefined, end_exclusive?: number | undefined) : string 
+const sliceStr = str.slice(1,4) // "bc "
+```
 
 
 ```java
@@ -280,26 +227,14 @@ String[] split(String regex, ?int arrayLength)
 // IN-MA-CA-LA => String[] s = {IN,MA,CA,LA}
 
 // IN.MA.CA.LA split("\\.", arrayLength)
-// arrayLength : 2 String[] s = {IN , MA-CA-LA}
-// arrayLength : 3 String[] s = {IN, MA, CA-LA}
-// arrayLength >= 4 String[] s ={IN,MA,CA,LA}
+// arrayLength : 2 => {IN , MA-CA-LA}
+// arrayLength : 3 =? IN, MA, CA-LA}
+// arrayLength >= 4 {IN,MA,CA,LA}
 
 // Content 
 boolean contentEquals(StringBuffer sb)
 boolean equalsIgnoreCase(String anotherString)
 
-// return  str.charAt[beginIndex] to str.charAt[endIndex - 1]
-// same as slice
-CharSequence subSequence(int beginIndex, int endIndex) 
-
-// --->
-int indexOf(int ch, int ?fromIndex) // search character
-int indexOf(String str, ?int fromIndex) // search string
-// <---
-int lastIndexOf(int ch, ?int startFromIndex)
-int lastIndexOf(String str, ?int startFromIndex)
-
-// most used
 char[] toCharArray()
 char charAt(int index)
 String toLowerCase()
@@ -310,24 +245,7 @@ String trim() // "  abc  " => "abc"
 int length()
 static String valueOf(Object obj)
 Boolean isEmpty()
-boolean equals(Object anObject)
-int hashCode()
-String toString()
 Boolean contains(CharSequence chars)
-
----------------------------------------------------------------
-String replace(char oldChar, char newChar)
-String replaceAll(String regex, String replacement)
-String replaceFirst(String regex, String replacement)
-int compareTo(Object o)
-int compareTo(String anotherString) 
-int compareToIgnoreCase(String str)
-static String copyValueOf(char[] data)
-static String copyValueOf(char[] data, int offset, int count)
-
-// PREFIX or SUFFIX
-boolean endsWith(String suffix)
-boolean startsWith(String prefix, ?int toffset)
 
 byte[] getBytes()
 byte[] getBytes(String charsetName) // str.getBytes( "UTF-8" );
@@ -339,7 +257,6 @@ byte[] getBytes(String charsetName) // str.getBytes( "UTF-8" );
 ### Java
 
 ```java
--------------- Most Used -----------------------
 E get(int index)
 boolean	contains(Object o)   
 int	size()
@@ -575,14 +492,13 @@ console.log("total is : " + total );  // 6
 Array<string>.join(separator?: string | undefined): string
 
 // Adds all the elements of an array into a string, separated by the specified separator string.
-const arr = new Array("Google","Runoob","Taobao");  
+const arr = new Array("Google","Youtube","Youtube");  
 
 // if parameter is omitted, connate each element with comma (,) by default
-const strJionByDefault = arr.join();  // Google,Runoob,Taobao
-          
-var str = arr.join(", ");  // Google, Runoob, Taobao
+const strJoinByDefault = arr.join();  // Google,Youtube,Youtube
     
-var str = arr.join(" + "); // Google + Runoob + Taobao
+let strWithComma = arr.join(", ");  // Google, Youtube, Youtube
+let strWithPlus = arr.join(" + "); // Google + Youtube + Youtube
 ```
 
 ## Typescript Tuple
@@ -600,54 +516,23 @@ var a =[10,"hello"]
 var [b,c] = a  // a[0] to b , a[1] tp c
 ```
 
-## Java `Char[]`
-
+## Java Character
 ```java
-boolean isLetter()
-boolean isDigit()
-boolean isWhitespace()
-boolean isUpperCase()
-boolean isLowerCase()
+boolean Character.isUpperCase(char ch)
+boolean Character.isLowerCase(char ch)
+boolean Character.isWhitespace(char ch)
+boolean Character.isLetter(char ch)
+boolean Character.isDigit(char ch)
+boolean Character.isLetterOrDigit(char ch)
 
-static char toUpperCase()
-static char toLowerCase()
-String toString()
+static char Character.toUpperCase(char ch)
+static char Character.toLowerCase(char ch)
+String Character.toString(char ch)
+Character Character.valueOf(char c)
 ```
 
-## Set 
 
-### Java#Set
-
-```java
-// Methods from collection
-
-boolean	add(E e)
-boolean	addAll(Collection<? extends E> c)
-
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-
-Object	clone()
-
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-
-boolean	retainAll(Collection<?> c)
-
-void clear()
-int	size()
-boolean	equals(Object o)
-int	hashCode()
-boolean	isEmpty()
-Iterator<E>	iterator()
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-
-default Stream<E>	parallelStream()
-default Stream<E> stream()
-```
-
-### Typescript#Set
+## Typescript#Set
 
 ```typescript
 const s = new Set<number>([1,2,3,4,5,6,7]);
@@ -663,7 +548,7 @@ diceEntries.clear();
 ```
 
 
-## Stack 
+## Java#Stack 
 
 ```java
 boolean	empty()
@@ -671,59 +556,4 @@ E	peek()
 E	pop()
 E	push(E item)
 int	search(Object o)
-
-// Vector
-boolean	add(E e)
-void	add(int index, E element)
-boolean	addAll(Collection<? extends E> c)
-boolean	addAll(int index, Collection<? extends E> c)
-void	addElement(E obj)
-
-int	capacity()
-
-void	copyInto(Object[] anArray)
-
-void	insertElementAt(E obj, int index)
-void	setElementAt(E obj, int index)
-
-// fetch
-E	elementAt(int index)
-Enumeration<E>	elements()
-E	firstElement()
-E	get(int index)
-E	lastElement()
-
-boolean	removeElement(Object obj)
-void	removeElementAt(int index)
-void	removeAllElements()
-boolean	retainAll(Collection<?> c)
-
-void	setSize(int newSize)
-void	trimToSize()
-
-
-void	clear()
-Object	clone()
-boolean	contains(Object o)
-boolean	containsAll(Collection<?> c)
-void	ensureCapacity(int minCapacity)
-boolean	equals(Object o)
-int	hashCode()
-int	indexOf(Object o)
-int	indexOf(Object o, int index)
-boolean	isEmpty()
-Iterator<E>	iterator()
-int	lastIndexOf(Object o)
-int	lastIndexOf(Object o, int index)
-ListIterator<E>	listIterator()
-ListIterator<E>	listIterator(int index)
-E	remove(int index)
-boolean	remove(Object o)
-boolean	removeAll(Collection<?> c)
-protected void	removeRange(int fromIndex, int toIndex)
-int	size()
-List<E>	subList(int fromIndex, int toIndex)
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-String toString()
 ```
