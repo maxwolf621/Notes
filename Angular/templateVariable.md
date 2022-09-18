@@ -37,7 +37,7 @@ In the template, you use the hash symbol, `#`, to declare a template variable.  
 
 - If you declare the variable on a component, the variable refers to the component instance.
 - If you declare the variable on a standard HTML tag (`e.g. <tag #templateVariable>`), the variable refers to the element.
-- If you declare the variable on an `<ng-template>` element, the variable refers to a TemplateRef instance which represents the template.
+- If you declare the variable on an `<ng-template>` element, the variable refers to a `TemplateRef` instance which represents the template.
 
 ## Variable specifying a name
 
@@ -64,7 +64,7 @@ An inner template can access template variables that the outer template defines.
 syntax
 ```html
 <ng-template let-xxx = "value">
-    <!-- xxx is used>
+    <!-- xxx is used-->
 </ng-template>
 ```
 - When an `<ng-template>` is instantiated, multiple named values can be passed which can be bound to different template input variables.

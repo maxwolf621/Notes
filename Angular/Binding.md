@@ -10,15 +10,13 @@
     - [Key event filtering (with key.enter)](#key-event-filtering-with-keyenter)
   - [Property and Attribute Binding](#property-and-attribute-binding)
     - [Property binding](#property-binding)
-      - [Toggling button functionality](#toggling-button-functionality)
   - [Class and Style binding](#class-and-style-binding)
-  - [Class Binding `[Class]` and `[Class.attributeInCSS]`](#class-binding-class-and-classattributeincss)
+  - [Class Binding `[Class]` and `[Class.classNameInCss]`](#class-binding-class-and-classclassnameincss)
   - [Style Binding `[style.xxxx]`](#style-binding-stylexxxx)
     - [Binding to a single CSS style](#binding-to-a-single-css-style)
     - [Binding to multiple styles](#binding-to-multiple-styles)
   - [Injecting `@attribute` values](#injecting-attribute-values)
-  - [- Future updates to the HTML attribute value are not reflected in the injected value.](#--future-updates-to-the-html-attribute-value-are-not-reflected-in-the-injected-value)
-  - [Component pass the value to another Component](#component-pass-the-value-to-another-component)
+  - [Component pass value to Child component](#component-pass-value-to-child-component)
     - [`@Input`](#input)
     - [`@Output`](#output)
 
@@ -89,13 +87,11 @@ Bind the attribute and field in `.ts` with `.html`
 
 - [Event Binding](https://www.tektutorialshub.com/angular/event-binding-in-angular/)
 
- ```typescript
+```typescript
 import { TaskState } from "../../enum/task-state.enum";
 
 export class TaskComponent implements OnInit {
-  
   // ... 
-
   task : Task;
   TaskState = TaskState;
   
@@ -131,32 +127,12 @@ export class TaskComponent implements OnInit {
 </div>
 ```
 
-
-
-```html
-<button on-click="clickMe()">Click Me</button>
-<button click = "clickMe()">On-Click Me</button>
-
-<!-- once clickCount changes then clickCount1 will be assigned clickCount value-->
-<button (click)="clickMe() ; clickCount1=clickCount">Click Me</button>
-<p>You have clicked {{clickCount}}</p>
-<p>You have clicked {{clickCount1}}</p>
-```
-```typescript
-clickCount1= 7 ;
-clickCount=0
-  clickMe() {
-    this.clickCount++;
-  }
-```
-
 ### `$event` Payload
 
 The properties of a `$event` object vary depending on the type of DOM event   
 [source code](https://stackblitz.com/edit/event-binding-in-angular-ex-3?file=src%2Fapp%2Fapp.component.ts)   
 
 ```html
-    
 <input (input)="handleInput($event)">
 <!--    ^                     ^
         '---------------------'
@@ -166,6 +142,7 @@ The properties of a `$event` object vary depending on the type of DOM event
 ```
 
 ```typescript
+// .ts file
 value=""
 
 handleInput(event) {
@@ -212,7 +189,6 @@ using `keyup`/`keydown` events to listen for keystrokes.
 - Attribute Binding : the ATTRIBUTE is Defined By HTML  
 - Property Binding : the PROPERTY is Defined By Document Object Model, DOM 
 
-
 ```html 
 <!--
 (HTML) Attribute Binding 
@@ -224,19 +200,19 @@ using `keyup`/`keydown` events to listen for keystrokes.
 </tr>
 ```
 Sometimes there are differences between the name of property and an attribute. `colspan` is an attribute of `<td>`, while `colSpan` with a capital `S` is a property.  
-When using attribute binding, use colspan with a lowercase `s`.    
-When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.   
+
+- When using attribute binding, use colspan with a lowercase `s`.    
+- When the expression resolves to `null` or `undefined`, Angular removes the attribute altogether.   
 
 ```html
 <div class="content">
     <!-- Property Binding -->
     <button type="button"
-    <!-- disabled the button if task.state === TaskState.Finish> -->
     [disabled]="task.state === TaskState.Finish">
     A_Button_To_Start_Or_Close
     </button>
     
-    <!-- Attribute Binding with `? :` -->
+    <!-- Attribute Binding -->
     <button type="button" 
     [attr.disabled]="task.state === TaskState.Finish ? 'disabled' : null">
     Edit
@@ -246,29 +222,25 @@ When the expression resolves to `null` or `undefined`, Angular removes the attri
 
 ### Property binding
 
-**To bind to an element's property, enclose it in square brackets, `[]`, which identifies the property as a target property.**
+**To bind value in `.ts` file to an element's property, enclose it in square brackets, `[]`, which identifies the property as a target property.**
 
 In most cases, the target name is the name of a property, even when it appears to be the name of an attribute.
 
 ```html
-<!-- 
+<!--
   app.component.html 
 -->
 <img alt="item" [src]="itemImageUrl">
 ```
+- `src` is the name of the `<img>` element property.   
+
 ```typescript
 // app.component.ts
-
-// ...
 itemImageUrl = '../assets/phone.png';
-// ...
 ```
-`src` is the name of the `<img>` element property.   
-The brackets, `[]`, cause Angular to evaluate the right-hand side of the assignment as a dynamic expression.   
 
 
-
-Without the brackets, Angular treats the right-hand side as a string literal and sets the property to that static value. For example
+**Without the brackets `[]`, Angular treats the right-hand side as a string literal and sets the property to that static value. For example**
 ```html
 <app-item-detail childItem="parentItem"></app-item-detail>
 ```
@@ -280,35 +252,28 @@ To use property binding using colSpan, type the following:
 <tr><td [colSpan]="1 + 1">Three-Four</td></tr>
 ```
 
-To disable a button when the component says that it isUnchanged, type the following:
+To disable a button when the component says that it `isUnchanged`, type the following:
 ```html
 <!-- Bind button disabled state to `isUnchanged` property -->
 <button type="button" [disabled]="isUnchanged">Disabled Button</button>
 ```
+```typescript 
+isUnchanged = true;
+```
+- Angular disables the button if `isUnchanged` is `true`
+
 
 To set a property of a directive, type the following:
 ```html
-<p [ngClass]="classes">[ngClass] binding to the classes property making this blue</p>
+<p [ngClass]="classes">
+  [ngClass] binding to the classes property making this blue
+</p>
 ```
 
 To set the model property of a custom component for parent and child components to communicate with each other, type the following:
 ```html
 <app-item-detail [childItem]="parentItem"></app-item-detail>
 ```
-#### Toggling button functionality
-
-Bind the DOM disabled property to a property in the class that is true or false.
-
-```html
-<!-- Bind button disabled state to `isUnchanged` property -->
-<button type="button" [disabled]="isUnchanged">Disabled Button</button>
-```
-
-```typescript 
-isUnchanged = true;
-```
-- Angular disables the button if `isUnchanged` is `true`
-
 
 ## Class and Style binding
 
@@ -322,20 +287,26 @@ isUnchanged = true;
 <div style="border: dotted darkblue 3px" [style]="styleExpression">Some text.</div>
 ```
 
-## Class Binding `[Class]` and `[Class.attributeInCSS]`
+## Class Binding `[Class]` and `[Class.classNameInCss]`
+
+```html
+<hostElement [class]="'className'"></hostElement>
+<hostElement [Class.className]="booleanValue"></hostElement>
+```
+
 
 ```css
 .bgYellow {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .colorBlue {
-    color: blue;
+  color: blue;
 }
 
 .beYB {
-    color: yellow;
-    background-color: blue;
+  color: yellow;
+  background-color: blue;
 }
 ```
 ```html
@@ -348,15 +319,15 @@ isUnchanged = true;
 
 ```css
 .bgYellow {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .colorBlue {
-    color: blue;
+  color: blue;
 }
 ```
 ```html
-<!-- boolean Value control .bgYellow do rendering or not -->
+<!-- boolean Value controls .bgYellow to render or not -->
 <h1 class="bgYellow colorBlue" [class.bgYellow]="booleanValue" >
     Welcome to {{title}}!
 </h1>
@@ -368,55 +339,35 @@ isUnchanged = true;
 .bgYellow {
     background-color: yellow;
 }
-
 .colorBlue {
     color: blue;
 }
 ```
 ```html
-<!-- getFromComponent() returns {'bgYellow': true,'colorBlue':false} -->
-<h1 [ngClass]="getFromComponent()" >
-    Welcome to {{title}}!
+<!-- 
+  getAttributesFromComponent() 
+  returns {'bgYellow': true,'colorBlue':false} -->
+<h1 [ngClass]="getAttributesFromComponent()" >
+  Welcome to {{title}}!
 </h1>
 
 <!-- same as -->
 <h1 [class]="{'bgYellow': true,'colorBlue':false}" >
-    Welcome to {{title}}!
+  Welcome to {{title}}!
 </h1>
 ```
 
 ---
+
 ```typescript
 @Component({
 template:'
-    <h2 class = "text-success"> Code Volution </h2>    
-    
-    /** 
-      * Pass Attributes in .ts to .html 
-      * for render css property 
-      * (indirectly change the css property)        
-      */
-    // this is equal to <h2 class ="text-success"> 
-   //  "text-success" is defined in the css.style 
-   <h2 [class]="successClass"> Code Volution </h2>
-    
-    /**
-     * Using expression 
-     *       if "hasError" is true 
-     *       then render Code Volution with 
-     *       css property `text-danger`
-     */
-    <h2 [class.text-danger] = "hasError"> Code Volution </h2>
-    
-
-    /** 
-     * Using [ngClass] to 
-     *       have multiple css attributes render 
-     * The Code Volution will be 
-     *       render with text-success and text-special  
-     */
-    <h2 [ngClass] = "messageClass"> Code Volution </h2>'
-    ,
+  <h2 class = "text-success"> Code Volution </h2>    
+  <h2 [class]="successClass"> Code Volution </h2>
+  
+  <h2 [class.text-danger] = "hasError"> Code Volution </h2>
+  
+  <h2 [ngClass] = "messageClass"> Code Volution </h2>',
 styles:['
     .text-success{
         color:green
@@ -426,8 +377,7 @@ styles:['
     }
     .text-special{
         font-style:italic
-    }
-']
+    }']
 })
 export class test implements OnInit{
 
@@ -457,7 +407,9 @@ To create a single style binding, use the prefix style followed by a dot and the
 <div [style.width.px]="width">...</div>
 ```
 
-Angular sets the property to the value of the bound expression, which is usually a string. Optionally, you can add a unit extension like `em `or `%,` which requires a number type.
+Angular sets the property to the value of the bound expression, which is usually a string. 
+
+Optionally, you can add a unit extension like `em `or `%`  which requires a number type.
 ```html
 <!-- dash case -->
 <nav [style.background-color]="expression"></nav>
@@ -468,15 +420,13 @@ Angular sets the property to the value of the bound expression, which is usually
 
 ```html
 <nav [style]="stringListOfStyle">	
-  stringListOfStyle such as
-  "width: 100px; height: 100px"
+  stringListOfStyle could be "width: 100px; height: 100px"
 </nav>
 
 <nav [style]="anObjectWithStyleNames">
-    An object with style names as the keys and style values as the values, such as 
+    An object with style names as the keys and style values as the values, 
+    such as 
     {width: '100px', height: '100px', backgroundColor: 'cornflowerblue'}
-    
-    Data Type : Record<string, string | undefined | null> 
 </nav>		
 ```
 
@@ -484,10 +434,10 @@ Angular sets the property to the value of the bound expression, which is usually
 @Component({
   selector: 'app-nav-bar',
   template: `
-<nav [style]='navStyle'>
-  <a [style.text-decoration]="activeLinkStyle">Home Page</a>
-  <a [style.text-decoration]="linkStyle">Login</a>
-</nav>`
+  <nav [style]='navStyle'>
+    <a [style.text-decoration]="activeLinkStyle">Home Page</a>
+    <a [style.text-decoration]="linkStyle">Login</a>
+  </nav>`
 })
 export class NavBarComponent {
   navStyle = 'font-size: 1.2rem; color: cornflowerblue;';
@@ -498,46 +448,43 @@ export class NavBarComponent {
 ```
 ## Injecting `@attribute` values
 
-**Use `@Attribute()` when you want to inject the value of an HTML attribute to a component or directive constructor.**
+**Use `@Attribute()` when you want to inject the value of an HTML attribute to a `@component` or `@directive` constructor.**
 
-There are cases where you need to differentiate the behavior of a Component or Directive based on a static value set on the host element as an HTML attribute. 
-- For example, you might have a directive that needs to know the type of a `<button>` or `<input>` element.
+There are cases where you need to differentiate the behavior of a Component or Directive based on a shared **STATIC VALUE** set on the host element as an HTML attribute.   
 
-**The `@Attribute` parameter decorator is great for passing the value of an HTML attribute to sa `@component` or `@directive` component's constructor using dependency injection.**   
 
+**The `@Attribute` parameter decorator is great for passing the value of an HTML attribute to `@component` or `@directive` component's constructor using dependency injection.**   
 ```typescript
-import { Attribute, Component } from '@angular/core';
+import { Component, Attribute } from '@angular/core';
+
+export type ButtonType = 'primary' | 'secondary';
 
 @Component({
-  selector: 'app-my-input-with-attribute-decorator',
-  template: '<p>The type of the input is: {{ type }}</p>' <!-- <- HTML Attribute-->
+  selector: 'app-button',
+  template: `
+    <button [ngClass]="type">
+      <ng-content></ng-content>
+    </button>
+  `
 })
+export class ButtonComponent {
+  constructor(@Attribute('type') public type: ButtonType = 'primary') { }
 
-/**
-  * <app-my-input-with-attribute-decorator type="number">
-  * </app-my-input-with-attribute-decorator>
-  */
-export class MyInputWithAttributeDecoratorComponent {
-  constructor(@Attribute('type') public type: string) { } // <--- injected value
 }
 ```
-- The injected value captures the value of the specified HTML attribute at that moment.  
-- Future updates to the HTML attribute value are not reflected in the injected value.  
----
+- The injected value captures the value of the specified HTML attribute at that moment. **Future updates to the HTML attribute value are not reflected in the injected value.** 
 
 ```html
-<!-- 
-Assign multiple CSS attributes from Component's Array
--->
-[ngclass] = "Array_Containing_Css_Attribute_IN_Component"
+<app-button type="secondary">Action Button</app-button>
 ```
 
 
-## Component pass the value to another Component
+---
+
+## Component pass value to Child component
 
 ### `@Input` 
 
-It allows Property Binding with different components   
 Base component can pass value to child component via `.html`
 
 **Use `@Input()` when you want to keep track of the attribute value and update the associated property.** 
@@ -570,7 +517,6 @@ export class AppComponent implements OnInit {
 ```
 
 Child component
-- the attribute that will be assigned by base component shall have `@input()` annotation
 ```typescript
 export class TaskComponent implements OnInit {
   
@@ -588,8 +534,7 @@ export class TaskComponent implements OnInit {
 }
 ```
 
-
-We also can use setter to assign the value to variable
+Via Setter
 ```typescript
 export class TaskComponent implements OnInit {
 
@@ -598,7 +543,9 @@ export class TaskComponent implements OnInit {
   
   @input()
   set subject(subject : string ){
-    ....
+    /**
+     * setter
+     */
   }
   
   //...
@@ -619,20 +566,22 @@ In contrast with `@input` we can also pass the value from child component to Bas
 
 Firstly the child component shall declare a `EventEmitter<T>()` type variable with `@output()` annotation to emit the value to Base component
 ```typescript
-@output() x = EventEmitter<T>();
+@output() emitter = EventEmitter<T>();
 
 filed(y : T){
-  this.x = emit(y);
+  this.emitter.emit(y);
 }
 ```
 
-- Second,base component's (`.html`) to receive the value emitted by child ... 
+Base component's (`.html`) to receive the value emitted by child ... 
 ```html    
 <childSelector>  
-  (Field With @output() annotation in child) = "Method_of_Base($event)"
+  Field_With_@output()_annotation_in_child) = "Method_of_Base($event)"
+  <!-- '++++++++++++++++++++++++++++++++++++++++++++++++++++++++^     
+  -->
 </childSelector>
 ```
-- `($event)` will be assigned the valued emitted from child
+- `($event)` is the value from the emitter
 
 ```typescript
 // Child 
@@ -649,7 +598,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class VoterComponent {
   
   //receive the value from the Base 
-  @Input()  name: string;
+  @Input() name: string;
 
   // OnVoted emit the boolean type value to base component
   // Emitter 
@@ -672,7 +621,7 @@ import { Component } from '@angular/core';
   selector: 'app-vote-taker',
   template:'               
     <h2>Should mankind colonize the Universe?</h2>
-    <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
+    <h3>Agree: {{agreedCount}}, Disagree: {{disagreedCount}}</h3>
     <app-voter *ngFor="let voter of voters"
               [name]="voter"
               <!--@output annotation child varaible = father method($event)-->
@@ -680,13 +629,13 @@ import { Component } from '@angular/core';
     </app-voter>'                 
 })
 export class VoteTakerComponent {
-  agreed = 0;
-  disagreed = 0;
+  agreedCount = 0;
+  disagreedCount = 0;
   
   voters = ['Mr. IQ', 'Ms. Universe', 'Ms. Toshiro'];
  
   onVoted(agreed: boolean) {
-    agreed ? this.agreed++ : this.disagreed++;
+    agreed ? this.agreedCount++ : this.disagreedCount++;
   }
 }
 ```
