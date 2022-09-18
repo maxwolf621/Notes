@@ -1,5 +1,8 @@
+# util
 
 ## Collection
+
+Collection supports default `Stream<E> parallelStream()` and `default Stream<E> stream()`
 
 ```java
 boolean	add(E e)
@@ -36,22 +39,22 @@ Interface List supports methods from collection with `int index` arg
 
 Some new methods : `set`, `get`, `removeRange`, `replaceAll`, `indexOf` and `lastIndexOf`
 
-```java
-E set(int index, E element)
+```java 
+E set(int index, E element)    // return inserted element
+[5,2,3,2].set(0, 5); // replace 0th element with 5 
+
 void add(int index, E element) 
 E get(int index)
 
 boolean addAll(int index, Collection<? extends E> c)
 [1,2].addAll(1,[1,2,3]); // [1, 1, 2, 3, 2] 
 
-[1,1,2,3,2].remove(1); // [1, 2, 3, 2]
-
-[5,2,3,2].set(0, 5); // replace 0th element with 5 
-
 List<E> subList(int fromIndex_Inclusive, int toIndex_Exclusive)
 
 // use them if necessary
 E remove(int index)
+[1,1,2,3,2].remove(1); // [1, 2, 3, 2]
+
 protected void removeRange(int fromIndex, int toIndex_exclusive)
 
 default void replaceAll(UnaryOperator<E> operator)
@@ -71,8 +74,8 @@ int	lastIndexOf(Object o)
 |        |Throws exception	|Returns special value|
 | ---    |      ---         |      ----           |
 |Insert	 |`boolean add(E e)`|`boolean offer(E e)` |
-|Remove	 |`E remove()`	    |`E poll()`       |
-|Examine |`E element()`	    |`E peek()`       |
+|Remove	 |`E remove()`	    |`E poll()`           |
+|Examine |`E element()`	    |`E peek()`           |
 
 ## Interface Deque
 
@@ -80,20 +83,20 @@ int	lastIndexOf(Object o)
 Deque supports methods `add/remove/poll/peek/offer/get` + `First/Last`
 
 It has Queue Methods and Stack Methods
-| Queue Method |	Equivalent Deque Method|
-|--------------| --------------------------|
-| add(e)	   | addLast(e)              |
-| offer(e)	   | offerLast(e)            |
-| remove()	   | removeFirst()           |
-| poll()	   | pollFirst()             |
-| element()	   | getFirst()              |
-| peek()	   | peekFirst()             |      
+| Queue Method |Equivalent Deque Method  |
+|--------------|-------------------------|
+| `add(e)`	   | `addLast(e)`            |
+| `remove()`   | `removeFirst()`         |
+| `element()`  | `getFirst()`            |
+| `offer(e)`   | `offerLast(e)`          |
+| `poll()`	   | `pollFirst()`           |
+| `peek()`	   | `peekFirst()`           |      
 
-|Stack Method |	Equivalent Deque Method |
-|-------| ------------------------------|
-|push(e)| addFirst(e)                   |
-|pop()	| removeFirst()                 |
-|peek()	| peekFirst()                   |
+|Stack Method  |   Equivalent Deque Method     |
+|--------------| ------------------------------|
+|`push(e)`     | `addFirst(e)`                 |
+|`pop()`       | `removeFirst()`               |
+|`peek()`      | `peekFirst()`                 |
 
 
 ```java
@@ -126,14 +129,9 @@ boolean	removeFirstOccurrence(Object o)
 boolean	removeLastOccurrence(Object o)
 ```
 
-```java
-E pop()
-void push(E e)
 
-E element() // peek
-```
 
-## Interface subSet
+## Interface NavigableSet
 
 ```java
 E ceiling(E e)
