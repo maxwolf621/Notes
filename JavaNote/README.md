@@ -48,11 +48,11 @@
 - [Optional](javanotes/Optional.md)
 - [Stream & Optional](javanotes/streamOptional.md)
 ## java library 
-- [lombok](lomBok.md)   
-- [`MapStruct`](mapStruct.md)
+- [lombok](javanotes/lomBok.md)   
+- [`MapStruct`](javanotes/mapStruct.md)
 
 ---
 
-- [MVN Command ON Linux](mvn.md)
+- [MVN Command ON Linux](javanotes/mvn.md)
 - [rim](javanotes/rim.md)
 - [time](javanotes/.md)
