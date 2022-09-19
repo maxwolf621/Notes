@@ -1,15 +1,11 @@
 # Two way binding
 
-
-
-
 - [Two way binding](#two-way-binding)
   - [Reference](#reference)
   - [ngModel](#ngmodel)
 
 
 ![圖 1](../images/a57fb78afebc6cb3b9b610f403fa5ec7e1c2e975023cb0c8408dde227522d83c.png)  
-
 
 ## Reference 
 [[Angular 大師之路] Day 07 - 一個簡易實踐 two way binding 的方法](https://ithelp.ithome.com.tw/articles/10204241)   
@@ -20,10 +16,15 @@ Two-way binding combines property binding with event binding :
 <app-sizer [(size)]="fontSizePx"></app-sizer>
 <!-- same as -->
 <app-sizer [size] = "fontSizePx" (sizeChange) ="fontSizePx = $event">
+<!--                                '------------emit to -------^
+-->
 ```
-this means `app-sizer` has `@input() sizer` and `@output() sizeChange()`
+- `[(...)]` : `<app-sizer> ... </app-sizer>` has `@input() size` and `@output() sizeChange()`    
+The `$event` variable contains the data of the `SizerComponent.sizeChange` event.     
+Angular assigns the `$event` value to the `AppComponent.fontSizePx` when the user clicks the buttons.    
 
-`sizer.component.ts`
+
+Child `sizer.component.ts`
 ```typescript
 export class SizerComponent {
 
@@ -40,7 +41,7 @@ export class SizerComponent {
 }
 ```
 
-`src/app/sizer.component.html`
+`sizer.component.html`
 ```html
 <div>
   <button type="button" (click)="dec()" title="smaller">-</button>
@@ -49,33 +50,24 @@ export class SizerComponent {
 </div>
 ```
 
-In the (Parent)AppComponent template, `fontSizePx` is two-way bound to the (child)SizerComponent.
-```typescript
-// 
+
+In the (Parent)`AppComponent.ts`'s template `app.component.html`, `fontSizePx` is two-way bound to the (child)`SizerComponent.ts`.
+```html
 <app-sizer [(size)]="fontSizePx"></app-sizer>
 <div [style.font-size.px]="fontSizePx">Resizable Text</div>
-
-// app.component.ts
+```
+`app.component.ts`
+```typescript
 fontSizePx = 16;
 ```
-- Clicking the buttons updates the `AppComponent.fontSizePx.` 
-The revised `AppComponent.fontSizePx` value updates the style binding, which makes the displayed text bigger or smaller.
-
-
-The (Child)SizerComponent binding as separate property binding and event binding is as follows.
-```html
-<!-- app.component.html -->
-<app-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></app-sizer>
-```
-The `$event` variable contains the data of the `SizerComponent.sizeChange` event.   
-Angular assigns the `$event` value to the `AppComponent.fontSizePx` when the user clicks the buttons.
 
 ## ngModel
 
-The Angular uses the ngModel directive to achieve the two-way binding on HTML Form elements. It binds to a form element like `input`, `select`. etc...
+The Angular uses the ngModel directive to achieve the two-way binding on **HTML Form elements**. 
+
+It binds to a form element like `input`, `select`. etc...
 
 Internally It uses the `ngModel` in property, binding to bind to the value property and `ngModelChange` which binds to the input event.
-
 ```typescript
 // InfoComponent
 @component({
@@ -103,9 +95,9 @@ export class AppComponent  {
 }
 ```
 
-Because `name` in `InfoComponent.ts` and `name` in `AppComponent.ts` has it own address.  
 
-We can then use even binding to listen the binding value, for example
+Because `name` in `InfoComponent.ts` and `name` in `AppComponent.ts` has it own address.    
+We can then use even binding to listen the binding value, for example :
 ```html
 <!-- 
   if ngModel is modified 
@@ -118,7 +110,6 @@ We can then use even binding to listen the binding value, for example
 
 
 ```typescript
-
 // Sub Component
 @Component({
   selector: 'app-info',
@@ -130,8 +121,6 @@ We can then use even binding to listen the binding value, for example
 })
 export class InfoComponent {
   @Input() name;  
-  
-  // emitter
   @Output() nameChange = new EventEmitter();;
 }
 
@@ -141,15 +130,7 @@ export class InfoComponent {
   selector: 'my-app',
   template: `
     <app-info 
-    
-    <!--
-       pass value of name "Mike" to child component 
-    -->
     [name]="name"
-
-    <!-- 
-      $event : child's @output return value
-    -->
     (nameChange)="name = $event"> 
     </app-info>
     

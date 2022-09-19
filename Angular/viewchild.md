@@ -1,27 +1,29 @@
-# Access Child Component Data 
-- [Access Child Component Data](#access-child-component-data)
+# Access Child Component Field 
+- [Access Child Component Field](#access-child-component-field)
   - [View Child](#view-child)
     - [Metadata Properties](#metadata-properties)
     - [Injecting Component or Directive Reference](#injecting-component-or-directive-reference)
     - [Injecting TemplateRef of Component](#injecting-templateref-of-component)
-    - [Injecting TemplateRef](#injecting-templateref)
+    - [Injecting ng-template Using TemplateRef](#injecting-ng-template-using-templateref)
     - [Injecting HTML Element Using ElementRef](#injecting-html-element-using-elementref)
     - [Multiple Instances](#multiple-instances)
-    - [`ViewChild` returns Undefined](#viewchild-returns-undefined)
+    - [`ViewChild` returns `Undefined`](#viewchild-returns-undefined)
     - [Static Option](#static-option)
     - [Read Token](#read-token)
     - [Injecting a Provider from the Child Component](#injecting-a-provider-from-the-child-component)
   - [`ViewChildren(selector, read)`](#viewchildrenselector-read)
     - [QueryList](#querylist)
+    - [QueryList Method & Properties](#querylist-method--properties)
     - [Listening for QueryList Changes](#listening-for-querylist-changes)
-    - [Syntax](#syntax)
     - [In Action](#in-action)
 
 ## View Child
 
-The ViewChild query returns the first matching element from the DOM and updates the component variable on which we apply it.
+The `ViewChild` query returns the first matching element from the DOM and updates the component's field on which we apply it.
 
 ### Metadata Properties
+
+`@ViewChild(selector, static = ... , read = ...)`
 
 **selector**: can be a string, a type or a function that returns a string or type.   
 The change detector looks for the first element that matches the selector and updates the component property with the reference to the element. If the DOM changes and a new element matches the selector, the change detector updates the component property.
@@ -56,9 +58,9 @@ import { Component } from '@angular/core';
  
 @Component({
   selector: 'child-component',
-  template: `<h2>Child Component</h2>
-            current count is {{ count }}
-    `
+  template: `
+  <h2>Child Component</h2>
+  current count is {{ count }}`
 })
 export class ChildComponent {
   count = 0;
@@ -107,10 +109,9 @@ export class AppComponent {
 
 ```typescript
 <child-component #child></child-component>
-
 @ViewChild("child", { static: true }) child: ChildComponent;
 ```
-### Injecting TemplateRef
+### Injecting ng-template Using TemplateRef
 
 ```typescript
 <ng-template #sayHelloTemplate>
@@ -152,7 +153,7 @@ The `ViewChild` always returns the first component.
 @ViewChild(ChildComponent, {static:true}) child: ChildComponent;
 ```
 
-### `ViewChild` returns Undefined
+### `ViewChild` returns `Undefined`
 
 For the error is due to the fact that we try to use the value, before the `ViewChild` initializes it.
 
@@ -171,20 +172,16 @@ The above code will also work with the `ngOnInit` Life cycle hook.
 
 ### Static Option
 
-We used the {static:true} in the above code.
+The static option determines the timing of the ViewChild query resolution.   
+**`static:true` will resolves ViewChild before any change detection is run.**   
+**`static:false` will resolves it after every change detection run.**   
 
-The static option determines the timing of the ViewChild query resolution.
+The value of the `static` becomes important when the child is rendered dynamically.     
+e.g. inside a `ngIf` or `ngSwitch` etc.       
 
-**`static:true` will resolves ViewChild before any change detection is run.**
-**`static:false` will resolves it after every change detection run.**
-
-The value of the static becomes important when the child is rendered dynamically. e.g. inside a `ngIf` or `ngSwitch` etc.    
-
-For Example consider the following code, where we have moved the child-component inside the ngIf.
+For Example consider the following code, where we have moved the child-component inside the `ngIf`.
 ```typescript
-//child.component.ts
- 
-import { Component, ViewChild, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
+ import { Component, ViewChild, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ChildComponent } from './child.component';
  
 @Component({
@@ -192,8 +189,8 @@ import { ChildComponent } from './child.component';
   templateUrl: 'app.component.html' ,
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'ViewChild Example)';
+export class AppComponent { 
+  title = 'ViewChild Example';
  
   showCounter: boolean = true
  
@@ -208,13 +205,11 @@ export class AppComponent {
   }
  
 }
-
-//child.component.html
 <h1>ViewChild Example</h1>
  
 <input type="checkbox" id="showCounter" name="showCounter" [(ngModel)]="showCounter">
  
-<ng-container  *ngIf="showCounter">
+<ng-container *ngIf="showCounter">
  
   <p> current count is {{child?.count}} </p>
  
@@ -225,8 +220,8 @@ export class AppComponent {
  
 </ng-container>
 ```
-The above code results in a `TypeError: Cannot read property 'increment' of undefined`.   
-The error occurs even if we assign `true` to `showCounter`
+The above code results in a `TypeError: Cannot read property 'increment' of undefined`.     
+The error occurs even if we assign `true` to `showCounter`.    
 
 Because Angular does not render the child component immediately.   
 But after the first change detection which detects the value of `showCounter` and renders the child component.
@@ -236,7 +231,7 @@ But after the first change detection which detects the value of `showCounter` an
 
 ### Read Token
 
-A Single element can be associated with multiple types.
+A Single Element can be associated with multiple types.
 
 ```html
 <input #nameInput [(ngModel)]="name">
@@ -292,37 +287,38 @@ Any time a child element is added, removed, or moved, the query list will be upd
 **ViewChildren always returns all the elements as a `QueryList`. You can iterate through the list and access each element.**
 
 View queries are set before the `ngAfterViewInit` callback is called.
-The QueryList is the return type of ViewChildren and contentChildren . 
 
-QueryList stores the items returned by the viewChildren or contentChildren in a list.
+```typescript
+import {AfterViewInit, Component, Directive, QueryList, ViewChildren} from '@angular/core';
 
-The Angular updates this list, whenever the state of the application change. It does it on each change detection.
+@Directive({selector: 'child-directive'})
+class ChildDirective {
+}
 
-The QueryList also Implements an iterable interface. Which means you can iterate over it using  for (var i of items) or use it with ngFor in template *ngFor="let i of items".
+@Component({selector: 'someCmp', templateUrl: 'someCmp.html'})
+class SomeCmp implements AfterViewInit {
+  //             componentName   variableName : QueryLList<componentName>
+  @ViewChildren(ChildDirective) viewChildren!: QueryList<ChildDirective>;
 
-Changes can be observed by subscribing to the changes Observable.
-
-You can use the following methods & properties.
-
-first: returns the first item in the list.
-last: get the last item in the list.
-length: get the length of the items.
-changes: Is an observable. It emits a new value, whenever the Angular adds, removes or moves the child elements.
-The `ViewChildren` is always resolved after the change detection is run.
+  ngAfterViewInit() {
+    // viewChildren is set
+  }
+}
+```
 
 ### QueryList
+
 
 - The `QueryList` is the return type of `ViewChildren` and `contentChildren` . 
 - QueryList stores the items returned by the `viewChildren` or `contentChildren` in a list.
 - The Angular updates this list, whenever the state of the application change. It does it on each change detection.
-- The QueryList also Implements an iterable interface. Which means you can iterate over it using  for (var i of items) or use it with ngFor in template *ngFor="let i of items".
-- **Changes can be observed by subscribing to the changes Observable.**
+- The `QueryList` also Implements an iterable interface. Which means you can iterate over it using  for `(var i of items)` or use it with `ngFor` in template `*ngFor="let i of items"`.
+### QueryList Method & Properties   
+`first`: returns the first item in the list.     
+`last`: get the last item in the list.     
+**`changes`: is an observable. It emits a new value, whenever the Angular adds, removes or moves the child elements.**     
+`length`: get the length of the items.     
 
-You can use the following methods & properties.     
-`first`: returns the first item in the list.
-`last`: get the last item in the list.
-`length`: get the length of the items.
-`changes`: Is an observable. It emits a new value, whenever the Angular adds, removes or moves the child elements.
 
 It also supports JavaScript array methods like `map()`, `filter()` , `find()`, `reduce()`, `forEach()`, `some()`. etc
 
@@ -346,9 +342,7 @@ import { NgModel } from '@angular/forms';
       <input type="checkbox" id="showLastName" name="showLastName" [(ngModel)]="showLastName">
  
       <button (click)="show()">Show</button>
-  
   `,
- 
 })
  
 export class ViewChildrenExample2Component implements AfterViewInit {
@@ -382,25 +376,6 @@ export class ViewChildrenExample2Component implements AfterViewInit {
 ```
 
 
-### Syntax
-
-```typescript
-import {AfterViewInit, Component, Directive, QueryList, ViewChildren} from '@angular/core';
-
-@Directive({selector: 'child-directive'})
-class ChildDirective {
-}
-
-@Component({selector: 'someCmp', templateUrl: 'someCmp.html'})
-class SomeCmp implements AfterViewInit {
-  //             componentName   variableName : QueryLList<componentName>
-  @ViewChildren(ChildDirective) viewChildren!: QueryList<ChildDirective>;
-
-  ngAfterViewInit() {
-    // viewChildren is set
-  }
-}
-```
 
 ### In Action 
 
@@ -427,7 +402,10 @@ export class Pane {
     `,
 })
 export class ViewChildrenComp implements AfterViewInit {
+
+    // QueryList of Directive
     @ViewChildren(Pane) panes!: QueryList<Pane>;
+    
     serializedPanes: string = '';
 
     shouldShow = false;
@@ -437,16 +415,17 @@ export class ViewChildrenComp implements AfterViewInit {
     }
 
     ngAfterViewInit() {
+      this.calculateSerializedPanes();
+        
+      this.panes.changes.subscribe((r) => {
         this.calculateSerializedPanes();
-        this.panes.changes.subscribe((r) => {
-        this.calculateSerializedPanes();
-        });
+      });
     }
 
     calculateSerializedPanes() {
-        setTimeout(() => {
+      setTimeout(() => {
         this.serializedPanes = this.panes.map(p => p.id).join(', ');
-        }, 0);
+      }, 0);
     }
 }
 ```
