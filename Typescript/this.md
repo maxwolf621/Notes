@@ -3,46 +3,97 @@
 [Typescript裡的This](https://zhuanlan.zhihu.com/p/104565681)   
 [this-based type guards](https://www.typescriptlang.org/docs/handbook/2/classes.html#this-types)  
 - [this type](#this-type)
-  - [return this in class](#return-this-in-class)
-  - [this as type annotation in method](#this-as-type-annotation-in-method)
-  - [named funciton of object type vs class return this](#named-funciton-of-object-type-vs-class-return-this)
-  - [this for Arrow function (object Type & Class)](#this-for-arrow-function-object-type--class)
-  - [function contructor](#function-contructor)
-  - [literal Type](#literal-type)
-  - [literal Type with type annotation](#literal-type-with-type-annotation)
-  - [`method(this : type)` in literal type](#methodthis--type-in-literal-type)
-  - [`method(this : type )` in literal type with type annotation](#methodthis--type--in-literal-type-with-type-annotation)
-  - [literal with type annotation `& ThisType<T>`](#literal-with-type-annotation--thistypet)
-  - [`method(this : T)` in literal type](#methodthis--t-in-literal-type)
+  - [return `this` types of the method in Class](#return-this-types-of-the-method-in-class)
+  - [this in method block](#this-in-method-block)
+  - [`this` as type annotation](#this-as-type-annotation)
+  - [`this : ClassName`](#this--classname)
+  - [`this : { log : string}`](#this---log--string)
+  - [`& ThisType<T>`](#-thistypet)
+  - [Arrow Function returns `this` type](#arrow-function-returns-this-type)
+    - [Object Type](#object-type)
+    - [Class](#class)
+  - [Prototype Function](#prototype-function)
+  - [Anonymous Function vs function object](#anonymous-function-vs-function-object)
+    - [Overridden Function](#overridden-function)
   - [`thisParameterType<typeof NAMED_FUNCTION>`](#thisparametertypetypeof-named_function)
 
 
-## return this in class 
+## return `this` types of the method in Class 
 
 `this` refers dynamically to the type of the current class.
 ```typescript
-class Box {
+class B {
   contents: string = "";
-  set(value: string) { // (method) Box.set(value: string): this
+
+  // set(value: string): this
+  set(value: string) { 
     this.contents = value;
     return this;
   }
 }
+
+let b = new B()
+console.log(b.set("new content"));
+
+// Console prints
+[LOG]: B: {
+  "contents": "new content"
+} 
 ```
 
-## this as type annotation in method
 
+## this in method block
+
+Without `return`
 ```typescript
-class Box {
-  content: string = "";
-  sameAs(other: this) {
-    return other.content === this.content;
-  }
+// this = itself 
+let foo = {
+  x: "hello",
+  y: this, //this: typeof globalThis
+  f(n: number) {
+    this 
+  },
+}
+```
+```typescript
+this: {
+    x: string;
+    y: typeof globalThis;
+    f(n: number): void;
 }
 ```
 
-It is different from writing `other: Box`.
-for example, if you have a derived class, its `sameAs` method will now only accept other instances of that same derived class 
+```typescript
+let foo = {
+  x: "hello",
+  n : 0,
+  f(n: number) {
+    this.n = n;
+    return this
+  },
+}
+console.log(foxo.f(123));
+```
+```typescript
+this: {
+    x: string;
+    n: number;
+    f(n: number): ...;
+}
+[LOG]: {
+  "x": "hello",
+  "n": 123
+} 
+```
+
+
+## `this` as type annotation
+
+**`xxx : this` is different from writing `xxx : Class`.**
+
+`xxx : this` means `xxx` only accept the type `>=` itself. 
+
+For example, if you have a derived class, its `sameAs` method **will now only accept other instances of that same derived class**. 
 ```typescript
 class Box {
   content: string = "";
@@ -64,121 +115,234 @@ const derived3 = new DerivedBox2();
 
 console.log(derived.sameAs(derived)); // true
 console.log(derived.sameAs(derived3)); //true
+
+// Compiler Error
+// base does not have property of derived 
 derived.sameAs(base);
-        ' Argument of type 'Box' is not assignable to parameter of type 'DerivedBox'.
-        ' Property 'otherContent' is missing in type 'Box' but required in type 'DerivedBox'.
+        ^ Argument of type 'Box' is not assignable to parameter of type 'DerivedBox'.
+        ^ Property 'otherContent' is missing in type 'Box' but required in type 'DerivedBox'.
 ```     
 
 
-If Base has its derived class's properties
+But if Base has its derived class's properties.
 ```typescript
 class Box {
   content: string = "";
+
+  // derived class's properties
   otherContent : string = "love";
+
   sameAs(other: this) {
     return other.content === this.content;
   }
 }
 
-// derived class
+class DerivedBox extends Box {
 
+  otherContent: string = "1";
+}
+
+// derived class
 const base = new Box();
 const derived = new DerivedBox();
+
 console.log(derived.sameAs(base)); // true
 ```
 
-## named funciton of object type vs class return this
+## `this : ClassName`
+
 ```typescript
-// class
-const obj = {
-  name: "this.name",
-  getName() {
-    return this.name // { name:string, getName():string}
-  },
-}
-console.log(obj.getName());
-
-const fn1 = obj.getName();
-fn1(); // Runtime Error
-[ERR]: "Executed JavaScript Failed:" 
-[ERR]: Cannot read properties of undefined (reading 'name') 
-
-
-// Class
 class MyClass {
   name = "MyClass";
-  
+  age = 10;
+  sex = "male";
   getName(this: MyClass) {
     return this.name;
   }
+  getAllField(this : MyClass){
+    return this; 
+  }
 }
 const c = new MyClass();
-// OK
-c.getName();
- 
-const g = c.getName;
+console.log(c.getName());
+console.log(c.getAllField());
 
-// compiler erro instead of runtime error
-console.log(g());
-        ' The 'this' context of type 'void' is not assignable to method's 'this' of type 'MyClass'.
+// console prints
+[LOG]: "MyClass" 
+
+[LOG]: MyClass: {
+  "name": "MyClass",
+  "age": 10,
+  "sex": "male"
+} 
 ```
 
-## this for Arrow function (object Type & Class)
+via object type
+```typescript
+const obj  = {
+  name : "objType",
+  age : 10,
+  sex : "male",
+  getName() {
+    return this // { name:string, getName():string}
+  },
+  getAllField(){
+    return this; 
+  }
+}
+console.log(obj.getAllField())
 
+//console prints
+[LOG]: {
+  "name": "objType",
+  "age": 10,
+  "sex": "male"
+} 
+```
+
+## `this : { log : string}`
+
+`this : { log : string}` returns current value of each field
+
+```typescript
+type Point = {
+  x: number
+  y: number
+  moveBy(dx: number, dy: number): void
+  currentStatus(): void
+}
+
+let p: Point = {
+  x: 10,
+  y: 20,
+  currentStatus(this : {meesage : string}){
+    console.log(this)
+  },
+  moveBy(dx, dy) {
+    this.x += dx;
+    this.y += dy;
+    this.currentStatus();
+  }
+}
+
+p.moveBy(10,30);
+```
+
+Console Prints
+```typescript
+[LOG]: {
+  "x": 20,
+  "y": 50
+} 
+```
+
+or just
+```typescript
+type Point = {
+  x: number
+  y: number
+  moveBy(dx: number, dy: number): void
+}
+
+let p: Point = {
+  x: 10,
+  y: 20,
+  moveBy(dx, dy) {
+    this.x += dx;
+    this.y += dy
+    console.log(this);
+  },
+}
+```
+## `& ThisType<T>`
+
+```typescript 
+type Point = {
+  x: number
+  y: number
+  moveBy: (dx: number, dy: number) => void
+} & ThisType<{ message: string, x : number , y : number }>
+
+let p: Point = {
+  x: 10,
+  y: 20,
+  moveBy(dx, dy) {
+    this.x += dx;
+    this.y += dy;
+    console.log(this)
+  },
+}
+p.moveBy(2,2)
+console.log(`p.x : ${p.x}`)
+console.log(`p,y : ${p.y}`)
+```
+
+## Arrow Function returns `this` type
+
+### Object Type 
 ```typescript
 // object type 
 const obj2 = {
   name: "myObject",
   getName: () => {
     return this.name
-            ' Property 'name' does not exist on type 'typeof globalThis'.(2339)
+            ^ Property 'name' does not exist 
+            ^ on type 'typeof globalThis'.(2339)
   },
 }
 obj2.getName() // runtime error 
+```
 
+### Class 
+```typescript
 // class
 class MyClass {
   name = "MyClass";
   getName = () => {
     return this.name;
+    // return this : return MyClass Type
   };
 }
 const c = new MyClass();
 const g = c.getName;
 
-// Prints "MyClass" instead of crashing
+// Prints "MyClass"
 console.log(g());
 ```
-- This will use more memory, because each class instance will have its own copy of each function defined this way
-- You can’t use super.getName in a derived class, because there’s no entry in the prototype chain to fetch the base class method from
-## function contructor
+- `const g = c.getName` uses more memory, because each class instance will have its **own copy of each function** defined this way.
+- You also can't use `super.getName` in a derived class, because there’s no entry in the prototype chain to fetch the base class method from
+
+
+## Prototype Function
 
 ```typescript
-function People(name: string) {
-  this.name = name // check error
-}
-
-People.prototype.getName = function() {
-  return this.name
-}
-
-const people = new People() // check error
-
-
 interface People {
   name: string
   getName(): string
 }
-
 interface PeopleConstructor {
   // constructor(name : string) : People
   new (name: string): People
   prototype: People 
 }
+```
 
-const ctor = (function(this: People, name: string) {
+```typescript
+function People(name: string) {
+  this.name = name // check error
+}
+People.prototype.getName = function() {
+  return this.name
+}
+
+const people = new People() // check error
+```
+
+```typescript
+const ctor = (
+  function(this: People, name: string) {
   this.name = name
-} as unknown) as PeopleConstructor // 类型不兼容，二次转型
+} as unknown) as PeopleConstructor // Two times type-assertion
 
 ctor.prototype.getName = function() {
   return this.name
@@ -190,25 +354,14 @@ console.log(people.getName())
 ```
 
 
-```typescript 
-class People {
-  name: string
-  constructor(name: string) {
-    this.name = name // check ok
-  }
-  getName() {
-    return this.name
-  }
-}
-const people = new People("this name");
-console.log(people.getName());
-
+```typescript
 class Test {
   name = 1
+  
   namedFunction() {
     return this.name
   }
-  Anonymousfunction = function() {
+  anonymousFunction = function() {
     return this.name // complier error (this is any)
   }
   arrowFunction = () => {
@@ -220,10 +373,13 @@ class Test {
 const test = new Test()
 
 console.log(test.namedFunction()) // 1
-console.log(test.Anonymousfunction()) // 1
+console.log(test.anonymousFunction()) // 1
 console.log(test.arrowFunction()) // 1
 ```
 
+## Anonymous Function vs function object
+
+在處理繼承的時候，如果Base類別透過this呼叫instance member function `(anonymous function)`而非原型方法，Derived類別無法透過Base的this呼叫該function被Derived類別Override後的操作,例如
 ```typescript
 class Parent {
   constructor() {
@@ -243,21 +399,29 @@ class Child extends Parent {
   }
 }
 
+// 無法透過base的this呼叫被overridden的function
 const child = new Child() // parent
+```
 
-class Parent2 {
+
+```typescript
+class Parent {
   constructor() {
     this.setup()
   }
+
   setup() {
     console.log("parent")
   }
 }
 
-class Child2 extends Parent2 {
+class Child extends Parent {
+  /*
   constructor() {
     super()
   }
+  */
+
   setup() {
     console.log("child")
   }
@@ -265,112 +429,6 @@ class Child2 extends Parent2 {
 
 const child2 = new Child2() // child
 ```
-在處理繼承的時候，如果 superclass 調用了示例方法而非原型方法，那麼是無法在 subclass 裡進行 override 的，這與其他語言處理繼承的 override 的行為向左，很容出問題。因此更加合理的方式應該是不要使用實例方法，但是如何處理 this 的綁定問題呢。目前較為合理的方式要么手動 bind，或者使用 decorator 來做 bind
-
-
-## literal Type 
-
-`this` is literal type itself 
-
-```typescript
-// this = itself 
-let foo = {
-  x: "hello",
-  // named method
-  f(n: number) {
-    this // this: {x: string; f(n: number):v oid }
-  },
-}
-```
-
-## literal Type with type annotation
-
-`this` is the type annotation
-
-```typescript
-type Point = {
-  x: number
-  y: number
-  moveBy(dx: number, dy: number): void
-}
-
-let p: Point = {
-  x: 10,
-  y: 20,
-  moveBy(dx, dy) {
-    this // Point
-  },
-}
-```
-## `method(this : type)` in literal type
-
-```java
-let bar = {
-  x: "hello",
-  f(this: { message: string }) {
-    this // { message: string }
-  },
-}
-```
-
-## `method(this : type )` in literal type with type annotation
-
-```typescript
-type Point = {
-  x: number
-  y: number
-  moveBy(dx: number, dy: number): void
-}
-
-let p: Point = {
-  x: 10,
-  y: 20,
-  moveBy(this: { message: string }, dx, dy) {
-    this // {message:string} 
-  },
-}
-```
-
-## literal with type annotation `& ThisType<T>`
-
-`this` is T
-
-```typescript 
-type Point = {
-  x: number
-  y: number
-  moveBy: (dx: number, dy: number) => void
-} & ThisType<{ message: string }>
-
-let p: Point = {
-  x: 10,
-  y: 20,
-  moveBy(dx, dy) {
-    this // {message:string}
-  },
-}
-```
-
-## `method(this : T)` in literal type
-
-`this` is T
-
-```typescript
-type Point = {
-  x: number
-  y: number
-  moveBy(this: { message: string }, dx: number, dy: number): void
-}
-
-let p: Point = {
-  x: 10,
-  y: 20,
-  moveBy(dx, dy) {
-    this // { message:string}
-  },
-}
-```
-
 
 ```typescript
 class A {
@@ -392,45 +450,79 @@ class B extends A {
 
 const b = new B()
 const a = new A()
-b.A1().B1() // 不报错
-a.A1().B1() // 报错
+b.A1().B1() // A.A1:B
+
+// Base is not allow to call method from 
+a.A1().B1() 
+        ^ Property 'B1' does not exist on type 'A'.(2339)
+
 type M1 = ReturnType<typeof b.A1> // B
 type M2 = ReturnType<typeof a.A1> // A
+
+b.A1().B1().A2().B2() 
 ```
-仔细观察上述代码发现，在不同的情况下，A1 的返回类型实际上是和调用对象有关的而非固定，只有这样才能支持如下的链式调用，保证每一步调用都是类型安全
-```typescript
-b.A1().B1().A2().B2() // check ok
-```
-this 的处理还有其特殊之处，大部分语言对 this 的处理，都是将其作为隐式的参数处理，但是对于函数来讲其参数应该是逆变的，但是 this 的处理实际上是当做协变处理的。考虑如下代码
+
+### Overridden Function
+
 ```typescript
 class Parent {
-  name: string
+  name: string = "default"
+  constructor(name ?: string){
+    if(name != undefined){
+      this.name = name;
+    }
+  }
 }
 
 class Child extends Parent {
-  age: number
+  age?: number
+  constructor(name ?: string, age ?: number){
+    super(name);
+    this.age = age;
+  }
 }
+
+
 class A {
+  filedA = "ImFiledA"
   A1() {
     return this.A2(new Parent())
   }
-  A2(arg: Parent) {}
-  A3(arg: string) {}
+  A3(arg: string) : string {
+    return "A.A3";
+  }
+  A2(arg: Parent) {
+    console.log(arg);
+    console.log(this);
+  }
 }
 
 class B extends A {
+
+  filedB = "ImFieldB";
+
   A1() {
-    // 不报错，this特殊处理，视为协变
     return this.A2(new Parent())
   }
-  A2(arg: Child) {} // flow下报错，typescript没报错
-  A3(arg: number) {} // flow和typescript下均报错
+  // Allow base/derived type
+  A2(arg: Child) {
+    super.A2(arg)
+  } 
 }
+
+
+let a = new A();
+let b = new B();
+
+a.A2(new Parent("ImParentField"));
+b.A2(new Parent("ImChildField"));
+b.A2(new Child()) // if optional ? is not declare then compiler error
+b.A2(new Child("ImChildField", 1234))
 ```
 
 ## `thisParameterType<typeof NAMED_FUNCTION>`
 
-`thisPramaeterType` Extracts the type of the `this` parameter of a function type or `unknown` if the function type has no `this` parameter.
+`thisParameterType` Extracts the type of the `this` parameter of a function type or `unknown` if the function type has no `this` parameter.
 
 ```typescript
 interface People {
