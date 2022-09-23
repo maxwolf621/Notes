@@ -9,10 +9,10 @@
   - [LeetCode](#leetcode)
   - [Typescript](#typescript)
     - [Methods](#methods)
-    - [Properties of Typescript](#properties-of-typescript)
+    - [Basics](#basics)
   - [Kotlin](#kotlin)
   - [Angular](#angular)
-    - [Basics](#basics)
+    - [Basics](#basics-1)
     - [Bind data with Template, HTML and Component & CSS](#bind-data-with-template-html-and-component--css)
     - [Directive](#directive)
     - [Angular Reactive Forms](#angular-reactive-forms)
@@ -47,6 +47,7 @@
 - [LeetCode Exercises](LeetCode/README.md)
 ## Typescript
 
+
 [What is `new() :T`](https://reurl.cc/O4Anb9)   
 [Exercises](https://exercism.org/tracks/typescript/exercises)   
 [Cheat Sheet](https://rmolinamir.github.io/typescript-cheatsheet/)     
@@ -58,7 +59,8 @@
 [Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
 [Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)     
 
-### Properties of Typescript 
+
+### Basics
 
 Type inference : types can be determined from the context, making type annotations optional.  
 Function Type expression : `functionName : ( parameters ) => returnType`
@@ -83,7 +85,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Function](Typescript/Function.md)
 - [Class](Typescript/Class.md)
   - [Static](Typescript/static.md) 
-  - [this](Typescript/this.md)
+  - **[this](Typescript/this.md)**
 - [Module](Typescript/module.md)
 - [NameSpace](Typescript/namespace.md)
 ## Kotlin
@@ -150,6 +152,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [ViewChild and ViewChildren](Angular/viewchild.md)
 - [ContentChild and ContentChildren](Angular/contentChild.md)
 - [Structural Directives](Angular/Structural%20Directives.md)
+  - [`ng-Content`](Angular/ngContent.md)
   - [`ng-template` with TemplateRef & ViewContainerRef](Angular/ng-template.md)
   - [`ng-container`](Angular/ng-container.md)
   - [`ng-templateOutlet`](Angular/ngTemplateOutlet.md)
@@ -211,7 +214,6 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 
 ![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
 
-
 ### Create 
 ![](images/c642d93d99c835876a635ba71e0a45f31703f47de9b8823f71445a5a00be8954.png)
 **[Observable & Observer](RXJS/Observable&Observer.md)**  
@@ -244,8 +246,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [CSS OVERFLOW&FLOW](SCSS/overflow&FLOW.md)
 - [CSS Grid](SCSS/grid.md)
 - [CSS FLEX vs Angular Flex-Layout](SCSS/flex.md)
-- [CSS 選擇器](https://reurl.cc/gMRZMQ)
-- [SELECTORS](https://reurl.cc/GEneEG)
+- [SELECTORS](SCSS/selector.md)
 - [Display](https://reurl.cc/V1Y8EY)
 - [SCSS Notes](SCSS/scssUsage.md)
   
