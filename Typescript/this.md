@@ -3,7 +3,7 @@
 [Typescript裡的This](https://zhuanlan.zhihu.com/p/104565681)   
 [this-based type guards](https://www.typescriptlang.org/docs/handbook/2/classes.html#this-types)  
 - [this type](#this-type)
-  - [return `this` types of the method in Class](#return-this-types-of-the-method-in-class)
+  - [method returns `this`](#method-returns-this)
   - [this in method block](#this-in-method-block)
   - [`this` as type annotation](#this-as-type-annotation)
   - [`this : ClassName`](#this--classname)
@@ -13,14 +13,16 @@
     - [Object Type](#object-type)
     - [Class](#class)
   - [Prototype Function](#prototype-function)
-  - [Anonymous Function vs function object](#anonymous-function-vs-function-object)
-    - [Overridden Function](#overridden-function)
+  - [`this.method` is called by Base and Derived Class](#thismethod-is-called-by-base-and-derived-class)
+  - [Derived Class calls method from Base Class with return `this` type](#derived-class-calls-method-from-base-class-with-return-this-type)
+  - [Overridden Function](#overridden-function)
   - [`thisParameterType<typeof NAMED_FUNCTION>`](#thisparametertypetypeof-named_function)
 
 
-## return `this` types of the method in Class 
+## method returns `this`
 
 `this` refers dynamically to the type of the current class.
+
 ```typescript
 class B {
   contents: string = "";
@@ -28,7 +30,7 @@ class B {
   // set(value: string): this
   set(value: string) { 
     this.contents = value;
-    return this;
+    return this; // type => this : this
   }
 }
 
@@ -55,7 +57,9 @@ let foo = {
   },
 }
 ```
-```typescript
+
+`this` type is
+```typescript 
 this: {
     x: string;
     y: typeof globalThis;
@@ -63,6 +67,8 @@ this: {
 }
 ```
 
+
+with `return`
 ```typescript
 let foo = {
   x: "hello",
@@ -72,14 +78,22 @@ let foo = {
     return this
   },
 }
-console.log(foxo.f(123));
+console.log(foo.f(123));
 ```
+
+`this` types is
 ```typescript
-this: {
-    x: string;
-    n: number;
-    f(n: number): ...;
-}
+/**
+   this: {
+      x: string;
+      n: number;
+      f(n: number): ...;
+  }
+*/
+```
+
+Console prints
+```typescript
 [LOG]: {
   "x": "hello",
   "n": 123
@@ -209,23 +223,20 @@ type Point = {
   x: number
   y: number
   moveBy(dx: number, dy: number): void
-  currentStatus(): void
 }
 
 let p: Point = {
   x: 10,
   y: 20,
-  currentStatus(this : {meesage : string}){
-    console.log(this)
-  },
-  moveBy(dx, dy) {
+  moveBy(this : { log : string, x : number , y : number} ,dx, dy) {
     this.x += dx;
     this.y += dy;
-    this.currentStatus();
+
+    console.log(this);
   }
 }
 
-p.moveBy(10,30);
+p.moveBy(10,20);
 ```
 
 Console Prints
@@ -377,8 +388,7 @@ console.log(test.anonymousFunction()) // 1
 console.log(test.arrowFunction()) // 1
 ```
 
-## Anonymous Function vs function object
-
+## `this.method` is called by Base and Derived Class
 在處理繼承的時候，如果Base類別透過this呼叫instance member function `(anonymous function)`而非原型方法，Derived類別無法透過Base的this呼叫該function被Derived類別Override後的操作,例如
 ```typescript
 class Parent {
@@ -430,6 +440,8 @@ class Child extends Parent {
 const child2 = new Child2() // child
 ```
 
+## Derived Class calls method from Base Class with return `this` type
+
 ```typescript
 class A {
   A1() {
@@ -462,7 +474,7 @@ type M2 = ReturnType<typeof a.A1> // A
 b.A1().B1().A2().B2() 
 ```
 
-### Overridden Function
+## Overridden Function
 
 ```typescript
 class Parent {
