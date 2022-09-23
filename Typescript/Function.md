@@ -71,7 +71,6 @@ If we want to describe something callable with properties, we can write a call s
 // object type 
 type DescribableFunction = {
   description: string;
-
   // Call Signatures (function without name)
   (someArg: number): boolean;
 };
@@ -415,7 +414,6 @@ function fn(x: string): void;
 This overload signature is not compatible with its implementation signature.
 
 function fn(x: boolean) {}
----------------------------------------------------------------------------------
 
 function fn(x: string): string;
 
