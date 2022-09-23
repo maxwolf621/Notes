@@ -20,9 +20,9 @@ The template does not render itself on DOM.
 
 ## Syntax
 
-ngTemplate is controlled by directive of component
+ngTemplate is controlled by `@Directiv` component
 ```html
-<ngTemplate directiveSelectorName>  ... </ngTemplate>
+<ngTemplate ComponentDirective>  ... </ngTemplate>
 ```
 
 ngTemplate is controlled by TemplateName
@@ -33,10 +33,9 @@ ngTemplate is controlled by TemplateName
 Pass parameter to this ngTemplate
 ```html
 <ngTemplate #templateRefName
-            let-templateParameter = "parameter-NameFrom-*TemplateOutlet" , 
-            let-templateParameter ="...."> 
-      <div>{{ templateParameter | json }}</div>
-      <div>{{ XXX | json }}</div>
+            let-templateParameter1 = "parameter-NameFrom-*TemplateOutlet" , 
+            let-templateParameter2 ="parameter-NameFrom-*TemplateOutlet"> 
+      <div>{{ templateParameter1 | json }}</div>
 </ngTemplate>
 ```
 
@@ -70,12 +69,10 @@ sayHelloTemplate:TemplateRef; // or TemplateRef<any>
 
 ### ViewContainerRef
 
-The `ViewContainerRef` is also similar to `TemplateRef`. 
-Both hold the reference to part of the view.   
+**The `ViewContainerRef` is also similar to `TemplateRef`. Both hold the reference to part of the view.**   
 
-It helps us manipulate the Template from Component
-
-Once, we have `ViewContainerRef`, we can use the `createEmbeddedView` method to add the template to the component.
+It helps us manipulate the Template from Component   
+Once, we have `ViewContainerRef`, we can use the `createEmbeddedView` method to add the template to the component.   
 ```typescript
 @ViewChild('sayHelloTemplate', { read: TemplateRef })
 sayHelloTemplate:TemplateRef<any>;
@@ -107,6 +104,7 @@ export class DynamicComponentHostDirective {
 
 ```typescript
 export class AppComponent implements OnInit {
+  
   @ViewChild(DynamicComponentHostDirective) dynamicComponentLoader: DynamicComponentHostDirective;
 
   private _chooseForm = 'A';

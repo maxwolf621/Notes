@@ -1,36 +1,26 @@
-# ngTemplateOutlet
+# *ngTemplateOutlet
 
 [Reference :: [Angular 大師之路] Day 12 - *ngTemplateOutlet 與 ng-template 的完美組合](https://ithelp.ithome.com.tw/articles/10205829)
 
-- [ngTemplateOutlet](#ngtemplateoutlet)
+- [*ngTemplateOutlet](#ngtemplateoutlet)
     - [Syntax](#syntax)
   - [透過Outlet傳參數給Template](#透過outlet傳參數給template)
-  - [Outlet傳入多個參數到Template (`context : { ... }`)](#outlet傳入多個參數到template-context----)
-  - [In Action](#in-action)
+  - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
+  - [In Action (Directive)](#in-action-directive)
 
 The ngTemplateOutlet, is a structural directive, which renders the template.
 `*ngTemplateOutlet` 用來放置 `<ng-template>`，概念就與 `<router-outlet>` 雷同，在 Angular 的命名中，當我們看到 `....Outlet`結尾，都能想像成一個Container儲存特定的物件
-透過 `*ngTemplateOutlet="Template's名稱"` 來顯示某個特定Template，減少Template
-重複
+透過 `*ngTemplateOutlet="TemplateRefName | Directive | Component"` 來顯示某個特定Template，減少Template重複
 ### Syntax
 
 ```html 
-<ng-template #NameOfTemplate>
-  ...                ^
-  ....                \
-</ng-template>         \ 
-                        \
-<div *ngTemplateOutlet = "NameOfTemplate">
-</div>
-
-
-<!-- 
-  for example 
--->
-<ng-template #data>
-  Hello World
-</ng-template>
-<div *ngTemplateOutlet="data"></div>
+<ng-template #TemplateReferenceName>
+  ...                      ^
+  ....                      \
+</ng-template>               \ 
+                              \
+<element *ngTemplateOutlet = "TemplateReferenceName">
+</element>
 ```
 
 ## 透過Outlet傳參數給Template
@@ -48,19 +38,37 @@ The ngTemplateOutlet, is a structural directive, which renders the template.
 自ngTemplateOutlet的參數
 - `{{input | json }}` : 參數以json方式呈現
 
-## Outlet傳入多個參數到Template (`context : { ... }`)
+## Outlet傳入多個參數到Template 
+
+```html
+<ng-template #data let-input="$Implicit" let-x="x" let-y = "y">
+  ...
+  ...
+</ng-template>
+
+<div *ngTemplateOutlet="data; 
+      context: {
+                <!--variable  :  { objectType }-->
+                $implicit: {property: value , ... , ...}, 
+                x : {propertyX : value , .. , ..}
+      },"
+></div>
+```
 
 當我們有其他的參數時，也可以直接放到 context 裡面
 ```html
-<ng-template #data let-input let-another="another">
+<ng-template #data let-input="$Implicit" let-another="another">
   <div>{{ input | json }}</div>
   <div>{{ another | json }}</div>
 </ng-template>
 
-<div *ngTemplateOutlet="data; context: {$implicit: {value: 1}, another: {value: the other parameter}}"></div>
+<div *ngTemplateOutlet="data; 
+      context: {$implicit: {value: 1}, 
+                another: {value: "this is another" }"
+></div>
 ```
 
-## In Action
+## In Action (Directive)
 
 我們可以建立一個directive，並掛在每個`<ng-template>` HTML ELEMENT上，之後在程式內就可以使用 `@ViewChildren`的方式，取得`<ng-template>`的QueryList
 ```typescript
@@ -68,12 +76,10 @@ The ngTemplateOutlet, is a structural directive, which renders the template.
  *  For Host Element , 
  * <Host-Ellement CarouselPageDirective></Host-Element>
  */
-
 @Directive({
   selector: '[appCarouselPage]'
 })
 export class CarouselPageDirective {
-  
   constructor(public templateRef: TemplateRef<any>) { }
 }
 ```
@@ -118,9 +124,8 @@ export class AppComponent implements AfterViewInit {
     this.setDisplayPage(this.index);
   }
 
+  // go next page 
   next() {
-
-    // go next page 
     this.index = (this.index + 1) % this.carouselPages.length;
 
     this.setDisplayPage(this.index);

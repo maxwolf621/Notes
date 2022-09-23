@@ -14,6 +14,26 @@
 ## Methods
 
 ```typescript
+export abstract class Renderer2 {
+  abstract createElement(name: string, namespace?: string|null): any;
+  abstract createComment(value: string): any;
+  abstract createText(value: string): any;
+  abstract setAttribute(el: any, name: string, value: string, namespace?: string|null): void;
+  abstract removeAttribute(el: any, name: string, namespace?: string|null): void;
+  abstract addClass(el: any, name: string): void;
+  abstract removeClass(el: any, name: string): void;
+  abstract setStyle(el: any, style: string, value: any, flags?: RendererStyleFlags2): void;
+  abstract removeStyle(el: any, style: string, flags?: RendererStyleFlags2): void;
+  abstract setProperty(el: any, name: string, value: any): void;
+  abstract setValue(node: any, value: string): void;
+  abstract listen(target: 'window'|'document'|'body'|any, 
+                  eventName: string, 
+                  callback: (event: any) => boolean | void): () => void;
+}
+```
+
+
+```typescript
 /***********************
  * @method setStyle/removeStyle
  */

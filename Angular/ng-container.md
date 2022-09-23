@@ -44,14 +44,11 @@ The above code actually looks like the following when it is executed
 ```
 ```css
 /*
-              Nested Condition for render
-              <.. class = "body">
-                <... class = "content">
-                  ....
-                </...>
-              </..>
+  Nested Class 
+  <.. class = "body">
+    <... class = "content"></...>
+  </..>
 */
-
 .body > .content {
   color: red;
 }
@@ -66,7 +63,7 @@ Using `ng-container` to hide `*ngFor` Structural Directives
   </ng-container>
 </div>
 
-<!-- what page is displayed -->
+<!-- page actually displays -->
 <div class="body">
     <div class="content" *ngIf="odd">{{ item }}</div>
 </div>
