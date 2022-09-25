@@ -1,45 +1,90 @@
 # Scss
 
 - [Scss](#scss)
+  - [`$` variable](#-variable)
+  - [`@for` and `@if`](#for-and-if)
   - [variable scope](#variable-scope)
   - [global variable (`!global`)](#global-variable-global)
   - [@mixin and @include](#mixin-and-include)
   - [@extend](#extend)
   - [@import](#import)
   - [operator](#operator)
-  - [functions](#functions)
-  - [loops](#loops)
-    - [for .. from .. through ...](#for--from--through-)
-  - [condition (@if {} @else if {} @else )](#condition-if--else-if--else-)
+  - [functions(min, lighten, darken)](#functionsmin-lighten-darken)
+
+- [exercise](https://gist.github.com/fredsiika/2958726da1f94a9bd447f4f7bd03a852#use-if-and-else-to-add-logic-to-your-styles)
+
+## `$` variable
+
+```scss
+/**
+  * define variable with $
+  */
+$varName
+
+
+// example 
+$main-fonts: Arial, sans-serif;
+$headings-color: red;
+
+h1 {
+  font-family: $main-fonts;
+  color: $headings-color;
+}
+```
+
+## `@for` and `@if`
+
 ```scss
 /**
   * loop 
   */
 @for $v from x through y {}
 
+// for example 
+@for $x from 1 through 70 {
+  .font-size-#{$x} {
+    font-size: 0px + $x;
+  }
+}
+```
+
+```scss
 /**
   * Condition
   */
-@if condition {} @else if condition {} @else {}
+@if condition {...} 
+@else if condition {...} 
+@else {...}
 
-/**
-  * define variable with $
-  */
-$variable
+// for example 
+$bg: pink;
+$bg-mobile: red;
+p {
+  @if $bg == pink {
+    color: blue;
+  } @else if $bg-mobile == red {
+    color: green;
+  } @else {
+    color: grey;
+  }
+}
 ```
 
 ## variable scope
 
 ```scss
+// global variable
 $myColor: red;
 
 h1 {
   // local variable
   $myColor: green;
+  
+  //...
+  
   // green
   color: $myColor;
 }
-
 p {
   // red
   color: $myColor;
@@ -53,6 +98,7 @@ $myColor: red;
 
 h1 {
   $myColor: green !global;
+
   // green
   color: $myColor;
 }
@@ -66,9 +112,7 @@ p {
 ## @mixin and @include
 
 ```scss
-// SCSS 
-
-// allowing parameter and default value
+// $params default val : 10px
 @mixin fontSize ($params: 10px){
   font-size: $params;
 }
@@ -94,19 +138,22 @@ p {
 
 ## @extend
 
+`@extend Attribute`: I use that attribute setup
+
 ```scss
 // SCSS
 .header {
   color: grey;
 }
 
-/** sub-header extend header **/
 .sub-header {
   @extend .header;
   font-size: 40px;
 }
+```
 
-// Compiled CSS
+Compiled CSS
+```css
 .header, .sub-header {
   color: grey;
 }
@@ -116,13 +163,16 @@ p {
 }
 ```
 
-
 ## @import 
 
 SCSS allow you to import other SCSS stylesheet into a SCSS file using @import
 
 ```scss
-@import “button.scss” or @import “button”
+@import "button.scss"
+```
+or
+```scss
+@import "button"
 ```
 
 ## operator 
@@ -150,45 +200,16 @@ Multiplication(*) e.t.c
 }
 ```
 
-## functions
+## functions(min, lighten, darken)
 
-mix(firstColor, secondColor, proportionOfFirstColor)
+`mix(firstColor, secondColor, proportion_of_firstColor)`
+```scss
+mix(blue, grey, 30%) /* 30% blue and 70% grey*/
+``` 
 
 ```scss
-mix(blue, grey, 30%) /*results 30% blue and 70% grey*/
-
 // lighten color #ff000 30%
 lighten(#ff0000, 30 ) /*results #ff9999*/
-
+// darken color #ff000 30%
 darken(#ff0000, 30 ) /*results #660000*/
-```
-
-## loops
-
-### for .. from .. through ...
-
-```scss
-@for $x from 1 through 70 {
-  .font-size-#{$x} {
-    font-size: 0px + $x;
-  }
-}
-```
-
-## condition (@if {} @else if {} @else )
-
-
-```scss
-$bg: pink;
-$bg-mobile: red;
-
-p {
-  @if $bg == pink {
-    color: blue;
-  } @else if $bg-mobile == red {
-    color: green;
-  } @else {
-    color: grey;
-  }
-}
 ```

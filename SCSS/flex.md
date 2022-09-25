@@ -5,10 +5,11 @@
 
 - [Flex](#flex)
   - [css flex](#css-flex)
+    - [fxLayoutAlign](#fxlayoutalign)
     - [flex-grow & flex-shrink](#flex-grow--flex-shrink)
   - [angular flex-layout](#angular-flex-layout)
-    - [Items in Containers](#items-in-containers)
-    - [子元素類 Child Elements within Containers](#子元素類-child-elements-within-containers)
+    - [Controls Items In Container](#controls-items-in-container)
+    - [Items within Containers (`fxFlex`-)](#items-within-containers-fxflex-)
   - [special responsive features](#special-responsive-features)
 
 ## css flex
@@ -30,15 +31,14 @@ Flex-direction
 - [flex-direction: row](https://www.w3schools.com/css/tryit.asp?filename=trycss3_flexbox_flex-direction_row)
 - [flex-direction: row-reverse](https://www.w3schools.com/css/tryit.asp?filename=trycss3_flexbox_flex-direction_row-reverse)
 
-FLEX-WRAP : whether items wrap to the next row (**only applies if combined width of items is greater than container's**)
 
-Justify-content : alignment along the x axis    
-align-items : alignment along the y axis(單列items)   
+### fxLayoutAlign
 
-align-content :only applies if there is more than one row of items (一次處理Container內所有Item(每一列的Items))
-
-align-self : 對單一特定item進行(Y-axis)
-
+FLEX-WRAP : whether items wrap to the next row (**only applies if combined width of items is greater than container's**)   
+Justify-content : alignment along the x axis       
+align-items : alignment along the y axis(單列items)     
+align-content :only applies if there is more than one row of items (一次處理Container內所有Item(每一列的Items))  
+align-self : 對單一特定item進行(Y-axis)    
 ### flex-grow & flex-shrink
 
 ![圖 5](../images/05cc62c847e83f3608d2549e57c17c7ab17e9689061b88eb30cc4adb382a581b.png)  
@@ -62,60 +62,69 @@ Each Items can grow：20px, 40px, 60px, 80px
 - [Containers](https://tburleson-layouts-demos.firebaseapp.com/#/docs)
 
 HTML API 可以分出以下三類：
-1. 容器類 Containers
-2. 子元素類 Child Elements within Containers
+1. 容器類 Container
+2. 子元素類 Items (Child Elements Within Container)
 3. 特殊響應功能 Special Responsive Features
 
-### Items in Containers
+### Controls Items In Container
 
-```html
-<!--          order of each items -->
-<div fxLayout="row | column">  </div>
-
-<!-- 
-  move items
-  right to left or left to right   
--->
-<div dir = "rtl | ltl"> </div>
-
-<!-- each items -->
-<div fxLayoutGap = "20px">
-<!--x-axis-->
-     fxLayoutAlign="space-evenly | space-around | space-between | center | start | end
-                    <!--y-axis-->
-                    start | end | center | stretch" >
+```
+flexLayout 
+fxLayoutGap
+dir
 ```
 
 
-### 子元素類 Child Elements within Containers
+```html
+<!--          order of each items -->
+<div fxLayout="row | column">  
+  ....
+</div>
 
-`fxFlex` 控制子元素大小，以及如何自動增長或收縮大小
+<!-- 
+  move each item from 
+  right to left | left to right   
+-->
+<div dir = "rtl | ltl">
+...
+</div>
+
+<!-- each items gap -->
+<div fxLayoutGap = "20px">
+<!--x-axis-->
+fxLayoutAlign="space-evenly | space-around | space-between | center | start | end
+<!--y-axis-->
+start | end | center | stretch" >
+</div>
+```
+
+### Items within Containers (`fxFlex`-)
+
+`fxFlex` constrols item size
 ```html
 <!--         grow shrink basis-->
 <div fxFlex="1    2      calc(15em + 20px)"></div>
 ```
-- 可接受單位 `%、px、vw、vh`
+- unit : `%、px、vw、vh`
 
-
-fxFlexOrder 定義排列順序   
+`fxFlexOrder` : order of each item
 ```html
 <div fxFlexOrder="2">
   fxFlexOrder = int number
 </div>
 ```  
 
-fxFlexOffset 設定子元素的偏移    
+`fxFlexOffset` offset of item  
 ```html
 <div fxFlexOffset="% | px | vw | vh"></div>
 ```
 
-
-fxFlexAlign (對應grid's `align-self`) : Align specific item
+`fxFlexAlign` (對應grid's `align-self`) : Align specific item
 ```html
 <div fxFlexAlign="start | baseline | center | end "></div>
 ```
 
-fxFlexFill 最大化子元素，將子元素的 width 和 height 撐到最大   
+`fxFlexFill` : stretch each item's width and height 100%
 ```html
  `<div fxFlexFill></div>`
 ```

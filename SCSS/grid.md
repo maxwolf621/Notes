@@ -3,22 +3,27 @@
 [Css Grid 概念介紹及使用教學](https://ballaediworkshop.blogspot.com/2019/10/css-grid-introduction-and-tutorial.html)
 
 - [Grid](#grid)
-  - [gird-template-columns & grid-template-rows](#gird-template-columns--grid-template-rows)
-    - [設定Container內的line分界線](#設定container內的line分界線)
+  - [container](#container)
+    - [`gird-template-columns` & `grid-template-rows`](#gird-template-columns--grid-template-rows)
     - [Alias name for each line](#alias-name-for-each-line)
     - [`reapeat(num, line)`](#reapeatnum-line)
   - [Item](#item)
+    - [`grid-column|row-start|end`](#grid-columnrow-startend)
+    - [`grid-column|row : 起點/終點`](#grid-columnrow--起點終點)
+    - [`grid-column|row : x/ x+1`](#grid-columnrow--x-x1)
+    - [`grid-column|row : line alias name / line alias name`](#grid-columnrow--line-alias-name--line-alias-name)
+    - [`grid-column|row 往左或往上span x/ 往右或下span y`](#grid-columnrow-往左或往上span-x-往右或下span-y)
   - [Grid Area](#grid-area)
-    - [Container's grid-template-area](#containers-grid-template-area)
-    - [Item grid-area](#item-grid-area)
-    - [Name Iteam's grid area via Container's grid-template-area](#name-iteams-grid-area-via-containers-grid-template-area)
+    - [Container's `grid-template-areas`](#containers-grid-template-areas)
+    - [Item's `grid-area`](#items-grid-area)
+    - [Name Iteam's grid area via Container's `grid-template-areas`](#name-iteams-grid-area-via-containers-grid-template-areas)
   - [Align](#align)
     - [grid-gap](#grid-gap)
-    - [justify-,align-, place-](#justify-align--place-)
-    - [justify (x-axis + height 100%)](#justify-x-axis--height-100)
-    - [align (y-axis)](#align-y-axis)
-    - [place-](#place-)
-    - [-content](#-content)
+    - [justify|align|place-items|self](#justifyalignplace-itemsself)
+    - [justify-items AND justify-self (x-axis)](#justify-items-and-justify-self-x-axis)
+    - [align-self & align-items (y-axis)](#align-self--align-items-y-axis)
+    - [place-self | palce-items](#place-self--palce-items)
+    - [justify-content, align-content AND place-content](#justify-content-align-content-and-place-content)
 
 Css Grid 的組成，一個 Grid 有兩個部分：Container and Item
 
@@ -30,11 +35,14 @@ Css Grid 的組成，一個 Grid 有兩個部分：Container and Item
 </div>
 ```
 
-## gird-template-columns & grid-template-rows
-
-container 設定各虛擬線間之距離，item 個別設定區域大小
+container 設定各虛擬線間之距離(`grid-template-colums|rows`)，item透過虛線每個交接點組成(`grid-column|row-start|end`)
  ![圖 2](../images/fea733759667188721601809160e1050bbbd1bee202e1dc099251fbcbbfd06ea.png)  
-### 設定Container內的line分界線
+## container
+
+container的設定`grid-template-`開頭
+### `gird-template-columns` & `grid-template-rows`
+
+設定Container內的每個grid的分界線
 ```css
 grid-template-columns: 40px 50px auto 50px 40px;
 grid-template-rows: 25% 100px auto;
@@ -59,6 +67,8 @@ grid-column-start: col-start 2;
 
 Form Item via Grid Line
 ![圖 3](../images/4e9dd64b8e034b7602d3317e2b8ff2a21dedb280d657a1936786343749ee45f6.png)  
+
+### `grid-column|row-start|end`
 ```css
 .item{
   grid-column-start: 2; (2nd line)
@@ -68,7 +78,7 @@ Form Item via Grid Line
 }
 ```
 
-`起點/終點`
+### `grid-column|row : 起點/終點`
 ```css
 .container{
   grid-column: 2 / 5;    /* (<startLine> / <endLine>) */
@@ -76,18 +86,18 @@ Form Item via Grid Line
 }
 ```
 
-`x / x+1`
+### `grid-column|row : x/ x+1`
 ```css
 grid-column : 2   /*  相當於 2 / 3  */
 ```
 
-`line alias name / Line alias name`
+### `grid-column|row : line alias name / line alias name`
 ```css
 grid-column: line2 / five;
 grid-row: row1-start / third-line;
 ```
 
-`往左或往上span / 往右或下span ` 
+### `grid-column|row 往左或往上span x/ 往右或下span y` 
 ```css
 /*
  * grid-column 或 grid-row : span startLine , span endLine語法
@@ -103,7 +113,7 @@ grid-column: span 3 / span 4;
 ```
 
 ## Grid Area
-### Container's grid-template-area
+### Container's `grid-template-areas`
 ```css
 .container{
   grid-template-areas: "<grid-ara-name>" | "." | none 
@@ -113,7 +123,7 @@ grid-column: span 3 / span 4;
 - `none` : undefine Area
 
 
-### Item grid-area
+### Item's `grid-area`
 
 The `grid-area` property can be used as a shorthand property for (the grid line) `grid-row-start`, `grid-column-start`, `grid-row-end `and the `grid-column-end` properties.
 `row起點/column起點/row終點/column終點`
@@ -127,7 +137,7 @@ The `grid-area` property can be used as a shorthand property for (the grid line)
 }
 ```
 
-### Name Iteam's grid area via Container's grid-template-area
+### Name Iteam's grid area via Container's `grid-template-areas`
 
 ![圖 4](../images/4534e8269e5fef1680b5ce93dd692ecc28d7aa4f7178b107c48520ec6c54c037.png)  
 
@@ -203,81 +213,94 @@ item 只需設定 container 設定好的名字
 ### grid-gap 
 
 Each Item's gap in Container
-```typescript
-grid-column-gap: 10px
-grid-row-gap: 15px
+```scss
+.container{
+  grid-column-gap: 10px
+  grid-row-gap: 15px
 
-/* grid-gap: <grid-row-gap> <grid-column-gap> */
-grid-gap   : 15px           10px;
+  grid-gap   : 15px /** row **/  10px  /** column **/ ; 
+}
 ```
 
-### justify-,align-, place-
+### justify|align|place-items|self
 
 `justify|align|place-items` 利用 container 一次設定所有 items
 ```css
 .container{
   justify-items: start | end | center | strech
-  align-items:
-  place-items:
+  align-items: start | end | center | strech
+  place-items: start | end | center | strech
 }
 ```
 
 `justify|align|place-self`: 特定item 個別設定的對齊方式
 ```css
 .item{
-  justify-self:
-  align-self:
-  place-self:
+  justify-self: start | end | center | strech
+  align-self: start | end | center | strech
+  place-self:  start | end | center | strech
 }
 ```
 
-### justify (x-axis + height 100%)
+### justify-items AND justify-self (x-axis)
 
 **item的height 100% (上下填滿)**
 
 ```css
 .container{
-  justify-items|-self : start  ;  /** 最左邊 **/
-  justify-items|-self : end    ;  /** 最右邊 **/
-  justify-items|-self : center ;  /** 至中 **/
-  justify-items|-self : stretch;  /** default 每個item佔滿**/ 
+  justify-items : start  ;  /** 最左邊 **/
+  justify-items : end    ;  /** 最右邊 **/
+  justify-items : center ; 
+  justify-items : stretch;  /** default**/ 
+}
+.item{
+  justify-self: start  ;
+  justify-self: end    ;
+  justify-self: center ;
+  justify-self: stretch; /** default **/
 }
 ```
 
-### align (y-axis)
+### align-self & align-items (y-axis)
 
 **item的width 100%（左右填滿)**
 
 ```css
-align-items|self : start  ; 
-align-items|self : end    ;
-align-items|self : center ;
-align-items|self : stretch;  /** default **/
+.container{
+  align-items|self : start  ; 
+  align-items|self : end    ;
+  align-items|self : center ;
+  align-items|self : stretch;  /** default **/
+}
+.item{
+  align-self: start  ;
+  align-self: end    ;
+  align-self: center ;
+  align-self: stretch;
+}
 ```
 
 
 
-### place-
+### place-self | palce-items
 
-同時調整單justify-以及align-
+同時調整單justify以及align
 
-```css
+```scss
 /*  place-items : <align-items> / <justify-items>  */
-
-place-self: center stretch;
-
-/*
-如果只設定一個值
-則為同時設定兩個屬性
-*/
-
-place-items: center;
-/*   == center center    */
+.item{
+  place-self: center stretch;
+}
+.container{
+  place-tiems: center center;
+  // same as
+  place-items: center;
+}
 ```
 
-### -content
+### justify-content, align-content AND place-content
 
-content是以一組grid-templae-area為單位做調整
+以一組grid-templae-area為單位做調整
 ```css
 .container{
   justify-content : space-evenly | space-between | space-around | stretch | center | start | end;
@@ -285,7 +308,6 @@ content是以一組grid-templae-area為單位做調整
   
   place-content : space-evenly | space-between | space-around | stretch | center | start | end / 
   space-evenly | space-between | space-around | stretch | center | start | end;
-
 }
 ```
 
