@@ -62,7 +62,7 @@ Host: www.example.org
 Cookie: yummy_cookie=choco; tasty_cookie=strawberry
 ```
 ## HTTP METHOD
-- [POST AND GET](https://medium.com/%E5%B0%8F%E5%B0%8F%E8%AA%AA%E6%9B%B8%E4%BA%BA/%E7%B6%B2%E9%A0%81get-%E8%88%87-post-%E5%B7%AE%E7%95%B0-%E7%A7%91%E6%99%AE%E5%A3%B9%E9%BB%9E%E9%80%9A-94cbaa666fdb)
+- [POST AND GET](https://reurl.cc/O45203)
 
 在`HTTP 1.1`的版本中定義了八種 Method (方法)
 ```diff

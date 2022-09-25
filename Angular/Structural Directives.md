@@ -20,10 +20,10 @@ is equivalent to
 </ng-template>
 ```
 - `*`會將`ngIf`改為一個Attribute Bind(`[..] = ".."`) 
-- `*ngIf`隱藏掉的物件，和我們使用CSS去show、hide在意義上是完全不同的
+- `*ngIf`隱藏掉的物件，和我們使用CSS去`show`以及`hide`在意義上是完全不同的
   - 如果我們需要在show或hide物件的同時執行一些特殊的指令，可以用Lifecycle Hooks來撰寫此時要做的事情。
-  - **因為這可以避免過多的dom元素拖累網頁效能，若單純使用css去hide、show元素(只是隱藏而已)，所有的監聽器、物件依舊會在背景執行，這會讓效能變得不佳**
-- `ng-template`並不會一開始就顯示在畫面上，而是通過Directive操作裡面的dom並將要顯示的template添加在dom之中
+  - **若單純使用css去hide、show元素(只是隱藏而已)，所有的監聽器、物件依舊會在背景執行，這會讓效能變得不佳**
+- `ng-template`並不會一開始就顯示在畫面上，而是通過Directive操作裡面的DOM並將要顯示的template view添加在DOM之中
 
 ## Reference
 - [`*` Structural Directives](https://ithelp.ithome.com.tw/articles/10195273)
@@ -107,7 +107,7 @@ export class UnlessDirective {
 }
 ```
 ```html
-<p *appUnless="condition" class="unless a">
-  (A) This paragraph is displayed because the condition is false.
+<p *appUnless="condition">
+  This paragraph is displayed because the condition is false.
 </p>
 ```
