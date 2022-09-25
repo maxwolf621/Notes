@@ -2,10 +2,14 @@
 
 [Position 基本用法](https://reurl.cc/AOKkZ8)
 
-Position using `top|left|bottom|right` adjust the position
-- **有FIXED ELEMENT不管放哪裡都會擺在顯示畫面的最上層**
-- **有STICKY ELEMENT則是指定位置做固定**
+Position using `top|left|bottom|right` properties to adjust the position
 
+## fixed vs sticky
+
+- **有FIXED ELEMENT不管放哪裡都會擺在顯示畫面的最上層**
+- **有STICKY ELEMENT則是在指定位置做固定(便利貼)**
+- Fixed跟Sticky都會跟著畫面走
+## in Action
 
 <html>
 <head>
@@ -15,8 +19,8 @@ Position using `top|left|bottom|right` adjust the position
     top: 10px;
     left: 20px;
     width: 200px;
-    height: 200px;
-    background-color: purple;
+    height: 100px;
+    background-color: grey;
 }
 #out_block {
     position: relative;
@@ -28,11 +32,10 @@ Position using `top|left|bottom|right` adjust the position
 }
 #absolute_block {
     position: absolute;
-    top: 100px;
+    top: 500px;
     left: 50px;
     width: 100px;
     height: 100px;
-    background-color: #0000ff;
     display: none;
 }
 #out_block1 {
@@ -51,30 +54,39 @@ Position using `top|left|bottom|right` adjust the position
     top: 0px;
     background-color: #ff0000;
 }
+#staticBlock{
+    position : static;
+    background-color: grey;
+}
 </style>
 </head>
 <body>
 
 <div id="sticky_block">sticky1</div>
 
-<div id="block">position relative</div>
+<div id="block">position-relative</div>
 
-<div id="fixed_block">fixed1</div>
+<div id="fixed_block">fixed1-on-top</div>
+
+<div id="block">position-relative</div>
 
 <br/>
 
-<div id="sticky_block">sticky2</div>
+<div id="sticky_block">sticky2 here</div>
+
+<div id="block">position-relative</div>
 
 <div id="out_block">
     BLOCK-ORIGIN
     <div id="sticky_block">
         sticky in block 1
     </div>
+    <div id="staticBlock">static_block</div>
     <div id="absolute_block"> 
-        這個屬性是搭配 relative 做使用的，只要在設置 relative 的區塊內建立一個設置為 absolute 的內層區塊，那內層區塊透過 top 、 left 等屬性移動的起始點就不是頁面左上角，而是外層區塊的左上角
+        absolute 是搭配 relative 做使用的，只要在設置 relative 的區塊內建立一個設置為 absolute 的內層區塊
     </div>
     <div id="fixed_block">
-        fixed element indside in realtive block
+        fixed element inside in relative block
     </div>
     BLOCK-MIDDLE
     <div id="sticky_block">
@@ -103,15 +115,8 @@ Position using `top|left|bottom|right` adjust the position
 <br/>
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+
+
 </body>
 </html>
 

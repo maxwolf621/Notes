@@ -39,7 +39,7 @@
     - [accumulator & combiner](#accumulator--combiner)
 
 ## Reference
-- [SoruceCode](https://www.cnblogs.com/owenma/p/12207330.html)
+- [SourceCode](https://www.cnblogs.com/owenma/p/12207330.html)
 - [豬肉工程師](https://matthung0807.blogspot.com/2021/01/java-8-stream-pipeline-operations-intro.html)   
 - [Difference btw Stream and RxJava](https://stackoverflow.com/questions/30216979/difference-between-java-8-streams-and-rxjava-observables)  
 - **[Tony Blog](http://blog.tonycube.com/2015/10/java-java8-3-stream.html)**
@@ -54,7 +54,7 @@
                                           lazy-execution                                  Eager execution
      +--------+           +--------+     +-------------------------+                        +---------------------+
      |        |           |        |     |                         |                        |                     |
-     | Source |---------->| Stream |---->| intermediate operations |----------------------->| terminal operations |
+     | Source |---------->|.stream |---->| intermediate operations |----------------------->| terminal operations |
      |        |           |        |     |                         |                        |                     |
      +--------+           +--------+     +-------------------------+                        +---------------------+
 

@@ -1,4 +1,4 @@
-# board-style
+# board-style Property
 
 ```html
 <html>
@@ -66,8 +66,7 @@ p.mix {border-style: dotted dashed solid double;}
 </body>
 </html>
 
-
-## box-size
+# box-size
 
 By default, the width and height of an element is calculated like this:
 ```

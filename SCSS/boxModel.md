@@ -10,21 +10,24 @@
 
 
 ![圖 1](../images/50ef21da376b8b7f58c417d4c305e52bd0142413af5f86cf3368a5c6643d127e.png)  
-- Content :The content of the box, where text and images appear   
-- Padding(**transparent**) : Clears an area around the content.  
-- Border : A border that goes around the padding and content  
-- Margin(**transparent**) : Clears an area outside the border.   
+- Content:  
+  The content of the box, where text and images appear   
+- Padding(**transparent**):  
+  Clears an area around the content.  
+- Border :  
+  A border that goes around the padding and content  
+- Margin(**transparent**) :  
+  Clears an area outside the border.   
 
 
 ## Parameter (Shorthand Property)
 
 ```scss
 padding|margin : top , right , bottom, left
-```
-
-When `[padding|margin]` has three values : `top, right , bottom`
-When `[padding|margin]` has two values `1,2` means `top=1, right=2`
-When `[padding|margin]` has one values `1` : `top=1` , `right=1` , `bottom=1`, `left=1`
+``` 
+- When `[padding|margin]` has three values `1,2,3`: `top=1, right=2, bottom=3`
+- When `[padding|margin]` has two values `1,2` means `top=1, right=2`
+- When `[padding|margin]` has one values `1` : `top=1` , `right=1` , `bottom=1`, `left=1`
 
 
 <!DOCTYPE html>
@@ -33,7 +36,7 @@ When `[padding|margin]` has one values `1` : `top=1` , `right=1` , `bottom=1`, `
 <style>
 div.padding {
   width: 300px;
-  padding: 100px;
+  padding: 50px;
   box-sizing: border-box;
   background-color: grey;
 }
@@ -49,15 +52,14 @@ div.padding {
 </html>
 
 
-
 ## margin special parameter (inherit and auto)
-
 
 <html>
 <head>
 <style>
 #auto {
-  width: 300px;
+  /**box width**/
+  width: 200px;
   margin: auto;
   border: 1px solid yellow;
 }
@@ -69,8 +71,8 @@ div.parent{
 p.child{
   border: 1px solid gold;
   padding-top : 20px;
-  margin-left : inherit;
-  margin-top : inherit;
+  margin-left : inherit; /** 100px **/
+  margin-top : inherit; /** 50px **/
 }
 </style>
 </head>
