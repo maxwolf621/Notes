@@ -8,9 +8,8 @@
   - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
   - [In Action (Directive)](#in-action-directive)
 
-The ngTemplateOutlet, is a structural directive, which renders the template.
-`*ngTemplateOutlet` 用來放置 `<ng-template>`，概念就與 `<router-outlet>` 雷同，在 Angular 的命名中，當我們看到 `....Outlet`結尾，都能想像成一個Container儲存特定的物件
-透過 `*ngTemplateOutlet="TemplateRefName | Directive | Component"` 來顯示某個特定Template，減少Template重複
+**The ngTemplateOutlet, is a structural directive, which renders the template.**
+- 透過 `*ngTemplateOutlet="TemplateRefName | Directive | Component"` 來顯示(OutLet)某個特定Template，減少Template重複
 ### Syntax
 
 ```html 
