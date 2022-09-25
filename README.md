@@ -22,7 +22,7 @@
     - [Create](#create)
     - [Combine](#combine)
   - [CSS && SASS](#css--sass)
-    - [CSS & SCSS cheatSheet](#css--scss-cheatsheet)
+    - [Cheat Sheet](#cheat-sheet)
 
 
 ## Git & Linux
@@ -174,6 +174,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 
 **All the Material's class name is same as their material's name** for example `<img mat-card-image>` is `<img mat-card-image class="mat-card-image">`
 
+
 - [button](Material/button.md)
 - [mat-ripple]
 - [side nav](Material/sidenav.md)
@@ -205,6 +206,8 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [mat-expansion-panel](Material/matexpansionpanel.md)
 - [mat-tab-group](Material/matTabGroup.md)
 - [CDK](Material/cdk.md)
+
+
 ## RXJS
 
 - [Functional Programming](functionalProgram.md)
@@ -217,6 +220,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 ### Create 
 ![](images/c642d93d99c835876a635ba71e0a45f31703f47de9b8823f71445a5a00be8954.png)
 **[Observable & Observer](RXJS/Observable&Observer.md)**  
+
 ### Combine
 - **[RXJS Operators](RXJS/RXJS_Operators.md)**
 - [time](RXJS/delay.md)
@@ -241,6 +245,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 ## CSS && SASS
 
 - [CSS POSITION](SCSS/position.md)
+- [Z-index](https://kumo.tw/article.php?id=44)
 - [CSS PADDING AND MARGIN](SCSS/boxModel.md)
 - [CSS BOARD/BOX SIZE](SCSS/board.md)
 - [CSS OVERFLOW&FLOW](SCSS/overflow&FLOW.md)
@@ -249,8 +254,8 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [SELECTORS](SCSS/selector.md)
 - [Display](https://reurl.cc/V1Y8EY)
 - [SCSS Notes](SCSS/scssUsage.md)
-  
-### CSS & SCSS cheatSheet
-- [CSS Cheat Sheet](https://reurl.cc/W10D1y)   
+
+### Cheat Sheet
+- [tailwind](https://nerdcave.com/tailwind-cheat-sheet)
 - [CSS quickReview](https://reurl.cc/MN3RNL)  
 - [SCSS Cheat Sheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
