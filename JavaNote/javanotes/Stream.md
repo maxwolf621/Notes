@@ -2,11 +2,16 @@
 
 - [Stream](#stream)
   - [Reference](#reference)
-  - [Arrays.asList](#arraysaslist)
-  - [Arrays.stream(`T[]` arr)](#arraysstreamt-arr)
-  - [Ints.asList(...)](#intsaslist)
-  - [Stream.generate(...)](#streamgenerate)
-  - [Collections,List,Set Stream](#collectionslistset-stream)
+  - [Arrays to Streams](#arrays-to-streams)
+    - [`Arrays.asList(T ...e).stream()`](#arraysaslistt-estream)
+    - [`Arrays.stream(`T[]` arr)`](#arraysstreamt-arr)
+      - [object[] to stream](#object-to-stream)
+      - [primitive type array to stream](#primitive-type-array-to-stream)
+    - [Ints.asList(T ...t)](#intsaslistt-t)
+  - [iterate method](#iterate-method)
+    - [java 8](#java-8)
+    - [java 9](#java-9)
+  - [`static <T> Stream<T> generate(Supplier<T> s)`](#static-t-streamt-generatesuppliert-s)
   - [Stream.of](#streamof)
   - [IntStream,DoubleStream,LongStream](#intstreamdoublestreamlongstream)
     - [iterate](#iterate)
@@ -71,41 +76,57 @@ e.g. Collection                          e.g. Predicate<? super T> predicate    
     - 中間操作的結果會返回新的Stream，所以能繼續更多的中間操作。中間操作是懶執行(lazy-executing)，**也就是執行到中間操作時並不會真的被執行，只有到終端操作被執行時前面的中間操作才會開始執行**
 3. terminal Ops 終端操作遍歷前面中間操作的Stream並產生結果並結束整個管線操作。產生的結果可能是一個新的集合或只是對來源發生副作用
 
-## Arrays.asList
 
+## Arrays to Streams
+### `Arrays.asList(T ...e).stream()`
+
+`asList` method is **immutable**
 ```java
-public static <T> List<T> asList(T... a); // immutable 
+public static <T> List<T> asList(T ...e); // immutable 
+```
 
+initializer
+```java
 int arr[] = {1,2,3,4,5,6,7};
 List intList = Arrays.asList(arr);
 
 // Array has Object, not primitives 
 List<Integer> list = Arrays.asList(1,2,3);
-// or 
+// new object[]{T ...t}
 List<Integer> list = Arrays.asList(new Integer[] {1,2,3});
-
-Stream<String> stream1 = Arrays.asList("a", "b", "c").stream();
 ```
 
-
+The following code wont compile
 ```java
 List<Integer> list = Arrays.asList(new int[] {1,2,3});
 ```
-because primitive to wrapper coercion (ie. `int[]` to `Integer[]`) is not built into the language.   
+- The primitive to wrapper coercion (ie. `int[]` to `Integer[]`) is not built into the language.      
 As a result, each primitive type would have to be handled as it's own overloaded method, which is what the commons package does. i.e. `public static List<Integer> asList(int i...);`
 
-
-## Arrays.stream(`T[]` arr)
-
+streaming
 ```java
+Stream<String> stream1 = Arrays.asList("a", "b", "c").stream();
+```
+
+### `Arrays.stream(`T[]` arr)`
+
+#### object[] to stream
+```java
+// Object[] to stream
 Stream<String> stream1 = Arrays.stream(new String[10]);
+Stream<String> stream2 = Arrays.stream(new String[] {"a", "b", "c"});
+Stream<String> stream3 = new BufferedReader(new FileReader(new File("hello.txt"))).lines();
+```
 
+#### primitive type array to stream
+
+Primitive type to stream required `boxed()`
+```java
 int[] arr = {1,2,3};
-
 //In java 8+ 
-List<Integer> list = Arrays.stream(arr) //IntStream
-                           .boxed()     
-                           .collect(Collectors.toList());
+List<Integer> list = Arrays.stream(arr) // to IntStream
+                           .boxed()     // stream<Integer>
+                           .collect(Collectors.toList()); // to List<Integer>
 //In Java 16 and later:
 List<Integer> list = Arrays.stream(arr)
                            .boxed()
@@ -115,43 +136,42 @@ IntStream.of(arr) // return IntStream
          .boxed()  // Stream<Integer>
          .collect(Collectors.toList());
 
-Stream<String> stream3 = Arrays.stream(new String[] {"a", "b", "c"});
-
-Stream<String> stream4 = new BufferedReader(new FileReader(new File("hello.txt"))).lines();
 ```
 
-## Ints.asList(...)
+### Ints.asList(T ...t)
 
 ```java
 int[] arr = {1,2,3};
 // via guava libraries
 // {@code import com.google.common.primitives.Ints;} 
 List<Integer> Ints.asList(arr);
-``
-
-## Stream.Iterate(...)
-
-```java
-Stream<Integer> stream2 = Stream.iterate(0, (x) -> x + 3).limit(4);
-// 0, 3, 6, 9 ,12
 ```
 
-## Stream.generate(...)
+## iterate method
+### java 8
+
+`static <T> Stream<T> iterate(T seed, UnaryOperator<T> f)`
+```java
+//Stream.iterate(initial value, next value)
+Stream.iterate(0, n -> n + 1) // for(int n = 0 ; n <10 ; n + 1)
+            .limit(10)
+            .forEach(x -> System.out.print(x + " "));
+//0 1 2 3 4 5 6 7 8 9 10
+```
+
+### java 9
+
+```java
+// for (int n = 1 ; n < 20 , n*2)
+Stream.iterate(1, n -> n < 20 , n -> n * 2)
+       .forEach(x -> System.out.println(x));
+```
+
+## `static <T> Stream<T> generate(Supplier<T> s)`
 
 ```java
 Stream<Double> stream3 = Stream.generate(Math::random).limit(3);
 stream3.forEach(System.out::println);
-```
-
-## Collections,List,Set Stream
-
-Streams can be created from various data sources, especially collections. Lists and Sets support new methods `stream()` and `parallelStream()` to either create a sequential or a parallel stream which is capable of operating on multiple threads. 
-
-```java
-Arrays.asList("a1", "a2", "a3")
-      .stream()
-      .findFirst()
-      .ifPresent(System.out::println);  // a1
 ```
 
 ## Stream.of
@@ -203,13 +223,12 @@ DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
 
 - [IntStream mapToObj() in Java](https://www.geeksforgeeks.org/intstream-maptoobj-java/)
 
-Transform Primitive streams to object streams
+**Transform Primitive streams to object streams**
 ```java
 IntStream.range(1, 4) // IntStream
     .mapToObj(i -> "a" + i) // Stream<String>
     .forEach(System.out::println);
 ```
-
 ### parallel
 
 Synchronized
