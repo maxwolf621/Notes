@@ -229,7 +229,6 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Error](RXJS/Error.md)
 - **[AsyncPipe](RXJS/AsyncPipe.md)**
 - **[behaviorSubject](RXJS/behaviorSubject.md)**
-
 - [HttpClient.md](Angular/HttpClient.md)   
   ```typescript
   this.httpClient.get(BackendURL).pipe(
