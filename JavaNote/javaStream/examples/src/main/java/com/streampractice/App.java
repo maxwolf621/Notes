@@ -7,52 +7,6 @@ public class App
 
     public static void main( String[] args )
     {
-   
-        List<Student> students = new ArrayList<>();
-        students.add(new Student(1, "a", 18, "male", 88));
-        students.add(new Student(2, "b", 17, "male", 60));
-        students.add(new Student(3, "c", 19, "male", 100));
-        students.add(new Student(4, "d", 20, "male", 10));
-        students.add(new Student(5, "e", 14, "female", 95));
-        students.add(new Student(6, "f", 21, "male", 55));
-        
-        /** 
-        StudentOps studentOps = new StudentOps();
-        studentOps.filterByAge(students);
-        studentOps.filterByScore(students);
-        studentOps.summingStudentsAge(students);
-        studentOps.groupinByAge(students);
-        studentOps.matchOps(students, 88);
-        studentOps.skipAndLimit(students, 1, 4);
-
-        Stream.of(students).flatMap(e).forEach(System.out.println);
-        Stream<Student> stdStream = Stream.of(
-            new Student(1, "a", 18, "male", 88), 
-            new Student(1, "a", 18, "male", 88));
-        stdStream.forEach(System.out::println);
-
-        Stream<Integer> stream2 = Stream.iterate(
-            0, (x) -> x + 3).limit(5);
-        stream2.forEach(System.out::println);
-
-        Stream<Double> stream3 = Stream.generate(
-            Math::random).limit(2);
-
-        String a = Stream.of(3, 2, 3).map(String::valueOf).collect(
-            Collectors.joining("," , "prefix ", " suffix"));
-        */
-
-
-        /* 
-        List<Integer> reducingList = Arrays.asList(1, 2, 3, 4, 5);
-        ReduceOps reduceOps = new ReduceOps();
-        reduceOps.reduce(reducingList);
-        reduceOps.reduceWithInitializer(reducingList, 0);
-        reduceOps.reduceMultipleThreadsWithInitializer(reducingList, 0);
-        reduceOps.reduceSequentialWithInitialize(reducingList, 0);
-        */
-        
-
         /* 
         List<Fruit> fruitList = Arrays.asList(
             new Fruit("apple", 6),

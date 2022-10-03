@@ -4,40 +4,40 @@
   - [Reference](#reference)
   - [Arrays to Streams](#arrays-to-streams)
     - [`Arrays.asList(T ...e).stream()`](#arraysaslistt-estream)
-    - [`Arrays.stream(`T[]` arr)`](#arraysstreamt-arr)
-      - [object[] to stream](#object-to-stream)
+    - [`Arrays.stream(T[] arr)`](#arraysstreamt-arr)
+      - [`object[]` to stream](#object-to-stream)
       - [primitive type array to stream](#primitive-type-array-to-stream)
-    - [Ints.asList(T ...t)](#intsaslistt-t)
-  - [iterate method](#iterate-method)
-    - [java 8](#java-8)
-    - [java 9](#java-9)
-  - [`static <T> Stream<T> generate(Supplier<T> s)`](#static-t-streamt-generatesuppliert-s)
+    - [guava libraries `Ints.asList(T ...t)`](#guava-libraries-intsaslistt-t)
   - [Stream.of](#streamof)
+  - [String to Stream](#string-to-stream)
   - [IntStream,DoubleStream,LongStream](#intstreamdoublestreamlongstream)
-    - [iterate](#iterate)
-    - [rangeClosed and range](#rangeclosed-and-range)
     - [boxed()](#boxed)
-    - [mapToObj](#maptoobj)
-    - [parallel](#parallel)
+  - [for loop](#for-loop)
+    - [Iterate](#iterate)
+    - [range & rangeClosed](#range--rangeclosed)
+  - [`static <T> Stream<T> generate(Supplier<T> s)`](#static-t-streamt-generatesuppliert-s)
+  - [mapToObj](#maptoobj)
+  - [parallel](#parallel)
   - [mapToInt, mapToLong ,mapToDouble,](#maptoint-maptolong-maptodouble)
   - [intermediate operations](#intermediate-operations)
-  - [Terminal Operations `___Match`](#terminal-operations-___match)
-  - [Collectors](#collectors)
-    - [Collectors.joining](#collectorsjoining)
-    - [Collectors.toXXXX()](#collectorstoxxxx)
-    - [Collectors.counting()](#collectorscounting)
-    - [Collectors.maxBy(...)](#collectorsmaxby)
+  - [Terminal Operation](#terminal-operation)
+    - [`all/none/any-Match`](#allnoneany-match)
+    - [Collectors Methods](#collectors-methods)
+      - [joining](#joining)
+    - [toMap, toList, toSet](#tomap-tolist-toset)
+    - [counting](#counting)
+    - [maxBy(fn)](#maxbyfn)
     - [summing---, average---, summarizing---](#summing----average----summarizing---)
-    - [Collectors.groupingBy(....)](#collectorsgroupingby)
-    - [Collectors.groupingBy(.... , Collectors.groupingBy(...))](#collectorsgroupingby--collectorsgroupingby)
+    - [groupingBy](#groupingby)
+    - [groupingBy(.... , Collectors.groupingBy(...))](#groupingby--collectorsgroupingby)
     - [Collectors.partitioningBy(...)](#collectorspartitioningby)
     - [Collectors.reducing(...)](#collectorsreducing)
   - [Exclude Null Element (`Objects::nonNull`)](#exclude-null-element-objectsnonnull)
   - [Order of intermediate operations](#order-of-intermediate-operations)
   - [Reusing Stream](#reusing-stream)
   - [Build Up Your Own Collector](#build-up-your-own-collector)
-  - [stream forEach](#stream-foreach)
-  - [FlatMap](#flatmap)
+  - [forEach](#foreach)
+  - [flatMap](#flatmap)
   - [Parallel Streams](#parallel-streams)
     - [parallelStream with `sorted`](#parallelstream-with-sorted)
   - [Reduce](#reduce)
@@ -108,9 +108,9 @@ streaming
 Stream<String> stream1 = Arrays.asList("a", "b", "c").stream();
 ```
 
-### `Arrays.stream(`T[]` arr)`
+### `Arrays.stream(T[] arr)`
 
-#### object[] to stream
+#### `object[]` to stream
 ```java
 // Object[] to stream
 Stream<String> stream1 = Arrays.stream(new String[10]);
@@ -123,6 +123,7 @@ Stream<String> stream3 = new BufferedReader(new FileReader(new File("hello.txt")
 Primitive type to stream required `boxed()`
 ```java
 int[] arr = {1,2,3};
+
 //In java 8+ 
 List<Integer> list = Arrays.stream(arr) // to IntStream
                            .boxed()     // stream<Integer>
@@ -138,40 +139,13 @@ IntStream.of(arr) // return IntStream
 
 ```
 
-### Ints.asList(T ...t)
+### guava libraries `Ints.asList(T ...t)`
 
 ```java
 int[] arr = {1,2,3};
 // via guava libraries
 // {@code import com.google.common.primitives.Ints;} 
 List<Integer> Ints.asList(arr);
-```
-
-## iterate method
-### java 8
-
-`static <T> Stream<T> iterate(T seed, UnaryOperator<T> f)`
-```java
-//Stream.iterate(initial value, next value)
-Stream.iterate(0, n -> n + 1) // for(int n = 0 ; n <10 ; n + 1)
-            .limit(10)
-            .forEach(x -> System.out.print(x + " "));
-//0 1 2 3 4 5 6 7 8 9 10
-```
-
-### java 9
-
-```java
-// for (int n = 1 ; n < 20 , n*2)
-Stream.iterate(1, n -> n < 20 , n -> n * 2)
-       .forEach(x -> System.out.println(x));
-```
-
-## `static <T> Stream<T> generate(Supplier<T> s)`
-
-```java
-Stream<Double> stream3 = Stream.generate(Math::random).limit(3);
-stream3.forEach(System.out::println);
 ```
 
 ## Stream.of
@@ -183,34 +157,19 @@ static <T> Stream<T> of(T t)
 Stream<String> streamOf = Stream.of("1", "3", "4", "5", "7","", "9");
 ```
 
+## String to Stream
+
+```java
+String testString = "String";
+IntStream intStream = testString.chars();
+IntStream intStream1 = testString.codePoints();
+```
+
 ## IntStream,DoubleStream,LongStream
-
-### iterate
-
-```java
-DoubleStream
-//       iterate(initializer,condition,iteration)
-        .iterate(1.2, d -> d < 3, d -> d + 0.5)
-        .forEach(System.out::println);
-
-// similar  to
-for (double d = 1.2; d < 3; d += 0.5) {
-    System.out.println(d);
-}
-```
-### rangeClosed and range
-
-```java
-static IntStream rangeClosed(int startInclusive, int endInclusive)
-static IntStream range(int startInclusive, int endExclusive)
-
-// same as
-for (int i = startInclusive; i <= endInclusive ; i++) 
-```
 
 ### boxed()
 
-transform `T`Stream to a Stream<T>
+transform `TStream` to a `Stream<T>`
 
 ```java 
 DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
@@ -219,7 +178,54 @@ DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
         .forEach(System.out::println);
 ```
 
-### mapToObj
+## for loop 
+
+### Iterate
+
+java 8
+`static <T> Stream<T> iterate(T seed, UnaryOperator<T> f)`
+```java
+//Stream.iterate(initial value, next value)
+Stream.iterate(0, n -> n + 1) // for(int n = 0 ; n <10 ; n + 1)
+            .limit(10)
+            .forEach(x -> System.out.print(x + " "));
+//0 1 2 3 4 5 6 7 8 9 10
+
+DoubleStream
+        .iterate(1.2, d -> d < 3, d -> d + 0.5)
+        .forEach(System.out::println);
+// similar to
+for (double d = 1.2; d < 3; d += 0.5) {
+    System.out.println(d);
+}
+```
+
+java 9
+```java
+// for (int n = 1 ; n < 20 , n*2)
+Stream.iterate(1, n -> n < 20 , n -> n * 2)
+       .forEach(x -> System.out.println(x));
+```
+
+### range & rangeClosed
+```java
+static IntStream rangeClosed(int startInclusive, int endInclusive)
+// same as
+for (int i = start_Inclusive; i <= end_Inclusive ; i++) 
+
+static IntStream range(int start_Inclusive, int end_Exclusive)
+// same as
+for (int i = start_Inclusive, i < end_Exclusive ; i++>)
+```
+
+## `static <T> Stream<T> generate(Supplier<T> s)`
+
+```java
+Stream<Double> stream3 = Stream.generate(Math::random).limit(3);
+stream3.forEach(System.out::println);
+```
+
+## mapToObj
 
 - [IntStream mapToObj() in Java](https://www.geeksforgeeks.org/intstream-maptoobj-java/)
 
@@ -228,11 +234,16 @@ DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
 IntStream.range(1, 4) // IntStream
     .mapToObj(i -> "a" + i) // Stream<String>
     .forEach(System.out::println);
+
+String testString = "String";
+Stream<String> stringStream = testString.codePoints()
+  .mapToObj(c -> String.valueOf((char) c));
+Stream<Character> characterStream = testString.chars()
+  .mapToObj(c -> (char) c);
 ```
-### parallel
+## parallel
 
 Synchronized
-
 ```java
 IntStream.range(5, 12).parallel().forEach(
     System.out::println
@@ -245,7 +256,6 @@ IntStream.range(5, 12).parallel().forEach(
  * 2
  */
 ```
-
 
 ## mapToInt, mapToLong ,mapToDouble,
 
@@ -290,22 +300,26 @@ Stream
     }).forEach(s -> System.out.println("forEach: " + s));
 
 List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+
 Integer findFirst = list.stream().findFirst().get(); //1
 Integer findAny = list.stream().findAny().get(); //1
+
 long count = list.stream().count(); //5
+
 Integer max = list.stream().max(Integer::compareTo).get(); //5
 Integer min = list.stream().min(Integer::compareTo).get(); //1　　
 
-// peek has return void unlike .map()
+// peek same function as map but return void
 Stream<Student> stdStream = Stream.of(
                 new Student(1, "a", 19, "male", 88), 
                 new Student(2, "a", 18, "female", 90));
 
-stdStream.peek(o -> o.setAge(100)).forEach(System.out::println);
-// all student age are 100
+stdStream.peek(o -> o.setAge(100)).forEach(System.out::println); // all student's age are 100
 ```
 
-## Terminal Operations `___Match`
+
+## Terminal Operation
+### `all/none/any-Match`
 
 ```java
 // if all elements meet the criteria
@@ -335,43 +349,50 @@ Stream.of("d2", "a2", "b1", "b3", "c")
 Due to the vertical execution of the stream chain, map has only to be executed twice in this case.     
 So instead of mapping all elements of the stream, map will be called as few as possible.    
 
-## Collectors
-
-### Collectors.joining
+### Collectors Methods
+#### joining
 
 ```java
-String a= Stream.of(3, 2, 3).map(String::valueOf).collect(Collectors.joining("," , "prefix ", " suffix"));
-System.out.println(a);
-// prefix 3,2,3 suffix
+String a = Stream.of(3, 2, 3).map(String::valueOf).collect(Collectors.joining("," , "prefix- ", " -suffix")); 
+// prefix- 3,2,3 -suffix
 ```
-
-### Collectors.toXXXX()
+### toMap, toList, toSet
 
 ```java
 /**
- * new Student(name : a , age : 10)
- * new Student(name : b , id : 20)
- * new Student(name : c , id : 10)
+ *List<Student> stdList = List.of(
+ *  new Student(name : a , age : 10)
+ *  new Student(name : b , age : 20)
+ *  new Student(name : c , age : 10)
+ * )
  */
 
-List<Integer> ageList = stdList.stream().map(Student::getAge).collect(Collectors.toList()); // [10, 20, 10]
+Map<String, Integer> studentMap = stdList.stream().collect(Collectors.toMap(Student::getName, Student::getAge)); 
+// {a=10, b=20, c=10}
 
-Set<Integer> ageSet = stdList.stream().map(Student::getAge).collect(Collectors.toSet()); // [20, 10]
-  
-Map<String, Integer> studentMap = stdList.stream().collect(Collectors.toMap(Student::getName, Student::getAge)); // {a=10, b=20, c=10}
+List<Integer> ageList = stdList.stream().map(Student::getAge).collect(Collectors.toList()); 
+// [10, 20, 10]
+
+Set<Integer> ageSet = stdList.stream().map(Student::getAge).collect(Collectors.toSet()); 
+// [20, 10]
 ```
 
-### Collectors.counting()
+### counting
 ```java
 Long count = list.stream().collect(Collectors.counting()); // 3
 ```
 
-### Collectors.maxBy(...)
+### maxBy(fn)
+
+Find max by given function
+
 ```java
 Integer maxAge = list.stream().map(Student::getAge).collect(Collectors.maxBy(Integer::compare)).get(); // 20
 ```
 
 ### summing---, average---, summarizing---
+
+Double/Int/Long
 ```java
 // Sum (All student age)
 Integer sumAge = students.stream().collect(Collectors.summingInt(Student::getAge)); 
@@ -379,27 +400,90 @@ Integer sumAge = students.stream().collect(Collectors.summingInt(Student::getAge
 // Average 
 Double averageAge = list.stream().collect(Collectors.averagingDouble(Student::getAge)); // 13.333333333333334
 
-
 DoubleSummaryStatistics statistics = list.stream().collect(Collectors.summarizingDouble(Student::getAge));
-System.out.println("count:" + statistics.getCount() + ",max:" + statistics.getMax() + ",sum:" + statistics.getSum() + ",average:" + statistics.getAverage());
+System.out.println("count:" + statistics.getCount() + 
+                   ",max:" + statistics.getMax() + 
+                   ",sum:" + statistics.getSum() + 
+                   ",average:" + statistics.getAverage());
 ```  
 
-### Collectors.groupingBy(....)
+### groupingBy
 
 ```java
-Map<Integer, List<Student>> ageMap = list.stream().collect(Collectors.groupingBy(Student::getAge));
+//3 apple, 2 banana, others 1
+List<Item> items = Arrays.asList(
+        new Item("apple", 10, new BigDecimal("9.99")),
+        new Item("banana", 20, new BigDecimal("19.99")),
+        new Item("orang", 10, new BigDecimal("29.99")),
+        new Item("watermelon", 10, new BigDecimal("29.99")),
+        new Item("papaya", 20, new BigDecimal("9.99")),
+        new Item("apple", 10, new BigDecimal("9.99")),
+        new Item("banana", 10, new BigDecimal("19.99")),
+        new Item("apple", 20, new BigDecimal("9.99"))
+        );
+
+//group by price
+Map<BigDecimal, List<Item>> groupByPriceMap = 
+	items.stream().collect(Collectors.groupingBy(Item::getPrice));
+System.out.println(groupByPriceMap);
+
+// group by price, uses 'mapping' to convert List<Item> to Set<String>
+Map<BigDecimal, Set<String>> result =
+        items.stream().collect(
+                Collectors.groupingBy(Item::getPrice,
+                        Collectors.mapping(Item::getName, Collectors.toSet())
+                )
+        );
+System.out.println(result);
+
+// output
+	19.99=[
+			Item{name='banana', qty=20, price=19.99}, 
+			Item{name='banana', qty=10, price=19.99}
+		], 
+	29.99=[
+			Item{name='orang', qty=10, price=29.99}, 
+			Item{name='watermelon', qty=10, price=29.99}
+		], 
+	9.99=[
+			Item{name='apple', qty=10, price=9.99}, 
+			Item{name='papaya', qty=20, price=9.99}, 
+			Item{name='apple', qty=10, price=9.99}, 
+			Item{name='apple', qty=20, price=9.99}
+		]
+
+//group by + mapping to Set
+{
+	19.99=[banana], 
+	29.99=[orang, watermelon], 
+	9.99=[papaya, apple]
 ```
 
-### Collectors.groupingBy(.... , Collectors.groupingBy(...))
+### groupingBy(.... , Collectors.groupingBy(...))
 ```java
 Map<String, Map<Integer, List<Student>>> typeAgeMap = 
         students.stream().collect(Collectors.groupingBy(Student::getSex, Collectors.groupingBy(Student::getAge)));
 
-Sex       age
- ^         ^
-{female = {20 = [Student(id=7, name=g, age=20, sex=female, score=66.0)], 22=[Student(id=9, name=i, age=22, sex=female, score=95.0)], 14=[Student(id=5, name=e, age=14, sex=female, score=95.0)]}, male={17=[Student(id=2, name=b, age=17, 
-sex=male, score=60.0)], 18=[Student(id=1, name=a, age=18, sex=male, score=88.0), Student(id=8, name=h, age=18, sex=male, score=100.0)], 19=[Student(id=3, name=c, age=19, sex=male, score=100.0)], 20=[Student(id=4, name=d, age=20, sex=male, score=10.0)], 21=[Student(id=6, name=f, age=21, sex=male, score=55.0)], 25=[Student(id=10, name=j, age=25, sex=male, score=90.0)]}}
+
+// output 
+    
+    Sex={}    age=[]
+     ^          ^
+{    |          | 
+    female ={   20=[Student(id=7, name=g, age=20, sex=female, score=66.0)],
+                22=[Student(id=9, name=i, age=22, sex=female, score=95.0)], 
+                14=[Student(id=5, name=e, age=14, sex=female, score=95.0)]
+            }, 
+    male   ={   17=[Student(id=2, name=b, age=17, sex=male, score=60.0)], 
+                18=[Student(id=1, name=a, age=18, sex=male, score=88.0), 
+                    Student(id=8, name=h, age=18, sex=male, score=100.0)], 
+                19=[Student(id=3, name=c, age=19, sex=male, score=100.0)], 
+                20=[Student(id=4, name=d, age=20, sex=male, score=10.0)], 
+                21=[Student(id=6, name=f, age=21, sex=male, score=55.0)], 
+                25=[Student(id=10, name=j, age=25, sex=male, score=90.0)]
+            }}
 ```  
+
 
 ### Collectors.partitioningBy(...)
 ```java
@@ -424,15 +508,14 @@ customerList.add(new Customer(5L, null));
 customerList.add(new Customer(6L, "Zyan"));
 
 List<String> nameList1 = customerList.stream()
+        // .filter(e -> Objects.nonNull(e))
         .filter(Objects::nonNull) // filter object == null
         .map(e -> e.getName())    
         .filter(Objects::nonNull) // filter object.getName == null
         .collect(Collectors.toList());
+
 System.out.println(nameList1); // [Ryu, Ken, Zyan]
 ```
-
-`.filter(Objects::nonNull)`為Method References（方法參考）的寫法，
-原本的寫法是`.filter(e -> Objects.nonNull(e))`
 
 `Objects.nonNull(Object obj)`相當於`obj != null`，原始碼如下。
 ```java
@@ -440,7 +523,6 @@ public static boolean nonNull(Object obj) {
     return obj != null;
 }
 ```
-
 ## Order of intermediate operations
 
 ```java
@@ -545,7 +627,7 @@ String names = persons
 System.out.println(names);  // MAX | PETER | PAMELA | DAVID
 ```
 
-## stream forEach
+## forEach
 
 ```java
 map.entrySet().stream()
@@ -571,18 +653,16 @@ animalMap.forEach(
 );
 ```
 
-## FlatMap
+## flatMap
 
-Map is kinda limited because every object can only be mapped to exactly one other object. 
+**`map` method is kinda limited because every object can only be mapped to exactly one other object**.    
+Instead. flatMap allow us to transform one object into multiple others or none.
 
-But what if we want to transform one object into multiple others or none at all? This is where flatMap comes to the rescue.
+**FlatMap transforms each element of the stream into a stream of other objects.(e.g. `stream<?>`)**.   
+So each object will be transformed into `NULL`, one or multiple other objects backed by streams.    
 
-**FlatMap transforms each element of the stream into a stream of other objects.(e.g. `stream<?>`)** So each object will be transformed into zero, one or multiple other objects backed by streams. 
-
-The contents of those streams will then be placed into the returned stream of the flatMap operation.
-
-Before we see flatMap in action we need an appropriate type hierarchy:
 ```java
+// type hierarchy
 @Data
 class Foo {
     String name;
@@ -596,9 +676,9 @@ class Bar {
         this.name = name;
     }
 }
-List<Foo> foos = new ArrayList<>();
 
 // create foos
+List<Foo> foos = new ArrayList<>();
 IntStream
     .range(1, 4)
     .forEach(i -> foos.add(new Foo("Foo" + i)));
@@ -610,7 +690,7 @@ foos.forEach(f ->
         .forEach(i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name))));
 ```
 
-FlatMap accepts a function which has to return a stream of objects.    
+flatMap accepts a function which has to return a stream of objects `stream<object>`.    
 So in order to resolve the bar objects of each foo, we just pass the appropriate function:
 ```java
 // stream<foo>
@@ -642,8 +722,7 @@ IntStream.range(1, 4)
     .forEach(b -> System.out.println(b.name));
 ```
 
-FlatMap is also available for the Optional class introduced in Java 8.  
-
+FlatMap is also available for the Optional class introduced in Java 8.      
 Optionals flatMap operation returns an optional object of another type. So it can be utilized to prevent nasty `null` checks.
 ```java
 class Outer {
@@ -658,15 +737,19 @@ class Inner {
     String foo;
 }
 ```
+
 In order to resolve the inner string foo of an outer instance you have to add multiple `null` checks to prevent possible `NullPointerExceptions`:
 ```java
 Outer outer = new Outer();
+
 if (outer != null && 
     outer.nested != null && 
     outer.nested.inner != null) {
-    System.out.println(outer.nested.inner.foo);
+        
+        System.out.println(outer.nested.inner.foo);
 }
 ```
+
 The same behavior can be obtained by utilizing optionals flatMap operation:
 ```java
 Optional.of(new Outer())

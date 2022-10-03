@@ -4,8 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -76,4 +79,31 @@ public class AppTest
         );
         sites.entrySet().forEach(System.out::println);
     }   
+
+
+    @Test public void hashSetStream(){
+        Set<Integer> set = new HashSet<Integer>(){{
+            add(1);
+            add(2);
+            add(3);
+        }};
+
+        set.stream().forEach(System.out::println);
+
+        Map<Integer, Integer> m = new HashMap<Integer,Integer>(){{
+            put(1,4);
+            put(2,1);
+            put(3,3);
+        }};
+
+        m.forEach((k,v)->
+        {
+            if(k > 0){
+                System.out.println(v);
+            };
+            if(k < 0){
+                System.out.print(0);
+            }
+        });
+    }
 }

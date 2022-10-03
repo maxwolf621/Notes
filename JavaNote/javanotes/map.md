@@ -3,8 +3,8 @@
 - [Map](#map)
   - [Reference](#reference)
   - [Usage](#usage)
-  - [Initializer](#initializer)
-    - [`{put(key,value); ... }`](#putkeyvalue--)
+  - [Initializer (Immutable)](#initializer-immutable)
+    - [`{{put(key,value); ... }}`](#putkeyvalue--)
     - [`stream.of(new Object{...})`](#streamofnew-object)
     - [java 9 `Map.of`](#java-9-mapof)
     - [java 9 `Map.ofEntries`](#java-9-mapofentries)
@@ -54,9 +54,8 @@ TreeMap
 - It is same as HashMap instead maintains ascending order
 (Sorted using the natural order of its key).
 
-## Initializer
-
-### `{put(key,value); ... }`
+## Initializer (Immutable)
+### `{{put(key,value); ... }}`
 ```java
 Map<String, String> doubleBraceMap  = new HashMap<String, String>() {{
     put("key1", "value1");
@@ -90,17 +89,30 @@ Map<String, String> emptyMap = Map.of();
 Map<String, String> map = Map.of("key1","value1", "key2", "value2");
 ```
 
+p.s Java 9 `List.of` and `Set.of` will be compiled 
+```java
+List<Integer> values = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10); // note 11 elements here
+
+Set<String> keys = Set.of("z", "o", "tw", "th", "fo", "fi", "si", "se", "e", "n", "te");
+```
+
 ### java 9 `Map.ofEntries`
 
+- [What is the use of Map.ofEntries() instead of Map.of()](https://stackoverflow.com/questions/46601959/what-is-the-use-of-map-ofentries-instead-of-map-of)
+
 `Map.ofEntries` has no limitations on the number of key-value pairs:
-- no null key allowed
-- immutable maps
+- They disallow null keys and values. Attempts to create them using a null key or value result in NullPointerException.
+- They are immutable. Calls to `Entry.setValue()` on a returned Entry result in UnsupportedOperationException.
+- They are not serializable.
 ```java
+Map<String, Integer> map = Map.ofEntries(Map.entry("name","John"),
+       Map.entry("city","Berlin"),Map.entry("zip","73210"), Map.entry("home","St.54321"));
+
 Map<String, String> map = Map.ofEntries(
   new AbstractMap.SimpleEntry<String, String>("name", "John"),
-  new AbstractMap.SimpleEntry<String, String>("city", "budapest"),
-  new AbstractMap.SimpleEntry<String, String>("zip", "000000"),
-  new AbstractMap.SimpleEntry<String, String>("home", "1231231231")
+  new AbstractMap.SimpleEntry<String, String>("city", "Berlin"),
+  new AbstractMap.SimpleEntry<String, String>("zip", "73210"),
+  new AbstractMap.SimpleEntry<String, String>("home", "St.54321")
 );
 ```
 

@@ -1,8 +1,10 @@
 # Grid 
 
-[Css Grid 概念介紹及使用教學](https://ballaediworkshop.blogspot.com/2019/10/css-grid-introduction-and-tutorial.html)
+[Css Grid 概念介紹及使用教學](https://ballaediworkshop.blogspot.com/2019/10/css-grid-introduction-and-tutorial.html)   
+[Angular Grid](https://hychen39.github.io/angular/2021/01/13/u13_rwd_layout.html#%E5%AF%A6%E4%BD%9C-1-%E4%BD%BF%E7%94%A8-grid-directive-%E8%A3%BD%E4%BD%9C-rwd-%E7%89%88%E9%9D%A2)
 
 - [Grid](#grid)
+  - [Angular Grid And Css Grid](#angular-grid-and-css-grid)
   - [container](#container)
     - [`gird-template-columns` & `grid-template-rows`](#gird-template-columns--grid-template-rows)
     - [Alias name for each line](#alias-name-for-each-line)
@@ -16,17 +18,18 @@
   - [Grid Area](#grid-area)
     - [Container's `grid-template-areas`](#containers-grid-template-areas)
     - [Item's `grid-area`](#items-grid-area)
-    - [Name Iteam's grid area via Container's `grid-template-areas`](#name-iteams-grid-area-via-containers-grid-template-areas)
+    - [Name Item's grid area via Container's `grid-template-areas`](#name-items-grid-area-via-containers-grid-template-areas)
+    - [Angular](#angular)
   - [Align](#align)
     - [grid-gap](#grid-gap)
     - [justify|align|place-items|self](#justifyalignplace-itemsself)
     - [justify-items AND justify-self (x-axis)](#justify-items-and-justify-self-x-axis)
     - [align-self & align-items (y-axis)](#align-self--align-items-y-axis)
-    - [place-self | palce-items](#place-self--palce-items)
+    - [place](#place)
     - [justify-content, align-content AND place-content](#justify-content-align-content-and-place-content)
 
-Css Grid 的組成，一個 Grid 有兩個部分：Container and Item
-
+Css Grid 的組成，一個 Grid 有兩個部分： Container and Item
+Container is formed by each grid's lines (`grid-template-columns|rows`)， Item is formed by line btw line (`grid-column|row-start|end`)
 ```html
 <div class="container">
     <div class="item-a">A</div>
@@ -34,9 +37,25 @@ Css Grid 的組成，一個 Grid 有兩個部分：Container and Item
     <div class="item-c">C</div>
 </div>
 ```
+![圖 2](../images/fea733759667188721601809160e1050bbbd1bee202e1dc099251fbcbbfd06ea.png)  
 
-container 設定各虛擬線間之距離(`grid-template-colums|rows`)，item透過虛線每個交接點組成(`grid-column|row-start|end`)
- ![圖 2](../images/fea733759667188721601809160e1050bbbd1bee202e1dc099251fbcbbfd06ea.png)  
+
+## Angular Grid And Css Grid
+
+| Grid Directive   | CSS Property(s)                           | Extra Inputs               |
+| ---------------- |:-----------------------------------------:| --------------------------:|
+| `gdAlignColumns` | `align-content` and `align-items`         | `gdInline` for inline-grid |
+| `gdAlignRows`    | `justify-content` and `justify-items`     | `gdInline` for inline-grid |
+| `gdArea`         | `grid-area`                               | none                       |
+| `gdAreas`        | `grid-areas`                              | `gdInline` for inline-grid |
+| `gdAuto`         | `grid-auto-flow`                          | `gdInline` for inline-grid |
+| `gdColumn`       | `grid-column`                             | none                       |
+| `gdColumns`      | `grid-template-columns`                   | `gdInline` for inline-grid<br>`!` at the end means `grid-auto-columns` |
+| `gdGap`          | `grid-gap`                                | `gdInline` for inline-grid |
+| `gdGridAlign`    | `justify-self` and `align-self`           | none                       |
+| `gdRow`          | `grid-row`                                | none                       |
+| `gdRows`         | `grid-template-rows`                      | `gdInline` for inline-grid<br>`!` at the end means `grid-auto-rows`  |
+
 ## container
 
 container的設定`grid-template-`開頭
@@ -137,7 +156,7 @@ The `grid-area` property can be used as a shorthand property for (the grid line)
 }
 ```
 
-### Name Iteam's grid area via Container's `grid-template-areas`
+### Name Item's grid area via Container's `grid-template-areas`
 
 ![圖 4](../images/4534e8269e5fef1680b5ce93dd692ecc28d7aa4f7178b107c48520ec6c54c037.png)  
 
@@ -206,8 +225,29 @@ item 只需設定 container 設定好的名字
 </body>
 </html>
 
-
 **在 Area 中，被分配的 item 不能是分段的或是非長方形**
+
+
+### Angular
+
+`gd`: grid
+
+```html
+<div id='gridContainer' gdAreas="header header header | sidebar content sidebar1 | footer footer footer"
+    gdColumn="20% auto 20%" gdGap="1rem">
+
+    <div class='blocks header' gdArea='header'>Header</div>
+    <div class='blocks sidebar' gdArea='sidebar'>Sidebar (20% of width)</div>
+    <div class='blocks content' gdArea='content'> Content (Auto width)
+        <p>
+            More content than we had before so this column is now quite tall.
+        </p>
+    </div>
+    <div class='blocks sidebar1' gdArea='sidebar1'>Sidebar 2 (20% of width) </div>
+    <div class='blocks footer' gdArea='footer'>Footer</div>
+</div>
+```
+
 ## Align 
 
 ### grid-gap 
@@ -282,17 +322,16 @@ Each Item's gap in Container
 
 
 
-### place-self | palce-items
+### place
 
 同時調整單justify以及align
-
 ```scss
 /*  place-items : <align-items> / <justify-items>  */
 .item{
   place-self: center stretch;
 }
 .container{
-  place-tiems: center center;
+  place-items: center center;
   // same as
   place-items: center;
 }
@@ -300,7 +339,7 @@ Each Item's gap in Container
 
 ### justify-content, align-content AND place-content
 
-以一組grid-templae-area為單位做調整
+grid-template-area為單位做調整
 ```css
 .container{
   justify-content : space-evenly | space-between | space-around | stretch | center | start | end;

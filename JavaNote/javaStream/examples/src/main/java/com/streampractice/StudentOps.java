@@ -3,10 +3,15 @@ package com.streampractice;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+
+@Slf4j
 public class StudentOps {
     
     public void groupinByAge(List<Student> students){
-        System.out.println("groupinByAge");
+        log.info("groupinByAge");
         Map<String, Map<Integer, List<Student>>> typeAgeMap = students.stream().collect(
             Collectors.groupingBy(
                 Student::getSex, 
@@ -31,11 +36,11 @@ public class StudentOps {
             Collectors.toList()).stream().forEach(System.out::println);
     }
 
-    public void filterByAge(List<Student> students){
-        System.out.println("filterByAge");
+    public void filterByAge(List<Student> students, int age){
+        log.info("filterByAge");
         students.stream().filter(
-            student -> student.getAge() == 20
-        ).findFirst().ifPresent(System.out::println);
+            student -> student.getAge() == age
+        ).findFirst().ifPresent(e -> log.info(String.valueOf(e)));
     }
 
     public void matchOps(List<Student> students, int targetScore){

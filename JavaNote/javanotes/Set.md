@@ -2,6 +2,7 @@
 
 - [Set Interface](#set-interface)
   - [Reference](#reference)
+  - [Review](#review)
   - [TreeSet](#treeset)
     - [`TreeSet#add`](#treesetadd)
     - [`treeSet#descendingIterator` & `treeSet#iterator`](#treesetdescendingiterator--treesetiterator)
@@ -19,6 +20,7 @@
     - [Null Elements](#null-elements)
   - [HashSet (HashMap with Dummy key)](#hashset-hashmap-with-dummy-key)
     - [Method](#method)
+    - [Union and Intersection](#union-and-intersection)
     - [Null value in HashSet](#null-value-in-hashset)
     - [HashSet vs HashMap](#hashset-vs-hashmap)
       - [Duplicates](#duplicates)
@@ -28,19 +30,6 @@
   - [EnumSet](#enumset)
     - [Create EnumSet](#create-enumset)
 
-- **A set is an unordered collection of objects** in which **duplicate values cannot be stored**.
-- `Set` interface is implemented by various classes like `HashSet`, `TreeSet`, `LinkedHashSet`
-
-- Both the `HashSet` and `LinkedHashSet` class offers `O(1)` time performance for the basic operations such as add, remove, contains and size, etc.
-
-- **`HashSet` requires less memory than `TreeSet` and `LinkedHashSet` since it uses a hash table to store its elements.** LinkedHashSet has the extra overhead of a doubly linked list, and since TreeSet is implemented as a Red-black tree, which takes a considerable amount of memory.
-
-- Both `HashSet` and `LinkedHashSet` permit a `null` value, whereas TreeSet doesn't permit `null`.
-
-- Use `HashSet` when performance is critical, and the ordering of elements doesn’t matter.   
-Use `TreeSet` when elements need to be ordered using their natural ordering or by a **Comparator**.  
-Use `LinkedHashSet` if the insertion **order of the elements** should be preserved.
-
 ## Reference
 - [GeekforGeeks](https://www.geeksforgeeks.org/hashset-in-java/)
 - [dummy value](https://stackoverflow.com/questions/30037694/why-the-internal-implementation-of-hashset-creates-dummy-objects-to-insert-as-va)
@@ -49,6 +38,20 @@ Use `LinkedHashSet` if the insertion **order of the elements** should be preserv
 - [difference btw hashset,treeset and linkedhashset](https://www.techiedelight.com/difference-between-hashset-treeset-linkedhashset-java/)  
 - [LinkedList vs LinkedHashSet](https://www.geeksforgeeks.org/difference-between-linkedlist-and-linkedhashset-in-java/)
 - [Can we add null elements to a Set in Java?](https://www.tutorialspoint.com/can-we-add-null-elements-to-a-set-in-java)
+
+## Review
+
+- **A set is an unordered collection of objects** in which **duplicate values cannot be stored**.
+- `Set` interface is implemented by various classes like `HashSet`, `TreeSet`, `LinkedHashSet`.
+- Both the `HashSet` and `LinkedHashSet` class offers `O(1)` time performance for the basic operations such as add, remove, contains and size, etc.
+- **`HashSet` requires less memory than `TreeSet` and `LinkedHashSet` since it uses a hash table to store its elements.** LinkedHashSet has the extra overhead of a doubly linked list, and since TreeSet is implemented as a Red-black tree, which takes a considerable amount of memory.
+- Both `HashSet` and `LinkedHashSet` permit a `null` value, **whereas TreeSet doesn't permit `null`.**
+
+
+- Use `HashSet` when performance is critical, and the ordering of elements doesn't matter.   
+- Use `TreeSet` when elements need to be ordered using their natural ordering or by a **Comparator**.  
+- Use `LinkedHashSet` if the insertion **order of the elements** should be preserved.
+
 ## TreeSet 
 
 ![圖 1](../images/ea4eac9a629413c36f143323ab55929008e2e363fc8529cc70e74df0661f47e6.png)  
@@ -258,42 +261,65 @@ HashSet uses the **unique key concept of the HashMap** and **inserts the values 
 - HashSet is slower than HashMap.	
 
 ```java
-                  Number of stored elements in the table
-Load Factor = -----------------------------------------
-                        Size of the hash table 
-
 HashSet<E> hs = new HashSet<E>();
 
 HashSet<E> hs = new HashSet<E>(int initialCapacity);
 
+HashSet<E> hs = new HashSet<E>(Collection C);
+Set<Integer> hs = new HashSet<Integer>(Arrays.asLists(1,2,3,4,5,6));
+```
+```java
 HashSet<E> hs = new HashSet<E>(int initialCapacity, float loadFactor);
 
-HashSet<E> hs = new HashSet<E>(Collection C);
+                  Number of stored elements in the table
+Load Factor = -----------------------------------------
+                        Size of the hash table 
 ```
 
 ### Method
 
 ```java
 boolean add(E e)
-void clear()
-Object clone()
-boolean contains(Object o)
-boolean isEmpty()
-Iterator<E> iterator()
-boolean remove(Object o)
-int size()
+boolean addAll(Collection<? extends E> c)
 
+boolean contains(Object o)
+boolean containsAll(Collection<?> c)
+
+void clear()
+boolean isEmpty()
+boolean retainAll(Collection<?> c)
 
 int hashCode()
 boolean equals()
 
+boolean remove(Object o)
 Boolean removeAll(Collection<?> c)
-boolean addAll(Collection<? extends E> c)
-boolean containsAll(Collection<?> c)
-boolean retainAll(Collection<?> c)
+
+Iterator<E> iterator()
+
+Object clone()
+int size()
 
 Object[] toArray()
 T[] toArray(T[] a)
+```
+### Union and Intersection
+
+```java
+Set<Integer> set1 = Stream.of(1,2,3,4,5,6).collect(Collectors.toCollection(HashSet::new));
+Set<Integer> set2 = Stream.of(1,2,3,4,7,8).collect(Collectors.toCollection(HashSet::new));
+
+set1.addAll(set2); // Union
+set1.retainAll(set2); // Intersection
+```
+The above solution is destructive, meaning that contents of the original `set1` may change.
+If you don't want to touch your existing sets, create a new set:
+```java 
+var result = new HashSet<>(set1);          // In Java 10 and above
+Set<Integer> result = new HashSet<>(set1); // In Java < 10
+
+result.addAll(set2); // Union
+result.retainAll(set2); // Intersection
 ```
 
 ### Null value in HashSet 
