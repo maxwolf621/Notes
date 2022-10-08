@@ -1,144 +1,71 @@
 # HostListener and HostBinding
-
-[@HostBinding and @HostListener in Angular](https://www.tektutorialshub.com/angular/hostbinding-and-hostlistener-in-angular/)
-
 - [HostListener and HostBinding](#hostlistener-and-hostbinding)
-  - [Host Binding](#host-binding)
-  - [HostListener](#hostlistener)
-  - [Attatching Css Class](#attatching-css-class)
+  - [Binds css properties in some components' view Via @HostBinding Directive](#binds-css-properties-in-some-components-view-via-hostbinding-directive)
+  - [HostBinding Component](#hostbinding-component)
 
-HostListener listens to host events, while HostBinding allows us to bind to a property of the host element.
+- `HostBinding` binds a Host element property to a property in the directive or component
+- `HostListener` Decorator listens to the DOM event on the host element
 
-This feature allows us to manipulate the host styles or take some action whenever the user performs some action on the host element via component/directive.
+[Code Example](https://reurl.cc/YXNbba)
+[Code Example](https://angular-hu4bvx.stackblitz.io)
 
-
-```html
-<host-element directive></host-element>
-
-<component-selector></component-selector>
-```
+## Binds css properties in some components' view Via @HostBinding Directive
 
 ```typescript
-@HostBinding('directiveName') xxx : T;
-
-
-```
-
-## Host Binding
-
-Host Binding binds a Host element property to a variable in the directive or component
-
-```typescript
-import { Directive, HostBinding, OnInit } from '@angular/core'
- 
 @Directive({
-  selector: '[appHighLight]',
+  selector: '[app-pstyle]',
 })
-export class HighLightDirective implements OnInit {
- 
-  @HostBinding('style.border') border: string;
- 
-  ngOnInit() {
-    this.border="5px solid blue"
+export class PstyleComponent implements OnInit {
+  @HostBinding('style.background-color') bgColor: String;
+  @HostBinding('style.border') border: String;
+
+  @HostListener('mouseover')
+  onMouseOver() {
+    this.border = '5px solid red';
+    this.bgColor = 'red';
+    console.log('Mouse over');
   }
-    
-}
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.border = '';
+    this.bgColor = '';
+    console.log('Mouse Leave');
+  }
 ```
 
-Apply appHighLight directive to a host element in `theNameOfTemplate.component.html`
+Use `HostBinding` Directive binding css property in the view, for example `app.component.html`
 ```html
-<div>
-  <h2>appHighLight Directive</h2>
-  <p appHighLight>
-    This Text has blue Border
-  </p>
-</div>
+<p app-pstyle>This is style.property binding</p>
 ```
 
-## HostListener
-
-HostListener Decorator listens to the DOM event on the host element
-
-
-```typescript
-import { Directive, HostBinding, OnInit, HostListener } from '@angular/core'
- 
-@Directive({
-  selector: '[appHighLight]',
-})
-export class HighLightDirective implements OnInit {
-    @HostBinding('style.border') border: string;
-    
-    ngOnInit() {
-    }
-    
-    @HostListener('mouseover') 
-    onMouseOver() {
-        this.border = '5px solid green';
-        console.log("Mouse over")
-    }
-    
-    @HostListener('mouseleave') 
-    onMouseLeave() {
-        this.border = '';
-        console.log("Mouse Leave")
-    }
-}
-```
-
-```html
-<div>
-  <h2>appHighLight Directive</h2>
-  <!-- directive -->
-  <p appHighLight>
-    This Text has blue Border
-  </p>
-</div>
-```
-
-
-## Attatching Css Class 
+## HostBinding Component 
 
 ```typescript
 @Component({
-  selector: 'app-box',
-  template: `
-    <h2> This is Box Component</h2> `,
+  selector: 'hello',
+  template: `<h1>Hello {{name}}!</h1>
+  <button (click)='activate()'>Activate</button>`,
   styles: [
     `
-    .highlight {
-      color:green;
-      display: block;
-    } 
-    
-    .box {
-      border: 1px dashed green;
-    }
-    `
+   h1 { font-family: montserrat;}
+   `,
   ],
- 
- 
 })
-export class BoxComponent {
-  title = 'hostBinding';
- 
-  @HostBinding('class.highlight') get hasHighlight() { return true; }
-  @HostBinding('class.box') get hasBox() { return true }
+export class HelloComponent {
+  @Input() name: string;
+
+  toggle: boolean;
+  @HostBinding('class.isActive') get t() {
+    return this.toggle;
+  }
+
+  activate() {
+    this.toggle = !this.toggle;
+    //console.log(this.toggle);
+  }
 }
 ```
 
-add component in `xxx.component.ts` and `xxx.component.css`
-```html
-<app-box></app-box>
-```
 
-```css
-.highlight {
-  color:blue;
-  display: block;
-} 
- 
-.box {
-  border: 1px solid red;
-} 
-```
+

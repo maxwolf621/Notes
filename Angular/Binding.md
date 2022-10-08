@@ -23,8 +23,8 @@
 ## Reference
 
 Update `@input` property for both child and parent component
-- [[stackoverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
-- [[stackoverflow] detect cahnges in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
+- [[StackOverflow] how to update a component without refreshing full page](https://stackoverflow.com/questions/46047854/how-to-update-a-component-without-refreshing-full-page-angular)    
+- [[StackOverflow] detect changes in an array input property](https://stackoverflow.com/questions/42962394/angular-2-how-to-detect-changes-in-an-array-input-property)    
 - [Code Example](https://ithelp.ithome.com.tw/articles/10241010)  
 - [angular.io](https://angular.io/guide/attribute-binding)
 
@@ -624,7 +624,7 @@ import { Component } from '@angular/core';
     <h3>Agree: {{agreedCount}}, Disagree: {{disagreedCount}}</h3>
     <app-voter *ngFor="let voter of voters"
               [name]="voter"
-              <!--@output annotation child varaible = father method($event)-->
+              <!--@output annotation child variable = father method($event)-->
               (voteEmitter)="onVoted($event)">
     </app-voter>'                 
 })

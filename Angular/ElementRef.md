@@ -5,37 +5,32 @@
 
 - [ElementRef & TemplateRef & ViewRef & ViewContainerRef](#elementref--templateref--viewref--viewcontainerref)
   - [ElementRef](#elementref)
-    - [Using DI to get ElementRef](#using-di-to-get-elementref)
-    - [Read Specific Token(ref) For Multiple `TemplateRef`s](#read-specific-tokenref-for-multiple-templaterefs)
+    - [Using DI to get ElementRef from HTML element](#using-di-to-get-elementref-from-html-element)
     - [XSS injection](#xss-injection)
-  - [TemplateRef & `<ng-Template>`](#templateref--ng-template)
+  - [`TemplateRef` & `<ng-Template>`](#templateref--ng-template)
   - [ViewRef](#viewref)
-    - [Embded View](#embded-view)
+    - [Embedded View](#embedded-view)
     - [Host Views (ComponentFactoryResolver)](#host-views-componentfactoryresolver)
   - [ViewContainerRef & `<ng-Container>`](#viewcontainerref--ng-container)
     - [Method of ViewContainerRef](#method-of-viewcontainerref)
       - [Insert](#insert)
-      - [createComponent with ComponentFactoryResolver](#createcomponent-with-componentfactoryresolver)
+    - [ComponentFactoryResolver](#componentfactoryresolver)
   - [ngTemplateOutlet & ngComponentOutlet](#ngtemplateoutlet--ngcomponentoutlet)
 
 ## ElementRef
 
-The DOM objects are created and maintained by the Browser. 
 
 `ElementRef` type field is a reference to the DOM element (e.g `<div>`)in the component/directive.
 
 
-Create Element Reference Name via `#`
 ```html
-<!--
-    referenceRef : #hello
--->
-<div #ReferenceName>This is Ref</div>
+<div #TemplateRef>This is Ref</div>
 ```
 
-Inject the `ElementRef` via Decoration `@ViewChild` or `@ViewChildren`
+Reference to DOM Element
 ```typescript
-@ViewChild('ReferenceName', { static: false }) elementFieldName: ElementRef;
+@ViewChild('TemplateRef', { static: false }) 
+elementFieldName: ElementRef;
 ```
 
 For example, using `ElementRef` to get Element's content (`ElementRef#textContent`)
@@ -43,66 +38,53 @@ For example, using `ElementRef` to get Element's content (`ElementRef#textConten
 @Component({
     selector: 'sample',
     template: `
-        <span #tref>I am span</span>
+        <div #templateRef>
+        <span> I'm span </span>
+        <br />
+        <span> I'm span </span>
+        </div>
+    `
+    style:`
+        .className{
+            background-color : red;
+        }
     `
 })
 export class SampleComponent implements AfterViewInit {
     @ViewChild("tref", {read: ElementRef}) tref: ElementRef;
+    @ViewChild('templateRef') elementRef!: ElementRef;
+    @ViewChild('input', { read: NgModel }) ngModel;
+    ngAfterViewInit() {
+        let element = this.elementRef.nativeElement;
+        // I'm span I'm span
+        console.log(element.textContent);
+        //console.log(element.outerHTML);
+        //console.log(this.ngModel);
 
-    ngAfterViewInit(): void {
-        // outputs `I am span`
-        console.log(this.tref.nativeElement.textContent);
+        element.innerHTML = "I'm ElementRef#InnerHTML";
+        // Insert CSS Class Name
+        element.className = 'className';
     }
 }
 ```
 
-### Using DI to get ElementRef
+### Using DI to get ElementRef from HTML element
 ```typescript
 @Component({
     selector: 'sample',
 })
 export class SampleComponent{
     constructor(private hostElement: ElementRef) {
-        //consoel.log <sample> </sample>
+        // <sample> </sample>
         console.log(this.hostElement.nativeElement.outerHTML);
     }
 }
 ```
 
-### Read Specific Token(ref) For Multiple `TemplateRef`s
-
-```typescript
-<input #nameInput [(ngModel)]="name">
-
-//ViewChild returns ElementRef i.e. input HTML Element
-@ViewChild('nameInput',{static:false, read: ElementRef}) elRef;
- 
-//ViewChild returns NgModel associated with the nameInput
-@ViewChild('nameInput',{static:false, read: NgModel}) inRef;
-```
-
-```typescript
-import { Component,ElementRef, ViewChild, AfterViewInit } from '@angular/core';
- 
-@Component({
-  selector: 'app-root',
-  template:  '<div #hello>Hello</div>'
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent implements AfterViewInit {
-    @ViewChild('hello', { static: false }) divHello: ElementRef;
- 
-    ngAfterViewInit() {
-        this.divHello.nativeElement.innerHTML = "Hello Angular";
-        this.divHello.nativeElement.className="someClass";
-        this.divHello.nativeElement.style.backgroundColor="red";
-    }
-}
-```
 
 ### XSS injection
 
-Improper use of ElementRef can result in an XSS Injection attack, the following code inject a new script to the current element reference variable (DOM)
+Improper use of `ElementRef` can result in an XSS Injection attack, the following code inject a new script to the current element reference variable (DOM)
 
 ```typescript
 constructor(private elementRef: ElementRef) {
@@ -113,11 +95,11 @@ constructor(private elementRef: ElementRef) {
 }
 ```
 
-## TemplateRef & `<ng-Template>`
+## `TemplateRef` & `<ng-Template>`
 
 Angular provides `TemplateRef` to reference to template variable reference in HTML host element
 
-- `TemplateRef` 是一個簡單的 class，內含host element的`elementRef`的關聯(Reference)，提供`TemplateRef#createEmbededView`方法，用這個 method 可以控制view，並且 return `ViewRef` type
+- `TemplateRef` 是一個簡單的 class，內含host element的`elementRef`的關聯(Reference)，提供`TemplateRef#createEmbeddedView`方法，用這個 method 可以控制view，並且 return `ViewRef` type
 
 ```typescript
 @Component({
@@ -140,7 +122,7 @@ export class SampleComponent implements AfterViewInit {
 ```
 
 Angular 從 DOM 移除了 template element，並且新增了一段註解進去，render 的結果如下：
-```typescript
+```html
 <sample>
     <!-- -->
 </sample>
@@ -153,12 +135,12 @@ View在Angular是一個應用程式UI的基本組成
 - View是最小的 element 組成單位，在同一個 view 中的 element 會同時被新增或被摧毀
 
 **Angular 建議開發者把 UI 視為 Views 的組合，而不是 HTML Tag 樹狀結構的一部分。Angular 支援兩種不同類型的 View：**
-1. Embeded Views 連結到 Template
+1. Embedded Views 連結到 Template
 2. Host Views 連結到 Component
 
-### Embded View
+### Embedded View
 
-View 可以透過`Elemetnef#createEmbededView(null)`進行初始化
+View 可以透過`ElementRef#createEmbeddedView(null)`進行初始化
 ```typescript
 ngAfterViewInit() {
     let view = this.elementRef.createEmbeddedView(null);
@@ -232,7 +214,7 @@ class ViewContainerRef {
 
     // insert Component's view 
     createComponent(componentFactory...): ComponentRef<C> 
-    // insert ng-Teamplte's view
+    // insert ng-Template's view
     createEmbeddedView(templateRef...): EmbeddedViewRef<C>  
     
     ...
@@ -242,7 +224,7 @@ class ViewContainerRef {
 
 #### Insert
 
-從 template 新增一個 embeded view 並且新增到 ng-container element 中：
+從 template 新增一個 embedded view 並且新增到 ng-container element 中：
 ```typescript 
 @Component({
     selector: 'sample',
@@ -261,15 +243,15 @@ export class SampleComponent implements AfterViewInit {
     @ViewChild("tpl") tpl: TemplateRef<any>;
 
     ngAfterViewInit() {
-        // initilize view
+        // initialize view
         let view = this.tpl.createEmbeddedView(null);
 
-        // insert ng-temaplte's view in ngContainer
+        // insert ng-template's view in ngContainer
         this.vc.insert(view);
     }
 }
 ```
-產生出來的 html 如下：
+
 ```html
 <sample>
     <span>I am first span</span>
@@ -279,7 +261,7 @@ export class SampleComponent implements AfterViewInit {
     <span>I am last span</span>
 </sample>
 ```
-#### createComponent with ComponentFactoryResolver
+### ComponentFactoryResolver
 
 ```typescript
 //  ComponentFactoryResolver to inject the instance of component to containerRef#createComponent

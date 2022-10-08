@@ -1,9 +1,11 @@
-# ngTemplate (TemplateRef&ViewContainerRef)
+# ngTemplate (TemplateRef&ViewContainerRef) & `*ngTemplateOutlet`
 
-A template is an HTML snippet. 
-The template does not render itself on DOM.
+- [Codes](https://ngtemplate-ngcontainer-directive-vdpqhj.stackblitz.io)
 
-- [ngTemplate (TemplateRef&ViewContainerRef)](#ngtemplate-templaterefviewcontainerref)
+**A template is an HTML snippet.**   
+The template does not render itself on DOM.  
+
+- [ngTemplate (TemplateRef&ViewContainerRef) & `*ngTemplateOutlet`](#ngtemplate-templaterefviewcontainerref--ngtemplateoutlet)
   - [Reference](#reference)
   - [Syntax](#syntax)
   - [Display ngTemplate Element in View](#display-ngtemplate-element-in-view)
@@ -14,13 +16,16 @@ The template does not render itself on DOM.
   - [ng-template with `[ngIf]`, `[ngIfThen]` and `[ngIfElse]`](#ng-template-with-ngif-ngifthen-and-ngifelse)
   - [ng-template with `[ngForOf]` and `[ngForTrackBy]`](#ng-template-with-ngforof-and-ngfortrackby)
   - [ng-template with `[ngSwitch]`, `[ngSwitchCase]` and `ngSwitchDefault`](#ng-template-with-ngswitch-ngswitchcase-and-ngswitchdefault)
+  - [`*ngTemplateOutlet`](#ngtemplateoutlet)
+    - [Syntax](#syntax-1)
+  - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
 
 ## Reference
 [How to use ng-template & TemplateRef in Angular](https://www.tektutorialshub.com/angular/ng-template-in-angular/)
 
 ## Syntax
 
-ngTemplate is controlled by `@Directiv` component
+ngTemplate is controlled by Directive
 ```html
 <ngTemplate ComponentDirective>  ... </ngTemplate>
 ```
@@ -33,10 +38,17 @@ ngTemplate is controlled by TemplateName
 Pass parameter to this ngTemplate
 ```html
 <ngTemplate #templateRefName
-            let-templateParameter1 = "parameter-NameFrom-*TemplateOutlet" , 
-            let-templateParameter2 ="parameter-NameFrom-*TemplateOutlet"> 
+            let-templateParameter1 = "yyy" , 
+            let-templateParameter1 = "xxx"> 
       <div>{{ templateParameter1 | json }}</div>
 </ngTemplate>
+```
+```typescript
+context = {
+  $implicit : ... ,
+  xxx : x : ...
+  yyy : { a : ... , b : ....},
+}
 ```
 
 ## Display ngTemplate Element in View
@@ -256,3 +268,53 @@ The above `ngif` can be written using the ng-template syntax.
     </ng-template>
 </div>
  ```
+
+ ## `*ngTemplateOutlet`
+
+[Reference :: [Angular 大師之路] Day 12 - *ngTemplateOutlet 與 ng-template 的完美組合](https://ithelp.ithome.com.tw/articles/10205829)
+
+- [*ngTemplateOutlet](#ngtemplateoutlet)
+    - [Syntax](#syntax)
+  - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
+
+**The ngTemplateOutlet, is a structural directive, which renders the template.**
+- 透過 `*ngTemplateOutlet="TemplateRefName | Directive | Component"` 來顯示(OutLet)某個特定Template，減少Template重複
+### Syntax
+
+```html 
+<ng-template #TemplateReferenceName>
+  ...                      ^
+  ....                      \
+</ng-template>               \ 
+                              \
+<element *ngTemplateOutlet = "TemplateReferenceName">
+</element>
+```
+## Outlet傳入多個參數到Template 
+
+```html
+<ng-template #data let-input="$Implicit" let-x="x" let-y = "y">
+</ng-template>
+
+<div *ngTemplateOutlet="data; 
+      context: {
+                $implicit: {property: value , ... , ...}, 
+                x        : {propertyX : value , .. , ..}
+      },"
+></div>
+```
+- `$implicit` : default Field
+
+For example
+```html
+<div *ngTemplateOutlet="data; 
+      context: {$implicit: {value: 1}, 
+                another: {value: '1', value2 : '2' }"
+></div>
+
+<ng-template #data let-input="$Implicit" let-another="another">
+  <div>{{ input | json }}</div>
+  <div>{{ another.value | json }}</div>
+  <div>{{ another.value2 | json}}</div>
+</ng-template>
+```
