@@ -4,7 +4,7 @@
 - [Selector](#selector)
   - [Reference](#reference)
   - [`*` all](#-all)
-  - [`,` and](#-and)
+  - [`,` (and)](#-and)
   - [` ` inside](#--inside)
   - [`>` inside](#-inside)
   - [`+` next to](#-next-to)
@@ -29,7 +29,7 @@
 
 `*` select all elements
 
-## `,` and
+## `,` (and)
 
 `x , y` : select x and y
 
@@ -47,13 +47,12 @@
 ```html
 <x>...</x>
 <y>
-    select me, im next to x
+    im next to x
 </y>
 ```
 
 ## `xy` more specific
 
-`x.className` or `x#id`
 ```css
 p.className{
     /****/
@@ -63,9 +62,9 @@ p#idName{
 }
 ```
 ```html
-<p class="className"></p>
+<p class="className"> select p.className</p>
 
-<p id="idName"></p>
+<p id="idName">select p#idName</p>
 ```
 ## checkBox `: checked | disabled | enabled |empty | focus`
 
@@ -231,7 +230,6 @@ div.group h1:first-of-type{}
 	<span class="B">second one of span</span>
 </div>
 ```
-
 
 the fist type child elements appear in element
 ```css

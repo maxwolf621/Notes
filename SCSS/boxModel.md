@@ -20,14 +20,16 @@
   Clears an area outside the border.   
 
 
-## Parameter (Shorthand Property)
+## Shorthand Property for margin and padding
 
-```scss
-padding|margin : top , right , bottom, left
+```css
+.object{
+  padding|margin : top right bottom left;
+}
 ``` 
-- When `[padding|margin]` has three values `1,2,3`: `top=1, right=2, bottom=3`
-- When `[padding|margin]` has two values `1,2` means `top=1, right=2`
-- When `[padding|margin]` has one values `1` : `top=1` , `right=1` , `bottom=1`, `left=1`
+- When `[padding|margin] : 1,2,3` means `top=1, right=2, bottom=3`
+- When `[padding|margin] : 1,2` means `top=1, right=2`
+- When `[padding|margin] : 1` means `top=1, right=1 , bottom=1, left=1`
 
 
 <!DOCTYPE html>
@@ -35,24 +37,22 @@ padding|margin : top , right , bottom, left
 <head>
 <style>
 div.padding {
+  box-sizing: border-box;
   width: 300px;
   padding: 50px;
-  box-sizing: border-box;
   background-color: grey;
 }
 </style>
 </head>
 <body>
-
-<h2>Padding Example<h2>
+<h1>Padding Example<h1>
 <div class="padding">The width of this div remains at 300px, in spite of the 50px of total left and right padding, because of the box-sizing: border-box property.
 </div>
-
 </body>
 </html>
 
 
-## margin special parameter (inherit and auto)
+## margin special parameter (`inherit` and `auto`)
 
 <html>
 <head>
@@ -87,15 +87,11 @@ This div will be horizontally centered because it has margin: auto;
 
 <h2>Use of the inherit value</h2>
 <p>Let the left margin be inherited from the parent element:</p>
-
-
 <div class="parent">
-<p class="child">
-This paragraph has an inherited left margin (from the div element).
-</p>
+  <p class="child">
+  This paragraph has an inherited left margin (from the div element).
+  </p>
 </div>
-
-
 </body>
 </html>
 
