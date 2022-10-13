@@ -27,13 +27,13 @@
 
 ## Git & Linux
 - [git](git/README.md)
-
 - [Basic Shell Command](LinuxNote/BasicShellCommand.md)
 - [Grep](LinuxNote/grep.md)
 - [Basic Shell Script](LinuxNote/BasicShellScript.md)
 - [Environment Path](LinuxNote/environmentPath.md)
 ## Java&Spring & DesignPattern
 
+- [Java Methods mkyong](https://mkyong.com/)
 - [Java](JavaNote/README.md)
 - [Spring](SpringNote/README.md)
 - [Design Pattern Java](DesignPattern/README.md)
@@ -43,22 +43,20 @@
 - [Database](database/README.md)
 
 ## LeetCode 
-
 - [LeetCode Exercises](LeetCode/README.md)
 ## Typescript
 
-
-[What is `new() :T`](https://reurl.cc/O4Anb9)   
+[What is `new() :T`](https://reurl.cc/O4Anb9)  
 [Exercises](https://exercism.org/tracks/typescript/exercises)   
-[Cheat Sheet](https://rmolinamir.github.io/typescript-cheatsheet/)     
-[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)      
+[Cheat Sheet](https://rmolinamir.github.io/typescript-cheatsheet/)   
+[TypeScript: Static or Dynamic?](https://itnext.io/typescript-static-or-dynamic-64bceb50b93e)  
 [Do ✅ and Don't ❌ ](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)  
+[DOM Manipulation](https://www.typescriptlang.org/docs/handbook/dom-manipulation.html)  
 
 ### Methods
 [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html#thisparametertypetype)  
 [Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
 [Typing objects](https://exploringjs.com/tackling-ts/ch_typing-objects.html)     
-
 
 ### Basics
 
@@ -101,33 +99,27 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 ## Angular
 
 [Tutorial](https://www.tektutorialshub.com/angular-tutorial/#pipes)
-
 ### Basics
 
 - [Install and Uninstall Angular](Angular/Install&UninstallAngular.md)  
 - [Angular CLI](AngularCLI.md)  
   - [CLI command](https://blog.poychang.net/note-angular-cli/)    
   ```bash
-  ng g component componentName # prefix-componentName 
-  ng g directive directiveName # prefix-directiveName
-  ng g pipe my-new-pipe # 產生 Pipe 管道程式碼
-  ng g service my-new-service #產生 Service 服務程式碼
-  ng g class my-new-class #產生 Class 程式碼
-  ng g interface my-new-interface #產生 Interface 介面程式碼
-  ng g enum my-new-enum #產生 Enum 程式碼
-  ng g module my-module #產生 Module 模組程式碼
-  ng g guard my-guard #產生 Guard 守衛程式碼
-  ng g app-shell [ --universal-app <universal-app-name>] [ --route <route>] 建立 App Shell
+  ng g component componentName --flat --module moduleName
+  ng g directive directiveName
+  ng g pipe pipeName
+  ng g service serviceName
+  ng g class className
+  ng g interface interfaceName
+  ng g enum enumName
+  ng g module moduleName
+  ng g guard guardName
+  ng g app-shell [ --universal-app <universal-app-name>] [ --route <route>
   ```
 - [Root Module and Root Component](ApplicationActs.md)  
-  ```typescript
-  main.ts#platformBrowserDynamic().bootstrapModule(AppModule)
-  '---AppModule#@NgModule.bootstrap[AppComponent]
-    '---AppComponent#@Component.Selector:<app-root>
-  ```
 - [Component](Angular/Component.md)  
 - [Module](Angular/ngModule.md)  
-- [Providers Array And Dependency Injection](Angular/DependencyInjection.md)
+- [Providers Array(DI)](Angular/DependencyInjection.md)
 - [Life hooks](Angular/lifeHooks.md)
 ### Bind data with Template, HTML and Component & CSS 
 - [DOM properties and HTML attributes](Angular/domPropHTMLattr.md) 
@@ -136,33 +128,25 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Bind](Angular/Binding.md)
 - [Two Way Binding (`[(ngMOdel)]`, `@input` and `@Output`)](Angular/TwoWayBinding.md)
   ```typescript
-  <childComponent [input] = "value" (outputEvent) = getEvent($Event)></childComponent>>
+  <X [input] = "value" (EventFromX) = getEvent($Event)></X>
   ```
 ### Directive
 - [Angular Directive](Angular/directive.md)
 - [Custom Directive](Angular/customDirective.md)
 - [ElementRef & TemplateRef & ViewRef & ViewContainerRef](Angular/ElementRef.md)
 - [Renderer2(Proxy of ElementRef)](Angular/Renderer2.md)
-- [HostBinding and HostListener](Angular/Host.md)   
-
-
-`<ng-content>` : Child Template 內的`<ng-content></ng-content>` = Parent Template要嵌入的地方      
-`@ViewChild` : 從View裡取得特定Component/Template variable Reference的實體給Component用        
-`@ContentChild` : Child Component 可以操作`<ng-content></ng-content>` Parent Template嵌入的元素    
-- [ViewChild and ViewChildren](Angular/viewchild.md)
-- [ContentChild and ContentChildren](Angular/contentChild.md)
-- [Structural Directives](Angular/Structural%20Directives.md)
-  - [`ng-Content`](Angular/ngContent.md)
-  - [`ng-template` with TemplateRef & ViewContainerRef](Angular/ng-template.md)
+- [HostBinding and HostListener](Angular/Host.md)       
+- [ViewChild & contentChild & ng-content](Angular/viewChildAndcontentChild.md)
+- [Structural Directives (`*`)](Angular/Structural%20Directives.md)
+  - [`ng-content`](Angular/ngContent.md)
+  - [`ng-template` with TemplateRef & ViewContainerRef & `ng-templateOutlet](Angular/ng-template.md)
   - [`ng-container`](Angular/ng-container.md)
-  - [`ng-templateOutlet`](Angular/ngTemplateOutlet.md)
 ### Angular Reactive Forms
 
 - [Login Example](https://jasonwatmore.com/post/2020/07/18/angular-10-user-registration-and-login-example-tutorial)    
+- [JWT](Angular/JWT.md)    
 - **[ReactiveFormsModule](Angular/ReactiveFormsModule.md)** 
 - **[Custom Form Validator](Angular/Validator.md)**
-- [JWT](Angular/JWT.md)    
-
 ### Router
 
 - **[Router](AngularRouter/Router.md)**   
@@ -172,41 +156,17 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 
 ### Material 
 
-**All the Material's class name is same as their material's name** for example `<img mat-card-image>` is `<img mat-card-image class="mat-card-image">`
-
-
 - [button](Material/button.md)
-- [mat-ripple]
-- [side nav](Material/sidenav.md)
-- [mat-list](Material/matlist.md)
-- [menu](Material/menu.md)
-- [grid-list](Material/gridlist.md)
-- [mat-card](Material/matCard.md)
-  ```html
-   <mat-grid-tile>
-    
-    <!-- EACH mat-card setUp -->
-    <mat-card>
-        <mat-card-tile-group> or <mat-card-header>
-            <mat-card-title></mat-card-title>
-            <mat-subtitle></mat-subtitle>
-            <img mat-card-avatar/>
-        </mat-card-tile-group> or </mat-card-header>
-        <img mat-card-image/>
-          <mat-card-content></mat-card-content>
-          <mat-card-actions>
-            <button mat-button></button>
-          </mat-card-actions>
-    <mat-card-footer></mat-card-footer>
-    </mat-card>
-  </mat-grid-tile>
-  ```
+- [scss material theme](materialTheme.md)
 - [mat-progress](Material/matprogress.md)
-- [tag](Material/tag.md)
-- [mat-expansion-panel](Material/matexpansionpanel.md)
 - [mat-tab-group](Material/matTabGroup.md)
 - [CDK](Material/cdk.md)
-
+- [sidenav]
+- [mat-list]
+- [grid-list]
+- [mat-card]
+- [chip]
+- [mat-expansion-panel]
 
 ## RXJS
 
@@ -229,6 +189,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Error](RXJS/Error.md)
 - **[AsyncPipe](RXJS/AsyncPipe.md)**
 - **[behaviorSubject](RXJS/behaviorSubject.md)**
+
 - [HttpClient.md](Angular/HttpClient.md)   
   ```typescript
   this.httpClient.get(BackendURL).pipe(
@@ -247,13 +208,16 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Z-index](https://kumo.tw/article.php?id=44)
 - [CSS PADDING AND MARGIN](SCSS/boxModel.md)
 - [CSS BOARD/BOX SIZE](SCSS/board.md)
-- [CSS OVERFLOW&FLOW](SCSS/overflow&FLOW.md)
+- [CSS OVERFLOW&FLOW](SCSS/overflowAndflow.md)
 - [CSS Grid](SCSS/grid.md)
 - [CSS FLEX vs Angular Flex-Layout](SCSS/flex.md)
 - [SELECTORS](SCSS/selector.md)
 - [Display](https://reurl.cc/V1Y8EY)
 - [SCSS Notes](SCSS/scssUsage.md)
-
+- [重新認識 JavaScript: Day 15 隱藏在 "事件" 之中的秘密](https://ithelp.ithome.com.tw/articles/10192015)
+- [收藏！40 个 CSS 布局技巧](https://zhuanlan.zhihu.com/p/192537705)
+- [SCSS exercises](https://gist.github.com/fredsiika/2958726da1f94a9bd447f4f7bd03a852#use-if-and-else-to-add-logic-to-your-styles)
+- [Sass / SCSS 預處理器 - @mixin 建立混入與 @include 載入混入](https://awdr74100.github.io/2020-05-30-scss-mixin-include/)
 ### Cheat Sheet
 - [tailwind](https://nerdcave.com/tailwind-cheat-sheet)
 - [CSS quickReview](https://reurl.cc/MN3RNL)  
