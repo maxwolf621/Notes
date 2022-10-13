@@ -1,4 +1,4 @@
-# mat tab group
+# mat-tab-group
 
 - [[Angular Material完全攻略] Day 22 - 收件夾頁面(2) - Tabs](https://ithelp.ithome.com.tw/articles/10196575)
 
@@ -45,9 +45,7 @@ export class InboxComponent {
   }
 }
 ```
-![](images/04-mat-tab-group-events.gif)
-
-
+![](images/../../images/04-mat-tab-group-events.gif)
 ## Each Tab with icon
 
 ```html

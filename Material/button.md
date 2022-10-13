@@ -15,7 +15,9 @@
 
 ```html
 <button mat-button color=".." >
+```
 
+```html
 <button mat-button color="primary">Primary</button>
 <button mat-button color="accent">Accent</button>
 <button mat-button color="warn">Warn</button>
@@ -23,7 +25,7 @@
 <a mat-button>Link</a> 
 ```
 
-![image](images/02-mat-button-color.gif)
+![image](../images/02-mat-button-color.gif)
 
 ## mat-raised-button
 
@@ -35,7 +37,7 @@
 <a mat-button>Link</a>
 ```
 
-![gif](images/03-mat-raised-button.gif)
+![gif](../images/03-mat-raised-button.gif)
 
 
 ## Button with mat-icon
@@ -44,7 +46,7 @@
 <button mat-raised-button color="primary"><mat-icon>thumb_up</mat-icon> 我有Icon</button>
 ```
 
-![圖 1](images/8591e3c84c5973ac5e77b88f2d264c2f96913ba0c9072157872c2b1f93f8419c.png)  
+![圖 1](../images/8591e3c84c5973ac5e77b88f2d264c2f96913ba0c9072157872c2b1f93f8419c.png)  
 
 
 ## mat-icon-button
@@ -52,21 +54,17 @@
 ```html
 <button mat-icon-button color="primary"><mat-icon>thumb_up</mat-icon></button>
 ```
-![圖 2](images/535c65341e1ff801342f45694d0fe3cc2d3c4569615ec1f928ea05905a6d9245.png)  
+![圖 2](../images/535c65341e1ff801342f45694d0fe3cc2d3c4569615ec1f928ea05905a6d9245.png)  
 
 
 ## mat-icon-button with mat-raised-button
 
 ```html
-<button mat-raised-button 
-        mat-icon-button 
-        color="primary">
-                <mat-icon>thumb_up</mat-icon>
+<button mat-raised-button mat-icon-button color="primary">
+  <mat-icon>thumb_up</mat-icon>
 </button>
 ```
-![圖 3](images/9d942399bcae6d023262fed8d96d887ff2da3efa15f2c63e304f07f378081304.png)  
-
-
+![圖 3](../images/9d942399bcae6d023262fed8d96d887ff2da3efa15f2c63e304f07f378081304.png)  
 
 
 ## mat-fab
@@ -89,7 +87,7 @@
 </button>
 ```
 
-![](images/08-mat-fab.gif)
+![](../images/08-mat-fab.gif)
 
 ### mat-mini-fab
 
