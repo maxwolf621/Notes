@@ -106,4 +106,33 @@ public class AppTest
             }
         });
     }
+    @Test public void testFunction(){
+        converter<String, Integer> convertToInteger = (from) -> Integer.valueOf(from);
+        Integer i1=convertToInteger.convert("124");
+
+        converter<String,Integer> toInteger = 
+        new converter<String,Integer>(){
+            @Override
+            public Integer convert(String from) {
+                return Integer.valueOf(from);
+            }
+        };
+
+        Integer i2 = toInteger.convert("321");
+
+        System.out.println(i1 + ":" + i2);
+    }
+
+    @Test public void testMethodReference(){
+        class Something {
+            String startsWith(String s) {
+                return String.valueOf(s.charAt(0));
+            }
+        }
+        Something something = new Something();
+        converter<String, String> converter = something::startsWith;
+        String converted = converter.convert("Java");
+        System.out.println(converted);    // "J"
+    }
+
 }
