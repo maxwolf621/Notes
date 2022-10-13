@@ -2,7 +2,7 @@
 
 - [String](#string)
     - [`final` for String](#final-for-string)
-    - [new string](#new-string)
+    - [`new` string()](#new-string)
   - [String Methods](#string-methods)
       - [equals(Object obj) and equalsIgnoreCase(String s)](#equalsobject-obj-and-equalsignorecasestring-s)
       - [compareTo(String s) and compareToIgnoreCase(String s)](#comparetostring-s-and-comparetoignorecasestring-s)
@@ -16,7 +16,7 @@
     - [char operation](#char-operation)
 
 
-Since Java 9 `String` value is used for `byte[]` as character storage instead of (Java 8)`char`  
+Since Java 9 `String` value is used for `byte[]` as character storage instead of `char`  
 ```java
 /**
   * String Class In Java 8 (array)
@@ -43,19 +43,19 @@ public final class String
 
 ### `final` for String
 
-1. Hash value  : Same Value Could Be Found via Hash Code
-2. String Pool : Reduce `new` the same value   |
-String Pool keeps all literal strings, theses are stored **at the compiler time**
+1. Hash value  : Reduce duplicate Strings
+2. String Pool : It keeps all literal strings stored **at the compiler time** to reduce `new` operation
 3. Security 
 4. Thread Safe
 
 
-### new string
+### `new` string()
 
-**Since Java 7, Each string in String Pool is stored in Stack to prevent from `OutOfMemoryError`**. 
-`new String("stringValue")` will create 
+**Since Java 7, Each string in String Pool is stored in Stack to prevent from `OutOfMemoryError`**.   
+
+`new String("stringValue")` operation creates
 1. `new` creates an object in the stack
-1. At the Compiler time `stringValue` is created in String Pool and points to new memory location.
+2. At the Compiler time `stringValue` is stored in String Pool and points to new memory location.
 
 ```java
 String s1 = new String("aaa");
@@ -64,12 +64,12 @@ System.out.println(s1 == s2) ; // false
 
 /**
   * To compare String value 
-  * that was created by new String("...")
+  * created by new String("...")
   * we must use {@code intern()}
   */
-String s3 = s1.intern()         ;
-String s4 = s2.intern()         ;
-System.out.println(s3 == s4)    ;  // true
+String s3 = s1.intern()     ;
+String s4 = s2.intern()     ;
+System.out.println(s3 == s4);  // true
 
 // Check String Pool first
 String s5 = "bbb";
@@ -86,14 +86,10 @@ System.out.println(s5 == s6);  // true
 ## String Methods
 
 ```java
-// search string pool first if the string does not exist
-// then create one
-String intern() 
-
 String[] split(String regex, ?int arrayLength)
 // IN.MA.CA.LA split("\\.")
 // IN-MA-CA-LA => String[] s = {IN,MA,CA,LA}
-
+// -----------------------
 // IN.MA.CA.LA split("\\.", arrayLength)
 // arrayLength : 2 => {IN , MA-CA-LA}
 // arrayLength : 3 =? IN, MA, CA-LA}
@@ -103,30 +99,6 @@ int indexOf(int ch, int ?fromIndex) // search character
 int indexOf(String str, ?int fromIndex) // search string
 int lastIndexOf(int ch, ?int startFromIndex)
 int lastIndexOf(String str, ?int startFromIndex)
-
-// most used
-char[] toCharArray()
-char charAt(int index)
-
-// Equals 
-boolean contentEquals(StringBuffer sb)
-boolean equalsIgnoreCase(String anotherString)
-
-String substring(int beginIndex)
-String substring(int beginIndex, int endIndex)
-
-String toLowerCase()
-String toUpperCase()
-
-String trim() // "  abc  " => "abc"
-int length()
-Boolean isEmpty()
-boolean equals(Object anObject)
-int hashCode()
-String toString()
-Boolean contains(CharSequence chars)
-
-boolean matches(String regex)
 
 String replace(char oldChar, char newChar)
 String replaceAll(String regex, String replacement)
@@ -139,12 +111,47 @@ int compareToIgnoreCase(String str)
 static String copyValueOf(char[] data)
 static String copyValueOf(char[] data, int offset, int count)
 
+
+// most used
+char[] toCharArray()
+String toString()
+char charAt(int index))
+
+boolean contentEquals(StringBuffer sb)
+boolean equals(Object anObject)
+boolean equalsIgnoreCase(String anotherString)
+
+byte[] getBytes()
+byte[] getBytes(String charsetName) 
+// str.getBytes( "UTF-8" );
+
+String substring(int beginIndex)
+String substring(int beginIndex, int endIndex)
+
+String toLowerCase()
+String toUpperCase()
+
+String trim() // "  abc  " => "abc"
+
+int length()
+Boolean isEmpty()
+int hashCode()
+
+Boolean contains(CharSequence chars)
+boolean matches(String regex)
+
 // PREFIX or SUFFIX
 boolean endsWith(String chars)
 boolean startsWith(String chars, ?int toffset)
 
-byte[] getBytes()
-byte[] getBytes(String charsetName) // str.getBytes( "UTF-8" );
+// search string pool first 
+// if the string does not exist
+// then create one in pool
+String intern() 
+//String s3 = new String("1234").intern()     ;
+//String s4 = new String("1234").intern()     ;
+//System.out.println(s3 == s4); 
+
 ```
 
 

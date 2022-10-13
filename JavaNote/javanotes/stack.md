@@ -9,7 +9,7 @@
 
 Stack class in Java is a legacy class and inherits from Vector in Java.   
 
-It is a **thread-safe class** and hence involves overhead.     
+Stack is a **thread-safe class** and hence involves overhead.     
 Use `deque` when we do not need thread safety instead.
 
 ![圖 1](../../images/1fef51ac296b998d1523e0e130d217cabc0959a6c886bfbf8766b64e5c3c9b3d.png)  
@@ -27,7 +27,7 @@ Use `deque` when we do not need thread safety instead.
 
 ```java
 Stack stk = new Stack();  
-//Or
+// Or
 Stack<T> stk = new Stack<T>();  
 ```
 
@@ -38,10 +38,13 @@ E push(E item)
 E peek()
 
 boolean	empty()
-// It determines whether an object exists in the stack. 
-// If the element is found, 
-// It returns the position of the element 
-// from the top of the stack. Else, it returns `-1`.
+
+/** 
+ * It determines whether an object exists in the stack. 
+ * If the element is found, 
+ * It returns the position of the element 
+ * from the top of the stack. Else, it returns `-1`.
+ */
 int	search(Object o)
 ```
 
@@ -53,9 +56,10 @@ void add(int index, E element)
 boolean	addAll(Collection<? extends E> c)
 boolean	addAll(int index, Collection<? extends E> c)
 
-void copyInto(Object[] anArray)
 void setSize(int newSize)
 int	capacity()
+
+void copyInto(Object[] anArray)
 
 // XXXelement
 void addElement(E obj)
@@ -68,9 +72,20 @@ E lastElement()
 boolean removeElement(Object obj)
 void removeElementAt(int index)
 void removeAllElements()
+```
 
 
-// List
+List
+
+```java
+// Transform
+List<E>	subList(int fromIndex, int toIndex)
+
+Object[] toArray()
+<T> T[]	toArray(T[] a)
+String toString()
+
+// List Special Method
 void ensureCapacity(int minCapacity)
 void trimToSize()
 
@@ -84,6 +99,8 @@ Object clone()
 boolean	equals(Object o)
 int	hashCode()
 
+
+// Basic Operation retain, contains, remove
 boolean	retainAll(Collection<?> c)
 
 boolean	contains(Object o)
@@ -94,29 +111,30 @@ boolean	remove(Object o)
 boolean	removeAll(Collection<?> c)
 protected void removeRange(int fromIndex, int toIndex)
 
+// search index of Element from right/left
 int	indexOf(Object o)
 int	indexOf(Object o, int index)
 
 int	lastIndexOf(Object o)
 int	lastIndexOf(Object o, int index)
 
+// iterator
 Iterator<E>	iterator()
 ListIterator<E>	listIterator()
 ListIterator<E>	listIterator(int index)
-
-List<E>	subList(int fromIndex, int toIndex)
-
-Object[] toArray()
-<T> T[]	toArray(T[] a)
-String toString()
 ```
 
 
 ## ArrayDeque & LinkedList
 
-LinkedList & LinkedList implements deque
+LinkedList and LinkedList both implements deque.
 
-It is recommended to use `ArrayDeque` for stack implementation as it is more efficient in a single-threaded environment.
+**It is recommended to use `ArrayDeque` for stack implementation as it is more efficient in a single-threaded environment.**
+```java
+Deque<E> dq = new ArrayDeque<E>();
+Deque<E> dq = new ArrayDeque<E>(Collection col);
+Deque<E> dq = new ArrayDeque<E>(int numOfElements);
+```
 
 ### ArrayDeque vs LinkedList
 
@@ -149,17 +167,21 @@ Object clone()
 int	size()
 boolean	isEmpty()
 void clear()
+
+// basic operations
 boolean contains(Object o)
-
 E remove(int index)
+protected void removeRange(int fromIndex, int toIndex_exclusive)
 
+// index of element
 int	indexOf(Object o)
 int	lastIndexOf(Object o)
 
+// iterator
 Iterator<E>	descendingIterator()
 ListIterator<E>	listIterator(int index)
 
-protected void removeRange(int fromIndex, int toIndex_exclusive)
+// transform
 List<E> subList(int fromIndex_Inclusive, int toIndex_Exclusive)
 ```
 
@@ -175,9 +197,6 @@ Deque
 void addFirst(E e)  
 void addLast(E e)
 
-E getFirst() // if null NoSuchElementException
-E getLast()  // if null NoSuchElementException
-
 boolean	offer(E e)
 boolean	offerFirst(E e)
 boolean	offerLast(E e)
@@ -190,7 +209,11 @@ E poll()
 E pollFirst()
 E pollLast()
 
-E remove()
+// if null NoSuchElementException
+E getFirst()
+E getLast() 
+// if null NoSuchElementException
+E remove()      
 E removeFirst()
 E removeLast()
 

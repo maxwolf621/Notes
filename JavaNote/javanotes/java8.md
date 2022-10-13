@@ -5,11 +5,10 @@
   - [Functional Interface](#functional-interface)
   - [Default methods for interfaces](#default-methods-for-interfaces)
   - [lambda](#lambda)
-  - [type interference](#type-interference)
   - [Syntax of Lambda Expressions](#syntax-of-lambda-expressions)
     - [lambda expression as parameter](#lambda-expression-as-parameter)
   - [函數合成](#函數合成)
-  - [Method and Constructor References](#method-and-constructor-references)
+  - [Method References (`Class::Method`)](#method-references-classmethod)
     - [Constructor References](#constructor-references)
   - [Lambda Scopes](#lambda-scopes)
     - [Accessing fields and static variables](#accessing-fields-and-static-variables)
@@ -22,7 +21,7 @@
     - [Comparators](#comparators)
 ## Reference
 
-[oracle java lambdaexpression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
+[oracle java lambda expression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
 **[cheatSheet](https://github.com/winterbe/java8-tutorial)**   
 [Java 8 in Action](https://gitee.com/lihuadaiyu/read/blob/master/Java8%E5%AE%9E%E6%88%98/Java8%E5%AE%9E%E6%88%98%20%E7%AC%94%E8%AE%B0.md)   
 [Java 8 in Action Source Code](https://github.com/java8/Java8InAction)  
@@ -42,9 +41,17 @@ The compiler is aware of this annotation and throws a compiler error as soon as 
 interface Converter<F, T> {
     T convert(F from);
 }
- 
-// returnType,argumentType implementation            @override convert
-Converter<String, Integer> convertToInteger =        (from) -> Integer.valueOf(from);
+
+// Anonymous
+Converter<String,Integer> toInteger = 
+        new Converter<String,Integer>(){
+            @Override
+            public Integer convert(String from) {
+                return Integer.valueOf(from);
+            }
+        };
+// Lambda
+Converter<String, Integer> convertToInteger =  (from) -> Integer.valueOf(from);
 
 Integer converted = converter.convertToInteger("123");
 System.out.println(converted);    // 123
@@ -104,12 +111,13 @@ formula.sqrt(16);           // 4.0
 List<String> names = Arrays.asList("p", "a", "m", "x");
 
 // anonymous class
-Collections.sort(names, new Comparator<String>() {
-    @Override
-    public int compare(String a, String b) {
-        return b.compareTo(a);
-    }
-});
+Collections.sort(names, 
+                 new Comparator<String>() {
+                    @Override
+                    public int compare(String a, String b) {
+                        return b.compareTo(a);
+                    }
+                });
 
 // with lambda expr
 Collections.sort(names, (String a, String b) -> {
@@ -130,12 +138,12 @@ p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
 
 A body, which consists of a single expression or a statement block. 
 ```java
-p.getGender() == Person.Sex.MALE 
-    && p.getAge() >= 18
-    && p.getAge() <= 25
+p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
 ```
 
-If you specify a single expression, then the Java runtime evaluates the expression and then returns its value. Alternatively, you can use a `return` statement:
+If you specify a single expression, then the Java runtime evaluates the expression and then returns its value. 
+
+Alternatively, you can use a `return` statement:
 ```java 
 p -> {
     return p.getGender() == Person.Sex.MALE
@@ -143,9 +151,9 @@ p -> {
         && p.getAge() <= 25;
 }
 ```
-**A return statement is not an expression; in a lambda expression, you must enclose statements in braces (`{}`).**
+- **A return statement is not an expression; in a lambda expression, you must enclose statements in braces (`{}`).**
 
-However, you do not have to enclose a void method invocation in braces. 
+However, you do not have to enclose a **void** method invocation in braces. 
 ```java
 email -> System.out.println(email)
 ```
@@ -164,14 +172,19 @@ import java.util.function.IntConsumer;
 
 class B {
     public void dansMethod(int i, IntConsumer aMethod) {
-        /* you can now call the passed method by saying aMethod.accept(i), and it
-        will be the equivalent of saying A.methodToPass(i) */
+        /* 
+            you can now call the passed method 
+            by saying aMethod.accept(i), and it
+            will be the equivalent of saying 
+            A.methodToPass(i) 
+        */
     }
 }
 class C {
     B b = new B();
     public C() {
-        b.dansMethod(100, j -> A.methodToPass(j));   //Lambda Expression here
+        b.dansMethod(100, j -> A.methodToPass(j));   
+        //Lambda Expression here
     }
 }
 ```
@@ -202,14 +215,20 @@ public static <A, B, C> Func<A, C> compose(Func<A, B> f, Func<B, C> g) {
 ```
 
 
-## Method and Constructor References
-
-Java 8 enables you to pass references of methods or constructors via the `::` keyword. 
+## Method References (`Class::Method`)
 
 ```java
-Converter<String, Integer> converter = (from) -> Integer.valueOf(from);
-// equals
+MethodName fn = Class::Method;
+```
+
+```java
+@FunctionalInterface
+interface Converter<F, T> {
+    T convert(F from);
+}
 Converter<String, Integer> converter = Integer::valueOf;
+// Same as Converter<String, Integer> converter = 
+//                 (from) -> Integer.valueOf(from);
 
 Integer converted = converter.convert("123");
 System.out.println(converted);   // 123
@@ -220,6 +239,7 @@ class Something {
     }
 }
 Something something = new Something();
+// Converter<String, String> converter = (s) -> String.valueOf(s.charAt(0))
 Converter<String, String> converter = something::startsWith;
 String converted = converter.convert("Java");
 System.out.println(converted);    // "J"
@@ -252,11 +272,13 @@ interface PersonFactory<P extends Person> {
 
 Instead of implementing the factory manually, we glue everything together via constructor references:
 ```java
+// PersonFactory<Person> personFactory = 
+//          (firstName,lastName) -> new Person(firstName,lastName)
 PersonFactory<Person> personFactory = Person::new;
 Person person = personFactory.create("Peter", "Parker");
 ```
-We create a reference to the Person constructor via `Person::new.`       
-The Java compiler automatically chooses the right constructor by matching the signature of PersonFactory.create.   
+-  `Person::new` creates a reference to the Person constructor  
+    The Java compiler automatically chooses the right constructor by matching the signature of `PersonFactory.create`.   
 
 
 ## Lambda Scopes
@@ -271,13 +293,14 @@ Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num
 stringConverter.convert(2);  // 3
 ```
 
-But different to anonymous objects the variable `num` does not have to be declared `final`. This code is also valid:
+But different to anonymous objects the variable `num` does not have to be declared `final`. 
+The following code is also valid:
 ```java
 int num = 1;
 Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
 stringConverter.convert(2); // 3
 ```
-However `num` must be implicitly `final` for the code to compile. 
+- `num` must be implicitly `final` for the code to compile. 
 
 
 **Writing to `num` from within the lambda expression is also prohibited.**
@@ -285,12 +308,12 @@ However `num` must be implicitly `final` for the code to compile.
 int num = 1;
 Converter<Integer, String> stringConverter =
         (from) -> String.valueOf(from + num);
-num = 3;
+num = 3; // !!!
 ```
 
 ### Accessing fields and static variables
 
-In contrast to local variables, we have both read and write access to instance fields and static variables from within lambda expressions. 
+In contrast to local variables, **we have both read and write access to instance fields and static variables from within lambda expressions**. 
 
 This behavior is well known from anonymous objects.
 ```java
@@ -362,15 +385,16 @@ Predicates are **boolean-valued** functions of one argument.
 
 **The interface contains various default methods for composing predicates to complex logical terms (`and`, `or`, `negate`)**
 
-useCase : `Optional.filter(Predicate<? super T> predicate)`
+use case : `Optional.filter(Predicate<? super T> predicate)`
 ```java
 // anonymous 
-Optional<String> os1 = Optional.ofNullable(str).filter(new Predicate<String>() {
+Optional<String> os1 = Optional.ofNullable(str).filter(
+    new Predicate<String>() {
           @Override
           public boolean test(String s) {
               return s.length() < 10; // false
           }
-      });
+    });
 ```
 
 
@@ -397,6 +421,16 @@ Predicate<String> isNotEmpty = isEmpty.negate();
 **Default methods can be used to chain multiple functions together (`compose`, `andThen`).**
 
 ```java
+package java.util.function;
+
+import java.util.Objects;
+
+@FunctionalInterface
+public interface Function<T, R> {
+    R apply(T t);
+    ...
+}
+
 Function<String, Integer> toInteger = Integer::valueOf;
 Function<String, String> backToString = toInteger.andThen(String::valueOf);
 
@@ -405,22 +439,42 @@ backToString.apply("123");     // "123"
 
 ### Suppliers
 
-Suppliers produce a result of a given generic type. 
+**Suppliers produce a result of a given generic type.** 
 
 Unlike Functions, Suppliers don't accept arguments.
 
 ```java
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+
 Supplier<Person> personSupplier = Person::new;
 personSupplier.get();   // new Person
 ```
 
 ### Consumers
 
+
 Consumers represent operations to be performed on a single input argument.
 
+- Other `Consumers` type `IntConsumer`、`LongConsumer`、`DoubleConsumer`
+
 ```java
+package java.util.function;
+
+import java.util.Objects;
+
+@FunctionalInterface
+public interface Consumer<T> {
+    void accept(T t);
+    ...
+}
+
 Consumer<Person> greeter = (p) -> System.out.println("Hello, " + p.firstName);
 greeter.accept(new Person("Luke", "Skywalker"));
+
+Arrays.asList("Justin", "Monica", "Irene").forEach(out::println);
 ```
 
 ### Comparators
