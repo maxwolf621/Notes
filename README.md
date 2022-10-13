@@ -203,22 +203,19 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 
 
 ## CSS && SASS
-
-- [CSS POSITION](SCSS/position.md)
-- [Z-index](https://kumo.tw/article.php?id=44)
 - [CSS PADDING AND MARGIN](SCSS/boxModel.md)
 - [CSS BOARD/BOX SIZE](SCSS/board.md)
-- [CSS OVERFLOW&FLOW](SCSS/overflowAndflow.md)
 - [CSS Grid](SCSS/grid.md)
 - [CSS FLEX vs Angular Flex-Layout](SCSS/flex.md)
 - [SELECTORS](SCSS/selector.md)
 - [Display](https://reurl.cc/V1Y8EY)
-- [SCSS Notes](SCSS/scssUsage.md)
+- [Z-index](https://kumo.tw/article.php?id=44)
 - [重新認識 JavaScript: Day 15 隱藏在 "事件" 之中的秘密](https://ithelp.ithome.com.tw/articles/10192015)
 - [收藏！40 个 CSS 布局技巧](https://zhuanlan.zhihu.com/p/192537705)
 - [SCSS exercises](https://gist.github.com/fredsiika/2958726da1f94a9bd447f4f7bd03a852#use-if-and-else-to-add-logic-to-your-styles)
 - [Sass / SCSS 預處理器 - @mixin 建立混入與 @include 載入混入](https://awdr74100.github.io/2020-05-30-scss-mixin-include/)
 ### Cheat Sheet
+- [SCSS Notes](SCSS/scssUsage.md)
 - [tailwind](https://nerdcave.com/tailwind-cheat-sheet)
 - [CSS quickReview](https://reurl.cc/MN3RNL)  
 - [SCSS Cheat Sheet](https://dev.to/finallynero/scss-cheatsheet-7g6)
