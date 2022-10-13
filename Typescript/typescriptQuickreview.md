@@ -36,20 +36,12 @@
 class getShape{
   //...
 }
-
-interface PaintOptions {
+interface/type PaintOptions {
   shape: Shape;
   xPos?: number; // xPos is optional
   yPos?: number; // yPos is optional
 }
  
-// or type
-type PaintOptions {
-  shape: Shape;
-  xPos?: number; // xPos is optional
-  yPos?: number; // yPos is optional
-}
-
 function paintShape(opts: PaintOptions) {
   // ...
 }

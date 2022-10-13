@@ -2,38 +2,40 @@
 
 - [Module](#module)
   - [Reference](#reference)
-  - [Export](#export)
-    - [Exporting a declaration (variable, function, class, type alias, or interface)](#exporting-a-declaration-variable-function-class-type-alias-or-interface)
-    - [Export `as` statements](#export-as-statements)
+  - [Exporting declaration](#exporting-declaration)
+    - [export type & interface](#export-type--interface)
+    - [`as` (alias-name)](#as-alias-name)
     - [Re-export](#re-export)
-    - [export default and default import](#export-default-and-default-import)
+    - [`export default`](#export-default)
   - [Import](#import)
     - [Inline type imports](#inline-type-imports)
-    - [Import a single export from a module](#import-a-single-export-from-a-module)
-    - [Import the entire module into a single variable](#import-the-entire-module-into-a-single-variable)
+    - [Import `* as alias`](#import--as-alias)
   - [`export = module` and `import = require('module')`](#export--module-and-import--requiremodule)
   - [(CommonJS Syntax) module.exports](#commonjs-syntax-moduleexports)
-  - [Guidance for structuring modules](#guidance-for-structuring-modules)
+  - [Structuring modules](#structuring-modules)
 
-In TypeScript, just as in ECMAScript 2015, any file containing a top-level import or export is considered a module. Conversely, a file without any top-level import or export declarations is treated as a script whose contents are available in the global scope (and therefore to modules as well).
+In TypeScript, just as **in ECMAScript 2015, any file containing a top-level import or export is considered a module**. 
+
+Conversely, a file without any top-level import or export declarations is treated as a script whose contents are available in the global scope (and therefore to modules as well).
 
 ## Reference
 - [Day27 :【TypeScript 學起來】Module 模組](https://ithelp.ithome.com.tw/articles/10280543)
-## Export
-### Exporting a declaration (variable, function, class, type alias, or interface)
 
-You can have multiple `export` per `.ts` file
+## Exporting declaration 
+
+```typescript 
+export + variable | function | class | type alias | interface
+```
+
+You can have multiple `export` per `.ts` file, for example
 ```typescript 
 // StringValidator.ts
 export interface StringValidator {
   isAcceptable(s: string): boolean;
 }
 
-
 // ZipCodeValidator.ts
 import { StringValidator } from "./StringValidator";
-
-// multiple exports
 export const numberRegexp = /^[0-9]+$/;
 export class ZipCodeValidator implements StringValidator {
   isAcceptable(s: string) {
@@ -42,9 +44,13 @@ export class ZipCodeValidator implements StringValidator {
 }
 ```
 
+### export type & interface
 ```typescript
 // @filename: animal.ts
-export type Cat = { breed: string; yearOfBirth: number };
+export type Cat = { 
+  breed: string; 
+  yearOfBirth: number 
+};
  
 export interface Dog {
   breeds: string[];
@@ -56,7 +62,7 @@ import { Cat, Dog } from "./animal.js";
 type Animals = Cat | Dog;
 ```
 
-### Export `as` statements
+### `as` (alias-name)
 
 ```typescript
 class ZipCodeValidator implements StringValidator {
@@ -73,18 +79,20 @@ Often modules extend other modules, and **partially** expose some of their featu
 ```typescript
 export * from "./StringValidator"; // exports 'StringValidator' interface
 export * from "./ZipCodeValidator"; // exports 'ZipCodeValidator' class and 'numberRegexp' constant value
-export * from "./ParseIntBasedZipCodeValidator"; //  exports the 'ParseIntBasedZipCodeValidator' class
+
+export * from "./ParseIntBasedZipCodeValidator"; 
+// exports the 'ParseIntBasedZipCodeValidator' class
 // and re-exports 'RegExpBasedZipCodeValidator' as alias
 // of the 'ZipCodeValidator' class from 'ZipCodeValidator.ts'
 // module.
 ```
 
-### export default and default import 
+### `export default` 
 
-If a module’s primary purpose is to house one specific export, then you should consider exporting it as a default export. 
+If a module’s primary **purpose is to house one specific** export, then you should consider exporting it as a default export. 
 This makes both importing and actually using the import a little easier. 
 
-you can only have one default export per file.
+**for `export default` you can only have one default export per file.**
 ```typescript
 // MyClass.ts -- using default export
 export default class MyClass { /* ... */ }
@@ -94,11 +102,13 @@ export default function getThing() {
   return "thing";
 }
 ```
+
 Default import with Alias Name
 ```typescript
 // app.ts
-import t from "./MyClass"; // same as import MyClass from "./MyClass";
+import t from "./MyClass"; 
 import f from "./MyFunc";
+
 let x = new t();
 console.log(f());
 ```
@@ -113,37 +123,16 @@ export type Cat = { breed: string; yearOfBirth: number };
 export type Dog = { breeds: string[]; yearOfBirth: number };
 export const createCatName = () => "fluffy";
  
-// @filename: valid.ts
-import type { Cat, Dog } from "./animal.js";
-export type Animals = Cat | Dog;
- 
-// @filename: app.ts
-import type { createCatName } from "./animal.js";
-const name = createCatName();
+// animal.ts imports to @filename: app.ts
+import { Cat, createCatName, Dog } from "../InlineTypeImport/animal";
 
-// @filename: app.ts
-import { createCatName, type Cat, type Dog } from "./animal.js";
- 
 export type Animals = Cat | Dog;
 const name = createCatName();
 ```
 
-### Import a single export from a module
+### Import `* as alias`
 
-```typescript 
-import { ZipCodeValidator } from "./ZipCodeValidator";
-let myValidator = new ZipCodeValidator();
-```
-
-imports can also be renamed via `as aliasName` 
-```typescript 
-import { ZipCodeValidator as ZCV } from "./ZipCodeValidator";
-let myValidator = new ZCV();
-```
-
-### Import the entire module into a single variable
-
-Use it to access the module exports
+`*` : all exports declarations , no `{ .. }` 
 ```typescript
 import * as validator from "./ZipCodeValidator";
 let myValidator = new validator.ZipCodeValidator();
@@ -206,12 +195,11 @@ squareTwo;
 
 ```
 
-## Guidance for structuring modules
+## Structuring modules
 
-If you’re only exporting a single `class` or `function`, use `export default`.
+If you’re only exporting a single `class` or `function`, use `export default`.  
 
-If you’re exporting multiple objects, put them all at top-level. 
-- Explicitly list imported names
+If you’re exporting multiple objects, put them all at top-level. Explicitly list imported names.
 ```typescript
 // multipleObjects.ts
 export class SomeType {
@@ -222,6 +210,7 @@ export function someFunc() {
 }
 
 // app.ts
+// list object names
 import { SomeType, someFunc } from "./MyThings";
 let x = new SomeType();
 let y = someFunc();
@@ -240,7 +229,6 @@ import * as myLargeModule from "./MyLargeModule.ts";
 let x = new myLargeModule.Dog();
 ```
 
-
 ```typescript
 export class Calculator {
     // ...
@@ -251,17 +239,20 @@ export function test(c: Calculator, input: string) {
   }
   console.log(`result of '${input}' is '${c.getResult()}'`);
 }
+```
 
 
-// ProgrammerCalculator
+export name 
+```typescript
+// ProgrammerCalculator THAT EXTENDS calculator
 import { Calculator } from "./Calculator";
+export { test } from "./Calculator"; // Also, export the helper function
+
 class ProgrammerCalculator extends Calculator {
     //..
 }   
 // Export the new extended calculator as Calculator
 export { ProgrammerCalculator as Calculator };
-// Also, export the helper function
-export { test } from "./Calculator";
 ```
 - The new module `ProgrammerCalculator` exports an API shape similar to that of the original Calculator module, but does not augment any objects in the original module.
 
