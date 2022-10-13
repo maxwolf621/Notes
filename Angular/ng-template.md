@@ -11,8 +11,8 @@ The template does not render itself on DOM.
   - [Display ngTemplate Element in View](#display-ngtemplate-element-in-view)
     - [TemplateRef](#templateref)
     - [ViewChild](#viewchild)
-    - [ViewContainerRef](#viewcontainerref)
-    - [ComponentFactoryResolver](#componentfactoryresolver)
+    - [ViewContainerRef with ngTemplate](#viewcontainerref-with-ngtemplate)
+    - [~~ComponentFactoryResolver~~ deprecated](#componentfactoryresolver-deprecated)
   - [ng-template with `[ngIf]`, `[ngIfThen]` and `[ngIfElse]`](#ng-template-with-ngif-ngifthen-and-ngifelse)
   - [ng-template with `[ngForOf]` and `[ngForTrackBy]`](#ng-template-with-ngforof-and-ngfortrackby)
   - [ng-template with `[ngSwitch]`, `[ngSwitchCase]` and `ngSwitchDefault`](#ng-template-with-ngswitch-ngswitchcase-and-ngswitchdefault)
@@ -79,7 +79,7 @@ Get the element in Template and use in the Component
 sayHelloTemplate:TemplateRef; // or TemplateRef<any>
 ```
 
-### ViewContainerRef
+### ViewContainerRef with ngTemplate
 
 **The `ViewContainerRef` is also similar to `TemplateRef`. Both hold the reference to part of the view.**   
 
@@ -112,7 +112,7 @@ export class DynamicComponentHostDirective {
 @ViewChild(DynamicComponentHostDirective) dynamicComponentLoader: DynamicComponentHostDirective;
 ```
 
-### ComponentFactoryResolver
+### ~~ComponentFactoryResolver~~ deprecated
 
 ```typescript
 export class AppComponent implements OnInit {
@@ -228,6 +228,7 @@ The above `ngif` can be written using the ng-template syntax.
 ```
 
 ## ng-template with `[ngSwitch]`, `[ngSwitchCase]` and `ngSwitchDefault`
+
 ```html
 <input type="text" [(ngModel)]="num">
  
@@ -241,7 +242,7 @@ The above `ngif` can be written using the ng-template syntax.
 </div>
 
 
-<!-- instead -->
+<!-- without * -->
 <div [ngSwitch]="num">
     <ng-template [ngSwitchCase]="'1'">
         <div>One</div>
@@ -267,15 +268,11 @@ The above `ngif` can be written using the ng-template syntax.
         <div>This is default</div>
     </ng-template>
 </div>
- ```
+```
 
  ## `*ngTemplateOutlet`
 
 [Reference :: [Angular 大師之路] Day 12 - *ngTemplateOutlet 與 ng-template 的完美組合](https://ithelp.ithome.com.tw/articles/10205829)
-
-- [*ngTemplateOutlet](#ngtemplateoutlet)
-    - [Syntax](#syntax)
-  - [Outlet傳入多個參數到Template](#outlet傳入多個參數到template)
 
 **The ngTemplateOutlet, is a structural directive, which renders the template.**
 - 透過 `*ngTemplateOutlet="TemplateRefName | Directive | Component"` 來顯示(OutLet)某個特定Template，減少Template重複
@@ -295,7 +292,6 @@ The above `ngif` can be written using the ng-template syntax.
 ```html
 <ng-template #data let-input="$Implicit" let-x="x" let-y = "y">
 </ng-template>
-
 <div *ngTemplateOutlet="data; 
       context: {
                 $implicit: {property: value , ... , ...}, 
@@ -303,7 +299,7 @@ The above `ngif` can be written using the ng-template syntax.
       },"
 ></div>
 ```
-- `$implicit` : default Field
+- `$implicit` : default field
 
 For example
 ```html

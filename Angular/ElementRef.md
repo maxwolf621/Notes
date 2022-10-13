@@ -287,9 +287,12 @@ export class AppComponent {
 
   ngOnInit(): void {
 
-    const newComponent = this.ComponentFactoryResolver.resolveComponentFactory(ContainerDirective)
+    @Deprecated
+    const newComponent = 
+    this.ComponentFactoryResolver.resolveComponentFactory(ContainerDirective)
     
-    const targetRef = this.ContainerDirective.viewContainerRef.createComponent(newComponent)
+    const targetRef = 
+    this.ContainerDirective.viewContainerRef.createComponent(newComponent)
   }
 }
 ```
@@ -304,7 +307,7 @@ They are Syntactic candy for Host view and embedded view
 
 ```html
 <span>I am first span</span>
-<ng-container [ngTemplateOutlet]="tpl"></ng-container>
+<ng-container *ngTemplateOutlet="tpl"></ng-container>
 <span>I am last span</span>
 
 <ng-template #tpl>

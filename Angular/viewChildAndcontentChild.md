@@ -1,4 +1,8 @@
-# View Child & Content Child
+# View Child & Content Child 
+
+`<ng-content>` : Child Template 內的`<ng-content></ng-content>` = Parent Template要嵌入的地方      
+`@ViewChild` : 從View裡取得特定Component/Template variable Reference的實體給Component用        
+`@ContentChild` : Child Component 可以操作`<ng-content></ng-content>` Parent Template嵌入的元素
 - [View Child & Content Child](#view-child--content-child)
   - [Metadata Properties of ViewChild And ContentChild](#metadata-properties-of-viewchild-and-contentchild)
     - [Selector](#selector)

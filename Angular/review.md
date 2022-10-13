@@ -1,25 +1,24 @@
+# Review
 
+- [Review](#review)
+  - [ngTemplateOutlet](#ngtemplateoutlet)
+  - [Directive](#directive)
+    - [Attribute directives `[ngXXXXX]`](#attribute-directives-ngxxxxx)
+      - [ngStyle & ngClass](#ngstyle--ngclass)
+  - [ElementRef & TemplateRef & View Ref & ViewContainerRef](#elementref--templateref--view-ref--viewcontainerref)
+  - [ContentChild(ren) / ViewChild(ren)](#contentchildren--viewchildren)
 
-## ngTemplateOutlet & ngTemplate
+## ngTemplateOutlet 
+
+`ngTemplateOut = TemplateRef + @ViewChild + viewCOntainerRef + ComponentFactoryResolver`
 
 ```html 
-<ng-template #TemplateReference DIRECTIVE>
-  ...                ^          ^
+<ng-template #TemplateReference DIRECTIVE let-input="$Implicit" let-variable="variable">
+  ...                ^           ^
   ....                \         /
 </ng-template>         \       / 
                         \     /
-<div *ngTemplateOutlet = "OBJ">
-</div>
-```
-
-```html
-<ng-template #data let-input="$Implicit" let-variable="variable">
-  ...
-  ...
-</ng-template>
-
-<div *ngTemplateOutlet="data;  context: obj"
-></div>
+<ele *ngTemplateOutlet = "OBJ; context: obj" ></ele>
 ```
 ```typescript
 let obj = {
@@ -70,11 +69,11 @@ let obj = {
 
 ## ElementRef & TemplateRef & View Ref & ViewContainerRef
 
-`ElementRef` is an reference to HTML element `<element> .. </element>`
-
-`TemplateRef` is an reference to HTML element with `#` `<element #xyz></element>`
-
+`ElementRef` is an reference to HTML element `<element> .. </element>`   
+`TemplateRef` is an reference to HTML element with `#` `<ng-template #xyz></ng-template>`   
 `ViewContainerRef` is an reference to `@Directive` component
+
+Directive of ViewContainerRef
 ```typescript
 @Directive({
   selector: '[appDynamicComponentHost]'
@@ -84,6 +83,27 @@ export class DynamicComponentHostDirective {
 }
 ```
 
+Usage 
+```html
+<element DynamicComponentHostDirective></element>
+```
+
+Inject ng-template
+```html
+<ng-container #vc></ng-container>
+<ng-template #tpRef>
+  <span>I am span in template</span>
+</ng-template>
+```
+
+```typescript
+@ViewChild('tpRef') tplRef!: TemplateRef<any>;
+@ViewChild('vc', { read: ViewContainerRef }) vc!: ViewContainerRef;
+
+ngAfterViewInit() {
+  const elem = this.tplRef.createEmbeddedView(null);
+  this.vc.insert(elem)
+```
 
 ## ContentChild(ren) / ViewChild(ren)
 
@@ -91,18 +111,9 @@ export class DynamicComponentHostDirective {
 
 - `@ViewChild` : 從View裡取得特定Component/Template variable Reference的實體給Component用      
 
-- `@ContentChild` : Child Component 可以操作`<ng-content></ng-content>` Parent Template嵌入的元素  
+- `@ContentChild` : Child Component可以操作`<ng-content></ng-content>` Parent Template嵌入的元素  
 
-```typescript 
-XXXXChild(selector: string | Function | Type<any>, 
-             opts: { read?: any; static: boolean; }): any
-```
 
-selector : **the change detector looks for the first element that matches the selector and updates the component property with the reference to the element.**
-
-static : `true`  the query is initialized before first change detection , `false` for query to be resolved after every change detection
-
-token : return the correct type from HTML element
 ```typescript 
 <input #nameInput [(ngModel)]="name">
 
@@ -117,53 +128,3 @@ nameVarAsViewContainerRef;
 ```
 
 
-## ComponentFactoryResolver
-
-Dynamically load only needed component
-
-```typescript
-export class AppComponent implements OnInit {
-  
-  @ViewChild(DynamicComponentHostDirective) dynamicComponentLoader: DynamicComponentHostDirective;
-
-  // Default chooseComponent A
-  private _chooseComponent = 'A';
-
-  get chooseComponent() {
-    return this._chooseComponent;
-  }
-
-  set chooseComponent(value) {
-    this._chooseComponent = value;
-    this.setDynamicComponent();
-  }
-
-  // needed Component
-  mapping = new Map<string, any>(
-    [
-      ['A', ComponentAComponent],
-      ['B', ComponentBComponent],
-      ['C', ComponentCComponent],
-    ]
-  );
-
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
-
-  ngOnInit() {
-    this.setDynamicComponent();
-  }
-  
-  setDynamicComponent() {
-    
-    const targetComponent = this.mapping.get(this.chooseComponent);
-
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(targetComponent);
-
-    const viewContainerRef = this.dynamicComponentLoader.viewContainerRef;
-    
-    viewContainerRef.clear();
-      
-    const componentRef = viewContainerRef.createComponent(componentFactory);
-  }
-}
-```

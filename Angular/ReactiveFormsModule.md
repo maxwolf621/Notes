@@ -1,7 +1,13 @@
 # ReactiveFormsModule
 
+- [ReactiveFormsModule](#reactiveformsmodule)
+  - [Create A field for `<mat-input>`](#create-a-field-for-mat-input)
+  - [Set default value of field](#set-default-value-of-field)
+  - [FormGroup](#formgroup)
+    - [getter in FormGroup](#getter-in-formgroup)
+
 FormControl
-- FormControl is the class that is used to `get` and `set` values and validation of the form control such as `<input>` and `<select>` tag.
+- `FormControl` is the class that is used to `get` and `set` values and validation of the form control such as `<input>` and `<select>` tag.
 
 FormGroup:
 - FormGroup has the role of **tracking the value and validity state** of a group of FormControl.
@@ -9,16 +15,16 @@ FormGroup:
 [FormArray](https://appdividend.com/2019/12/16/angular-form-control-example/):
 - FormArray **tracks the value and validity state of the array** of FormControl, FormGroup, or FormArray instances.
 
-## Create A filed of form
+## Create A field for `<mat-input>`
 
 ```typescript
 name = new FormControl('', [Validators.required]);
 ```
-respect to  
+respects to  
 ```html
 <input mat-input ... formControlName="name"  ... required>
 ```
-- `required` means that this field cant be skipped
+- `required` means that this field ca not be skipped
 
 ## Set default value of field
 
