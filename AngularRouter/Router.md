@@ -5,12 +5,9 @@
 - [Router](#router)
   - [Angular的Router角色](#angular的router角色)
   - [Router Configuration](#router-configuration)
-    - [create `app-routing.module.ts`](#create-app-routingmodulets)
-    - [register (@ngModule.import[...])](#register-ngmoduleimport)
-    - [Template's outlet `<router-outlet>`](#templates-outlet-router-outlet)
   - [Router In Action](#router-in-action)
-  - [Directive `[routerLink]`](#directive-routerlink)
-  - [萬用路由](#萬用路由)
+  - [Directive `[routerLink]="'path'"`](#directive-routerlinkpath)
+  - [萬用路由`path: '**'`](#萬用路由path-)
   - [Child Router](#child-router)
     - [設定相對路徑](#設定相對路徑)
   - [Lazy Loading](#lazy-loading)
@@ -31,9 +28,8 @@
 
 ## Router Configuration 
 
-### create `app-routing.module.ts`
 
-Create Root Routing module `app-routing.module.ts`
+Create Root Routing module (`app-routing.module.ts`)
 ```typescript
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -47,9 +43,7 @@ const routes: Routes = [];
 export class AppRoutingModule { }
 ```
 
-### register (@ngModule.import[...])
-
-Sign Router module in the `@ngModule.import` of root module
+Import `AppRoutingModule` to `AppModule` to use `<router-outlet>`
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -69,9 +63,7 @@ import { AppComponent } from './app.component';
 export class AppModule { }
 ```
 
-### Template's outlet `<router-outlet>`
-
-Template In `app.component.html`
+`<router-outlet>` 
 ```html
 <!-- 
 Plug different component's templates via outlet
@@ -82,10 +74,11 @@ Plug different component's templates via outlet
 
 ## Router In Action
 
-For Example :: 假如有兩個Routers分別navigate到home或者about頁面
+router for navigating to `home` and `about` page
 ```typescript
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -107,15 +100,14 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
-- `enableTracing : true` : log監聽Route的trace
+- `enableTracing : true` : 監聽Route的trace
 
-## Directive `[routerLink]`
+## Directive `[routerLink]="'path'"`
 
-Router's directive for template `.html` 分成兩個
+Router's directive for view
 1. `<a></a>` 用的 RouterLinkWithHref 
-2. 其他非`<a></a>`元素用的 RouterLink 
+2. 其他非`<a></a>` element用 `[RouterLink]`
 
-我們可以利用Directive在`.html`建立路徑達到轉頁
 ```html
 <ul>
   <li><a [routerLink]="'/home'">Home</a></li>
@@ -123,9 +115,9 @@ Router's directive for template `.html` 分成兩個
 </ul>
 ```
 
-## 萬用路由
+## 萬用路由`path: '**'`
 
-當所在的路徑不屬於`const routers`內任何路徑時則統一redirect到某一特定路徑
+當所在的路徑不屬於`const routers`內任何路徑時則統一`redirectTo`某一特定路徑
 ```typescript
 const routers: Routers:[
     {
@@ -140,18 +132,20 @@ const routers: Routers:[
     }
 ];
 ```
-- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置`const routers : Routers : [ {..} , {...}, ... , {path : '**' ...} ]`
+- **路由的路徑設定是有順序性的,如果萬用路由放在前面**, 其他在後面的routers會被略過,所以一般我們都把萬用路由放置最後一位
 
 ## Child Router
+
 設定子路由的優點
 - **可讀性高的url** ，e.g. `/articles/10207918`
-- 延遲載入
+- **延遲載入**
 - **減少撰寫重複的程式碼**
 - 預處理層
 
 在沒有子路由的情況下，**若瀏覽器重新導航到相同的元件時，會重新使用該元件既有的實體，而不會重新創建**  
 因此在物件被重用的狀況下，**該元件的`ngOnInit`只會被呼叫一次，即使是要顯示不同內容資料**但是**被創建的元件實體會在離開頁面時被銷毀並取消註冊**   
-- For example 由於在瀏覽某位Hero Detail(`HeroDetailComponent`)之後，一定要先回到選單List(`HeroListComponent`)，才能再進入另一位Hero Detail頁面，造成回到`HeroListComponent`時已把`HeroDetailComponent`實體銷毀，當再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`實體因此每次選擇不同的英雄時，Component實體都會重新創建
+
+- For example 由於在瀏覽某位Hero Detail(`HeroDetailComponent`)之後，一定要先回到選單List(`HeroListComponent`)，才能再進入另一位Hero Detail頁面，造成回到`HeroListComponent`時會把`HeroDetailComponent`實體銷毀，當再選擇另一個英雄查看細節時，又會再創立一個新的`HeroDetailComponent`實體因此每次選擇不同的英雄時，`HeroDetailComponent` 實體都會重新創建
 ```typescript
 const heroesRoutes: Routes = [
   { path: 'heroes',  component: HeroListComponent },
@@ -167,7 +161,7 @@ const crisisCenterRoutes: Routes = [
     component: CrisisCenterComponent,
     children: [
       {
-        path: '',
+        path: '', 
         component: CrisisListComponent,
         children: [
           {
@@ -199,7 +193,7 @@ this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.r
 - For Example 設計一個component將類似或者給特定使用者使用的components放入對應的component
 ![](https://i.imgur.com/WAdXz1e.png)
 
-屆時我們可以將Router的路徑分成Base router以及Child router,如下
+我們可以將Router的路徑分成Base router以及Child router
 ```typescript
 {
   path: '',
@@ -216,7 +210,7 @@ this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.r
   ]
 }
 ```
-- 只要路由有設定children的route，再加上在Template裡有放`<router-outlet></router-outlet>`的話, Angular的路由機制就會自動幫你向下找
+- 只要路由有設定`children`的routes，再加上在Template裡有放`<router-outlet></router-outlet>`的話, Angular的路由機制就會自動幫你向下找
 
 實際應用上，**通常我們會將相關的功能包裝成一個一個`NgModule` ，而每個`NgModule`，也其實都可以有自己的Routing Module** (e.g. 一個網站共同的頁面layout)   
 - For example :: 建立一個Module以及FeatureRoutingModule給feature component使用   
@@ -227,7 +221,7 @@ ng generate module feature --routing
 ng generate component feature
 ```
 
-對於child route (建立一個module以及FeatureRoutingModule給feature)
+對於child routes (建立一個module以及FeatureRoutingModule給feature)
 ```typescript
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -242,17 +236,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  /**
-   * only forChild
-   */
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes)], // forChild not forRoot
   exports: [RouterModule]
 })
 export class FeatureRoutingModule { }
 ```
 - 整個系統只有`AppRoutingModule`才會使用`forRoot(..)` ，其他的子路由模組都是使用`forChild(...)`  
 
-只要在`app.module.ts`內將`FeatureModule.ts`註冊到`@ngModule.import`內就可加入child的路由路徑,**由於路由是有順序性的所以不能放在root routing module之後**, For example ::
+只要在`app.module.ts`內將`FeatureModule.ts`註冊到`@ngModule.import`內就可加入child的路由路徑,**由於路由是有順序性的所以不能放在root routing module之後**
 ```typescript
 imports: [
   BrowserModule,
@@ -266,7 +257,7 @@ imports: [
   AppRoutingModule,
 ]
 ```
-- 任何在`@ngModule import`的Child Module必須在`AppRoutingModule`之前
+- **任何Child Routing Module必須在Root Routing Module(`AppRoutingModule`)之前**
 
 
 ## Lazy Loading
@@ -323,25 +314,27 @@ import { PreloadAllModules } from '@angular/router';
 透過Query String表示路徑
 - Ex: `http://localhost:4200/products?id=101`
 
-In `.ts`
+In Component
 ```typescript
 constructor(private route: ActivatedRoute) { }
 
-this.router.navigate(['products'], {
-    queryParams: {
-      id: 101
+this.router.navigate(
+    ['products'], 
+    {
+      queryParams: {id: 101}
     }
-});
+);
 ```
-In `.html`
+
+In view
 ```html
 <a [routerLink]="['products']" [queryParams]="{ id: 101 }">Link For Product</a>
 ```
 
 #### 取得query string參數
 
-1. using `queryParams.subscribe((queryParams) => { ...})`
-2. using `.snapshot.queryParams['..']`
+1. using `queryParams.subscribe((queryParams) => {queryParams['key']})`
+2. using `.snapshot.queryParams['key']`
 ```typescript
 export class ProductsComponent implements OnInit {
 
@@ -380,6 +373,8 @@ this.router.navigate(['products', { id: 101 }]);
 ```
 
 #### 取得Path的參數的方式：
+
+`this.route.params['key']`
 ```typescript
 export class ProductsComponent implements OnInit {
 
@@ -387,7 +382,7 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
   
-      // firsrt one 
+      // first one 
       console.log(this.route.params['id']);
       
       // second one
@@ -398,10 +393,10 @@ export class ProductsComponent implements OnInit {
 ```
 
 ## 換頁效果
+
 - [添加換頁效果](https://ithelp.ithome.com.tw/articles/10195347)
 
 需要`BrowserAnimationsModule`這個動態效果模組   
-
 ```typescript
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
 
@@ -430,10 +425,10 @@ export const slideInDownAnimation: AnimationEntryMetadata =
   ]);
 ```
 
-接著在`src/app/heroes/hero-detail.component.ts`增加使用這個動態效果的綁定
+`src/app/heroes/hero-detail.component.ts`
 ```typescript
 @HostBinding('@routeAnimation') routeAnimation = true;
-@HostBinding('style.display')   display = 'block';
-@HostBinding('style.position')  position = 'absolute';
+@HostBinding('style.display') display = 'block';
+@HostBinding('style.position') position = 'absolute';
 ```
 
