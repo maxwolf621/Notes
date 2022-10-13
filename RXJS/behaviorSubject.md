@@ -5,10 +5,11 @@
 - [BehaviorSubject](#behaviorsubject)
   - [features of BehaviorSubject](#features-of-behaviorsubject)
   - [`Observable` and `BehaviorSubject`](#observable-and-behaviorsubject)
+  - [AsObservable](#asobservable)
   - [Usage in Angular](#usage-in-angular)
       - [Angular BehaviorSubject](#angular-behaviorsubject)
       - [Step 1 Service](#step-1-service)
-      - [Step 2 Component who uses service to fetch data](【#step-2-component-who-uses-service-to-fetch-data)
+      - [Step 2 Component who uses service to fetch data](#step-2-component-who-uses-service-to-fetch-data)
 
 
 BehaviorSubject is a type of subject, **a subject is a special type of observable** so you can subscribe to messages like any other observable. 
@@ -103,6 +104,64 @@ subscriber3 : 789
 ```
 - Observables : Observables are lazy collections of multiple values over time.
 - **BehaviorSubject: A Subject that requires an initial value and emits(`.next`) its (last) current value to new subscribers.**
+
+```typescript
+const subject = new BehaviorSubject(123);
+
+const currentBehaviorSubject = subject.asObservable();
+
+let subscription1 = currentBehaviorSubject
+    .subscribe(val => {
+        console.log("A :" + val)
+    });
+
+subject.next(456);
+subject.next(789);
+
+setTimeout(() => {
+  let subscription1 = currentBehaviorSubject.subscribe(val => {
+           console.log("C :" + val)
+      });
+
+},0);
+
+subject.next(101112);
+```
+
+## AsObservable
+
+```typescript
+//messageService.ts
+private behaviorSubject: BehaviorSubject<number> = new BehaviorSubject<number>(1);
+
+// keep the current observable in behaviorSubject which is 1
+currentBehaviorSubject = this.behaviorSubject.asObservable();
+
+updateBehaviorSubject() {
+    this.behaviorSubject.next(2);
+}
+
+//RxjsSubjectBComponent.ts
+this.messageService.updateBehaviorSubject();
+
+// RxjsSubjectAComponent.ts 
+let subscription1 = this.messageService.currentBehaviorSubject
+    .subscribe(val => {
+        console.log("RxjsSubjectAComponent :" + val)
+    });
+
+// RxjsSubjectCComponent.ts
+setTimeout(() => {
+    let subscription1 = this.messageService.currentBehaviorSubject
+        .subscribe(val => {
+             console.log("RxjsSubjectCComponent :" + val)
+        });
+
+}, 5000);
+```
+
+
+
 ## Usage in Angular
 #### Angular BehaviorSubject
 - [How to Implement `BehaviorSubject` using `service.ts`](https://stackoverflow.com/questions/57355066/how-to-implement-behavior-subject-using-service-in-angular-8)    
@@ -142,7 +201,7 @@ export class ShoppingListPushService {
    */
   fetchList() {
     this.httpClient.get<ShoppingItem[]>(this.ITEMS_URL).subscribe(
-          // update the data
+          // update lasted data
           receivedItems => this.items$.next(receivedItems)
     );
   }
