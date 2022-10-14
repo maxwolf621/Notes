@@ -17,16 +17,15 @@
 
 
 [CascadeType 與 FetchType](https://openhome.cc/Gossip/EJB3Gossip/CascadeTypeFetchType.html)
-- CascadeType.PERSIST	在儲存時一併儲存 被參考的物件。
-- CascadeType.MERGE	在合併修改時一併 (UPDATES)合併修改被參考的物件。
-- CascadeType.REMOVE	在移除時一併移除 被參考的物件。
-- CascadeType.REFRESH	在更新時一併更新 被參考的物件(`git pull`)。
-- CascadeType.ALL	無論儲存、合併、 更新或移除，一併對被參考物件作出對應動作。
-
+- CascadeType.PERSIST:在儲存時一併儲存 被參考的物件。
+- CascadeType.MERGE : 在合併修改時一併 (UPDATES)合併修改被參考的物件。
+- CascadeType.REMOVE: 在移除時一併移除 被參考的物件。
+- CascadeType.REFRESH:在更新時一併更新 被參考的物件(`git pull`)。
+- CascadeType.ALL:無論儲存、合併、 更新或移除，一併對被參考物件作出對應動作。
 
 JPA allows you to propagate the state transition from a parent entity to a child. For this purpose, the JPA `javax.persistence.CascadeType` defines various cascade types:
 - `CascadeType.REMOVE` 
-  - If removed entity has any child entities, they aslo be deleted too   
+  - If removed entity has any child entities, they also be deleted too   
 - `CascadeType.MERGE`
   - If an entity is updates then the mapped one will be also updated
 - `CascadeType.DETACH`

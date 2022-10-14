@@ -8,7 +8,7 @@
   - [Status of Session](#status-of-session)
     - [Problem of Session](#problem-of-session)
   - [Jwt Token](#jwt-token)
-    - [JWT instead of Status Session](#jwt-instead-of-status-session)
+    - [JWT vs Session](#jwt-vs-session)
     - [Content of JWT token](#content-of-jwt-token)
       - [Header](#header)
       - [PayLoad (User's information)](#payload-users-information)
@@ -64,10 +64,10 @@ The authorization check will see what *roles* the user has and whether the user 
 
 
 ### Problem of Session 
-1. Scalability : Sessions are stored in the external storage ,導致需要考慮儲存擴展性(*Scalability*)的問題
-2. CORS : 資源共享問題(To access different domain)
-    > For example AJAX fetches information from other domain server，it might occur the error.
-3. CSRF Attack
+1. **Scalability** : Sessions are stored in the external storage ,導致需要考慮儲存擴展性(*Scalability*)的問題
+2. **CORS** : 資源共享問題(To access different domain)  
+For example AJAX fetches information from other domain server，it might occur the error.
+3. **CSRF Attack**
 
 ## Jwt Token
 
@@ -92,10 +92,10 @@ The server would then decode the JWT, and, if the token is valid, processes the 
 
 When the user logs out, the token is destroyed on the client’s side without having any interaction with the server.
 
-### JWT instead of Status Session
+### JWT vs Session
 
 There are two main reason for using JTW token instead of Session
-1. the Authorization  
+1. Authorization  
 Once the user is logged in, each subsequent request will include the JWT, allowing the user to access routes, services, and resources that are permitted with that token.  
 **Single Sign On is a feature that widely uses JWT nowadays, because of its small overhead and its ability to be easily used across different domains.**
 
@@ -108,7 +108,7 @@ For example, **using public/private key pairs — you can be sure the senders ar
 ### Content of JWT token
 
 Construction of JWT can be presented 3 sections
-```
+```bash
 Header + Payload + Signature	
 ```
 - **Each section is base64 URL-encoded.**   
@@ -156,22 +156,23 @@ A encrypted Token looks like the following
 
 #### Spring Server如何處理含JWT的Client Request
 
-1. 檢查 payload validation
-2. 檢查 Key如果是`keyBytes`則通過`keyBytes`及指定的算法種類創造Key Instance
-3. 紀錄Key's Type of Algorithm in the Json's header  
+1. check payload validation
+2. 依照key的種類以及演算法建立key instance
+e.g `keyBytes`'s key則`keyBytes`及指定的算法種類創造Key Instance
+3. Key's Type of Algorithm in the Json's header  
 If it needs to be compressed，則Compressing演算法也會被紀錄在header內
 1. 將json格式的header轉成bytes，做Base64 Encoded
 2. 將Json格式的claims轉成bytes，如果過長需則壓縮後再做Base64 Encoded
 3. Combine header和claims  
-If Signature key為`null`,則直接在末端補上`.`  
-Else encode the returned value via `sign(String jwtWithoutSignature)`
-1. return JWT(header+claims+key)
+If -> Signature key為`null`,則直接在末端補上`.`  
+Else -> encode the returned value via `sign(String jwtWithoutSignature)`
+1. return JWT(header+claims+key's signature)
 
 #### Advantage of JWT
 
-- JWT 不加密的情况下，不能將Information寫入JWT
+- **JWT 不加密**的情况下，**不能將Information寫入其內**
 - After generating Token，可以用private key再encrypted一次
-- 認證以及交換資訊特性減少Server QUERY
+- 透過**認證以及交換資訊特性減少Server QUERY**
 
 #### Disadvantage of JTW
 
@@ -184,7 +185,7 @@ Else encode the returned value via `sign(String jwtWithoutSignature)`
 
 ### Base64URL encode
 
-`+`,`/` and `=` are special symbols in <u>base64URL</u>, if these symbols are contained in the URL, they will be replaced 
+**`+`,`/` and `=` are special symbols in <u>base64URL</u>**, if these symbols are contained in the URL, they will be replaced 
 
 For instance `api.example.com/?token=xxx` then `=` will be deleted, `+` will be replaced with `-` and `/` will be replaced with `_`
 
@@ -193,13 +194,13 @@ For instance `api.example.com/?token=xxx` then `=` will be deleted, `+` will be 
 When client receives returned JWT token that from Server, client will store it in the local host.   
 After that client carries JWT while sending request Server   
 
-**The Common way is we put token in the header's Authorization in HTTP request**
+**token in the header's Authorization in HTTP request** :
 ```json
 {
     "Authorization": "Bearer <token>"
 }
 ```
-- By such way Spring Server side uses `filter` implementation to get token 
+- Spring Server side uses `filter` implementation to fetch token 
 
 ## Java JWT
 - [Reference](https://zhuanlan.zhihu.com/p/265839399)

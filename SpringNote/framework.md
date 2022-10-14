@@ -9,7 +9,7 @@ ViewModel：從Model取得View所需的資料
 
 ![圖 3](images/f3a0037ca9e77019a531c4f07fed85a279f6ecff2ce545c33635c5ce8ca7f5d7.png)  
 
-- Mode 跟 View 必須透郭 Controller 交流
+- Mode 跟 View 必須透過 Controller 交流
 
 ## MVP
 

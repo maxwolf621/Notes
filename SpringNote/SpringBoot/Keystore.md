@@ -3,12 +3,11 @@
 
 - [KeyStore](#keystore)
   - [Reference](#reference)
-  - [A KeysSore can be a **repository** where stores](#a-keyssore-can-be-a-repository-where-stores)
     - [Certificate Chains](#certificate-chains)
   - [KeyStore As Standard API](#keystore-as-standard-api)
   - [Alias](#alias)
-- [Keystore In Java](#keystore-in-java)
-  - [Initialize a keystore](#initialize-a-keystore)
+  - [Keystore In Java](#keystore-in-java)
+    - [Initialize a keystore](#initialize-a-keystore)
   - [Get Private key](#get-private-key)
   - [Generate Token via Keystore](#generate-token-via-keystore)
   - [Get Public Key](#get-public-key)
@@ -17,29 +16,29 @@
 
 ## Reference
 
-[Diagram for KeyStroe btw Clinet and Server](http://support.sas.com/rnd/javadoc/93/Foundation/com/sas/net/ssl/doc-files/jsse_index.html)  
+[Diagram for KeyStore btw Client and Server](http://support.sas.com/rnd/javadoc/93/Foundation/com/sas/net/ssl/doc-files/jsse_index.html)  
 [Note for JWT](/o9RYmd2DR96e4XId64Ao5w)  
 [Class KeyStore Methods](https://docstore.mik.ua/orelly/java-ent/security/ch11_02.htm)    
 [Android Keystore](https://medium.com/joe-tsai/%E4%BD%BF%E7%94%A8keystore-%E5%84%B2%E5%AD%98%E6%95%8F%E6%84%9F%E6%80%A7%E8%B3%87%E6%96%99-92ad9b236e58)   
 [What is Keystore?](https://reurl.cc/kVYaN9)  
 
 
-## A KeysSore can be a **repository** where stores
+**A KeysSore can be a Repository** where stores
 - Key entry : private keys 
 - Certificate entry : certificates (containing a public key)
 
 ### Certificate Chains
 ![image](https://user-images.githubusercontent.com/68631186/123245968-e6ea2200-d517-11eb-8eb0-35f238a5f145.png)
 [What is Certificate Chains](https://knowledge.digicert.com/solution/SO16297.html)
-- The first certificate in the chain contains the public key corresponding to the private key.
+- **The first certificate in the chain contains the public key corresponding to the private key.**
 
 When keys are first generated, the chain starts off containing a single element, a self-signed certificate.  
-- A self-signed certificate is one for which the issuer (signer) is the same as the subject (the entity whose public key is being authenticated by the certificate).  Whenever the `-genkey` is called to generate a new `public/privat`e key pair, it also wraps the public key into a self-signed certificate.
+- A self-signed certificate is one for which the issuer (signer) is the same as the subject (the entity whose public key is being authenticated by the certificate).  
+Whenever the `-genkey` is called to generate a new `public/private` key pair, it also wraps the public key into a self-signed certificate.
 
 Later, after a Certificate Signing Request (CSR) has been generated (`-certreq` subcommand) and sent to a Certification Authority (CA), the response from the CA is imported (`-import`), and the self-signed certificate is replaced by a chain of certificates.  
 
-At the bottom of the chain is the certificate (reply) issued by the CA authenticating the subject’s public key. 
-
+At the bottom of the chain is the certificate (reply) issued by the CA authenticating the subject's public key.   
 The next certificate in the chain is one that authenticates the CA’s public key.  
 
 
@@ -124,7 +123,7 @@ private PrivateKey getPrivateKey() {
         // password : secret 
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new SpringRedditException("Exception occured while retrieving public key from keystore");
+            throw new SpringRedditException("Exception occurred while retrieving public key from keystore");
         }
     }
 ```
