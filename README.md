@@ -170,18 +170,21 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 
 ## RXJS
 
-- [Functional Programming](functionalProgram.md)
-
 `Reactive Programming = (Observer Pattern + Iterator pattern) + Functional Programming`   
-[Observable = Observer Pattern + Iterator pattern](https://ithelp.ithome.com.tw/articles/10186832)
+
+- [Functional Programming](functionalProgram.md)    
+- [Observable = Observer Pattern + Iterator pattern](https://ithelp.ithome.com.tw/articles/10186832)   
 
 ![圖 1](images/d5969d2ade5869a5374d925c1ec5b53c668f772778f7a54d999bb024032d61c3.png)  
 
 ### Create 
+
 ![](images/c642d93d99c835876a635ba71e0a45f31703f47de9b8823f71445a5a00be8954.png)
-**[Observable & Observer](RXJS/Observable&Observer.md)**  
+
+- **[Observable & Observer](RXJS/Observable&Observer.md)**  
 
 ### Combine
+
 - **[RXJS Operators](RXJS/RXJS_Operators.md)**
 - [time](RXJS/delay.md)
 - [filter](RXJS/filter.md)
@@ -189,7 +192,6 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [Error](RXJS/Error.md)
 - **[AsyncPipe](RXJS/AsyncPipe.md)**
 - **[behaviorSubject](RXJS/behaviorSubject.md)**
-
 - [HttpClient.md](Angular/HttpClient.md)   
   ```typescript
   this.httpClient.get(BackendURL).pipe(
