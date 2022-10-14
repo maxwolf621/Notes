@@ -99,6 +99,11 @@ int indexOf(int ch, int ?fromIndex) // search character
 int indexOf(String str, ?int fromIndex) // search string
 int lastIndexOf(int ch, ?int startFromIndex)
 int lastIndexOf(String str, ?int startFromIndex)
+// String s = "Learn Share";
+// int output = s.indexOf("Share"); returns 6
+// int output = s.indexOf("ea",3); returns 13
+// int output = s.lastIndexOf("a"); returns 14
+
 
 String replace(char oldChar, char newChar)
 String replaceAll(String regex, String replacement)
@@ -126,12 +131,22 @@ byte[] getBytes(String charsetName)
 // str.getBytes( "UTF-8" );
 
 String substring(int beginIndex)
-String substring(int beginIndex, int endIndex)
+String substring(int beginIndex, int endIndex_Exclusive)
+// "GeeksForGeeks".substring(3); // returns "ksForGeeks"
+//"GeeksForGeeks".substring(2, 5); // returns "eks"
 
 String toLowerCase()
-String toUpperCase()
+//String word1 = "HeLLo";
+//String word3 = word1.toLowerCase(); 
+// returns "hello"
 
-String trim() // "  abc  " => "abc"
+String toUpperCase()
+//String word1 = "HeLLo";
+//String word2 = word1.toUpperCase(); 
+// returns “HELLO”
+
+String trim() 
+// "  abc  " => "abc"
 
 int length()
 Boolean isEmpty()
@@ -139,6 +154,12 @@ int hashCode()
 
 Boolean contains(CharSequence chars)
 boolean matches(String regex)
+
+String concat( String str)
+//String s1 = "Geeks";
+//String s2 = "ForGeeks";
+//String output = s1.concat(s2); 
+//returns "GeeksForGeeks"
 
 // PREFIX or SUFFIX
 boolean endsWith(String chars)
@@ -154,42 +175,6 @@ String intern()
 
 ```
 
-
-```java
-// String toLowerCase()
-String word1 = "HeLLo";
-String word3 = word1.toLowerCase(); // returns "hello"
-// String toUpperCase()
-String word1 = "HeLLo";
-String word2 = word1.toUpperCase(); // returns “HELLO”
-
-String subString(int i, int ?j_exclusive)
-
-// Return the substring from the ith  index character to end.
-"GeeksforGeeks".substring(3); // returns "ksforGeeks"
-
-// Returns the substring from i to j-1 index.
-"GeeksforGeeks".substring(2, 5); // returns "eks"
-
-
-// Concatenates specified string to the end of this string.
-String concat( String str)
-String s1 = "Geeks";
-String s2 = "forGeeks";
-String output = s1.concat(s2); // returns "GeeksforGeeks"
-
-
-// Returns the index within the string of the first occurrence of the specified string.
-int indexOf (String s, int ?startAt)
-String s = "Learn Share";
-int output = s.indexOf("Share"); // returns 6
-int output = s.indexOf("ea",3);// returns 13
-
-// Returns the index within the string of the last occurrence of the specified string.
-int lastIndexOf(String s)  
-int output = s.lastIndexOf("a"); // returns 14
-```
-
 #### equals(Object obj) and equalsIgnoreCase(String s)
 
 Compare string's content
@@ -198,9 +183,9 @@ boolean equals(Object otherObj)
 Boolean out = "Geeks".equals("Geeks"); // returns true
 Boolean out = "Geeks".equals("geeks"); // returns false
 
-boolean  equalsIgnoreCase(String anotherString)
+boolean equalsIgnoreCase(String anotherString)
 Boolean out= "Geeks".equalsIgnoreCase("Geeks"); // returns true
-Boolean out = "Geeks".equalsIgnoreCase("geeks"); // returns true
+Boolean out ="Geeks".equalsIgnoreCase("geeks"); // returns true
 ```
 #### compareTo(String s) and compareToIgnoreCase(String s)
 
@@ -215,7 +200,7 @@ out > 0  // s1 comes after s2.
 ```
 
 ```java
-int compareToIgnoreCase( String anotherString)
+int compareToIgnoreCase(String anotherString)
 int out = s1.compareToIgnoreCase(s2);  
 ```
 This returns difference s1-s2. If :
@@ -225,8 +210,6 @@ out = 0   // s1 and s2 are equal.
 out > 0   // s1 comes after s2.
 ```
 
-
-
 #### trim()
 
 Returns the copy of the String, **by removing white spaces at both ends. It does not affect white spaces in the middle.**
@@ -234,7 +217,6 @@ Returns the copy of the String, **by removing white spaces at both ends. It does
 String word1 = " Learn Share Learn ";
 String word2 = word1.trim(); 
 /***
- *  Learn Share Learn 
  * Learn Share Learn
  */
 ```
@@ -302,6 +284,10 @@ Use `StringBuffer` for Multiple Thread Tasks otherwise `StringBuilder`
 
 ## StringBuilder
 
+StringBuilder is not thread-safe & final type.
+
+These properties give us to append/insert/delete/trim to size/set its length operations ...
+
 ### insert and append
 
 insert = append with offset arg
@@ -346,32 +332,31 @@ void setLength(int newLength) // set new Length (not add new length with onl len
 void trimToSize()  
 
 String substring(int start)
-String substring(int start, int end)
+String substring(int start, int end_exclusive)
 
 StringBuilder reverse()
 String toString()
 
-StringBuilder delete(int start, int end) // like List#clear()
-
 void getChars(int srcBegin, int srcEnd_exclusive, char[] dst, int dstBegin)
-        StringBuilder str = new StringBuilder("GONE WRONG_01");
-        char[] array = new char[10];
-        Arrays.fill(array, '_');
-  
-        // get char from index 5 to 9
-        // and store in array start index 3
-        str.getChars(5, 10, array, 3);
-        Stream.of(array).forEach(System.out::print);
-        //___WRONG___
+StringBuilder str = new StringBuilder("GONE WRONG_01");
+char[] array = new char[10];
+Arrays.fill(array, '_');
 
+// get char from index 5 to 9
+// and store these char in new array starting at index 3
+str.getChars(5, 10, array, 3);
+Stream.of(array).forEach(System.out::print);
+//___WRONG___
+
+// Index of given string
 int indexOf(String str)
 int indexOf(String str, int fromIndex)
 int lastIndexOf(String str)
 int lastIndexOf(String str, int fromIndex)
 
 StringBuilder replace(int start, int end, String str)
-
 CharSequence subSequence(int start, int end)
+StringBuilder delete(int start, int end) // like List#clear()
 ```
 
 ### char operation
