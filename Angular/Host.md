@@ -1,6 +1,6 @@
 # HostListener and HostBinding
 - [HostListener and HostBinding](#hostlistener-and-hostbinding)
-  - [Binds css properties in some components' view Via @HostBinding Directive](#binds-css-properties-in-some-components-view-via-hostbinding-directive)
+  - [CSS properties directive](#css-properties-directive)
   - [HostBinding Component](#hostbinding-component)
 
 - `HostBinding` binds a Host element property to a property in the directive or component
@@ -9,8 +9,9 @@
 [Code Example](https://reurl.cc/YXNbba)
 [Code Example](https://angular-hu4bvx.stackblitz.io)
 
-## Binds css properties in some components' view Via @HostBinding Directive
+## CSS properties directive
 
+Bind css properties in some components' view Via `@HostBinding` Directive
 ```typescript
 @Directive({
   selector: '[app-pstyle]',
@@ -34,7 +35,7 @@ export class PstyleComponent implements OnInit {
   }
 ```
 
-Use `HostBinding` Directive binding css property in the view, for example `app.component.html`
+`PstyleComponent` is now a directive that supports CSS properties
 ```html
 <p app-pstyle>This is style.property binding</p>
 ```
@@ -56,7 +57,9 @@ export class HelloComponent {
   @Input() name: string;
 
   toggle: boolean;
+
   @HostBinding('class.isActive') get t() {
+    // getter of toggle
     return this.toggle;
   }
 

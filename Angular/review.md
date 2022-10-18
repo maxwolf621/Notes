@@ -7,6 +7,16 @@
       - [ngStyle & ngClass](#ngstyle--ngclass)
   - [ElementRef & TemplateRef & View Ref & ViewContainerRef](#elementref--templateref--view-ref--viewcontainerref)
   - [ContentChild(ren) / ViewChild(ren)](#contentchildren--viewchildren)
+  - [Router](#router)
+    - [queryParams & Fragment](#queryparams--fragment)
+    - [queryParams`Handling` & `preserve`Fragment](#queryparamshandling--preservefragment)
+    - [named router (secondary router-outlet) & clear named-router](#named-router-secondary-router-outlet--clear-named-router)
+    - [Resolve: pre-fetching component data](#resolve-pre-fetching-component-data)
+    - [Lazy Loading](#lazy-loading)
+    - [`canLoad()`](#canload)
+    - [Preloading](#preloading)
+    - [Custom Preloading](#custom-preloading)
+    - [inspect the router configuration](#inspect-the-router-configuration)
 
 ## ngTemplateOutlet 
 
@@ -128,3 +138,214 @@ nameVarAsViewContainerRef;
 ```
 
 
+## Router
+
+
+### queryParams & Fragment
+
+You can use query parameters to get **optional parameters available to ALL routes**.  
+**Fragments refer to certain elements on the page identified with an id attribute.**
+
+```typescript
+// AuthGuard.ts
+
+// Create a dummy session id
+const sessionId = 123456789;
+// Set our navigation extras object
+// that contains our global query params and fragment
+const navigationExtras: NavigationExtras = {
+  queryParams: { session_id: sessionId },
+  fragment: 'anchor',
+};
+// Navigate to the login page with extras
+this.router.navigate(['/login'], navigationExtras);
+return false;
+```
+
+### queryParams`Handling` & `preserve`Fragment
+
+In the LoginComponent, you'll add an object as the second argument in the `router.navigate()` function and provide the `queryParamsHandling` and `preserveFragment` to pass along the current query parameters and fragment to the next route.
+
+```typescript
+// LoginComponent.ts 
+
+const navigationExtras: NavigationExtras = {
+  queryParamsHandling: 'preserve',
+  preserveFragment: true
+};
+
+// Redirect the user
+this.router.navigate([redirectUrl], navigationExtras);
+```
+
+### named router (secondary router-outlet) & clear named-router
+
+```html
+<router-outlet></router-outlet>
+...
+...
+<router-outlet name="outletPropertyName"></router-outlet>
+```
+
+```typescript
+const appRoutes: Routes = [
+  {
+    path: 'xxx',
+    component: xxxComponent,
+    // This route now targets the popup outlet 
+    // and the ComposeMessageComponent will display there.
+    outlet: 'outletPropertyName',
+  },
+```
+
+```typescript
+closePopup() {
+  //                          named-outlet:null 
+  this.router.navigate([{ outlets: { popup: null }}]);
+}
+```
+
+### Resolve: pre-fetching component data
+
+```typescript
+export class CrisisDetailResolverService implements Resolve<Crisis> {
+  constructor(private crisisService: CrisisService, private router: Router) {}
+
+  // Event to be subscribed
+  resolve(route: ActivatedRouteSnapshot, 
+          state: RouterStateSnapshot):
+          Observable<Crisis> | Observable<never> 
+  {
+    const id = route.paramMap.get('id')!;
+
+    return this.crisisService.getCrisis(id).pipe(
+      mergeMap(crisis => {
+        if (crisis) {
+          return of(crisis);
+        } else { // id not found
+          this.router.navigate(['/crisis-center']);
+          return EMPTY;
+        }
+      })
+    );
+  }
+}
+```
+```typescript
+const routes : Routes = [
+  {
+    path: ':id',
+    component: CrisisDetailComponent,
+    canDeactivate: [CanDeactivateGuard],
+    resolve: { // <----- subscribe resolve<data>
+      crisis: CrisisDetailResolverService
+    }
+  },
+]
+```
+
+### Lazy Loading
+
+```typescript
+// xxx.routing.module.ts
+const xxxRoutes: Routes = [
+  {
+    path: '', // <-- Change the lazy one with empty path
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        //....
+      }
+    ]
+  }
+];
+
+// App.routing.module.ts
+{
+  path: 'xxx',
+  loadChildren: () => import('./xxx/xxx.module').then(m => m.xxxModule),
+},
+```
+
+### `canLoad()`
+
+CanLoad : canActivate for loadChildren property.
+
+```typescript
+// src/app/auth/auth.guard.ts (CanLoad guard)
+canLoad(route: Route): boolean {
+  const url = `/${route.path}`;
+
+  return this.checkLogin(url);
+}
+```
+Add it in `loadChildren` route
+```typescript
+{
+  path: 'xxx',
+  loadChildren: () => import('./xxx/xxx.module').then(m => m.xxxModule),
+  canLoad: [AuthGuard]
+},
+```
+
+### Preloading
+
+The Router offers two preloading strategies:
+
+No preloading(default) : Lazy loaded feature areas are still loaded on-demand.
+Preloading All lazy loaded feature areas are preloaded.
+
+```typescript
+RouterModule.forRoot(
+  appRoutes,
+  {
+    // Add preLoadAllModules Property
+    preloadingStrategy: PreloadAllModules
+  }
+)
+```
+
+### Custom Preloading
+```typescript
+// routes set preload flag true
+{
+  path: '...',
+  loadChildren: ...
+  data: { preload: true }
+}
+// service for custom preload strategy
+export class SelectivePreloadingStrategyService implements PreloadingStrategy {
+  preloadedModules: string[] = [];
+
+  preload(route: Route, load: () => Observable<any>): Observable<any> {
+    if (route.data?.['preload'] && route.path != null) {
+      // add the route path to the preloaded module array
+      this.preloadedModules.push(route.path);
+
+      // log the route path to the console
+      console.log('Preloaded: ' + route.path);
+
+      return load();
+    } else {
+      return of(null);
+    }
+  }
+}
+```
+
+### inspect the router configuration
+
+`JSON.stringify(router.config, (key,value) => (typeof key == 'function') ? value.name : value; , 2`)
+
+```typescript
+export class AppModule {
+  // Diagnostic only: inspect router configuration
+  constructor(router: Router) {
+    // Use a custom replacer to display function names in the route configs
+    const replacer = (key, value) => (typeof value === 'function') ? value.name : value;
+
+    console.log('Routes: ', JSON.stringify(router.config, replacer, 2));
+  }
+}
+```
