@@ -46,6 +46,8 @@
 - [LeetCode Exercises](LeetCode/README.md)
 ## Typescript
 
+[深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)
+
 [What is `new() :T`](https://reurl.cc/O4Anb9)  
 [Exercises](https://exercism.org/tracks/typescript/exercises)   
 [Cheat Sheet](https://rmolinamir.github.io/typescript-cheatsheet/)   
@@ -88,12 +90,8 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 - [NameSpace](Typescript/namespace.md)
 ## Kotlin
 [](kotlin.md)
-
 [Kotlin Cheat Sheet (IMAGE)](https://blog.kotlin-academy.com/kotlin-cheat-sheet-1137588c75a)
-[Day 07. Kotlin 語言學習 - Nullable 安全性](https://ithelp.ithome.com.tw/articles/10203705)    
-[Collections](https://medium.com/mobile-app-development-publication/kotlin-collection-functions-cheat-sheet-975371a96c4b)   
-- [References](kotlin/reference.md)
-- [New](kotlin/new.md)
+- [fun & return-type & when & varage & spread* & unit & block](kotlin/new.md)
 - [Class](kotlin/class.md)
 - [Kotlin & Java](Kotlin/kotlinAndJava.md)
 ## Angular
@@ -150,7 +148,7 @@ Function Type expression : `functionName : ( parameters ) => returnType`
 ### Router
 
 - **[Router](AngularRouter/Router.md)**   
-- **[RouterForChild](AngularRouter/RouterForChild.md)**
+- **[lazyAndPreload](AngularRouter/lazyAndPreload.md)**
 - **[Route Guard](AngularRouter/Route_Guard.md)**  
 - **[Router For Content](AngularRouter/RouterForContentLoading.md)** 
 
