@@ -35,6 +35,8 @@
 - [Java JWT](SpringBoot/JWT.md)
 - [Jwt Bash Command](SpringBoot/KeystoreInCommand.sh)
 ## Hibernate && JPA
+
+- [Spring Data JPA Query Method 方法名稱查詢範例](https://matthung0807.blogspot.com/2020/04/spring-data-jpa-query-method.html)
 ### Basic
 - [Transaction](SpringWithDatabase/Transactional.md)   
 - **[CascadeType](SpringWithDatabase/CascadeType.md)**   

@@ -310,7 +310,7 @@ public void serve() throws InterruptedException {
 }
 
 // console : 
-// void org.baeldung.Service.serve() executed in 2030ms
+// void org.pttClone.Service.serve() executed in 2030ms
 ```
 
 
@@ -339,11 +339,11 @@ public void securedClassPointcut() {}
 
 #### bean
 
-any join point (method execution only in Spring AOP) on a Spring bean named 'tradeService':
+any join point (method execution only in Spring AOP) on a Spring `@bean` named `tradeService`:
 ```java
 bean(tradeService)
 ```
-any join point (method execution only in Spring AOP) on Spring beans having names that match the wildcard expression '*Service':
+any join point (method execution only in Spring AOP) on Spring `@beans` having names that match the wildcard expression `*Service`:
 ```java
 bean(*Service)
 ```
@@ -452,13 +452,13 @@ Advices = {@Around, @Before, @After, @AfterReturning, @AfterThrowing}
 around advice means we are adding extra code both `@before` and `@after` target method execution. 
 
 #### @After(YY) methodX
-通知(advice)方法methodX會在目標方法YY返回或拋出異常後呼叫, 類似例外中的finally
+通知(advice)方法methodX會在target method返回或拋出異常後呼叫, 類似例外中的finally
 - It is typically used for releasing resources
 
 #### @Before(YY) methodX
-通知(advice)方法methodX會在目標方法YY呼叫之前被呼叫
+通知(advice)方法methodX會在target method呼叫之前被呼叫
 #### @AfterReturning(YY) methodX
-通知(advice)方法methodX會在目標方法YY返回後呼叫
+通知(advice)方法methodX會在target method `com.xxx.applicationName.SystemArchitecture.dataAccessOperation()`返回後呼叫
 
 ```java
 import org.aspectj.lang.annotation.Aspect;
@@ -479,7 +479,7 @@ public class AfterReturningExample {
 ```
 - The name used in the returning attribute must correspond to the name of a parameter in the advice method.
 #### @AfterThrowing(YY) methodX
-通知(advice)方法(methodX)會在目標方法YY拋出異常後被呼叫
+通知(advice)方法(methodX)會在`com.xyz.myapp.SystemArchitecture.dataAccessOperation()`拋出異常後被呼叫
 ```java
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.AfterThrowing;
