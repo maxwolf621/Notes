@@ -5,14 +5,18 @@
 
 - [class](#class)
   - [Constructor](#constructor)
+    - [`init`](#init)
     - [Companion objects](#companion-objects)
-  - [Inehritance](#inehritance)
-  - [properties](#properties)
+  - [Inheritance (`open`) & (`final`)](#inheritance-open--final)
+  - [class properties](#class-properties)
     - [getter and setter](#getter-and-setter)
-    - [change the visibility (accessor)](#change-the-visibility-accessor)
+    - [Private Set](#private-set)
+    - [Injection](#injection)
     - [Backing fields](#backing-fields)
+    - [Custom Setter and Getter](#custom-setter-and-getter)
     - [lateinit & @SetUp & @Test](#lateinit--setup--test)
     - [`lateinitVariable.isInitialized`](#lateinitvariableisinitialized)
+    - [Compile-Time Constants](#compile-time-constants)
   - [interface](#interface)
     - [Interfaces Inheritance](#interfaces-inheritance)
     - [Resolving overriding conflicts](#resolving-overriding-conflicts)
@@ -23,52 +27,105 @@
   - [visibility](#visibility)
     - [Package](#package)
     - [Class](#class-1)
-    - [specify visibility of the primary constructor](#specify-visibility-of-the-primary-constructor)
+    - [private primary constructor](#private-primary-constructor)
   - [Extensions](#extensions)
-    - [Nullable receiver](#nullable-receiver)
+    - [Nullable receiver (`?.`)](#nullable-receiver-)
+    - [Scope of package extensions](#scope-of-package-extensions)
     - [Declaring extensions as members](#declaring-extensions-as-members)
-  - [Data classes](#data-classes)
-    - [copying](#copying)
+  - [Data Class](#data-class)
+    - [copy the class](#copy-the-class)
   - [Nested and inner classes](#nested-and-inner-classes)
   - [Generics: in, out, where](#generics-in-out-where)
     - [type projection](#type-projection)
     - [start-projections](#start-projections)
     - [Upper bounds (`<T extend J>`)](#upper-bounds-t-extend-j)
     - [`_`](#_)
-  - [inlined class](#inlined-class)
-    - [Inline classes vs type aliases](#inline-classes-vs-type-aliases)
-    - [Inline classes and delegation](#inline-classes-and-delegation)
   - [TypeAlias](#typealias)
   - [Delegation (`by`)](#delegation-by)
-  - [Delegation Properties](#delegation-properties)
+    - [Delegation Properties](#delegation-properties)
     - [Observable properties](#observable-properties)
     - [Storing properties in a map](#storing-properties-in-a-map)
     - [`::` qualifier](#-qualifier)
     - [`@Deprecated`](#deprecated)
+  - [`@JvmInline` inlined class](#jvminline-inlined-class)
+    - [Inline classes vs type aliases](#inline-classes-vs-type-aliases)
+    - [Inline classes and delegation](#inline-classes-and-delegation)
 
+**Kotlin dose not have `new` keyword**
 
 ## Constructor 
 
-- The primary constructor cannot contain any code. 
-- If a non-abstract class does not declare any constructors (primary or secondary), it will have a generated primary constructor with no arguments. 
-The visibility of the constructor will be `public`
-- Kotlin dose not have `new` keyword
-- You can override a non-abstract `open` member with an abstract one.
-
-If the primary constructor does not have any annotations or visibility modifiers, the constructor keyword can be omitted:
+**If the primary constructor does not have any annotations or visibility modifiers, the `constructor` keyword can be omitted:**
 ```java
+class Person constructor(_firstName : String){
+    var firstName = _firstName;
+}
+
+// omit the constructor keyword for primary constructor
 class Person(firstName: String) { /*...*/ }
 
-// with trailing comma
-
-class Person( val firstName: String, val lastName: String, var age: Int, // trailing comma ) { /*...*/ }
+           // with trailing comma ,
+class Person(val firstName: String,) { /*...*/ }
 ```
 
-Order of how instance of this class initialized
+
+```java
+// also call data class (only data exists)
+class DataClassWithMandatoryFields(
+    val name: String,
+    val surname: String,
+    val age: Number
+)
+// initializer
+val objectWithAllValuesProvided = DataClassWithMandatoryFields("John", "Deere", 82)
+
+// a new data class where the fields aren’t mandatory (optional members)
+class DataClassWithNullInitializedFields(
+    val name: String? = null,
+    val surname: String? = null,
+    val age: Number? = null
+)
+// each field must check for nullable
+assertThat(objectWithNameInitializedFields.name?.length).isEqualTo("4")
+
+
+// default value
+class DataClassWithDefaultValues(
+    val name: String = "",
+    val surname: String = "",
+    val age: Number = Int.MIN_VALUE
+)
+val dataClassWithNameProvided = DataClassWithDefaultValues(name = "John")
+
+// Secondary Constructors
+class DataClassWithSecondaryConstructors(
+    val name: String,
+    val surname: String,
+    val age: Number
+) {
+    constructor() : this("", "Doe", Int.MIN_VALUE)
+    constructor(name: String) : this(name, "Deere", Int.MIN_VALUE)
+    constructor(name: String, surname: String) : this(name, surname, Int.MIN_VALUE)
+}
+```
+- If a non-abstract class does not declare any constructors (primary or secondary), it will have a generated primary constructor with no arguments. 
+- The visibility of the constructor will be `public`
+- You can override a non-abstract `open` member with an abstract one.
+
+### `init`
+
+you can test the code in `init` block
+- Primary constructor parameters can be used in the initializer blocks.      
+- They can also be used in property fields initializers declared in the class body   
 ```java
 class InitOrderDemo(name: String) {   
-     val firstProperty = "First property: $name".also(::println)        
-     init {        
+
+    constructor(name : String , val : Int): this(name = name){
+        println("I'm Secondary Constructor");
+    }
+
+    val firstProperty = "First property: $name".also(::println)        
+    init {        
         println("First initializer block that prints $name")    
     }
     
@@ -77,13 +134,17 @@ class InitOrderDemo(name: String) {
         println("Second initializer block that prints ${name.length}")   
     }
 }
+
+fun main() {
+    val demo = InitOrderDemo("Jian");
+}
+/**
+    First property: Jian
+    First initializer block that prints Jian
+    Second property: 4
+    Second initializer block that prints 4
+*/
 ```
-
-Primary constructor parameters can be used in the initializer blocks.  
-
-They can also be used in property fields initializers declared in the class body:
-
-
 
 ### Companion objects
 
@@ -92,29 +153,35 @@ If you need to write a function that can be called without having a class instan
 class MyView : View { constructor(ctx: Context) : super(ctx) constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) }
 ```
 
-## Inehritance
+## Inheritance (`open`) & (`final`)
 
-- A member marked override is itself `open`, so it may be overridden in subclasses. If you want to prohibit re-overriding, use `final`:
+A member marked override is itself `open`, so it may be overridden in subclasses. 
+
+If you want to prohibit re-overriding, use `final`:
 ```java
 class Example // Implicitly inherits from Any
 open class Base // Class is open for inheritance
 ```
 
 If the derived class has a primary constructor, the base class can (and must) be initialized in that primary constructor according to its parameters.  
-If the derived class has no primary constructor, then each secondary constructor has to initialize the base type using the super keyword or it has to delegate to another constructor which does.      
+
+If the derived class has no primary constructor, then each secondary constructor has to initialize the base type using the `super` keyword or it has to delegate to another constructor which does.      
 ```java
 // assign value to super
 open class Base(p: Int)
 class Derived(p: Int) : Base(p)
+```
 
-// different secondary constructors can call different constructors of the base type:
+```java
+// secondary constructors 
+// can call different constructors of the base type:
 class MyView : View {
     constructor(ctx: Context) : super(ctx)
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)
 }
 ```
 
-**Kotlin requires explicit modifiers for overridable members and overrides**:
+**Kotlin requires explicit modifiers (`open`) for overridable members and overrides**:
 ```java
 open class Shape {
     open fun draw() { /*...*/ }
@@ -148,104 +215,189 @@ class Polygon : Shape {
     override var vertexCount: Int = 0  // Can be set to any number later
 }
 ```
-## properties 
+## class properties 
 
 ### getter and setter
 
+Initializer of fields with `?` , `val`, nd `var`
+```java 
+// it has type Int, default getter, 
+// must be initialized in constructor
+val simple: Int? 
+
+// it has type Int and a default getter (val : final type)
+val inferredType = 1
+
+// it has type Int, default getter and setter
+var initialized = 1 
+```
+
+`val` variable's custom getter
+- You can omit the property type if it can be inferred from the getter:
 ```java
-
-var <propertyName> : <PropertyType> = <property_initializer>
-    get() = // ..
-    set() = // ..
-
-val simple: Int? // has type Int, default getter, must be initialized in constructor
-val inferredType = 1 // has type Int and a default getter
-var initialized = 1 // has type Int, default getter and setter
-
 // custom getter
 class Rectangle(val width: Int, val height: Int) {
-    val area: Int // property type is optional since it can be inferred from the getter's return type
+    val area: Int 
         get() = this.width * this.height
 }
+fun main() {
+    val rectangle = Rectangle(3, 4)
+    println("Width=${rectangle.width}, height=${rectangle.height}, area=${rectangle.area}")
+}
+```
 
+`var` variable's custom getter / setter
+```java
 // custom setter (is called every time the value is assigned)
 var stringRepresentation: String
     get() = this.toString()
     set(value) {
-        setDataFromString(value) // parses the string and assigns values to other properties
+        setDataFromString(value) 
     }
 ```
+- If you define a custom setter, it will be called every time you assign a value to the property, except its initialization.
 
-### change the visibility (accessor)
-
-Define accessor without defining the body
+### Private Set 
 
 ```java
-var setterVisibility: String = "abc"
-    private set // the setter is private and has the default implementation
+class privateSetting{
+    var privateMember: String = "abc"
+    private set 
+    // the setter is private 
+    // and has the default implementation
+    fun setPrivateMember(s : String){
+        this.privateMember = s;
+        println("Setting privateMember to ${s}")
+    }
+}
 
+val privateSettingObj = privateSetting();
+privateSettingObj.setPrivateMember("adb");
+// Setting privateMember to adb
+```
+
+### Injection
+
+```java
 var setterWithAnnotation: Any? = null
     @Inject set // annotate the setter with Inject
 ```
 
 ### Backing fields
 
+- [What's Kotlin Backing Field For?](https://stackoverflow.com/questions/43220140/whats-kotlin-backing-field-for)
+
 In Kotlin, a field is only used as a part of a property to hold its value in memory.
 
 Fields cannot be declared directly. 
  
-However, when a property needs a backing field, Kotlin provides it automatically. 
+However, when a property needs a backing field, Kotlin provides it automatically.   
 
-This backing field can be referenced in the accessors using the field identifier:
+This backing field can be referenced in the accessors using the field identifier:  
 ```java
-var counter = 0 // the initializer assigns the backing field directly
+class timer{
+    var counter : Int = 0 // the initializer assigns the backing field directly
+    // get() = field;
     set(value) {
         if (value >= 0)
             field = value
-            // counter = value // ERROR StackOverflow: Using actual name 'counter' would make setter recursive
+            // counter = value 
+            // ERROR StackOverflow: 
+            // Using actual name 'counter' would make setter recursive
     }
+}
+
+fun main(){
+    val t = timer();
+    t.counter = 4
+    println(t.counter);
+}
+```
+- **The `field` identifier can only be used in the accessors of the property.**
+- B`acking Field (field)`: It allows storing the property value in memory possible. When we initialize a property with a value, the initialized value is written to the backing field of that property. In the above program, the value is assigned to field, and then, field is assigned to `get()`.
+
+
+### Custom Setter and Getter 
+
+- [source code](https://www.geeksforgeeks.org/kotlin-setters-and-getters/)
+
+```java
+class Registration( email: String, pwd: String, age: Int , gender: Char) {
+ 
+    var email_id: String = email
+        // Custom Getter
+        get() {
+           return field.toLowerCase()
+        }
+    var password: String = pwd
+        // Custom Setter
+        set(value){
+            field = if(value.length > 6) value else throw IllegalArgumentException("Passwords is too small")
+        }
+ 
+    var age: Int = age
+        // Custom Setter
+        set(value) {
+            field = if(value > 18 ) value else throw IllegalArgumentException("Age must be 18+")
+        }
+    var gender : Char = gender
+        // Custom Setter
+        set (value){
+            field = if(value == 'M') value else throw IllegalArgumentException("User should be male")
+        }
+}
 ```
 
 ### lateinit & @SetUp & @Test
 
-Normally, **properties declared as having a non-null type must be initialized in the constructor.**
+- [details](https://carterchen247.medium.com/kotlin%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97-%E5%8D%81%E4%B8%80-lateinit-vs-lazy-1ef96bc5b3b3)
 
-However, it is often the case that doing so is not convenient. For example, **properties can be initialized through dependency injection**, or in the setup method of a unit test. In these cases, you cannot supply a non-null initializer in the constructor, but you still want to avoid `null` checks when referencing the property inside the body of a class.
+Properties declared as having a non-null type must be initialized in the constructor in kotlin.
 
-To handle such cases, you can mark the property with the `lateinit` modifier:
-```java
-public class MyTest {
-    lateinit var subject: TestSubject
-
-    @SetUp fun setup() {
-        subject = TestSubject()
-    }
-
-    @Test fun test() {
-        subject.method()  // dereference directly
-    }
-}
-```
-This modifier can be used on `var` properties declared inside the body of a class (**not in the primary constructor**, and only when the **property does not have a custom getter or setter**), as well as for top-level properties and local variables. 
+`lateinit` allows **properties can be initialized through dependency injection**, or in the setup method of a unit test. 
+- This modifier can be used on `var` properties declared inside the body of a class (**not in the primary constructor**, and only when the **property does not have a custom getter or setter**), as well as for top-level properties and local variables. 
 
 **The type of the property or variable must be non-null, and it must not be a primitive type**.
 
-- **Accessing a lateinit property before it has been initialized throws a special exception** that clearly identifies the property being accessed and the fact that it hasn't been initialized.
+**Accessing a `lateinit` property before it has been initialized throws a special exception.** 
+```java
+public class MyTest {
 
+    // private var subject : TestSubject? = null
+    lateinit var subject: TestSubject
+
+    @SetUp fun setup() {
+        // setter
+        subject = TestSubject();
+    }
+
+    @Test fun test() {
+        // ...
+    }
+}
+```
 ### `lateinitVariable.isInitialized` 
 
 Checking whether a lateinit var is initialized
+
 ```java
 if (foo::bar.isInitialized) {
     println(foo.bar)
 }
 ```
 
+
+### Compile-Time Constants 
+
+https://givemepass.blogspot.com/2020/01/properties-fields.html
+
 ## interface
 
 Interfaces in Kotlin can contain **declarations of abstract methods, as well as method implementations**. 
 Interfaces can have **properties(NO STATE)**, but these need to be abstract or provide accessor implementations.
+
 A class or object can **implement one or more interfaces**  
+
 Properties declared in interfaces **can't have backing fields**
 ```java
 interface MyInterface {
@@ -268,7 +420,7 @@ class Child : MyInterface {
 
 An interface can derive from other interfaces, meaning it can both provide implementations for their members and declare new functions and properties. 
 
-Quite naturally, classes implementing such an interface are **only required to define the missing implementations**:
+Classes implementing such an interface are **only required to define the missing implementations**:
 ```java
 interface Named {
     val name: String
@@ -285,7 +437,6 @@ interface Person : Named {
 // only required to define the missing implementations
 data class Employee(
     // implementing 'name' is not required
-   
     override val firstName: String,
     override val lastName: String,
     
@@ -295,12 +446,12 @@ data class Employee(
 
 ### Resolving overriding conflicts
 
-- Interfaces A and B both declare functions `foo()` and `bar()`.
-- 
+Interfaces A and B both declare functions `foo()` and `bar()`.
+  
 ```java
 interface A {
     fun foo() { print("A") }
-    fun bar()                         
+    fun bar()                      
 }                                     
                                       
 interface B {                         
@@ -326,9 +477,10 @@ class D : A, B {
     }
 }
 ```
-- This rule applies both to methods for which you've inherited a single implementation (bar()) and to those for which you've inherited multiple implementations (foo()).
 
-## SAM functional interface (prepare for lambda)
+This rule applies both to methods for which you've inherited a single implementation (`bar()`) and to those for which you've inherited multiple implementations (`foo()`).
+
+## SAM functional interface (prepare for lambda) 
 
 An interface with only one abstract method is called a functional interface, or a Single Abstract Method (SAM) interface.
 
@@ -365,17 +517,14 @@ interface Printer {
     fun print()
 }
 
-//             parameter         returnType      anonymous              
+//          parameter           returnType         anonymous              
 fun Printer(block: () -> Unit): Printer = object : Printer { override fun print() = block() }
 ```
 
 With callable references to functional interface constructors enabled.
+
 Its constructor will be created implicitly.
 ```java
-fun interface Printer {
-    fun print()
-}
-
 // any code using the ::Printer function reference will compile. 
 documentsStorage.addPrinter(::Printer)
 ```
@@ -383,21 +532,28 @@ documentsStorage.addPrinter(::Printer)
 ### typealias vs functional array
 
 ```java
+/**
+ * Instead 
+    interface Printer {
+        fun print()
+    }
+ */
 typealias IntPredicate = (i: Int) -> Boolean
 
-val isEven: IntPredicate = { it % 2 == 0 }
+val isEven : IntPredicate = { it % 2 == 0 }
 
 fun main() {
    println("Is 7 even? - ${isEven(7)}")
 }
 ```
 
-**Type aliases can have only one member, while functional interfaces can have multiple non-abstract members and one abstract member. Functional interfaces can also implement and extend other interfaces.**
+**Type aliases can have only one member, while functional interfaces can have multiple non-abstract members and one abstract member.**   
+Functional interfaces can also implement and extend other interfaces.
 
-Functional interfaces are more flexible and provide more capabilities than type aliases, but they can be more costly both syntactically and at runtime because they can require conversions to a specific interface. When you choose which one to use in your code, consider your needs:
+**Functional interfaces are more flexible and provide more capabilities than type aliases**, but they can be more costly both syntactically and at runtime because they can require conversions to a specific interface. 
 
+Consider your needs :
 - If your API needs to accept a function (any function) with some specific parameter and return types – use a simple functional type or define a type alias to give a shorter name to the corresponding functional type.
-
 - If your API accepts a more complex entity than a function – for example, it has non-trivial contracts and/or operations on it that can't be expressed in a functional type's signature – declare a separate functional interface for it.
 
 ## visibility
@@ -413,18 +569,20 @@ package foo
 private fun foo() { ... } // visible inside example.kt
 
 public var bar: Int = 5 // property is visible everywhere
-    prixvate set         // setter is visible only in example.kt
-
+    private set         // setter is visible only in example.kt
 internal val baz = 6    // visible inside the same module
 ```
 ### Class
 
 ```java
 open class Outer {
-    private val a = 1
-    protected open val b = 2
-    internal open val c = 3
-    val d = 4  // public by default
+    private val private_a = 1
+
+    protected open val protected_b = 2
+
+    internal open val intern_c = 3
+
+    val val_d = 4  // public by default
 
     protected class Nested {
         public val e: Int = 5
@@ -434,20 +592,20 @@ open class Outer {
 class Subclass : Outer() {
     // a is not visible
     // b, c and d are visible
-    // Nested and e are visible
+    // Method `Nested` and member `e` are visible
 
     override val b = 5   // 'b' is protected
     override val c = 7   // 'c' is internal
 }
 
 class Unrelated(o: Outer) {
-    // o.a, o.b are not visible
-    // o.c and o.d are visible (same module)
+    // o.private_a, o.protected_b are not visible (private and protected)
+    // o.intern_c and o.val_d are visible (same module)
     // Outer.Nested is not visible, and Nested::e is not visible either
 }
 ```
 
-### specify visibility of the primary constructor
+### private primary constructor
 
 specify the visibility of the primary constructor of a class
 
@@ -458,6 +616,11 @@ class C private constructor(a: Int) { ... }
 ## Extensions
 
 Kotlin provides the ability to extend a class or an interface with new functionality without having to inherit from the class or use design patterns such as Decorator.
+```java
+fun extension.methodName(...){
+    ....
+}
+```
 
 adds a `swap` function to `MutableList<T>`
 ```java
@@ -468,18 +631,26 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
 }
 ```
 
-### Nullable receiver
+### Nullable receiver (`?.`)
 
 ```java
 fun Any?.toString(): String {
     if (this == null) return "null"
-    // after the null check, 'this' is autocast to a non-null type, so the toString() below
+    // after the null check, 'this' is auto-cast to a non-null type, 
+    // so the toString() below
     // resolves to the member function of the Any class
     return toString()
 }
+
+fun main() {
+    var obj: Any? = "i dont like it"
+
+    print(obj?.toString()) // is actually null
+    print(obj.toString()) // returns "null" string
+}
 ```
 
-###　Scope of extensions
+### Scope of package extensions
 
 An extension declared at the top level of a file has access to the other private top-level declarations in the same file.
 
@@ -488,8 +659,20 @@ If an extension is declared outside its receiver type, it cannot access the rece
 Inside its declaring package (top level of a file)
 ```java
 package org.example.declarations;
-fun List<String>.getLongestString() { /*...*/}
+
+fun List<String>.getLongestString() : List<String> {
+    for( i in this){
+        println(i)
+        /**
+            red
+            green
+            blue
+        */
+    }
+    return this;
+}
 ```
+
 To use an extension outside its declaring package, import it at the call site:
 ```java
 package org.example.usage;
@@ -502,6 +685,7 @@ fun main() {
 ```
 
 ### Declaring extensions as members 
+
 ```java
 class Host(val hostname: String) {
     fun printHostname() { print(hostname) }
@@ -510,7 +694,7 @@ class Host(val hostname: String) {
 class Connection(val host: Host, val port: Int) {
     
     fun Host.getConnectionString() {
-        println(toString())         // calls Host.toString()
+        println(toString())                  // calls Host.toString()
         println(this@Connection.toString())  // calls Connection.toString()
     }
 
@@ -520,19 +704,17 @@ class Connection(val host: Host, val port: Int) {
 }
 
 fun main() {
-    Connection(Host("kotl.in"), 443).call()
+    Connection(Host("kotlin"), 443).call()
 }
 ```
 
-## Data classes
+## Data Class 
 
-classes whose main purpose is to hold data
-- Data classes and destructuring declarations
+Data Class whose main purpose is to hold data
 
 Automatically derives
 ```java
-equals()/hashCode() 
-toString() 
+equals()/hashCode()/toString() 
 componentN() // functions corresponding to the properties in their order of declaration.
 copy()  
 ```
@@ -552,36 +734,52 @@ val person1 = Person("John")
 val person2 = Person("John")
 person1.age = 10
 person2.age = 20
-```
 
-```java
-val jane = User("Jane", 35)
+// destructing 
+val jane = Person("Jane", 35)
 val (name, age) = jane
 println("$name, $age years of age") // prints "Jane, 35 years of age"
 ```
 
 
-### copying
+### copy the class
 
 ```java
-fun copy(name: String = this.name, age: Int = this.age) = User(name, age)
+data class Person(val name: String) {
+    var age: Int = 0
+    // Custom Copy
+    fun copy(name: String = this.name, age: Int = this.age) = Person(name)
+}
+fun main() {
+    val jack = Person(name = "Jack")
+    val olderJack = jack.copy(age = 2)
+}
 
-val jack = User(name = "Jack", age = 1)
-val olderJack = jack.copy(age = 2)
+/**
+    Default Copy : 
+	val jack = Person("jack");
+    jack.age = 18;
+    
+    println("jack ${jack.name} and ${jack.age}");
+    val copy = jack.copy(name = "jackColone");
+    copy.age = 18;
+    println("${copy.name} and ${copy.age}");
+**/
 ```
 
 ## Nested and inner classes
+
 - Anonymous inner classes
 - `Inner` classes
   - Inner classes carry a reference to an object of an outer class:
 - `class` within a `class`
 - interface within a `class`
 
-
 ```java
 // inner
 class Outer {
     private val bar: Int = 1
+
     inner class Inner {
         fun foo() = bar
     }
@@ -602,16 +800,17 @@ window.addMouseListener(object : MouseAdapter() {
 
 ### type projection
 
-`Array<? extends Object>` (from's data type is SMALLER THAN OBJECT)
+`Array<out Any>` : Corresponds to Java's `Array<? extends Any>` 
 ```java
 fun copy(from: Array<out Any>, to: Array<Any>) { ... }
 ```
-This is type projection, which means that from is not a simple array, but is rather a restricted (projected) one. 
+- out : `from`'s data type is SMALLER THAN Any
 
-`Array<in String>` corresponds to Java's `Array<? super String>`.  (dest data Type is BIGGER THAN STRING)
+`Array<in String>` corresponds to Java's `Array<? super String>`. 
 ```java
 fun fill(dest: Array<in String>, value: String) { ... }
 ```
+- `dest`'s data Type is BIGGER THAN STRING
 
 ### start-projections
 
@@ -636,7 +835,6 @@ For example, if the type is declared as interface Function<in T, out U> you coul
 ### Upper bounds (`<T extend J>`)
 
 The default upper bound (if there was none specified) is `Any?`
-
 ```java
 fun <T> copyWhenGreater(list: List<T>, threshold: T): List<String>
     where T : CharSequence,
@@ -679,84 +877,9 @@ fun main() {
 
 ```
 
-
-
-## inlined class
-
-Inline class properties cannot have backing fields.
-
- They can only have simple computable properties (no lateinit/delegated properties).
-```java
-@JvmInline
-value class Name(val s: String) {
-    init {
-        require(s.length > 0) { }
-    }
-
-    val length: Int
-        get() = s.length
-
-    fun greet() {
-        println("Hello, $s")
-    }
-}
-
-fun main() {
-    val name = Name("Kotlin")
-    name.greet() // method `greet` is called as a static method
-    println(name.length) // property getter is called as a static method
-}
-
-// inheritance
-interface Printable {
-    fun prettyPrint(): String
-}
-
-@JvmInline
-value class Name(val s: String) : Printable {
-    override fun prettyPrint(): String = "Let's $s!"
-}
-
-fun main() {
-    val name = Name("Kotlin")
-    println(name.prettyPrint()) // Still called as a static method
-}
-```
-
-
-### Inline classes vs type aliases
-
-inline classes introduce a truly new type, contrary to type aliases which only introduce an alternative name (alias) for an existing type:
-```typescript 
-typealias NameTypeAlias = String
-
-@JvmInline
-value class NameInlineClass(val s: String)
-
-fun acceptString(s: String) {}
-fun acceptNameTypeAlias(n: NameTypeAlias) {}
-fun acceptNameInlineClass(p: NameInlineClass) {}
-
-fun main() {
-    val nameAlias: NameTypeAlias = ""
-    val nameInlineClass: NameInlineClass = NameInlineClass("")
-    val string: String = ""
-
-    acceptString(nameAlias) // OK: pass alias instead of underlying type
-    acceptString(nameInlineClass) // Not OK: can't pass inline class instead of underlying type
-
-    // And vice versa:
-    acceptNameTypeAlias(string) // OK: pass underlying type instead of alias
-    acceptNameInlineClass(string) // Not OK: can't pass underlying type instead of inline class
-}
-```
-
-### Inline classes and delegation
-
-[Inline classes and delegation](https://kotlinlang.org/docs/inline-classes.html#inline-classes-and-delegation)
-
-
 ## TypeAlias
+
+(kidda like `type` in typescript)
 
 Type aliases provide alternative names for existing types  
 It's useful to shorten long generic types.  
@@ -791,6 +914,7 @@ Thus you can pass a variable of your type whenever a general function type is re
 ```java ​
 typealias Predicate<T> = (T) -> Boolean
 
+// foo(p : (T) -> Boolean) 
 fun foo(p: Predicate<Int>) = p(42)
 ​
 fun main() {
@@ -848,7 +972,7 @@ fun main() {
 }
 ```
 
-## Delegation Properties
+### Delegation Properties
 
 - [Local delegated properties](https://kotlinlang.org/docs/delegated-properties.html#local-delegated-properties)   
 - [Translation rules for delegated properties](https://kotlinlang.org/docs/delegated-properties.html#translation-rules-for-delegated-properties)  
@@ -992,4 +1116,76 @@ fun main() {
    println(myClass.newName) // 42
 }
 ```
+## `@JvmInline` inlined class
 
+**Inline class properties cannot have backing fields.**   
+
+They can only have simple computable properties (no lateinit/delegated properties).
+```java
+@JvmInline
+value class Name(val s: String) {
+    init {
+        require(s.length > 0) { }
+    }
+
+    val length: Int
+        get() = s.length
+
+    fun greet() {
+        println("Hello, $s")
+    }
+}
+
+fun main() {
+    val name = Name("Kotlin")
+    name.greet() // method `greet` is called as a static method
+    println(name.length) // property getter is called as a static method
+}
+
+// inheritance
+interface Printable {
+    fun prettyPrint(): String
+}
+
+@JvmInline
+value class Name(val s: String) : Printable {
+    override fun prettyPrint(): String = "Let's $s!"
+}
+
+fun main() {
+    val name = Name("Kotlin")
+    println(name.prettyPrint()) // Still called as a static method
+}
+```
+
+
+### Inline classes vs type aliases
+
+inline classes introduce a truly new type, contrary to type aliases which only introduce an alternative name (alias) for an existing type:
+```typescript 
+typealias NameTypeAlias = String
+
+@JvmInline
+value class NameInlineClass(val s: String)
+
+fun acceptString(s: String) {}
+fun acceptNameTypeAlias(n: NameTypeAlias) {}
+fun acceptNameInlineClass(p: NameInlineClass) {}
+
+fun main() {
+    val nameAlias: NameTypeAlias = ""
+    val nameInlineClass: NameInlineClass = NameInlineClass("")
+    val string: String = ""
+
+    acceptString(nameAlias) // OK: pass alias instead of underlying type
+    acceptString(nameInlineClass) // Not OK: can't pass inline class instead of underlying type
+
+    // And vice versa:
+    acceptNameTypeAlias(string) // OK: pass underlying type instead of alias
+    acceptNameInlineClass(string) // Not OK: can't pass underlying type instead of inline class
+}
+```
+
+### Inline classes and delegation
+
+[Inline classes and delegation](https://kotlinlang.org/docs/inline-classes.html#inline-classes-and-delegation)
