@@ -3,16 +3,16 @@
 - [Stream](#stream)
   - [Reference](#reference)
   - [Arrays to Streams](#arrays-to-streams)
-    - [`Arrays.asList(T ...e).stream()`](#arraysaslistt-estream)
+    - [`Arrays.asList(T ...e)`](#arraysaslistt-e)
     - [`Arrays.stream(T[] arr)`](#arraysstreamt-arr)
-      - [`object[]` to stream](#object-to-stream)
-      - [primitive type array to stream](#primitive-type-array-to-stream)
+      - [`object[]`](#object)
+      - [primitive type array](#primitive-type-array)
     - [guava libraries `Ints.asList(T ...t)`](#guava-libraries-intsaslistt-t)
   - [Stream.of](#streamof)
-  - [String to Stream](#string-to-stream)
+  - [String type to Stream](#string-type-to-stream)
   - [IntStream,DoubleStream,LongStream](#intstreamdoublestreamlongstream)
     - [boxed()](#boxed)
-  - [for loop](#for-loop)
+  - [Stream's for loop](#streams-for-loop)
     - [Iterate](#iterate)
     - [range & rangeClosed](#range--rangeclosed)
   - [`static <T> Stream<T> generate(Supplier<T> s)`](#static-t-streamt-generatesuppliert-s)
@@ -24,14 +24,14 @@
     - [`all/none/any-Match`](#allnoneany-match)
     - [Collectors Methods](#collectors-methods)
       - [joining](#joining)
-    - [toMap, toList, toSet](#tomap-tolist-toset)
-    - [counting](#counting)
-    - [maxBy(fn)](#maxbyfn)
-    - [summing---, average---, summarizing---](#summing----average----summarizing---)
-    - [groupingBy](#groupingby)
-    - [groupingBy(.... , Collectors.groupingBy(...))](#groupingby--collectorsgroupingby)
-    - [Collectors.partitioningBy(...)](#collectorspartitioningby)
-    - [Collectors.reducing(...)](#collectorsreducing)
+      - [toMap, toList, toSet](#tomap-tolist-toset)
+      - [counting](#counting)
+      - [maxBy & minBy](#maxby--minby)
+      - [summing---, average---, summarizing---](#summing----average----summarizing---)
+      - [groupingBy](#groupingby)
+      - [groupingBy(.... , Collectors.groupingBy(...))](#groupingby--collectorsgroupingby)
+      - [Collectors.partitioningBy(...)](#collectorspartitioningby)
+      - [Collectors.reducing(...)](#collectorsreducing)
   - [Exclude Null Element (`Objects::nonNull`)](#exclude-null-element-objectsnonnull)
   - [Order of intermediate operations](#order-of-intermediate-operations)
   - [Reusing Stream](#reusing-stream)
@@ -50,7 +50,9 @@
 - **[Tony Blog](http://blog.tonycube.com/2015/10/java-java8-3-stream.html)**
 - [flatMap](https://mkyong.com/java8/java-8-flatmap-example/)  
 - **[Java 8 Stream](https://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/)**
-- [foreach](https://stackoverflow.com/questions/38021061/how-to-use-if-else-logic-in-java-8-stream-foreach)
+- [foreach](https://stackoverflow.com/questions/38021061/how-to-use-if-else-logic-in-java-8-stream-foreach)   
+- [Java DoubleStream – A Complete Guide](https://javadevcentral.com/java-doublestream-a-complete-guide)   
+- [OPTIONAL／STREAM 的 FLATMAP](https://openhome.cc/zh-tw/java/functional-api/flatmap/)
 
 **Stream API大量使用Java 8的lambda表達式來達到函式程式設計(Functional Programming)與流式介面(Fluent Interfaces)的寫法**
 ```java 
@@ -71,56 +73,51 @@ e.g. Collection                          e.g. Predicate<? super T> predicate    
                                               distinct()                                    allMatch()
                                               ...                           ...
 ```
-1. Source : Usually is Collection or Array
-2. intermediate OPs **(return a new Stream when lazy-execution each method is called)**
-    - 中間操作的結果會返回新的Stream，所以能繼續更多的中間操作。中間操作是懶執行(lazy-executing)，**也就是執行到中間操作時並不會真的被執行，只有到終端操作被執行時前面的中間操作才會開始執行**
-3. terminal Ops 終端操作遍歷前面中間操作的Stream並產生結果並結束整個管線操作。產生的結果可能是一個新的集合或只是對來源發生副作用
-
-
+1. Source : Usually is **Collection** or **Array**.
+2. intermediate OPs (lazy-executing) : **(return a new Stream when lazy-execution each method is called)**
+    - 中間操作的結果會返回新的Stream，所以能繼續更多的中間操作。中間操作是懶執行(lazy-executing)，**也就是執行到中間操作時並不會真的被執行，只有到終端操作被執行時前面的中間操作才會開始執行(類似訂閱概念)**。
+3. terminal Ops : **遍歷**前面intermediate OPs產生結果並結束整個管線操作。產生的結果可能是一個新的集合或只是對來源發生Side Effect。
 ## Arrays to Streams
-### `Arrays.asList(T ...e).stream()`
+### `Arrays.asList(T ...e)`
 
-`asList` method is **immutable**
-```java
-public static <T> List<T> asList(T ...e); // immutable 
-```
+- `asList` method is **immutable**
 
-initializer
-```java
-int arr[] = {1,2,3,4,5,6,7};
-List intList = Arrays.asList(arr);
-
-// Array has Object, not primitives 
-List<Integer> list = Arrays.asList(1,2,3);
-// new object[]{T ...t}
-List<Integer> list = Arrays.asList(new Integer[] {1,2,3});
-```
-
-The following code wont compile
+You cant new primitive array directly within asList
 ```java
 List<Integer> list = Arrays.asList(new int[] {1,2,3});
 ```
-- The primitive to wrapper coercion (ie. `int[]` to `Integer[]`) is not built into the language.      
-As a result, each primitive type would have to be handled as it's own overloaded method, which is what the commons package does. i.e. `public static List<Integer> asList(int i...);`
+The primitive to wrapper coercion (ie. `int[]` to `Integer[]`) is not built into the language.  
+As a result, each primitive type would have to be handled as it's own overloaded method, which is what the commons package does.  
+```java 
+// Array has Object, not primitives 
+// public static List<Integer> asList(int i...);
+List<Integer> toList = Arrays.asList(1,2,3);
 
-streaming
-```java
-Stream<String> stream1 = Arrays.asList("a", "b", "c").stream();
+// asList(object[])
+int arr[] = {1,2,3};
+List<Integer> toIntegerList = Arrays.asList(arr);
+// new object[]{T ...t}
+List<Integer> list = Arrays.asList(new Integer[] {1,2,3});
+
+Stream<Integer> stream1 = Arrays.asList(1,2,3).stream();
 ```
 
 ### `Arrays.stream(T[] arr)`
 
-#### `object[]` to stream
+#### `object[]`
+
 ```java
 // Object[] to stream
 Stream<String> stream1 = Arrays.stream(new String[10]);
 Stream<String> stream2 = Arrays.stream(new String[] {"a", "b", "c"});
+
+// files
 Stream<String> stream3 = new BufferedReader(new FileReader(new File("hello.txt"))).lines();
 ```
 
-#### primitive type array to stream
+#### primitive type array
 
-Primitive type to stream required `boxed()`
+Steam Primitive type required `boxed()`
 ```java
 int[] arr = {1,2,3};
 
@@ -154,10 +151,15 @@ List<Integer> Ints.asList(arr);
 static <T> Stream<T> of(T... values)
 static <T> Stream<T> of(T t)
 
+Stream<Student> stdStream = Stream.of(
+    new Student(1, "a", 18, "male", 88), 
+    new Student(1, "a", 18, "male", 88)
+);
+
 Stream<String> streamOf = Stream.of("1", "3", "4", "5", "7","", "9");
 ```
 
-## String to Stream
+## String type to Stream
 
 ```java
 String testString = "String";
@@ -173,14 +175,18 @@ transform `TStream` to a `Stream<T>`
 
 ```java 
 DoubleStream.of(1.0, 5.0, 10.0) // DoubleStream
-        .boxed() // stream<Double>
-        .map(Double::intValue) // to Int
+        .boxed()                // stream<Double>
+        .map(Double::intValue)  // to Int
         .forEach(System.out::println);
 ```
 
-## for loop 
+## Stream's for loop 
 
 ### Iterate
+
+```java
+Iterate(i, i -> i + 1).limit(x)
+```
 
 java 8
 `static <T> Stream<T> iterate(T seed, UnaryOperator<T> f)`
@@ -189,6 +195,7 @@ java 8
 Stream.iterate(0, n -> n + 1) // for(int n = 0 ; n <10 ; n + 1)
             .limit(10)
             .forEach(x -> System.out.print(x + " "));
+
 //0 1 2 3 4 5 6 7 8 9 10
 
 DoubleStream
@@ -292,31 +299,44 @@ Stream<T> peek(Consumer<? super T> action)
 long count()
 
 // filter
-Stream
-    .of("d2", "a2", "b1", "b3", "c")
-    .filter(s -> {
-        System.out.println("filter: " + s);
-        return true;
-    }).forEach(s -> System.out.println("forEach: " + s));
+List<String> s = Arrays.asList(
+                new String("d2"),
+                new String("d3"),
+                new String("b1"),
+                new String("b3"),
+                new String("c"));
+
+s.stream().filter(
+        (a) -> a.equals("b3")).forEach(System.out::println);
+// if filter with { ... } then you must write if & else
+Stream.of("d2", "a2", "b1", "b3", "c")
+        .filter((o) -> {
+            // o : string type 
+            if (o.equals("b3")){
+                return true;
+            }else return false;
+         }).forEach(a -> System.out.println(o.getClass().getName()));
+
 
 List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-
+// findFirst & findAny
 Integer findFirst = list.stream().findFirst().get(); //1
 Integer findAny = list.stream().findAny().get(); //1
 
+// count
 long count = list.stream().count(); //5
 
+// max & min 
 Integer max = list.stream().max(Integer::compareTo).get(); //5
 Integer min = list.stream().min(Integer::compareTo).get(); //1　　
 
 // peek same function as map but return void
 Stream<Student> stdStream = Stream.of(
-                new Student(1, "a", 19, "male", 88), 
-                new Student(2, "a", 18, "female", 90));
-
-stdStream.peek(o -> o.setAge(100)).forEach(System.out::println); // all student's age are 100
+                    new Student(1, "a", 19, "male", 88), 
+                    new Student(2, "a", 18, "female", 90));
+List<Student> stds = stdStream.peek(o -> o.setAge(100)).collect(Collectors.toLis());
+// all student's age are 100
 ```
-
 
 ## Terminal Operation
 ### `all/none/any-Match`
@@ -356,7 +376,7 @@ So instead of mapping all elements of the stream, map will be called as few as p
 String a = Stream.of(3, 2, 3).map(String::valueOf).collect(Collectors.joining("," , "prefix- ", " -suffix")); 
 // prefix- 3,2,3 -suffix
 ```
-### toMap, toList, toSet
+#### toMap, toList, toSet
 
 ```java
 /**
@@ -377,20 +397,56 @@ Set<Integer> ageSet = stdList.stream().map(Student::getAge).collect(Collectors.t
 // [20, 10]
 ```
 
-### counting
+#### counting
+
+same as `count()`
 ```java
 Long count = list.stream().collect(Collectors.counting()); // 3
 ```
+-
+#### maxBy & minBy
 
-### maxBy(fn)
+- [source code](https://www.techiedelight.com/collectors-minby-maxby-method-java/)
 
 Find max by given function
 
 ```java
-Integer maxAge = list.stream().map(Student::getAge).collect(Collectors.maxBy(Integer::compare)).get(); // 20
+Payroll p1 = new Payroll("Employee1", 115000);
+Payroll p2 = new Payroll("Employee2", 100000);
+Payroll p3 = new Payroll("Employee3", 120000);
+List<Payroll> salaries = Arrays.asList(p1, p2, p3);
+
+// get a person with the minimum income
+Payroll min = salaries.stream()
+                    .collect(Collectors.minBy(
+                        Comparator.comparingInt(Payroll::getIncome)))
+                    .get();
+
+System.out.println("Employee with minimum Salary " + min);
+// get a person with the maximum income
+Payroll max = salaries.stream()
+                    .collect(Collectors.maxBy(
+                        Comparator.comparingInt(Payroll::getIncome)))
+                    .get();
+
+System.out.println("Employee with maximum Salary " + max);
+
+// get a person with the minimum income
+Payroll min = salaries.stream()
+                //                       current min
+                //                        '   
+                .collect(Collectors.minBy((x, y) -> x.getIncome() - y.getIncome()))
+                .get();
+ 
+// get a person with the maximum income
+Payroll max = salaries.stream()
+                //                         current max
+                //                         '
+                .collect(Collectors.maxBy((x, y) -> x.getIncome() - y.getIncome()))
+                .get();
 ```
 
-### summing---, average---, summarizing---
+#### summing---, average---, summarizing---
 
 Double/Int/Long
 ```java
@@ -407,7 +463,7 @@ System.out.println("count:" + statistics.getCount() +
                    ",average:" + statistics.getAverage());
 ```  
 
-### groupingBy
+#### groupingBy
 
 ```java
 //3 apple, 2 banana, others 1
@@ -427,15 +483,6 @@ Map<BigDecimal, List<Item>> groupByPriceMap =
 	items.stream().collect(Collectors.groupingBy(Item::getPrice));
 System.out.println(groupByPriceMap);
 
-// group by price, uses 'mapping' to convert List<Item> to Set<String>
-Map<BigDecimal, Set<String>> result =
-        items.stream().collect(
-                Collectors.groupingBy(Item::getPrice,
-                        Collectors.mapping(Item::getName, Collectors.toSet())
-                )
-        );
-System.out.println(result);
-
 // output
 	19.99=[
 			Item{name='banana', qty=20, price=19.99}, 
@@ -452,6 +499,15 @@ System.out.println(result);
 			Item{name='apple', qty=20, price=9.99}
 		]
 
+
+// group by price, uses 'mapping' to convert List<Item> to Set<String>
+Map<BigDecimal, Set<String>> result =
+        items.stream().collect(
+                Collectors.groupingBy(Item::getPrice,
+                        Collectors.mapping(Item::getName, Collectors.toSet())
+                )
+        );
+System.out.println(result);
 //group by + mapping to Set
 {
 	19.99=[banana], 
@@ -459,7 +515,7 @@ System.out.println(result);
 	9.99=[papaya, apple]
 ```
 
-### groupingBy(.... , Collectors.groupingBy(...))
+#### groupingBy(.... , Collectors.groupingBy(...))
 ```java
 Map<String, Map<Integer, List<Student>>> typeAgeMap = 
         students.stream().collect(Collectors.groupingBy(Student::getSex, Collectors.groupingBy(Student::getAge)));
@@ -485,12 +541,12 @@ Map<String, Map<Integer, List<Student>>> typeAgeMap =
 ```  
 
 
-### Collectors.partitioningBy(...)
+#### Collectors.partitioningBy(...)
 ```java
 Map<Boolean, List<Student>> partMap = 
     list.stream().collect(Collectors.partitioningBy(v -> v.getAge() >= 18));
 ```
-###  Collectors.reducing(...)
+####  Collectors.reducing(...)
 ```java
 Integer allAge = list.stream().map(Student::getAge).collect(Collectors.reducing(Integer::sum)).get(); //40　　
 ```
@@ -505,7 +561,7 @@ customerList.add(new Customer(2L, "Ken"));
 customerList.add(new Customer(3L, null));
 customerList.add(null);
 customerList.add(new Customer(5L, null));
-customerList.add(new Customer(6L, "Zyan"));
+customerList.add(new Customer(6L, "Zan"));
 
 List<String> nameList1 = customerList.stream()
         // .filter(e -> Objects.nonNull(e))
@@ -514,7 +570,7 @@ List<String> nameList1 = customerList.stream()
         .filter(Objects::nonNull) // filter object.getName == null
         .collect(Collectors.toList());
 
-System.out.println(nameList1); // [Ryu, Ken, Zyan]
+System.out.println(nameList1); // [Ryu, Ken, Zan]
 ```
 
 `Objects.nonNull(Object obj)`相當於`obj != null`，原始碼如下。
@@ -671,7 +727,6 @@ class Foo {
 
 class Bar {
     String name;
-
     Bar(String name) {
         this.name = name;
     }
@@ -690,7 +745,7 @@ foos.forEach(f ->
         .forEach(i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name))));
 ```
 
-flatMap accepts a function which has to return a stream of objects `stream<object>`.    
+`flatMap` accepts a function which has to return a stream of objects `stream<object>`.  
 So in order to resolve the bar objects of each foo, we just pass the appropriate function:
 ```java
 // stream<foo>
@@ -741,11 +796,9 @@ class Inner {
 In order to resolve the inner string foo of an outer instance you have to add multiple `null` checks to prevent possible `NullPointerExceptions`:
 ```java
 Outer outer = new Outer();
-
 if (outer != null && 
     outer.nested != null && 
     outer.nested.inner != null) {
-        
         System.out.println(outer.nested.inner.foo);
 }
 ```
@@ -871,7 +924,7 @@ The following example function compares both persons ages in order to return the
 ```java
 persons.stream().reduce(
     (p1, p2) -> p1.age > p2.age ? p1 : p2)
-    .ifPresent(System.out::println);    // Pamela
+    .ifPresent(System.out::println); 
 ```
 
 This reduce method accepts both an identity value (initializer) and a BinaryOperator accumulator. 
@@ -884,6 +937,7 @@ This method can be utilized to construct a new Person with the aggregated names 
 Person result =
     persons
         .stream()
+        //      initializer    
         .reduce(new Person("", 0), (p1, p2) -> {
             p1.age += p2.age;
             p1.name += p2.name;
@@ -893,24 +947,15 @@ Person result =
 System.out.format("name=%s; age=%s", result.name, result.age);
 ```
 
+### accumulator & combiner
+[Why is a combiner needed for reduce method that converts type in java 8](https://stackoverflow.com/questions/24308146/why-is-a-combiner-needed-for-reduce-method-that-converts-type-in-java-8)
+
+
 The third reduce method accepts three parameters: an identity value, a BiFunction accumulator and a combiner function of type BinaryOperator. 
 ```java
 <U> U reduce​(U identity, BiFunction<U,? super T,U> accumulator, BinaryOperator<U> combiner)
 ```
 
-Since the identity values type is not restricted to the Person type, we can utilize this reduction to determine the sum of ages from all persons:
-```java
-Integer ageSum = persons
-    .stream()
-    .reduce( 0 , 
-           (sum, p) -> sum += p.age, 
-           (sum1, sum2) -> sum1 + sum2);
-System.out.println(ageSum);  
-```
-
-### accumulator & combiner
-
-[Why is a combiner needed for reduce method that converts type in java 8](https://stackoverflow.com/questions/24308146/why-is-a-combiner-needed-for-reduce-method-that-converts-type-in-java-8)
 ```java
 sequential stream
 
@@ -927,7 +972,7 @@ parallel stream
 ```java
 Integer ageSum = persons
     .stream()
-    .reduce(0,
+    .reduce(0,  // <-- initializer
         (sum, p) -> {
             System.out.format("accumulator: sum=%s; person=%s\n", sum, p);
             return sum += p.age;
