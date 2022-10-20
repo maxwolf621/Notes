@@ -4,7 +4,7 @@
 [techiedelight - clone method](https://www.techiedelight.com/clone-method-in-java/)
 
 ## Shallow Copy (field-by-field copy)
-Shallow Copy llocates a NEW, UNINITIALIZED Object and copy all fields (class' attributes) from the original object in it.  
+Shallow Copy locates a NEW, UNINITIALIZED Object and copy all fields (class' attributes) from the original object in it.  
 
 **But if the field is a reference to an object, as it copies the reference, hence referring to the same object as an original object does.** 
 > **The referenced objects are shared, so if one object is modified, the change is visible in the other.**  
@@ -25,7 +25,7 @@ An alternative to shallow copy is a deep copy, where **new objects are created f
 2. Clone method
 3. Serialization/Utils
 
-### Copy Consturctor
+### Copy Constructor
 
 ```java
 class Student
@@ -258,12 +258,13 @@ Student clone = (Student) SerializationUtils.deserialize(bytes);
 ```
 
 ## Java Garbage collection 
+
 在Java中是一個程式負責自動執行記憶體管理
 - 利用Garbage collection可以找到沒有用的物件(Object)和刪除它們，從而釋放記憶體。
 - **Garbage collection只發生在Heap記憶體區間**
 
-當物件再沒有被參照(Reference)則會觸發Garbage collection的機制,reallocate Object所佔用的記憶體
-> 如果沒有重新分配沒用的物件的記憶體，就會出現Memory Leak。最終導致系統的記憶體不足
+當物件再沒有被參照(Reference)則會觸發Garbage collection的機制,reallocate Object所佔用的記憶體   
+如果沒有重新分配沒用的物件的記憶體，就會出現Memory Leak。最終導致系統的記憶體不足   
 
 For Example
 ```java

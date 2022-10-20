@@ -10,7 +10,8 @@
   - [Order of Static](#order-of-static)
   - [Top Level Class](#top-level-class)
 
-A `static` Field is **shared by everyone in this class or it's subclass**   
+A `static` Field is **shared by everyone in this class or it's subclass** 
+  
 `Static` method or member are bind directly with Class   
 ```java
 class A{
@@ -49,6 +50,7 @@ public class Employee{
 }
 
 // companyName is only created one time 
+// and is shared by object of Employee
 public class Employee{
     int age;
     int sex;

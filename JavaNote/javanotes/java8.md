@@ -6,13 +6,15 @@
   - [Default methods for interfaces](#default-methods-for-interfaces)
   - [lambda](#lambda)
   - [Syntax of Lambda Expressions](#syntax-of-lambda-expressions)
+    - [&&](#)
+    - [A single expression/A statement block.](#a-single-expressiona-statement-block)
+    - [Multiple Line](#multiple-line)
     - [lambda expression as parameter](#lambda-expression-as-parameter)
   - [函數合成](#函數合成)
   - [Method References (`Class::Method`)](#method-references-classmethod)
     - [Constructor References](#constructor-references)
   - [Lambda Scopes](#lambda-scopes)
     - [Accessing fields and static variables](#accessing-fields-and-static-variables)
-    - [Accessing Default Interface Methods](#accessing-default-interface-methods)
   - [Built-in Functional Interfaces](#built-in-functional-interfaces)
     - [Predicates(`Predicate<T>`)](#predicatespredicatet)
     - [Function<T,R>](#functiontr)
@@ -50,10 +52,15 @@ Converter<String,Integer> toInteger =
                 return Integer.valueOf(from);
             }
         };
+
 // Lambda
+//          declare F,T                         declare arg   implementation
+//          '-------'                            '            '
 Converter<String, Integer> convertToInteger =  (from) -> Integer.valueOf(from);
 
-Integer converted = converter.convertToInteger("123");
+// '- return type
+//        '--- res
+Integer converted = converter.convertToInteger( "123");
 System.out.println(converted);    // 123
 ```
 
@@ -77,27 +84,44 @@ Formula formula = new Formula() {
 };
 
 // lambda
+//                         '---- calculate implementation
 Formula formula = (a) -> return sqrt(a*100);
 
 formula.calculate(100);     // 100.0
 formula.sqrt(16);           // 4.0
 ```
+- Interface `Formula` defines a default method `sqrt` which can be accessed from each formula instance including anonymous objects. 
+
+Default methods **cannot** be accessed from within lambda expressions.   
+The following code does not compile:
+```java
+Formula formula = (a) -> sqrt(a * 100);
+```
 
 ## lambda 
 
-**Lambda 表示式本身是中性的，它本身無關乎函式介面的名稱，它只關心方法簽署，但忽略方法名稱**
+Single Method in FunctionalInterface can be overridden via lambda.   
+> Lambda 表示式本身是中性的，它本身無關乎函式介面的名稱，**它只關心方法簽署，但忽略方法名稱**
 
-```java 
-// sum of x, y
-(int x, int y) -> x + y
+```java
+// single line
+( /** parameters **/ ) -> /** implementation **/
 
-// no parameter return 42 directly
-() -> 42
-
+// ==== ex ====
+() -> 42 // no parameter return 42 directly
 // it's ok without return value 
 (String s) -> { out.println(s); }
+(int x, int y) -> x + y
 
+// multiple line
+(/** parameters **/) -> {
+    
+    /** implementation **/
 
+    return dataType;
+}
+
+// ==== ex ====
 (Integer x) -> {
     Integer result;
     //...other statements
@@ -119,7 +143,7 @@ Collections.sort(names,
                     }
                 });
 
-// with lambda expr
+// lambda 
 Collections.sort(names, (String a, String b) -> {
     return b.compareTo(a);
 });
@@ -131,19 +155,19 @@ A lambda expression consists of the following:
 You can omit the data type of the parameters in a lambda expression.    
 In addition, you can omit the parentheses `(param1, param2, ...)` if there is only one parameter.  
 
-For example, the following lambda expression is also valid:
+### &&
+
 ```java
 p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
 ```
 
-A body, which consists of a single expression or a statement block. 
+### A single expression/A statement block. 
 ```java
 p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
 ```
+- If you specify a single expression, then the Java runtime evaluates the expression and then returns its value. 
 
-If you specify a single expression, then the Java runtime evaluates the expression and then returns its value. 
-
-Alternatively, you can use a `return` statement:
+### Multiple Line
 ```java 
 p -> {
     return p.getGender() == Person.Sex.MALE
@@ -169,7 +193,6 @@ class A {
 }
 
 import java.util.function.IntConsumer;
-
 class B {
     public void dansMethod(int i, IntConsumer aMethod) {
         /* 
@@ -233,14 +256,17 @@ Converter<String, Integer> converter = Integer::valueOf;
 Integer converted = converter.convert("123");
 System.out.println(converted);   // 123
 
+
 class Something {
     String startsWith(String s) {
         return String.valueOf(s.charAt(0));
     }
 }
 Something something = new Something();
+
 // Converter<String, String> converter = (s) -> String.valueOf(s.charAt(0))
 Converter<String, String> converter = something::startsWith;
+
 String converted = converter.convert("Java");
 System.out.println(converted);    // "J"
 ```
@@ -261,10 +287,8 @@ class Person {
         this.lastName = lastName;
     }
 }
-```
 
-Next we specify a person factory interface to be used for creating new persons:
-```java
+// Next we specify a person factory interface to be used for creating new persons:
 interface PersonFactory<P extends Person> {
     P create(String firstName, String lastName);
 }
@@ -298,6 +322,7 @@ The following code is also valid:
 ```java
 int num = 1;
 Converter<Integer, String> stringConverter = (from) -> String.valueOf(from + num);
+
 stringConverter.convert(2); // 3
 ```
 - `num` must be implicitly `final` for the code to compile. 
@@ -334,17 +359,6 @@ class Lambda4 {
     }
 }
 ```
-
-### Accessing Default Interface Methods
-
-Remember the formula example from the first section? Interface `Formula` defines a default method `sqrt` which can be accessed from each formula instance including anonymous objects. This does not work with lambda expressions.
-
-Default methods **cannot** be accessed from within lambda expressions.   
-The following code does not compile:
-```java
-Formula formula = (a) -> sqrt(a * 100);
-```
-
 
 ## Built-in Functional Interfaces
 

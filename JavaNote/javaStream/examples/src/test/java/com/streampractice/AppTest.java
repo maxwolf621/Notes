@@ -19,6 +19,36 @@ import org.junit.Test;
  */
 public class AppTest 
 {
+    static int proc(int i){
+        try{
+            if(i == 0 ){
+                System.out.println("----Try Block----");  // 1
+                throw new NullPointerException("demo");    // 2
+            }else{
+                return i;
+            }
+        }catch(NullPointerException e){
+            System.out.println("----Catch Block----");  // 1
+            System.out.println("Caught inside proc");  // 1
+            throw e;
+        }finally{
+            System.out.println("----Finally-Block----");  // 1
+            i = 7749;
+        }
+    }
+
+    @Test public void testException(){
+        int i = 0;
+        try{
+            i = proc(i);
+        }catch(NullPointerException e){
+            System.out.println("Re-caught: "+e);       //3 
+        }
+        System.out.println("Result i : "+ i);       //3 
+
+    }
+
+
     @Test
     public void streamTest(){
        Stream<String> s = IntStream.range(1, 4) // IntStream

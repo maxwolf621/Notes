@@ -349,6 +349,7 @@ Map<Tuple, List<BlogPost>> postsPerTypeAndAuthor =
     posts.stream()
         .collect(groupingBy(
             post -> new Tuple(post.getType(), post.getAuthor())));
+
 ```
 
 
@@ -371,14 +372,30 @@ Map<BlogPost.AuthPostTypesLikes, List<BlogPost>> postsPerTypeAndAuthor = posts.s
         post.getType(),
         post.getLikes())));
 
+Map<BlogPost.AuthPostTypesLikes, List<BlogPost>> postsPerTypeAndAuthor = posts.stream()
+  .collect(groupingBy(post -> new BlogPost.AuthPostTypesLikes(post.getAuthor(), post.getType(), post.getLikes())));
 
 Map<BlogPostType, String> postsPerType = posts.stream()
   .collect(groupingBy(BlogPost::getType, 
-  mapping(BlogPost::getTitle, joining(", ", "Post titles: [", "]"))));\
+            mapping(BlogPost::getTitle, joining(", ", "Post titles: [", "]"))));\
 
 EnumMap<BlogPostType, List<BlogPost>> postsPerType = posts.stream()
   .collect(groupingBy(BlogPost::getType, 
   () -> new EnumMap<>(BlogPostType.class), toList()));
+
+Map<BlogPostType, IntSummaryStatistics> likeStatisticsPerType = posts.stream()
+  .collect(groupingBy(BlogPost::getType, 
+  summarizingInt(BlogPost::getLikes)));
+Map<BlogPostType, Integer> likesPerType = posts.stream()
+  .collect(groupingBy(BlogPost::getType, summingInt(BlogPost::getLikes)));
+Map<BlogPostType, Double> averageLikesPerType = posts.stream()
+  .collect(groupingBy(BlogPost::getType, averagingInt(BlogPost::getLikes)));
+Map<BlogPostType, Set<BlogPost>> postsPerType = posts.stream()
+  .collect(groupingBy(BlogPost::getType, toSet()));
+
+Map<BlogPostType, Optional<BlogPost>> maxLikesPerPostType = posts.stream()
+  .collect(groupingBy(BlogPost::getType,
+  maxBy(comparingInt(BlogPost::getLikes))));
 
 int maxValLikes = 17;
 Map<String, BlogPost.TitlesBoundedSumOfLikes> postsPerAuthor = posts.stream()
@@ -389,6 +406,19 @@ Map<String, BlogPost.TitlesBoundedSumOfLikes> postsPerAuthor = posts.stream()
     int likes = (u2.boundedSumOfLikes() > maxValLikes) ? maxValLikes : u2.boundedSumOfLikes();
     return new BlogPost.TitlesBoundedSumOfLikes(u1.titles().toUpperCase() + " : " + u2.titles().toUpperCase(), u1.boundedSumOfLikes() + likes);
   }));
+
+Map<String, BlogPost.PostCountTitlesLikesStats> postsPerAuthor = posts.stream()
+  .collect(groupingBy(BlogPost::getAuthor, collectingAndThen(toList(), list -> {
+    long count = list.stream()
+      .map(BlogPost::getTitle)
+      .collect(counting());
+    String titles = list.stream()
+      .map(BlogPost::getTitle)
+      .collect(joining(" : "));
+    IntSummaryStatistics summary = list.stream()
+      .collect(summarizingInt(BlogPost::getLikes));
+    return new BlogPost.PostCountTitlesLikesStats(count, titles, summary);
+  })));
 ```
 
 ## maxBy(Comparator#)/minBy(Comparator#) & counting

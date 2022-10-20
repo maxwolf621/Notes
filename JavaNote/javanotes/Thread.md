@@ -11,7 +11,7 @@
     - [implements `Callable<T>`](#implements-callablet)
   - [Thread Methods](#thread-methods)
     - [`Thread#setDaemon(true)`](#threadsetdaemontrue)
-    - [`Thread#sleep()`](#threadsleep)
+    - [`Thread#sleep(millisec)`](#threadsleepmillisec)
     - [`Thread#yield()`](#threadyield)
     - [`Thread#interrupt()`](#threadinterrupt)
     - [Interrupt specific thread](#interrupt-specific-thread)
@@ -45,7 +45,7 @@
     - [Mutual Exclusion Lock](#mutual-exclusion-lock)
     - [非阻塞(non-block)同步](#非阻塞non-block同步)
     - [Compare-and-Swap，CAS](#compare-and-swapcas)
-    - [ABA issues](#aba-issues)
+    - [ABA issues of multi-threaded computing](#aba-issues-of-multi-threaded-computing)
     - [Without `Synchronize`](#without-synchronize)
       - [Stack Closure](#stack-closure)
       - [Stack Local Storage](#stack-local-storage)
@@ -55,27 +55,23 @@
 ## Program, Process and Thread  
 [Program, Process and Thread](https://hackmd.io/@KaiChen/B1J-x9Akd) 
 
-![圖 2](images/f4ecbb48fe611fafdb387bda7e635e0e731160ab8628f87c0718d917de2ab4ae.png)  
+![圖 2](../images/f4ecbb48fe611fafdb387bda7e635e0e731160ab8628f87c0718d917de2ab4ae.png)  
 
 - Program(相當於物件導向中的Class)  
-**程式碼的集合**,用以解決特定的問題  
+**程式碼的集合**，用以解決特定的問題  
 
 - Process(相當於Object)  
-**由Program所產生的執行個體,一個Program可以同時執行多次,OS給予執行程式的資源與空間的排程單位**,一個Program產生多個Process
-  - 一個Memory Space。相當於Object的variables,不同Process的Memory Space也不同,彼此看不到對方的Memory Space
+相當於Object的variable，**由Program所產生的執行個體,一個Program可以同時執行多次,OS給予執行程式的資源與空間的排程單位**，一個Program產生多個Process
+  - 一個Memory Space。  
+  **，不同Process的Memory Space也不同，彼此看不到對方的Memory Space**
   - 內含一個以上的Threads
 
 - Thread 
-**Thread代表從某個起始點開始(例如 `main()` )，到目前為止所有函數的呼叫路徑，以及這些呼叫路徑上所用到的區域變數** 
-程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
-  - 每一個Thread各自擁有  
-  Stack : 紀錄Functions的**呼叫路徑**,以及這些Functions所用到的**Local Variable** 
-  還有Current CPU Status
+**代表從某個起始點開始(例如 `main()` )，到目前為止所有function的呼叫路、這些呼叫路徑上所用到的區域變數**、程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
+  - 每一個Thread各自擁有 Stack : 紀錄Functions的**呼叫路徑**，以及這些Functions所用到的**Local Variable**，還有Current CPU Status
 
-**一個Process可以有多個Thread，同一個Process內的Thread使用相同的Memory Space,但這些Thread各自擁有其Stack**   
-換句話說,Thread能透過reference存取到相同的Object(Process),但是有各自獨立的Local variables  
-
-作業系統會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換,以讓各個Thread都有機會執行
+**一個Process可以有多個Thread，同一個Process內的Thread使用相同的(HEAP)Memory Space，但這些Thread各自擁有其Stack**   
+換句話說，Thread能透過Reference存取到相同的Object(Process)，但是有各自獨立的Local variables，OS會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換，以讓各個Thread都有機會執行。
 
 ## Tips 
 1. Using synchronized blocks instead of synchronized method to decrease race condition 
@@ -88,7 +84,7 @@
 ## Java Thread Management `util.concurrent.Executors`
 
 ExecutorService 中會有專門集合工作的 Queue，並依照最大上限的 Thread 數量去執行依序的工作，並蒐集這些結果，開發師可以透過呼叫方法，一次性 or 需求性的取得這些結果的回傳集合，接續後續的處理動作
-![圖 1](images/d687fd157985ea32df8defc18260c132c5a33a5504c53c2f6daf43bb58c60571.png)  
+![圖 1](../images/d687fd157985ea32df8defc18260c132c5a33a5504c53c2f6daf43bb58c60571.png)  
 
 Executors Thread設定 
 ```java
@@ -128,10 +124,9 @@ public static void main(String[] args) {
 
     e.execute(n1);
     e.execute(n2);
-
     e.shutdown();
-    
-}```
+}
+```
 
 ## Threads In Java (`Runnable`, `Callable` and `Thread`)
 
@@ -198,8 +193,10 @@ public class MyCallable implements Callable<Integer> {
     }
 }
 public static void main(String[] args) throws ExecutionException, InterruptedException {
+
     MyCallable mc = new MyCallable();
     
+    // allow value to be encapsulated
     FutureTask<Integer> ft = new FutureTask<>(mc);
     
     Thread thread = new Thread(ft);
@@ -225,10 +222,10 @@ public static void main(String[] args) {
 }
 ```
 
-### `Thread#sleep()`
+### `Thread#sleep(millisec)`
 
 `Thread.sleep(millisec)`使當前正在執行的執行緒進入休眠
-- 該Method可能會拋出`InterruptedException`，因為Exception不能跨執行緒傳播回`main()`中，因此必須在本地(Local)進行處理。執行緒中拋出的其它例外也同樣需要在本地進行處理。
+- `sleep`可能會拋出`InterruptedException`，因為Exception不能跨執行緒傳播回`main()`中，因此必須在本地(Local)進行處理。執行緒中拋出的其它例外也同樣需要在本地進行處理。
 
 ```java
 public void run() {
@@ -246,7 +243,7 @@ It provides a mechanism to inform the SCHEDULER that the current thread is willi
 
 `Thread.yield()`的呼叫聲明了當前執行緒已經完成了生命周期中最重要的部分，可以切換給其它執行緒來執行。   
 
-**該`yield()`只是對執行緒調度器SCHEDULER的一個建議，而且也只是建議具有相同優先級的其它執行緒可以運行**
+**`yield()`只是對執行緒調度器SCHEDULER的一個`建議`，而且也只是`建議`具有相同優先級的其它執行緒可以運行**
 ```java
 public void run() {
     Thread.yield();
@@ -591,13 +588,13 @@ public static void main(String[] args) {
 
 ### `reentrantLock` vs `synchronized`
 
-除非需要使用 `ReentrantLock` 的高級功能，否則優先使用 `synchronized`。這是因為`synchronized`是 JVM 實現的一種鎖機制，JVM 原生地支持它，而 `ReentrantLock` 不是所有的 JDK 版本都支持。並且**使用 `synchronized` 不用擔心沒有釋放鎖而導致(死結)Dead Lock問題**，因為 JVM 會確保鎖的釋放。
+除非需要使用 `ReentrantLock` 的高級功能，否則優先使用 `synchronized`。
 
+這是因為`synchronized`是 JVM 實現的一種鎖機制，JVM 原生地支持它，而 `ReentrantLock` 不是所有的 JDK 版本都支持。
+並且**使用 `synchronized` 不用擔心沒有釋放鎖而導致(死結)Dead Lock問題**，因為 JVM 會確保鎖的釋放。
 
-ReentrantLock`為等待可中斷`，而`synchronized` 不是
+ReentrantLock`為等待可中斷`，而`synchronized` 不是。
 - 等待可中斷 **(當持有鎖的執行緒長期不釋放鎖的時候，正在等待的執行緒可以選擇放棄等待，改為處理其他事情)**
-
-
 
 `synchronized` 中的鎖是非公平的, `ReentrantLock` 默認情況下也是非公平的，但是也可以是公平的
 - Fair lock **(多個執行緒在等待同一個鎖時，必須按照申請鎖的時間順序來依次獲得鎖)**
@@ -609,7 +606,7 @@ ReentrantLock`為等待可中斷`，而`synchronized` 不是
 
 | State    |   |
 | -----    |---|
-|New           |   When instance of thread is created using `new` operator (before `threadObj.start()`)  
+|New           | When instance of thread is created using `new` operator (before `threadObj.start()`)  
 |Runnable      | When `threadObj.start()` method is called 
 |WAITING       | The thread is waiting indefinitely for another thread to perform a particular action. (The Waiting Thread is waken up by Another Thread)
 |TIMED_WAITING | The waiting thread to be waken after certain time. e.g. `.sleep()` (The thread is waiting for another thread to perform an action for up to a specified waiting time.)
@@ -797,13 +794,13 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 }
 ```
 
-![圖 5](images/52a8be3c53461923376a93d7c2b25147ccacc72aa06d70b2907d911393dbf147.png)     
+![圖 5](../images/52a8be3c53461923376a93d7c2b25147ccacc72aa06d70b2907d911393dbf147.png)     
 - 每個執行緒都維護了一個Deque，用來存儲需要執行的任務。     
 - ForkJoinPool 實現了Work-Stealing Algorithm來提高CPU的利用率。
  - **Work-Stealing Algorithm允許的執行緒從其它執行緒的Deque中竊取一個任務來執行**
 
 **Stealing的Task必須是最晚的任務，避免和Deque所屬執行緒發生Race Condition**  
-![圖 6](images/2da580acd082a865a7e84eadc702cf6cae61f7dd14861d46600969a1d1f08db0.png)  
+![圖 6](../images/2da580acd082a865a7e84eadc702cf6cae61f7dd14861d46600969a1d1f08db0.png)  
 - Thread2 從 Thread1的Deque中拿出最晚的 Task1 任務，Thread1 會拿出 Task2 來執行，這樣就避免發生Race Condition。但是如果Deque中只有一個Task時還是會發生Race Condition。
 
 ## Java Memory Model
@@ -946,13 +943,16 @@ V = 11, A = 11, B = 12
 ```
 And this time, condition is met and incremented value 12 is returned to thread 2.
 
-### ABA issues
+### ABA issues of multi-threaded computing
 
-> In multi-threaded computing, the ABA problem occurs during synchronization, when a location is read twice, has the same value for both reads, and "value is the same" is used to indicate "nothing has changed"**. However, another thread can execute between the two reads and change the value, do other work, then change the value back, thus fooling the first thread into thinking "nothing has changed" even though the second thread did work that violates that assumption**.(`value_A->value_B->value_A`) - [Wiki](https://en.wikipedia.org/wiki/ABA_problem)
+**大部分情況下 ABA issue不會影響Program的正確性，如果需要解決 ABA Issue ，改用傳統的互斥同步可能會比原子類更高效。**
+
+In multi-threaded computing, the ABA problem occurs during synchronization, when a location is read twice, has the same value for both reads, and **value is the same is used to indicate nothing has changed**.  
+
+**However, another thread can execute between the two reads and `change the value, do other work, then change the value back`, thus fooling the first thread into thinking "nothing has changed" even though the second thread did work that violates that assumption**.(`value_A->value_B->value_A`) - [Wiki](https://en.wikipedia.org/wiki/ABA_problem)
 
 J.U.C 提供了一個帶有標記的原子引用類 `AtomicStampedReference` 來解決ABA issues，它可以**通過控制Variable的版本來保證 CAS 的正確性**。   
-- **大部分情況下 ABA issue不會影響Program的正確性，如果需要解決 ABA Issue ，改用傳統的互斥同步可能會比原子類更高效。**   
-
+   
 ### Without `Synchronize`
 
 **要保證Thread Safe，並不是一定就要使用`synchronized`如果一個Method本來就不涉及資料共享(Shared Sources)，自然就無須任何同步措施去保證正確性。**

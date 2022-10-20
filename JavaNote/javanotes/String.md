@@ -2,19 +2,22 @@
 
 - [String](#string)
     - [`final` for String](#final-for-string)
-    - [`new` string()](#new-string)
+  - [String Pool And `new String(...)`](#string-pool-and-new-string)
+    - [Intern()](#intern)
   - [String Methods](#string-methods)
       - [equals(Object obj) and equalsIgnoreCase(String s)](#equalsobject-obj-and-equalsignorecasestring-s)
       - [compareTo(String s) and compareToIgnoreCase(String s)](#comparetostring-s-and-comparetoignorecasestring-s)
       - [trim()](#trim)
       - [replace(char oldChar, char newChar)](#replacechar-oldchar-char-newchar)
       - [valueOf()](#valueof)
-  - [`toCharArray` String To Chars](#tochararray-string-to-chars)
+  - [`toCharArray` and `charAt(x)`](#tochararray-and-charatx)
   - [`String`, `StringBuffer` and `StringBuilder`](#string-stringbuffer-and-stringbuilder)
   - [StringBuilder](#stringbuilder)
     - [insert and append](#insert-and-append)
-    - [char operation](#char-operation)
+    - [xxxChar operation](#xxxchar-operation)
 
+
+**Since Java 7, Each string in String Pool is stored in Stack to prevent from `OutOfMemoryError`**.   
 
 Since Java 9 `String` value is used for `byte[]` as character storage instead of `char`  
 ```java
@@ -41,69 +44,80 @@ public final class String
 }
 ```
 
+
 ### `final` for String
 
-1. Hash value  : Reduce duplicate Strings
+1. Hash Value  : Reduce duplicate Strings
 2. String Pool : It keeps all literal strings stored **at the compiler time** to reduce `new` operation
-3. Security 
+3. Security   
 4. Thread Safe
 
+## String Pool And `new String(...)`
 
-### `new` string()
+If string is created by `new`, it wont add its reference into string pool
 
-**Since Java 7, Each string in String Pool is stored in Stack to prevent from `OutOfMemoryError`**.   
-
-`new String("stringValue")` operation creates
-1. `new` creates an object in the stack
-2. At the Compiler time `stringValue` is stored in String Pool and points to new memory location.
-
+`new String("v")` operation
 ```java
-String s1 = new String("aaa");
-String s2 = new String("aaa");
-System.out.println(s1 == s2) ; // false
-
-/**
-  * To compare String value 
-  * created by new String("...")
-  * we must use {@code intern()}
-  */
-String s3 = s1.intern()     ;
-String s4 = s2.intern()     ;
-System.out.println(s3 == s4);  // true
-
-// Check String Pool first
-String s5 = "bbb";
-String s6 = "bbb";
-System.out.println(s5 == s6);  // true
+STACK               HEAP
+| ... |             | ... |
++-----+             +-----+
+| ref | - ref to -> |  v  |
++-----+             +-----+
+| ... |             | ... |
 ```
 
-|`stringName.intern()` | ( `stringName` exists in String Pool )  |  
-|    ---                                                     |--|
-|  `true` |  return the reference  |
-|  `false` | add it in pool and return reference of the string value|
+
+- [Source Code & Images](https://www.jyt0532.com/2020/03/11/runtime-data-area/)
+![圖 13](../../images/d5cbb4789af19e0c858401dda7826bf5d25df0cbd37073346b230a24bc96d20b.png)  
+```java
+String s1 = new String("aaa");
+String s2 = s1.intern(); // add "aaa" to string pool
+String s3 = "aaa"
+String s4 = "bbb";
+String s5 = new String("bbb");
+```
+
+
+```java
+String str1 = "a";
+String str2 = "b";
+String str3 = "ab";
+String str4 = str1 + str2; 
+String str5 = new String("ab");
+
+System.out.println(str5.equals(str3)); // true , content is the same
+System.out.println(str5 == str3); // false , address not the same
+
+String a = "abc"; // ADD IN STRING POOL
+String b = "abc"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
+String c = "a" + "b" + "c"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
+String d = "a" + "bc"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
+String e = "ab" + "c"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
+        
+System.out.println(a == c); // true 
+System.out.println(a == d); // true
+System.out.println(a == e); // true
+System.out.println(c == d); // true
+System.out.println(c == e); // true
+```
+
+### Intern()
+
+Method `intern()` checks first in string pool if `"ab"` exists, due to `str3` already defined `"ab"` in string pool. It then returns reference of `"ab"` in string pool to `str5` which is same reference as `str3`
+```java
+System.out.println(str5.intern() == str3);
+System.out.println(str5.intern() == str4);
+```
+
+
+
+如果其中含有變量（如f中的e）則不會進入字符串池中。但是字符串一旦進入字符串池中，就會先查找池中有無此對象。如果有此對象，則讓對象引用指向此對象。如果無此對象，則先創建此對象，再讓對象引用指向此對象。
 
 
 ## String Methods
 
 ```java
-String[] split(String regex, ?int arrayLength)
-// IN.MA.CA.LA split("\\.")
-// IN-MA-CA-LA => String[] s = {IN,MA,CA,LA}
-// -----------------------
-// IN.MA.CA.LA split("\\.", arrayLength)
-// arrayLength : 2 => {IN , MA-CA-LA}
-// arrayLength : 3 =? IN, MA, CA-LA}
-// arrayLength >= 4 {IN,MA,CA,LA}
-
-int indexOf(int ch, int ?fromIndex) // search character
-int indexOf(String str, ?int fromIndex) // search string
-int lastIndexOf(int ch, ?int startFromIndex)
-int lastIndexOf(String str, ?int startFromIndex)
-// String s = "Learn Share";
-// int output = s.indexOf("Share"); returns 6
-// int output = s.indexOf("ea",3); returns 13
-// int output = s.lastIndexOf("a"); returns 14
-
+boolean matches(String regex)
 
 String replace(char oldChar, char newChar)
 String replaceAll(String regex, String replacement)
@@ -116,13 +130,13 @@ int compareToIgnoreCase(String str)
 static String copyValueOf(char[] data)
 static String copyValueOf(char[] data, int offset, int count)
 
+String toString()
+boolean contentEquals(StringBuffer sb)
 
 // most used
 char[] toCharArray()
-String toString()
 char charAt(int index))
 
-boolean contentEquals(StringBuffer sb)
 boolean equals(Object anObject)
 boolean equalsIgnoreCase(String anotherString)
 
@@ -136,14 +150,7 @@ String substring(int beginIndex, int endIndex_Exclusive)
 //"GeeksForGeeks".substring(2, 5); // returns "eks"
 
 String toLowerCase()
-//String word1 = "HeLLo";
-//String word3 = word1.toLowerCase(); 
-// returns "hello"
-
 String toUpperCase()
-//String word1 = "HeLLo";
-//String word2 = word1.toUpperCase(); 
-// returns “HELLO”
 
 String trim() 
 // "  abc  " => "abc"
@@ -153,7 +160,6 @@ Boolean isEmpty()
 int hashCode()
 
 Boolean contains(CharSequence chars)
-boolean matches(String regex)
 
 String concat( String str)
 //String s1 = "Geeks";
@@ -163,16 +169,33 @@ String concat( String str)
 
 // PREFIX or SUFFIX
 boolean endsWith(String chars)
-boolean startsWith(String chars, ?int toffset)
+boolean startsWith(String chars, ?int offset)
 
 // search string pool first 
 // if the string does not exist
-// then create one in pool
+// then create one in pool return the reference
 String intern() 
 //String s3 = new String("1234").intern()     ;
 //String s4 = new String("1234").intern()     ;
 //System.out.println(s3 == s4); 
 
+String[] split(String regex, ?int arrayLength)
+// IN.MA.CA.LA split("\\.") => [IN,MA,CA,LA]
+// -----------------------
+// IN.MA.CA.LA split("\\.", arrayLength)
+// arrayLength : 2 => {IN , MA.CA.LA}
+// arrayLength : 3 =? IN, MA, CA.LA}
+// arrayLength >= 4 {IN,MA,CA,LA}
+
+
+int indexOf(int ch, int ?fromIndex) // search character
+int indexOf(String str, ?int fromIndex) // search string
+int lastIndexOf(int ch, ?int startFromIndex)
+int lastIndexOf(String str, ?int startFromIndex)
+// String s = "Learn Share";
+// int output = s.indexOf("Share"); returns 6
+// int output = s.indexOf("ea",3); returns 13
+// int output = s.lastIndexOf("a"); returns 14
 ```
 
 #### equals(Object obj) and equalsIgnoreCase(String s)
@@ -264,7 +287,7 @@ static String valueOf(long l)
 static String valueOf(Object obj)
 ```
 
-## `toCharArray` String To Chars
+## `toCharArray` and `charAt(x)`
 
 ```java
 String s1 ="hello";  
@@ -284,13 +307,13 @@ Use `StringBuffer` for Multiple Thread Tasks otherwise `StringBuilder`
 
 ## StringBuilder
 
-StringBuilder is not thread-safe & final type.
+StringBuilder is not thread-safe and final type
 
-These properties give us to append/insert/delete/trim to size/set its length operations ...
+It gives us to append/insert/delete/trim to size/set its length operations ...
 
 ### insert and append
 
-insert = append with offset arg
+![圖 12](../../images/1387f4eab4788913fb9db3c9570234a67d2e7a45ccbfbd1c4da8134678900516.png)  
 
 ```java
 StringBuilder append(boolean b)
@@ -320,33 +343,24 @@ StringBuilder insert(int offset, int i)
 StringBuilder insert(int offset, long l)
 StringBuilder insert(int offset, Object obj)
 StringBuilder insert(int offset, String str)
+
+StringBuilder delete(int start, int end_exclusive) // like List#clear()
 ```
 
 
 ```java
-int capacity() // Returns the current capacity.
 int length()
-
-void ensureCapacity(int minimumCapacity)
 void setLength(int newLength) // set new Length (not add new length with onl length)
 void trimToSize()  
+
+StringBuilder reverse()
+String toString() // Builder to String
 
 String substring(int start)
 String substring(int start, int end_exclusive)
 
-StringBuilder reverse()
-String toString()
-
-void getChars(int srcBegin, int srcEnd_exclusive, char[] dst, int dstBegin)
-StringBuilder str = new StringBuilder("GONE WRONG_01");
-char[] array = new char[10];
-Arrays.fill(array, '_');
-
-// get char from index 5 to 9
-// and store these char in new array starting at index 3
-str.getChars(5, 10, array, 3);
-Stream.of(array).forEach(System.out::print);
-//___WRONG___
+int capacity() // Returns the current capacity.
+void ensureCapacity(int minimumCapacity)
 
 // Index of given string
 int indexOf(String str)
@@ -356,13 +370,28 @@ int lastIndexOf(String str, int fromIndex)
 
 StringBuilder replace(int start, int end, String str)
 CharSequence subSequence(int start, int end)
-StringBuilder delete(int start, int end) // like List#clear()
 ```
 
-### char operation
+### xxxChar operation
 
 ```java
-char charAt(int index) // Returns the char value in this sequence at the specified index.
+void getChars(int srcBegin, int srcEnd_exclusive, char[] dst, int dstBegin)
+
+StringBuilder str = new StringBuilder("GONE WRONG_01");
+char[] array = new char[10];
+Arrays.fill(array, '_');
+
+// get char from index 5 to 9
+// and store these char in new array starting at index 3
+str.getChars(5, 10, array, 3);
+Stream.of(array).forEach(System.out::print);
+//___WRONG___
+```
+
+```java
+char charAt(int index) 
+// Returns the char value in this sequence at the specified index.
+
 void setCharAt(int index, char ch)
 StringBuilder deleteCharAt(int index)
 ```
