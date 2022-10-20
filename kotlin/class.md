@@ -1,7 +1,9 @@
 # class
 
 [GiveMePasS's Android惡補筆記](https://givemepass.blogspot.com/2020/02/delegated-properties.html)
-[Kotlin使用心得（九）：委託（Delegate](https://carterchen247.medium.com/kotlin%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97-%E4%B9%9D-%E5%A7%94%E8%A8%97-delegate-f219428d6ff7)
+[Kotlin使用心得（九）：委託（Delegate](https://carterchen247.medium.com/kotlin%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97-%E4%B9%9D-%E5%A7%94%E8%A8%97-delegate-f219428d6ff7)  
+[Kotlin使用心得（十一）：lateinit vs lazy](https://reurl.cc/NR3ore)
+
 
 - [class](#class)
   - [Constructor](#constructor)
