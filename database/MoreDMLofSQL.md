@@ -1,21 +1,34 @@
 # More DML of SQL
-###### tags: `DataBase`
-[TOC]
+
+- [More DML of SQL](#more-dml-of-sql)
+  - [SELECT](#select)
+  - [AS](#as)
+  - [`WHERE` syntax](#where-syntax)
+  - [`IS NULL`](#is-null)
+  - [Wildcard operation](#wildcard-operation)
+    - [WHERE + IN](#where--in)
+    - [WHERE + BETWEEN ... AND ...](#where--between--and-)
+  - [AVG(),SUM(),MIN(),MAX(),COUNT()](#avgsumminmaxcount)
+  - [SORT](#sort)
+    - [`ORDER BY`](#order-by)
+    - [`GROUP BY`](#group-by)
+  - [LIMIT](#limit)
+  - [HAVING](#having)
+  - [SELECT DISTINCT](#select-distinct)
 
 ## SELECT
 ```sql
 SELECT Attribute1, Attribute2 , ... AttributeN  # SELECT 指定 Attributes
-
 SELECT *                                
 FROM Table1, Table2, ... , TableN       # FROM 指定 tables
 WHERE CONDITION                         # REQUIRED condition for the fetch data
 GROUP BY Attribute1, ... , AttributeN   # Group the qualifizierte ressourcen
 ORDER BY Attribute1, ... , AttributeN   # ORDER
-LIMIT 
+LIMIT 1
 ```
 
 ## AS
-
+Alias Name
 ```sql
 /*
  * Alias of <pre> CourseName <pre> 
@@ -25,7 +38,7 @@ SELECT CP AS CourseName,point
 FROM Courses
 ```
 
-### Comparison Operation with `WHERE` syntax
+## `WHERE` syntax
 
 | OP  | FUNCTION  | EXAMPLE      |
 | -   |  -------  | -------------|
@@ -36,7 +49,7 @@ FROM Courses
 | >   | Large Than| Grade > 60   |
 | >=  | LargeEqual| Grade >=60   |
 
-```mysql
+```sql
 /** 
   * It would show up a table with 
   * attributes ID, CourseID and Grade 
@@ -45,10 +58,8 @@ FROM Courses
 SELECT ID,CourseID,Grade
 FROM CourseSelection
 WHERE Grade < 60
-```
 
-## Logical Comparison with `WHERE` 
-```sql
+-- Logical Comparison with `WHERE` 
 WHERE Grade >= 60 AND CourseID='C005'
 WHERE CourseID='C004' OR CourseID='C005'
 WHERE NOT Grade >=60
@@ -65,10 +76,11 @@ From CourseSelection
   * <pre> = </pre>
   */
 WHERE Grade IS NULL
-
 ```
 
-### Wildcard operation with `LIKE`, `IN(...)`, `BETWEEN ... IN ...`
+## Wildcard operation
+
+Work With `LIKE`, `IN(...)`, `BETWEEN ... IN ...`
 
 Wildcard Characters in MS Access
 | Symbol | Description| Example |
@@ -84,19 +96,19 @@ Wildcard Characters in SQL Server
 | Symbol | Description| Example |
 | -----  |  ----------| ------  |
 | `%`      |	Represents zero or more characters                        | bl`%` finds 任何bl開頭名稱   
-|`[]`      |  Represents any single character within the brackets	      | h`[oa]`t finds hot and hat only 
+|`[]`      |  Represents any single character within the brackets	      | h`[oa]`t finds `hot` and `hat` only 
 |`^`	     |  Represents any character not in the brackets              | h`[^oa]`t finds data whose name is not `hot` and `hat`
-|`-`       |  Represents a range of characters                          | c`[a-c]`t finds cat,cbt and cct
+|`-`       |  Represents a range of characters                          | c`[a-c]`t finds `cat`,`cbt` and `cct`
 | `_`      |  Represents a single character	                            | h_t finds h`[a-z]`t   
 
+### WHERE + IN
 
-### wildcard with `WHERE` attribute `LIKE ... `  
 ```sql
 WHERE Name LIKE 'J_HN'
 WHERE Name LIKE '%Y%'
 ```
 
-### `WHERE` attribute `IN(... , ... )`
+`WHERE` attribute `IN(... , ... )`
 ```sql
 /**
   * The IN operator allows you 
@@ -122,8 +134,8 @@ FROM table_name
 WHERE column_name IN (SELECT STATEMENT);
 ```
 
-### `Where` attribute `BETWEEN ... AND ...`
-```mysql
+### WHERE + BETWEEN ... AND ...
+```sql
 use ex_db;
 SELECT Name, ID, Grade
 FROM CourseSelection 

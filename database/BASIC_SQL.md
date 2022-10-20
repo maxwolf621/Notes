@@ -1,29 +1,41 @@
 # Basic SQL
 
+- [Basic SQL](#basic-sql)
+  - [DDL](#ddl)
+    - [CREATE DATABASE](#create-database)
+    - [ALTER DATABASE](#alter-database)
+    - [CREATE TABLE](#create-table)
+    - [ALTER TABLE](#alter-table)
+  - [DML](#dml)
+    - [INSERT INTO](#insert-into)
+    - [UPDATE _table SET](#update-_table-set)
+    - [DELETE FROM](#delete-from)
+  - [DCL](#dcl)
+    - [GRANT `{DML_OPS}` ON `{DATABASE}` TO `{USER}`](#grant-dml_ops-on-database-to-user)
+    - [REVOKE `{DML}` ON `{DATABASE}` FROM `{USER}`](#revoke-dml-on-database-from-user)
+
 ![](https://i.imgur.com/v6rAbRL.png)  
-#### DDL
-> To Define Structure of Database, variable's datatype and length   
-#### DML
-> To modify (manipulate) the data  
-#### DCL
-> To give authority of the users   
+
+DDL : To Define Structure of Database, variable's datatype and length     
+DML : To modify (manipulate) the data    
+DCL : To give authority of the users     
 
 ## DDL
 ![](https://i.imgur.com/SGIfZsA.png)
 
-### DataBase 
+### CREATE DATABASE
 
 To Create A Database
 ```sql
 /* Syntax*/
-create Database [IF NOT EXISTS] Name_Of_DataBase
+create Database [IF NOT EXISTS] 資料庫名稱
 /* FOR EXAMPLE */
-Create Database Courses
+create Database Courses
 ```
 
-To Alter A Database
+### ALTER DATABASE
 ```sql
-Alter Database Name_Of_Database
+Alter Database 資料庫名稱
 CHARACTER SET Encode_Name
 COLLATE Collation Name
 
@@ -32,10 +44,10 @@ Alter Database Courses
 CHARACTER SET utf8
 ```
 
-### Create Table And Attribute
+### CREATE TABLE
 
 Create A Table
-```mysql
+```sql
 Create table tableX
 (Attribute{Datatype|Domain}[NULL|NOTNULL][DEFAULT VALUE][RESTRICTION])
 
@@ -99,7 +111,7 @@ CREATE TABLE `StudentCourse` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 ```
 
-#### Alter Table's Attribute
+### ALTER TABLE
 
 with `ALTER TABLE Name_Of_TableX`, we can do   
 ```sql 
@@ -140,13 +152,13 @@ So the order of DROP is
 ## DML
 
 BASIC COMMAND   
-> - INSERT  
-> - UPDATE  
-> - DELETE  
-> - SELECT  
+> INSERT  
+> UPDATE  
+> DELETE  
+> SELECT  
 
 
-Insert values  
+### INSERT INTO 
 ```sql  
 INSERT INTO Name_OF_Table<attribute>  
 VALUES(<attribute> | <SELECT>)  
@@ -167,7 +179,7 @@ INSERT INTO Student
 SELECT * FROM OldStudent
 ```
 
-Update value 
+### UPDATE _table SET
 ```sql
 UPDATE Name_OF_Table
 SET {AttributeY=valueY, AttributeX=valueX , .... , AttributeN=valueN }
@@ -193,7 +205,7 @@ SET Grade = Grade*1.2
 WHERE Grade<70
 ```
 
-Delete A student
+### DELETE FROM
 ```sql
 DELETE FROM `Student`
 WHERE Name LIKE 'John'
@@ -201,29 +213,33 @@ WHERE Name LIKE 'John'
 
 ## DCL
 
-
-### `GRANT .. ON ... TO`
+### GRANT `{DML_OPS}` ON `{DATABASE}` TO `{USER}`
 Grant who has right to access database
 ```sql
-GRANT {INSERT|UPDATE|DELETE|SELECT} ON NameOfDataBase
+GRANT {INSERT|UPDATE|DELETE|SELECT} 
+ON NameOfDataBase
 TO NameOfTheUser
 
 /** FOR EXAMPLE **/
+--These two users can modify data Using SELECT,INSERT
 GRANT SELECT,INSERT ON GUESTS
-TO Jian,Domi  --User Jian , Domi can modify data Using SELECT,INSERT
+TO TIM,SIMON  
 
+-- EVERYONE can modify data Using SELECT 
 GRANT SELECT ON GUESTS
-TO PUBLIC  -- EVERYONE can modify data Using SELECT 
+TO PUBLIC  
 ```
 
-### `Revoke ... On ... From`
+### REVOKE `{DML}` ON `{DATABASE}` FROM `{USER}`
 
-Revoke(Take back) the authority to access the database from User
+Revoke the authority to access the database from User
 ```sql
-REVOKE {INSERT|UPDATE|DELETE|SELECT} ON NameOfDataBase
+REVOKE {INSERT|UPDATE|DELETE|SELECT} 
+ON NameOfDataBase
 FROM NameOfTheUser
 
 /** FOR EXAMPLE **/
+-- USER TIM cant not modify data with INSERT
 REVOKE INSERT ON GUESTS
-FROM Jian -- USER Jian cant not modify data with INSERT
+FROM TIM 
 ```

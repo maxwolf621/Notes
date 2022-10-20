@@ -79,7 +79,7 @@ They can be presented as with the illustrator as the following
 
 ## Schema 
 
-The Description For the Structure of A table   
+The Description For the Structure of a table   
 ![](https://i.imgur.com/VhumQxn.png)   
 
 
