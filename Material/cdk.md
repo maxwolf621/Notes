@@ -5,16 +5,15 @@ CDK : mutual parts of each material
 
 - [CDK](#cdk)
   - [Reference](#reference)
-  - [Layout Set Up](#layout-set-up)
-    - [BreakpointObserver#isMatched](#breakpointobserverismatched)
-    - [BreakpointObserver#observe](#breakpointobserverobserve)
-  - [Observables](#observables)
-    - [(@output) CdkObserveContent observes ng-content](#output-cdkobservecontent-observes-ng-content)
-    - [debounce property](#debounce-property)
-  - [Scrolling](#scrolling)
-    - [Observable ScrollDispatcher#scrolled and `<x cdkScrollable></x>`](#observable-scrolldispatcherscrolled-and-x-cdkscrollablex)
+  - [BreakpointsObserver(LayoutModule)](#breakpointsobserverlayoutmodule)
+    - [isMatched](#ismatched)
+    - [observe](#observe)
+  - [Observables (ObserversModule)](#observables-observersmodule)
+    - [CdkObserveContent](#cdkobservecontent)
+  - [Scrolling (ScrollDispatchModule)](#scrolling-scrolldispatchmodule)
+    - [directive `cdkScrollable`](#directive-cdkscrollable)
   - [Overlay](#overlay)
-  - [Portal](#portal)
+  - [Portal (PortalModule)](#portal-portalmodule)
     - [TemplatePortal](#templateportal)
 
 ![圖 18](../images/7adcd5d3edf3411b427ca5ed77d1c29d87392be497ad09997c19cac892a2f6d3.png)  
@@ -26,23 +25,10 @@ CDK : mutual parts of each material
 - [Overlay](https://material.angular.io/cdk/overlay/api)
 - [[Angular Material完全攻略] Day 29 - Angular CDK(5) - Portal](https://ithelp.ithome.com.tw/articles/10197393)
 - [[Angular Material完全攻略]Angular CDK(隱藏版) - Coercion、Platform](https://ithelp.ithome.com.tw/articles/10197609)
-## Layout Set Up
 
 
-`BreakpointObserver` helps us to set up Layout for different devices.
-
-```typescript 
-import { LayoutModule } from '@angular/cdk/layout';
-
-@NgModule({
-  exports: [
-    LayoutModule
-  ]
-})
-export class SharedMaterialModule {}
-```
-
-### BreakpointObserver#isMatched
+## BreakpointsObserver(LayoutModule)
+### isMatched
 
 ```typescript
 export class DashboardComponent implements OnInit {
@@ -56,10 +42,29 @@ export class DashboardComponent implements OnInit {
 }
 ```
 
-### BreakpointObserver#observe
+### observe
 
-`const Breakpoints: { XSmall: string; Small: string; Medium: string; Large: string; XLarge: string; Handset: string; Tablet: string; Web: string; HandsetPortrait: string; TabletPortrait: string; WebPortrait: string; HandsetLandscape: string; TabletLandscape: string; WebLandscape: string; };`
-
+Dynamically Media Query Observation
+```typescript
+const Breakpoints: { 
+  XSmall: string; 
+  Small: string; 
+  Medium: string; 
+  Large: string; 
+  XLarge: string; 
+  /** Handset **/
+  Handset: string; 
+  Tablet: string; 
+  Web: string; 
+  /** Portrait **/
+  HandsetPortrait: string; 
+  TabletPortrait: string; 
+  WebPortrait: string; 
+  /** landscape **/
+  HandsetLandscape: string; 
+  TabletLandscape: string; 
+  WebLandscape: string; };`
+```
 
 ```typescript
 this.breakpointObserver.observe('(orientation: portrait)').subscribe(result => {
@@ -70,84 +75,68 @@ this.breakpointObserver.observe('(orientation: landscape)').subscribe(result => 
   console.log(`{landscape: ${result.matches}`);
 });
 
-// use these predefined breakpoints with BreakpointObserver 
 this.breakpointObserver.observe([Breakpoints.HandsetLandscape, Breakpoints.HandsetPortrait])
   .subscribe(result => {
     console.log(`Handset: ${result.matches}`);
   });
 ```
 
-## Observables
-
 ```typescript
-import { LayoutModule } from '@angular/cdk/layout';
-import { ObserversModule } from '@angular/cdk/observers';
-
-
-@NgModule({
-  exports: [
-    LayoutModule,
-    ObserversModule
-  ]
-})
-export class SharedMaterialModule {}
-```
-
-### (@output) CdkObserveContent observes ng-content
-
-```typescript
-@Directive({
-  selector: '[cdkObserveContent]',
-  exportAs: 'cdkObserveContent',
-})
-export class CdkObserveContent implements AfterContentInit, OnDestroy {
-  @Output('cdkObserveContent') event = new EventEmitter<MutationRecord[]>();
+export class SurveyComponent implements OnInit, AfterViewInit {
+  isHandset$: Observable<boolean>;
+  
+  constructor(private breakpointObserver: BreakpointObserver) {}
+  
+  ngOnInit() {
+    this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).map(match => match.matches);
+  }
 }
+
+<mat-form-field>
+  <input type="text" name="birthday" matInput [matDatepicker]="demoDatepicker">
+  <mat-datepicker [touchUi]="isHandset$ | async"></mat-datepicker>
+</mat-form-field>
 ```
 
+## Observables (ObserversModule)
 
-```typescript
-<div class="content-wrapper" (cdkObserveContent)="projectContentChanged($event)">
+### CdkObserveContent
+
+`CdkObserveContent` : Observe `<ng-content></ng-content>`
+
+MutationRecord : DOM
+
+Properties 
+- `@input debounce :number` : Debounce interval for emitting the changes.
+- `@Output $event : MutationRecord[]` : Event emitted for each change in the element's content.
+
+```html
+<div class="content-wrapper" (cdkObserveContent)="projectContentChanged($event) debounce="1000">
   <ng-content></ng-content>
 </div>
+```
 
+```typescript
 @Component({ ... })
 export class CdkObserveContentDemoComponent {
     count = 0;
     
     projectContentChanged($event: MutationRecord[]) {
         ++this.count;
-        console.log(`資料變更，第${this.count}次`);
+        console.log("ng-content state is changed");
         console.log($event, this.count);
     }
 }
 ```
 
-### debounce property
 
-```html
-<!-- activate after 1000/1000 seconds-->
-<div class="content-wrapper" (cdkObserveContent)="projectContentChanged($event)" debounce="1000">
-  <ng-content></ng-content>
-</div>
-```
 
-## Scrolling
+## Scrolling (ScrollDispatchModule)
 
 Listen scroll event
+### directive `cdkScrollable`
 
-```typescript
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
-
-@NgModule({
-  exports: [
-    ScrollDispatchModule
-  ]
-})
-export class SharedMaterialModule {}
-```
-
-### Observable ScrollDispatcher#scrolled and `<x cdkScrollable></x>`
+directive `cdkScrollable` corresponds to observable `ScrollDispatcher` 
 
 ```html
 <mat-sidenav-content cdkScrollable>
@@ -160,13 +149,15 @@ export class DashboardComponent implements OnInit {
   constructor(private scrollDispatcher: ScrollDispatcher) {}
            
   ngOnInit() { 
-    this.scrollDispatcher.scrolled().subscribe((scrollable: CdkScrollable) => {
-      console.log('發生scroll了，來源為：');
+    //                             ' auditTimeInMs : interval from stateless to 
+    this.scrollDispatcher.scrolled(100).subscribe((scrollable: CdkScrollable) => {
+      console.log('scroll event');
       console.log(scrollable.getElementRef().nativeElement);
     });
   }
 }
 ```
+
 
 ## Overlay
 
@@ -181,19 +172,21 @@ import { OverlayModule } from '@angular/cdk/overlay';
 export class SharedMaterialModule {}
 ```
 
-## Portal
+## Portal (PortalModule)
 
 A Portal is a piece of UI that can be dynamically rendered to an open slot on the page.
-
+- Portal：content，two types TemplatePortal(of template reference)；ComponentPortal(of component).
+- PortalOutlet：slot(outlet) where rendered variable Portal.
 
 ```html
+<!-- directive within ng-template -->
 <ng-template cdkPortal>
   <p>The content of this template is captured by the portal.</p>
 </ng-template>
 
 <!-- OR -->
 
-<!-- This result here is identical to the syntax above -->
+<!-- structural directive within host-element -->
 <p *cdkPortal>
   The content of this template is captured by the portal.
 </p>
@@ -202,15 +195,16 @@ A Portal is a piece of UI that can be dynamically rendered to an open slot on th
 @Component({ ... })
 export class MainComponent implements OnInit {
     
-    @ViewChildren(CdkPortal) templatPortals: QueryList<CdkPortal>;
+    @ViewChildren(CdkPortal) templatePortals: QueryList<CdkPortal>;
+
     currentPortal: Portal<any>;
     
     changePortal1() {
-        this.currentPortal = this.templatPortals.first;
+        this.currentPortal = this.templatePortals.first;
     }
     
     changePortal2() {
-        this.currentPortal = this.templatPortals.last;
+        this.currentPortal = this.templatePortals.last;
     }
 }
 ```
@@ -220,68 +214,68 @@ export class MainComponent implements OnInit {
 ```html
 <div class="portal-demo">
   <div class="tabs">
-    <button mat-button (click)="changePortal1()">功能1</button>
-    <button mat-button (click)="changePortal2()">功能2</button>
-    <button mat-button (click)="changePortal3()">功能3</button>
-    <button mat-button (click)="changePortal4()">功能4</button>
+    <button mat-button (click)="changePortal1()">portal1</button>
+    <button mat-button (click)="changePortal2()">portal2</button>
+    <button mat-button (click)="changePortal3()">portal3</button>
+    <button mat-button (click)="changePortal4()">portal4</button>
   </div>
   <div class="tab-content">
     <div [cdkPortalOutlet]="currentPortal"></div>
   </div>
 </div>
 
-
-<!--     @ViewChildren(CdkPortal) templatPortals: QueryList<CdkPortal>; -->
+<!-- ng-template with directive-->
 <ng-template cdkPortal let-nameInTemplate="nameInObject">
   <p>
-    this is used by @ViewChildren(cdkPortal)
+    directive cdkPortal
   </p>
 </ng-template>
+
+<!-- structural directive -->
 <p *cdkPortal>
-    this is used by @ViewChildren(cdkPortal)
+    structural *cdkPortal
 </p>
 
-<!-- @ViewChild('template') template3: TemplateRef<any>; -->
+<!-- #template  -->
 <ng-template #template let-nameInTemplate="nameInObject">
     @ViewChild('template') template3: TemplateRef<any>;
 </ng-template>
-
 ```
-
-`TemplatePortal(template: TemplateRef<any>：要傳入的template的參考, viewContainerRef: ViewContainerRef：畫面上的ViewContainerRef，來源可由注入取得,context?: any：要傳入的外部內容)`
 
 ```typescript
 export class MainComponent implements OnInit {
-    @ViewChildren(CdkPortal) templatPortals: QueryList<CdkPortal>;
+    @ViewChildren(CdkPortal) templatePortals: QueryList<CdkPortal>;
+
     @ViewChild('template') template3: TemplateRef<any>;
     currentPortal: Portal<any>;
 
     constructor(
-    private viewContainerRef: ViewContainerRef,
-    private injector: Injector,
-    @Inject(DOCUMENT) private document: any,
-    private componentFactoryResolver: ComponentFactoryResolver,
-    private appRef: ApplicationRef) {}
+      private viewContainerRef: ViewContainerRef,
+      private injector: Injector,
+      @Inject(DOCUMENT) private document: any,
+      private componentFactoryResolver: ComponentFactoryResolver,
+      private appRef: ApplicationRef
+    ) {}
     
     // ... 
 
     // <ng-template cdkPortal>
     changePortal1() {
-        this.templatPortals.first.context = { nameInObject: this.name };
-        this.currentPortal = this.templatPortals.first;
+        this.templatePortals.first.context = { nameInObject: this.name };
+        this.currentPortal = this.templatePortals.first;
     }
 
     changePortal2() {
-        this.currentPortal = this.templatPortals.last;
+        this.currentPortal = this.templatePortals.last;
     }
 
 
-    // <ng-template #template>
+    // insert TemplatePortal
     changePortal3() {
         this.currentPortal = new TemplatePortal(this.template3, this.viewContainerRef, { nameInObject: this.name });
     }
 
-    // component
+    // insert componentPortal
     changePortal4() {
         this.currentPortal = new ComponentPortal(Portal4Component, undefined, this._createInjector());
     }
