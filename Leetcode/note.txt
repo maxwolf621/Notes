@@ -1,0 +1,152 @@
+
+
+Array 
+
+
+String to Integer
+Integer to String 
+
+
+InPlace algo 2 pointers ( case 1 remove duplicate element)
+```java
+Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+
+[0,0,1,1,1,2,3,3,4]
+   '-tail,cur
+
+if(nums[cur] != nums[cur - 1]) nums[tail++] = nums[cur++];  
+```
+
+3 pointers ( case : 3 sums )
+```java
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+required : 3 sums equal 0
+
+[-4,-1,0,1,2]
+  ' 'j     '
+  i        k
+sum = nums[i] + nums[j] + nums[k]
+if ( sum > target ) k--;
+if ( sum < target ) j--;
+
+```
+
+majority element
+
+```java
+for n in nums
+	if(major_cnt == 0)
+             major = n;
+             ++major_cnt;
+        else if(major == n)
+                major_cnt++;
+        else
+              --major_cnt;
+```
+
+
+## Reshape the Matrix
+
+```java
+reshape matrix R*C to r*c
+
+if( R*C != r*c ) return false ;
+
+for row in matrix 
+ for element in row
+   if( j >= c ){
+   	i++; 
+   	j = 0;
+   }
+   reshapeMatrix[i][j] = element
+```
+
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [1,2,3,6,9,8,7,4,5]
+
+n = matrix.length
+m = matrix[0].length;
+        
+up = 0,  down = n - 1;
+left = 0, right = m - 1;
+
+while (res.size() < n * m) {
+            
+	    // >
+	    for (int j = left; j <= right && res.size() < n * m; j++)
+                res.add(matrix[up][j]);
+	    // ˅  
+            for (int i = up + 1; i <= down - 1 && res.size() < n * m; i++)
+                res.add(matrix[i][right]);
+            // <         
+            for (int j = right; j >= left && res.size() < n * m; j--)
+                res.add(matrix[down][j]);
+            // ^        
+            for (int i = down - 1; i >= up + 1 && res.size() < n * m; i--) 
+                res.add(matrix[i][left]);
+                
+            left++; right--; up++; down--; 
+        }
+        return res;
+ }
+ 
+ 
+ 
+## Bucket Sort
+
+```java 
+HashMap<element	,frequency> map = new HashMap<>;
+List<Intger> res = new ArrayList<>();
+
+for element in array
+	map.put(element, getOrDefault(element,0) + 1);
+
+// Bucket
+List<Element>[] bucket = new ArrayList[array.len+1]:
+for element in map.keySet()
+	freq = map.get(element);
+	if bucket[freq] is null 
+		bucket[freq] = new ArrayList<>();
+	bukcet[freq].add(element);		
+
+// Take most k frequncy element from bucket
+for fre staring from end in bucket and res.size > k
+	if bucket[freq] is not null
+		res.add(elements in buckt[freq])
+``` 
+
+## Stack
+
+Case Find Next Bigger than the Element
+
+```java
+for elementIndex in nums
+	while(!stack.isEmpty() and nums[stack.peek()] < nums[elementIndex]){
+		res[stack.pop()] = nums[elementIndex];	
+	}
+
+stack.push(elementIndex)
+```
+
+
+## Linked List Two Pointer 
+
+Case Middle of the Linked List , Linked List Cycle
+
+```java
+LinkedList fast = head;
+LinkedList slow = head;
+
+while(fast!=null && fast.next!=null){
+	slow = slow.next;
+	fast = fast.next.next
+	
+	/**
+	if linked list is cycle then slow and fast will meet together
+	else slow will be located at the middle of linked list 
+	**/
+	
+}
+```
