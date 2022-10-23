@@ -617,7 +617,8 @@ of(...studentScore).pipe(
 1. `switchMap()`可以在收到`observable`時，轉換成另外一個`observable`，   
 2. `switchMap()`用於有**順序必要的巢狀式**`subscribe()`
 
-Returns an Observable that emits items based on applying a function that you supply to each item emitted by the source Observable, where that function returns an (so-called "inner") Observable. 
+![圖 1](../images/faf8af73125d45bcb5a00d31ae16e6f13fe84747c9d2785189c2f4d3ac4911b1.png)   
+- Returns an Observable that emits items based on applying a function that you supply to each item emitted by the source Observable(`1-2-3`), where that function (`x=>A-B-C`) returns an (so-called "inner") Observable. 
 ```typescript 
 interval(3000).pipe(
   switchMap(() => timer(0, 1000))
@@ -627,7 +628,7 @@ interval(3000).pipe(
 // 0
 // 1
 // 2
-// 0 (新事件發生，退訂上一個 Observable)
+// 0 (新事件發生，UNSUBSCRIBE上一個 Observable)
 // 1
 // 2
 // ...
@@ -651,7 +652,6 @@ switched.subscribe(x => console.log(x));
 // 9
 // 27
 ```
-Each time it observes one of these inner Observables, the output Observable begins emitting the items emitted by that inner Observable. 
 
 **When a new inner Observable is emitted, `switchMap` stops emitting items from the earlier-emitted inner Observable and begins emitting items from the new one.**   
 It continues to behave like this for subsequent inner Observables.
@@ -683,7 +683,7 @@ this.route.params.pipe(
 )
 ```
 
-如果有一系列的轉換，且資料都要保存起來再額外透過`map()`最終組成一個大物件
+如果有一系列的轉換，且資料都要保存起來需再額外透過`map()`
 ```typescript 
 this.postData$ = this.route.params.pipe(
   switchMap( params => this.httpClient
@@ -702,14 +702,13 @@ this.postData$ = this.route.params.pipe(
 
 ### mergeMap
 
-同時處理Source Stream且不退訂任何一個Observable Stream
+Unlike switchMap, mergeMap parallel process the Observable event
 ![圖 2](../images/97451076aaa9b7b4b6d525dd45d8b42d78078a973990f22832dc462680f78aac.png)  
 
 ### exhaustMap
+It wont subscribe new emitted event if old one haven't finished
 
 ![圖 1](../images/d9f022d96776ba6823c46fc722351599c8abd0c8e4edae2b4f90c223f70b9198.png)  
-
-
 
 ## combineLatest (e.g. 搜尋器)
 
