@@ -3,7 +3,6 @@
 - [Guide to JPA and Hibernate Cascade Types](https://www.javaguides.net/2018/11/guide-to-jpa-and-hibernate-cascade-types.html)  
 [](https://zhuanlan.zhihu.com/p/419473875)  
 
-
 - [Cascade of JPA and Hibernate](#cascade-of-jpa-and-hibernate)
   - [Example](#example)
   - [Persist](#persist)
@@ -17,8 +16,8 @@
 
 
 [CascadeType 與 FetchType](https://openhome.cc/Gossip/EJB3Gossip/CascadeTypeFetchType.html)
-- CascadeType.PERSIST:在儲存時一併儲存 被參考的物件。
-- CascadeType.MERGE : 在合併修改時一併 (UPDATES)合併修改被參考的物件。
+- CascadeType.PERSIST:在儲存時一併儲存被參考的物件。
+- CascadeType.MERGE : 在合併(Entity merges with entity in database)修改時一併 (UPDATES)合併修改被參考的物件。
 - CascadeType.REMOVE: 在移除時一併移除 被參考的物件。
 - CascadeType.REFRESH:在更新時一併更新 被參考的物件(`git pull`)。
 - CascadeType.ALL:無論儲存、合併、 更新或移除，一併對被參考物件作出對應動作。

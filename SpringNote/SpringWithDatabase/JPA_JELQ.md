@@ -19,15 +19,19 @@
     - [Custom Repositories](#custom-repositories)
   - [JPA Many To Many](#jpa-many-to-many)
   - [Remove Query for to-many associations](#remove-query-for-to-many-associations)
-  - [Fetch Join in JPQL](#fetch-join-in-jpql)
+  - [Fetch Join](#fetch-join)
     - [Fetch Join in Criteria API](#fetch-join-in-criteria-api)
   - [Fetch Spring Data JPA DTO Projection](#fetch-spring-data-jpa-dto-projection)
   - [Join Unrelated entities](#join-unrelated-entities)
   - [Many to Many & One to Many](#many-to-many--one-to-many)
+    - [Manual Deleting to-Many association](#manual-deleting-to-many-association)
+  - [`orphanRemoval = true`](#orphanremoval--true)
+  - [update](#update)
+  - [to-one association](#to-one-association)
 
-[](https://thorben-janssen.com/best-practices-many-one-one-many-associations-mappings/)   
-[](https://www.baeldung.com/spring-data-jpa-query)   
-[](https://www.baeldung.com/hibernate-criteria-queries)   
+[](https://thorben-janssen.com/best-practices-many-one-one-many-associations-mappings/)     
+[](https://www.baeldung.com/spring-data-jpa-query)    
+[](https://www.baeldung.com/hibernate-criteria-queries)     
 
 - Model associations as a **java.util.Set**.
 - Provide utility methods to add or remove an entity from an association.
@@ -40,15 +44,12 @@
 - Implement helper methods to update bi-directional associations
 - Define **FetchType.LAZY for @ManyToOne** association avoid n+1 select issue
 
-
-
 ## EntityManager & JPQL & HQL
 - [使用 Query 物件](https://openhome.cc/Gossip/EJB3Gossip/Query.html)
 - **[JPA EntityManager example in Spring Boot](https://www.bezkoder.com/jpa-entitymanager-spring-boot/)**
 - [Spring Data JPA EntityManager Examples](https://www.codejava.net/frameworks/spring-boot/spring-data-jpa-entitymanager-examples)   
 
-
-new `EntityManager` to create (database) entity
+`EntityManager` to create (database) entity
 - Create & Remove persistent entity instances
 - Find entities by their primary key
 - Query over entities
@@ -480,20 +481,26 @@ Author a = em.createQuery(
     Author.class).getSingleResult();
 ```
 
-
 ## Remove Query for to-many associations
 
 - [Why you should avoid CascadeType.REMOVE for to-many associations and what to do instead](https://thorben-janssen.com/avoid-cascadetype-delete-many-assocations/)
 
 When your association contains a lot of entities, it’s better to remove them with a few queries. 
 
-But it needs a fixed number of queries to remove an Author with all associated Books and performs much better for huge associations.
-
 ```java
+//                               '-id
 Author a = em.find(Author.class, 1);
          
 // get all books that this author wrote alone
-Query q = em.createNativeQuery("SELECT ba.bookId FROM BookAuthor ba JOIN Book b ON ba.bookId = b.id JOIN BookAuthor ba2 ON b.id = ba2.bookId WHERE ba2.authorId = ? GROUP BY ba.bookId HAVING count(ba.authorId) = 1");
+// Multiple Line """ ... """
+Query q = em.createNativeQuery("""
+    SELECT ba.bookId FROM BookAuthor ba 
+    JOIN Book b ON ba.bookId = b.id 
+    JOIN BookAuthor ba2 ON b.id = ba2.bookId 
+    WHERE ba2.authorId = ? 
+    GROUP BY ba.bookId  
+    HAVING count(ba.authorId) = 1
+    """);
 q.setParameter(1, a.getId());
 List<Integer> bookIds = (List<Integer>)q.getResultList();
          
@@ -510,20 +517,19 @@ q.executeUpdate();
 // remove author
 em.remove(a);
 ```
-
-
-## Fetch Join in JPQL
-
+## Fetch Join 
 - [Other Fetch Concept](https://thorben-janssen.com/5-ways-to-initialize-lazy-relations-and-when-to-use-them/)
 - [Spring JPA: when to use "Join Fetch"](https://medium.com/javarevisited/spring-jpa-when-to-use-join-fetch-a6cec898c4c6)
 
 `fetch join` allows associations or collections of values to be initialized along with their parent objects using a single select. 
-
-Using fetch joins in JPQL statements can require a huge number of queries, which will make it difficult to maintain the codebase. So before you start to write lots of queries, you should think about the number of different fetch join combinations you might need. If the number is low, then this is a good approach to limit the number of performed queries.
-
 ```sql
 SELECT p FROM Parent p JOIN FETCH p.children children WHERE ...
 ```
+
+
+Using fetch joins in JPQL statements can require a huge number of queries, which will make it difficult to maintain the codebase. 
+
+So before you start to write lots of queries, you should think about the number of different fetch join combinations you might need. If the number is low, then this is a good approach to limit the number of performed queries.
 
 For example
 ```java
@@ -548,11 +554,8 @@ q.where(cb.equal(o.get("id"), orderId));
  
 Order order = (Order)this.em.createQuery(q).getSingleResult();
 ```
-
 ## Fetch Spring Data JPA DTO Projection
-
 - [The best way to fetch a Spring Data JPA DTO Projection](https://vladmihalcea.com/spring-jpa-dto-projection/)
-
 ## Join Unrelated entities
 
 - [How to join unrelated entities with JPA and Hibernate](https://thorben-janssen.com/how-to-join-unrelated-entities/)
@@ -560,3 +563,67 @@ Order order = (Order)this.em.createQuery(q).getSingleResult();
 ## Many to Many & One to Many
 
 - [Best Practices for Many-To-One and One-To-Many Association Mappings](https://thorben-janssen.com/best-practices-many-one-one-many-associations-mappings/#Think_twice_before_using_CascadeTypeRemove)
+
+
+```java
+TypedQuery<PurchaseOrder> q = em.createQuery(
+    "SELECT o FROM PurchaseOrder o JOIN Item i ON o.id = i.order.id WHERE i.id = :itemId", 
+    PurchaseOrder.class);
+q.setParameter("itemId", item2.getId());
+q.getSingleResult();
+```
+
+### Manual Deleting to-Many association 
+
+```java
+// flush all changes to the database
+em.flush(); 
+
+// clear() method to detach all entities 
+// from the current persistence context 
+// and to remove them from the first level cache.
+em.clear();
+ 
+Query q = em.createQuery("DELETE Item i WHERE i.order.id = :orderId");
+q.setParameter("orderId", orderId);
+q.executeUpdate();
+ 
+// JPQ query 
+order = em.find(PurchaseOrder.class, orderId);
+
+// remove all associated Item entities
+em.remove(order);
+```
+
+## `orphanRemoval = true`
+
+The orphanRemoval feature can make it very comfortable to remove a child entity.
+```java
+ @OneToMany(mappedBy = "order", orphanRemoval = true)
+    private List<Item> items = new ArrayList<Item>();
+```
+
+## update 
+
+Bidirectional associations are comfortable to use in queries and to navigate relationships in your domain model. But they require special attention when you update them.
+
+## to-one association
+
+The JPA specification defines FetchType.EAGER as the default for to-one relationships
+
+It cost performance when select multiple Item entities.
+
+Use `FetchType.LAZY` & `Join Fetch` instead
+```java
+@Entity
+public class Item {
+     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_order")
+    private PurchaseOrder order;
+     
+    ...
+}
+
+List<Item> items = em.createQuery("SELECT i FROM Item i JOIN FETCH i.order", Item.class).getResultList();
+```

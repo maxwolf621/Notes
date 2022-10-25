@@ -1,11 +1,13 @@
 # @Transaction
 
-[transaction-configuration-with-jpa-and-spring](https://www.baeldung.com/transaction-configuration-with-jpa-and-spring)
+[transaction-configuration-with-jpa-and-spring](https://www.baeldung.com/transaction-configuration-with-jpa-and-spring)   
+[Defining_Transaction_Propagation](https://thorben-janssen.com/transactions-spring-data-jpa/#Defining_Transaction_Propagation)   
 
 - [@Transaction](#transaction)
   - [Flow of Transaction](#flow-of-transaction)
     - [Attribute of `@Transactional`](#attribute-of-transactional)
   - [propagation](#propagation)
+      - [`SUPPORTS`](#supports)
       - [`MANDATORY`(A active transaction is mandatory)](#mandatorya-active-transaction-is-mandatory)
       - [`NOT_SUPPORTED`](#not_supported)
       - [`REQUIRES_NEW`](#requires_new)
@@ -132,7 +134,8 @@ Class B {
 1. `REQUIRED` (default) :  
    - Join an active(existing) transaction
    - Start a new one if the `@Transaction(propagation=propagation.REQUIRED) method` gets called without a transaction. 
-2. `SUPPORTS` 
+
+#### `SUPPORTS` 
    - Join an activate transaction if one exists.  
    - **If the `@Transaction(propagation=propagation.SUPPORTS) method` gets called without an active transaction, this method will be executed without a transactional context.**
 
@@ -158,7 +161,7 @@ SUSPEND an active transaction(`@Transaction(...) method`) and execute the `@Tran
 
 Start a new transaction if the `@Transaction(NESTED)` gets called without an active transaction.   
 
-If it gets called with an active transaction, Spring sets a savepoint and rolls back to that savepoint if an Exception occurs.
+If it gets called with an active transaction, Spring sets a save point and rolls back to that save point if an Exception occurs.
 
 
 #### REQUIRES_NEW vs NESTED
@@ -177,7 +180,7 @@ public void bMethod(){
 }
 ```
 - If `aMethod` can handle the exception thrown by `bMethod`), transaction from `aMethod` might commit successfully. Otherwise `aMethod` rollbacks too.
-- If `bMethod`'s transaction committed successfully, only `aMethod` rollbacks when an exception is thrown.
+- Once `bMethod`'s transaction committed successfully only `aMethod` rollbacks when an exception is thrown.
 
 
 ```java
@@ -190,8 +193,6 @@ If parent transaction rollbacks the derived one also rollbacks
 
 
 ## read-only
-
-[](https://thorben-janssen.com/transactions-spring-data-jpa/#Defining_Transaction_Propagation)
 
 mark your transaction as read-only to avoids dirty checks on all retrieved entities.
 
@@ -224,6 +225,8 @@ IOException
 ClassNotFoundException
 ```
 
+Examples 
+
 ```java
 @Transactional(
     // exception will be handled by Exception.class
@@ -235,9 +238,6 @@ public void updateAuthorName() {
     author.setName("new name");
 }
 ```
-
-
-
 
 ```java
 @Transactional(rollbackFor = { SQLException.class })

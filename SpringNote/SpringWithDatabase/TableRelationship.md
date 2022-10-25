@@ -39,11 +39,12 @@
 - [How to define unidirectional OneToMany relationship in JPA](https://stackoverflow.com/questions/12038380/how-to-define-unidirectional-onetomany-relationship-in-jpa)
 - [JPA JoinColumn vs mappedBy](https://stackoverflow.com/questions/11938253/jpa-joincolumn-vs-mappedby)
 - [many to one](https://stackoverflow.com/questions/11938253/jpa-joincolumn-vs-mappedby)
-- [Spring Data JPA @Query](https://www.baeldung.com/spring-data-jpa-query)
+- [@JoinColumn](https://blog.csdn.net/u010588262/article/details/76667283)  
+
 ## Difference btw One-To-Many and Many-To-Many  
 
-The Difference btw them is `reusability` 
-
+`reusability` 
+                  
 One-to-Many: One Person Has Many Skills, a Skill is not **reused** between Person(s)  
 - Unidirectional: A Person can directly reference Skills via its Set  
 - Bidirectional: Each "child" Skill has a single pointer back up to the Person (which is not shown in your code)  
@@ -194,8 +195,8 @@ public AddressEO getAddress() {
 
 ### JoinColumn vs Column
 
-`@JoinColumn` and `@Column` are almost the same
-- the difference is `@JoinColumn` describes the **attribute columns btw tables (entities)** and **`@Column` describes attribute in a table**
+`@JoinColumn` and `@Column` are almost the same.   
+The difference is `@JoinColumn` describes the **attribute columns btw tables (entities)** and **`@Column` describes attribute in a table**
 
 ## Unidirectional `@OneToMany` with `@JoinColumn`
 
@@ -213,7 +214,6 @@ public class Company {
 
 
     @OneToMany(targetEntity= Branch.class,
-               cascade = CascadeType.ALL, 
                fetch = FetchType.LAZY, 
                orphanRemoval = true)
     /**
