@@ -1,6 +1,6 @@
 # Spring Note
 
-[Spring Boot Tutorial](https://morosedog.gitlab.io/categories/Spring-Boot/)
+[Spring Boot Tutorial](https://morosedog.gitlab.io/categories/Spring-Boot/)  
 ## Base
 - [Framework MVC, MVP and MVVM](framework.md)
 - [loC](SpringBase/IoC.md)  
@@ -24,7 +24,7 @@
 
 - [Authentication](SpringBoot/Authentication.md)
 - [Filter](SpringBoot/Filter.md)   
-  - [ UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter](SpringBoot/AuthenticationFilter.md)
+  - [UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter](SpringBoot/AuthenticationFilter.md)
 - [Authorization](SpringBoot/Authorization.md)
 - [WebSecurity](SpringBoot/WebSecurity.md)
   - [CORS setup](SpringBoot/CORS.md)   
@@ -35,16 +35,17 @@
 - [Java JWT](SpringBoot/JWT.md)
 - [Jwt Bash Command](SpringBoot/KeystoreInCommand.sh)
 ## Hibernate && JPA
-
 - [Spring Data JPA Query Method 方法名稱查詢範例](https://matthung0807.blogspot.com/2020/04/spring-data-jpa-query-method.html)
-### Basic
-- [Transaction](SpringWithDatabase/Transactional.md)   
+
+- [Introduction of Transaction](SpringWithDatabase/Transactional.md)   
 - **[CascadeType](SpringWithDatabase/CascadeType.md)**   
-#### Hibernate and JPA Query
+- [Spring Boot @Transaction](SpringWithDatabase/@Transaction.md)
 - **[HQL](SpringWithDatabase/HQL.md)**
+- [SpringBoot JPA & JPQL](SpringWithDatabAse/JPA_JELQ.md)
 - **[Database Relationship](SpringWithDatabase/TableRelationship.md)**  
+  - [Different btw OneToMany and ManyToMany ](SpringWithDatabase/ManyToMany&OneToMany.md)   
 - **[`@Embedded` and `@Emenddable`](SpringWithDatabase/AnnotationEmbeddedAndEmbeddable.md)**    
-- [Different btw OneToMany and ManyToMany ](SpringWithDatabase/ManyToMany&OneToMany.md)   
+
 
 ### Swagger
 
