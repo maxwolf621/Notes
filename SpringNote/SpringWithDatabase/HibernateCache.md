@@ -1,6 +1,12 @@
 ###### tags: `Hibernate`
-# Hibernate Cache
-[TOC]
+# Hibernates's Cache
+
+- [Hibernates's Cache](#hibernatess-cache)
+    - [References](#references)
+  - [Session Object](#session-object)
+  - [First Level Cache](#first-level-cache)
+  - [Second Cache (SessionFactory level)](#second-cache-sessionfactory-level)
+
 ![](https://i.imgur.com/Bl0Iffl.png)
 
 ### References 
@@ -11,18 +17,15 @@
 ![](https://i.imgur.com/7MnFOQ2.png)    
 
 **The Session object is a single-threaded, short-lived object**, usually associated with a session (e.g a web session is mapping a web request).         
-So, there is a Session per each web request.    
+- **this means a session per each web request**.    
 
-## First Cache
-The first level cache is associated with this object.  
-**Once an item is retrieved from the Data Base, it is stored here.**  
+## First Level Cache
 
-**So if the same object is requested in the same web session in the future, it is retrieved from the first level cache and not from Data Base.**  
+Once an item is retrieved from the DataBase, it is stored here.
+
+So if the same object is requested in the same web session in the future, it is retrieved from the first level cache and not from Data Base.
 
 ## Second Cache (SessionFactory level)
-
-
-With Second Cache
 
 ```java
 
@@ -35,7 +38,7 @@ With Second Cache
   */
 Session session = sessionFactory.openSession();
 
-// do query 
+// SQL QUERY
 User user1 = (User) session.load(User.class, new Integer(1));
 user1.getName();  
 
@@ -59,7 +62,7 @@ session.close();
 - 如果打算清除二級快取的資料，可以使用SessionFactory的`evict()`方法
 `sessionFactory.evict(User.class, user.getId());`
 
-- Second level cache is an **optional cache** and **first-level cache will always be consulted before any attempt is made to locate an object in the second-level cache.**
-    > check first cache if not found then check second cache 
+- Second level cache is an **optional cache** and **first-level cache will always be consulted before any attempt is made to locate an object in the second-level cache.**  
+check first level cache if not found then check second level cache 
 - **The second-level cache can be configured on a per-class and per-collection basis** and mainly responsible for caching objects across sessions.
 - Any third-party cache can be used with Hibernate.  
