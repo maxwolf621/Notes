@@ -1,7 +1,29 @@
 # Relational Algebra/Calculus
-###### tags: `DataBase`
 
-[TOC]
+- [Relational Algebra/Calculus](#relational-algebracalculus)
+  - [Relationship of SQL instructor and Relational Algebra](#relationship-of-sql-instructor-and-relational-algebra)
+    - [Operations of relational Algebra](#operations-of-relational-algebra)
+  - [RESTRICT `σ`](#restrict-σ)
+  - [PROJECT `π`](#project-π)
+  - [UNION](#union)
+  - [CARTESIAN PRODUCT `R X S`](#cartesian-product-r-x-s)
+  - [Difference](#difference)
+  - [JOIN](#join)
+    - [JOIN TYPES](#join-types)
+    - [THETA JOIN `θ`](#theta-join-θ)
+    - [NATURAL JOIN](#natural-join)
+    - [EQUI-JOIN/JOIN](#equi-joinjoin)
+    - [Inner Join vs Equi-Join](#inner-join-vs-equi-join)
+    - [OUTER JOIN](#outer-join)
+    - [LEFT OUTER JOIN](#left-outer-join)
+    - [RIGHT OUTER JOIN](#right-outer-join)
+    - [FULL OUTER JOIN](#full-outer-join)
+  - [Interaction](#interaction)
+  - [Division](#division)
+  - [REPLACEMENT WITH OPERATIONS](#replacement-with-operations)
+      - [Implementation of JION via `SELECTION` and `PRODUCT`](#implementation-of-jion-via-selection-and-product)
+      - [INTERACTION via DIFFERENCE](#interaction-via-difference)
+      - [DIVISION (HARD)](#division-hard)
 
 Two Concepts for Storing and retrieving data (of query language) 
 1. Relational Algebra 
@@ -110,33 +132,14 @@ THEN
 
 ![image](https://user-images.githubusercontent.com/68631186/127828038-954c84aa-f5c1-459c-bc87-a8cb8e583997.png)   
 
+OUTER JOIN TYPES
+1. LEFT OUTER JOIN  
+2. RIGHT OUTER JOIN
+3. Full Outer Join
 
-![](https://i.imgur.com/9v3HGUy.png)  
-- OUTER JOIN TYPES
-  > `I` : LEFT OUTER JOIN  
-  > `III` : RIGHT OUTER JOIN
-  > Full Outer Join
-- INNER JOIN (Condition Join)
-  - `II` 
-    - An inner join, only those tuples that satisfy the matching criteria are included, while the rest are EXCLUDED      
-  - `THETA JOIN`,`EQUI JOIN`, `NATURAL JOIN`
-
-### NATURAL JOIN
-
-```sql
--- SYNTAX
-FROM A 
-NATURAL JOIN B
-
--- is equal
-FROM A 
-INNER JOIN B
-ON A.c = B.c 
-```
-- It's recommended Use `INNER JOIN` instead of using `NATURAL JOIN` 
-
-
-![](https://i.imgur.com/Y2dDe14.png)  
+INNER JOIN (Condition Join)   
+An inner join, only those tuples that satisfy the matching criteria are included, while the rest are EXCLUDED      
+- `THETA JOIN`,`EQUI JOIN`, `NATURAL JOIN`
 
 ### THETA JOIN `θ`
 The GENERAL case of JOIN operation is called a Theta join.
@@ -150,20 +153,53 @@ The GENERAL case of JOIN operation is called a Theta join.
 + Y : attribute of table B 
 ```
 
-### EQUI-JOIN
+### NATURAL JOIN
 
-When a theta join uses only equivalence condition, it becomes a equi join.   
+```sql
+FROM A 
+NATURAL JOIN B
+
+-- is equal
+FROM A 
+INNER JOIN B
+ON A.c = B.c 
+```
+- It's recommended to use `INNER JOIN` instead of using `NATURAL JOIN` 
+
+![](https://i.imgur.com/Y2dDe14.png)  
+
+### EQUI-JOIN/JOIN
+
+When a theta join uses only equivalence condition (`=`), it becomes a equi join.   
 It merges Attributes from table A `=` Attributes from table B to form a desired table
 - A EQUI-JOIN TABLE may have contain duplicates
 
 ```sql
-FROM R,S WHERE (R.c == S.c)
-```
+SELECT column_list 
+FROM table1, table2....
+WHERE table1.column_name =
+table2.column_name; 
 
-For example ::   
+-- or
+
+SELECT *
+FROM table1 
+JOIN table2
+[ON (join_condition)]
+```
 ![](https://i.imgur.com/qO74Xdb.png)  
 ![](https://i.imgur.com/WdmmXj7.png)  
-- It contain duplicates columns (two 班級代號)
+- It contain duplicates columns (兩個班級代號欄位)
+
+### Inner Join vs Equi-Join
+
+Inner join can have equality (`=`) and other operators (like `<,>,<>`) in the join condition.
+
+Equi join only have equality (`=`) operator in the join condition.
+- Equi join can be an Inner join,Left Outer join, Right Outer join
+
+
+
 ### OUTER JOIN
 In an outer join, along with tuples that satisfy the matching criteria, we also include first (left outer join), second (right outer join) or all **tuples that do not match the criteria.**
 
