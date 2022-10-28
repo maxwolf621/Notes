@@ -1,5 +1,7 @@
 # JPQL JPA
 
+- [SpringBoot Test](https://reflectoring.io/spring-boot-test/)
+
 - [JPQL JPA](#jpql-jpa)
   - [EntityManager & JPQL & HQL](#entitymanager--jpql--hql)
     - [DML](#dml)
@@ -36,13 +38,13 @@
 - Model associations as a **java.util.Set**.
 - Provide utility methods to add or remove an entity from an association.
 - Always use **FetchType.LAZY**, which is the default, to avoid performance problems.
+  - Define **`FetchType.LAZY` for @ManyToOne** association avoid n+1 select issue
 - Apply query-specific fetching to avoid n+1 select issues.
-- Don’t use the CascadeTypes REMOVE and ALL.
-- Don’t use **unidirectional one-to-many** associations
+- Don't use the CascadeTypes REMOVE and ALL.
+- Don't use **unidirectional one-to-many** associations
 - Avoid the **mapping of huge to-many** associations
-- Use **orphanRemoval=true** when modeling parent-child associations
+- Use **`orphanRemoval=true`** when modeling parent-child associations
 - Implement helper methods to update bi-directional associations
-- Define **FetchType.LAZY for @ManyToOne** association avoid n+1 select issue
 
 ## EntityManager & JPQL & HQL
 - [使用 Query 物件](https://openhome.cc/Gossip/EJB3Gossip/Query.html)
@@ -305,7 +307,7 @@ User findUserByStatusAndName(
 ```java
 @Query("Select u From User u where u.name In :names")
 List<User> findByUserList(
-    @Query(names) Collection<String> userNames
+    @Param(names) Collection<String> userNames
 )
 ```
 
@@ -362,7 +364,6 @@ Page<Passenger> page = repository.findAll(
 )
 
 // native
-
 ```
 
 #### clearAutomatically & flushAutomatically
@@ -476,6 +477,7 @@ public class Author {
     "Select a From Author a Join Fetch a.books Where a.id =? id"
 )
 Author findAuthorById(@Param("id") long authorId);
+
 Author a = em.createQuery(
     "SELECT a FROM Author a JOIN FETCH a.books WHERE a.id = 1", 
     Author.class).getSingleResult();

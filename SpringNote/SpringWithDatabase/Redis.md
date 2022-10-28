@@ -578,11 +578,11 @@ public class RedisConfig {
 
 ## Multiple Redis Configuration
 
-[Code Reference 1](https://www.bswen.com/2021/03/springboot-how-to-connect-multiple-redis-server.html)    
-**[Code Reference 2](https://www.liujiajia.me/2021/5/25/spring-boot-multi-redis)**
+[springboot-how-to-connect-multiple-redis-server](https://www.bswen.com/2021/03/springboot-how-to-connect-multiple-redis-server.html)    
+**[spring-boot-multi-redis](https://www.liujiajia.me/2021/5/25/spring-boot-multi-redis)**
 [Code Reference 3 ](https://hsiehjenhsuan.medium.com/spring-boot-%E4%BD%BF%E7%94%A8-lettuce-%E8%A8%AD%E5%AE%9A%E5%A4%9A%E5%80%8B-redis-%E9%80%A3%E7%B7%9A-55307dc6a480)   
-[Code Reference 4](https://programmer.help/blogs/spring-boot-configures-multiple-instances-of-redis-data-source-operation.html)  
-**[Code Reference 5](https://github.com/idreamshen/spring-boot-with-multi-redis/blob/master/src/main/java/com/idreamshen/demo/redis/config/RedisCacheConfiguration.java)**
+[spring-boot-configures-multiple-instances-of-redis-data-source-operation](https://programmer.help/blogs/spring-boot-configures-multiple-instances-of-redis-data-source-operation.html)  
+**[RedisCacheConfiguration](https://github.com/idreamshen/spring-boot-with-multi-redis/blob/master/src/main/java/com/idreamshen/demo/redis/config/RedisCacheConfiguration.java)**
 ### Application Properties and YML
 
 ```yml
@@ -1074,22 +1074,20 @@ public class RedisController {
 
 ## Tips
 
-- Define `TTLs`   
-Time-to-live (TTL), is the time span after which your Cache will be deleting an entry.   
-If you want to fetch data only once a minute, just guard it with a` @Cacheable` Annotation and set the TTL to `1` minute.
+- Time-to-live (TTL), is the time span after which your Cache will be deleting an entry. If you want to fetch data only once a minute, just guard it with a `@Cacheable` Annotation and set the TTL to `1` minute.
 
-- Implement Serializable: If you are adding an object in Redis cache then the object should implement a Serializable interface.
+- Implement `Serializable`: If you are adding an object in Redis cache then the object should implement a Serializable interface.
 
 - Redis Cache Limits: When cache size reaches the memory limit, old data is removed to make a place for a new one. Although Redis is very fast, **it still has no limits on storing any amount of data on a 64-bit system. It can only store 3GB of data on a 32-bit system.**
 
-- Never Call Cacheable Method from the same class
-  - The reason is that Spring proxy the access to these methods to make the Cache Abstraction work.  
-  When you call it within the same class this Proxy mechanic is not kicking in.  
-  By this, you basically bypass your Cache and make it non-effective.
+- Never Call Cacheable Method from the same class  
+The reason is that Spring proxy the access to these methods to make the Cache Abstraction work.  
+When you call it within the same class this Proxy mechanic is not kicking in.  
+By this, you basically bypass your Cache and make it non-effective.
 
 - Use `Lettuce`, If you need something highly scalable  
 `Lettuce` is a scalable **thread-safe, non-blocking** Redis client based on netty and Reactor.  
- `Jedis` is easy to use and supports a vast number of Redis features, however, it is not thread-safe and needs connection pooling to work in a multi-threaded environment.
+- Use `Jedis` is easy to use and supports a vast number of Redis features, however, it is not thread-safe and needs connection pooling to work in a multi-threaded environment.
 
 ## `@Transactional` Support
 

@@ -3,9 +3,9 @@
 - [RedisTemplate](#redistemplate)
   - [BoundXXXXOps](#boundxxxxops)
   - [opsForXXXX](#opsforxxxx)
-    - [ostForHash](#ostforhash)
-    - [`opsForSet`](#opsforset)
-    - [`opsForList`](#opsforlist)
+    - [opsForHash](#opsforhash)
+    - [opsForSet](#opsforset)
+    - [opsForList](#opsforlist)
   - [Create `RedisUtil` Class](#create-redisutil-class)
     - [Override `opsForValue`](#override-opsforvalue)
     - [Override `opsForHash`](#override-opsforhash)
@@ -89,10 +89,12 @@ redisTemplate.delete(key);
 ```
 
 
-### ostForHash
-- [optForHash](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/HashOperations.html)
+### opsForHash
+- [opsForHash](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/HashOperations.html)
 
 ```java
+size(H key)
+
 bucket#num | entries(HashKey, value)
     key1   +-- hashKey1 : value1
            +-- hashKey2 : value2
@@ -100,23 +102,22 @@ bucket#num | entries(HashKey, value)
     key2   +--- ....  : .....
 
 String key = "key1"
-String hashKey = "field1";      
+String hashKey = "hashKey1";      
 String value = "value1";    
-redisTemplate.opsForHash().put(key, hashKey, value);
-```
-
-```java
-String key = "key_forCache";
+RedisTemplate#opsForHash().put(key, hashKey, value);
 
 // Entries to put in the buckets
-Map<String, String> maps = new Map<String, String>();
-maps.put("map_key_1", "map_value_1");
-maps.put("map_key_2", "map_value_2");
-redisTemplate.putAll(key, maps);
+Map<String, String> entries = new Map<String, String>();
+entries.put("map_key_1", "map_value_1");
+entries.put("map_key_2", "map_value_2");
+redisTemplate.putAll(key, entries);
+
+putIfAbsent(H key, HK hashKey, HV value)
 
 // get entries
 String key = "bucket_name"
 Map<String, String> entries = redisTemplate.opsForHash().entries(key);
+
 // get values
 List<String> values = redisTemplate.opsForHash.values(key);
 
@@ -134,16 +135,13 @@ Boolean exist = redisTemplate.opsForHash().hasKey(key, hashKey);
 // get hashKeySet in bucket#key
 Set<Object> hashKeySet = redisTemplate.opsForHash().keys(key);  
 
-size(H key)
-putIfAbsent(H key, HK hashKey, HV value)
-putAll(H key, Map<? extends HK,? extends HV> entries)
 multiGet(H key, Collection<HK> hashKeys)
 
 increment(H key, HK hashKey, long delta)
 increment(H key, HK hashKey, double delta)
 ```
 
-### `opsForSet`
+### opsForSet
 
 ```java
 Long add(K key, V... values)
@@ -164,7 +162,7 @@ Map<Object,Boolean>	isMember(K key, Object... objects)
 
 // Get all elements of set at key.
 Set<V> members(K key)
-// get set of values [1,2]
+// -- Get set of values [1,2]
 Set<Object> members = redisTemplate.opsForSet().members(key);
 
 // Move value from key to destKey
@@ -194,7 +192,7 @@ Cursor<V> scan(K key, ScanOptions options)
 Long size(K key)
 ```
 
-### `opsForList`
+### opsForList
 
 - [opsForList](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/ListOperations.html)
 
