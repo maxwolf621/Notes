@@ -1,7 +1,25 @@
 # Spring Cache 
 
-[TOC]
-
+- [Spring Cache](#spring-cache)
+  - [Reference](#reference)
+  - [SCENARIO (Why using Cache)](#scenario-why-using-cache)
+  - [Relationship In Spring Framework](#relationship-in-spring-framework)
+  - [Cache Annotation](#cache-annotation)
+    - [`@EnableCaching` class CachingConfig](#enablecaching-class-cachingconfig)
+    - [@Cacheable(value , cacheNames, key, keyGenerator, cacheManager, cacheResolver, condition, unless, sync)](#cacheablevalue--cachenames-key-keygenerator-cachemanager-cacheresolver-condition-unless-sync)
+    - [condition](#condition)
+    - [unless](#unless)
+  - [keyGenerator](#keygenerator)
+    - [`KeyGenerator` Interface](#keygenerator-interface)
+    - [@CachePut(value, cacheNames, key, keyGenerator, cacheManager, cacheResolver, condition, unless)](#cacheputvalue-cachenames-key-keygenerator-cachemanager-cacheresolver-condition-unless)
+    - [@CacheEvict(value, cacheNames, key, keyGenerator, cacheManager, cacheResolver, condition, allEntries, beforeInvocation](#cacheevictvalue-cachenames-key-keygenerator-cachemanager-cacheresolver-condition-allentries-beforeinvocation)
+    - [@Caching Method](#caching-method)
+    - [@CacheConfig class](#cacheconfig-class)
+  - [CacheManager Configuration via `CachingConfigurerSupport`](#cachemanager-configuration-via-cachingconfigurersupport)
+  - [CacheResolver (Use different cache provider)](#cacheresolver-use-different-cache-provider)
+  - [Cache Error Handler](#cache-error-handler)
+      - [Register `CacheErrorHandler` in `CachingConfigurerSupport`](#register-cacheerrorhandler-in-cachingconfigurersupport)
+  - [Cache Method](#cache-method)
 ## Reference
 
 [Getting Started With Spring Data Redis](https://frontbackend.com/spring-boot/getting-started-with-spring-data-redis)  
@@ -19,9 +37,7 @@
 
 當重開Server後需要一些時間才能填回local cache，這段時間會增加database Server的負載    
 **故可以將`local cache`的資料寫入`external cache`，未來server reboot後可從`external cache`讀回來以此增加效率**   
-
-- 若有partition，等於來自同時間全部 servers 收到同一個 key 的查詢，總共只會發一次查詢到 external cache/database。 
-    - e.g. **假設一次重開十台機器，十台機器每秒收到 100 筆同樣的查詢，等於將 1000 筆對 database 的查詢降為對 external cache 的 1 筆查詢。**
+- e.g. **假設一次重開十台機器，十台機器每秒收到 100 筆同樣的查詢，等於將 1000 筆對 database 的查詢降為對 external cache 的 1 筆查詢。**
 
 
 ## Relationship In Spring Framework
@@ -34,9 +50,7 @@
 ## Cache Annotation 
 ### `@EnableCaching` class CachingConfig
 
-A class annotations that Is used with `@Configuration`
-
-Annotate it in Caching Configuration Class
+Annotate it in Caching Configuration Class to enable caching
 ```java
 @Configuration
 @EnableCaching
@@ -58,11 +72,10 @@ public class SpringBootApplication{
     }
 }
 ```
-
-
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7dee92b136f04551b3e0061c3c36c056~tplv-k3u1fbpfcp-watermark.awebp) 
 - Different `cacheNames` map to specific Cache Objects
 - Use `cacheNames` instead of `value` is recommended
+
 ### @Cacheable(value , cacheNames, key, keyGenerator, cacheManager, cacheResolver, condition, unless, sync)
 
 | Element |  Description | 
@@ -73,6 +86,8 @@ public class SpringBootApplication{
 |`String keyGenerator`| Set up Bean name of custom KeyGenerator to generate an key
 |`boolean sync`| Synchronize the invocation of the underlying method if several threads are attempting to load a value for the same key.
 |`String unless` | SpEL expression used to veto method caching.
+
+### condition
 
 ```java
 @Override
@@ -92,16 +107,35 @@ _________________________________
 | ....  | .....  ....... .... .. |
 |_______|________________________|
 ```
-- parameter `id` : is default-Key name for `@Cacheable`'s attribute `Key`  
+- parameter `id` : is default-Key name for `@Cacheable`'s attribute `Key`   
   `@Cacheable(cacheNames = "books", key = "#id" ,condition = "#id > 1", sync = true)` 
 
-#### KeyGenerator
+### unless
+Suit the condition then stop caching 
+```java
+@Override
+@Cacheable(cacheNames = "books", unless = "#id > 1", sync = true)
+// if id is bigger than 1 => do not caching
+public Book getById(Long id) {
+    return new Book(String.valueOf(id), "some book");
+}
+```
+## keyGenerator
 
 Default `SimpleKeyGenerator` implementation (**uses parameters in method provided to generate a key.)**  
 This means that if we have two methods that **use the same cache name and set of parameter types**, then there's a high probability that it will result in a collision.
-####  `KeyGenerator` Class
 
-This is responsible for generating every key for each data item in the cache, which would be used to lookup the data item on retrieval.   
+###  `KeyGenerator` Interface
+
+```java
+@Override
+public Object generate(Object target, 
+                       Method method, 
+                       Object... params) {
+    return generateKey(params);
+}
+```
+`KeyGenerator#generate` responsible for generating every key for each data item in the cache, which would be used to lookup the data item on retrieval.   
 
 The default implementation here is the `SimpleKeyGenerator`   
 The caching abstraction uses a `simpleKeyGenerator` based on the following algorithm     
@@ -110,14 +144,6 @@ The caching abstraction uses a `simpleKeyGenerator` based on the following algor
 3. If more the one param is given, return a `SimpleKey` containing all parameters.
 
 ```java
-
-@Override
-public Object generate(Object target, 
-                       Method method, 
-                       Object... params) {
-    return generateKey(params);
-}
-
 /**
  * Default Key Generator Implementation 
  * Generate a key based on the specified parameters.
@@ -128,7 +154,9 @@ public static Object generateKey(Object... params) {
     }
     if (params.length == 1) {
         Object param = params[0];
-        if (param != null && !param.getClass().isArray()) {
+        if (param != null 
+            && !param.getClass().isArray())
+        {
             return param;
         }
     }
@@ -157,7 +185,7 @@ logger.info("test test -->" + bookRepository.test("test")); // key : test , but 
 ```
 
 Both methods are looking for key `test` and returning the different object type, it causes `ClassCastException`
-```bash
+```java
 Caused by: java.lang.ClassCastException: class com.example.caching.Book cannot be cast to class java.lang.String (com.example.caching.Book is in unnamed module of loader 'app'; java.lang.String is in module java.base of loader 'bootstrap')
 	at com.sun.proxy.$Proxy33.test(Unknown Source) ~[na:na]
 	at com.example.caching.AppRunner.run(AppRunner.java:23) ~[main/:na]
@@ -172,15 +200,16 @@ public class MyKeyGenerator implements KeyGenerator {
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        return target.getClass().getName() + method.getName() + 
+        return target.getClass().getName() + 
+                method.getName() + 
                 Stream.of(params).map(Object::toString).collect(Collectors.joining(","));
     }
 }
 
 // or
 @Configuration
-public class CachConfig{
-    @Bean(name =  "cacheKeyGenerators")
+public class CacheConfig{
+    @Bean(name ="cacheKeyGenerators")
     public KeyGenerator keyGenerator(){
         return new KeyGenerator(){
             @Override
@@ -197,7 +226,6 @@ public Book getByIsbn(String isbn) {
     simulateSlowService();
     return new Book(isbn, "Some book");
 }
-
 @Override
 @Cacheable(cacheNames = "books", sync = true, keyGenerator = "cacheKeyGenerators")
 public String test(String test) {
@@ -205,16 +233,6 @@ public String test(String test) {
 }
 ```
 
-#### unless
-
-```java
-@Override
-@Cacheable(cacheNames = "books", unless = "#id > 1", sync = true)
-// if id is bigger than 1 => do not caching
-public Book getById(Long id) {
-    return new Book(String.valueOf(id), "some book");
-}
-```
 ### @CachePut(value, cacheNames, key, keyGenerator, cacheManager, cacheResolver, condition, unless)
 
 Difference btw `@CachePut` and `@Cacheable`

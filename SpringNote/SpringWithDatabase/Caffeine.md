@@ -4,10 +4,9 @@
   - [Reference](#reference)
   - [(CacheConfiguration) Server Configuration](#cacheconfiguration-server-configuration)
     - [Configuration with JAVA](#configuration-with-java)
-    - [Configuration with Application.Properties](#configuration-with-applicationproperties)
+    - [Application.Properties Configuration](#applicationproperties-configuration)
     - [Parameters of Caffeine Cache Configuration](#parameters-of-caffeine-cache-configuration)
     - [Weak and Soft Reference](#weak-and-soft-reference)
-    - [The word Soft and Weak](#the-word-soft-and-weak)
   - [Notes](#notes)
   - [Caffeine Method](#caffeine-method)
   - [Caffeine Cache with Annotations](#caffeine-cache-with-annotations)
@@ -38,7 +37,9 @@ There are two methods to use Caffeine
 public class CaffeineCacheConfig {
 
 
-    // (CacheConfiguration) Caffeine Server 
+    //  ---------------------------------------
+    // (CacheConfiguration) Caffeine Server   +
+    // ----------------------------------------
     @Bean
     Public Caffeine<Object,Object> caffeine(){
         return  Caffeine.newBuilder()
@@ -67,7 +68,7 @@ public class CaffeineCacheConfig {
 }
 ```
 
-or wrapping CacheConfiguration directly inside `cacheManager.setCaffeine`
+or wrapping CacheConfiguration directly inside `CaffeineCacheManager#setCaffeine`
 ```java
 public CacheManager cacheManager() {
     CaffeineCacheManager cacheManager = new CaffeineCacheManager();
@@ -79,22 +80,18 @@ public CacheManager cacheManager() {
 }
 ```
 
-### Configuration with Application.Properties
+### Application.Properties Configuration
 
 ```java
+spring.cache.cache-names=people
+spring.cache.caffeine.spec= initialCapacity=50, maximumSize=500, expireAfterWrite=10s, refreshAfterWrite=5s
+
 @SpringBootApplication
-@EnableCaching
+@EnableCaching // Enable Cache Server
 public class SpringBootApplication {
     // ...
 }
-```
 
-```
-spring.cache.cache-names=people
-spring.cache.caffeine.spec= initialCapacity=50, maximumSize=500, expireAfterWrite=10s, refreshAfterWrite=5s
-```
-
-```java
 @Configuration
 public class CacheConfig {
 
@@ -104,15 +101,12 @@ public class CacheConfig {
      */
     @Bean
     public CacheLoader<Object, Object> cacheLoader() {
-
-
         CacheLoader<Object, Object> cacheLoader = new CacheLoader<Object, Object>() {
 
             @Override
             public Object load(Object key) throws Exception {
                 return null;
             }
-
             // return value and refresh
             @Override
             public Object reload(Object key, Object oldValue) throws Exception {
@@ -137,40 +131,34 @@ public class CacheConfig {
 |`expireAfterWrite` | duration | duration for caches to be expired after Write
 |`refreshAfterWrite`|duration |interval of refresh the caches after Write
 |`recordStats`| |Strategy mode 
+
 - `maximumSize` and `maximumWeight` cant be configured at the same time
 - Priority of `expireAfterWrite` is higher than `expireAfterAccess`
 - If `expireAfterWrite` or `expireAfterAccess` is requested entries may be evicted on each cache modification, on occasional cache accesses, or on calls to `Cache.cleanUp()`. 
 - **Expired entries may be counted by `Cache.size()`, but will never be visible to read or write operations.**
+
 ### Weak and Soft Reference
-
-To manage the data stored in Cache we have
-
-| key-value management|
-|---------------------|
-|weakKeys  |
-|softValues|
-|weakValues|
 
 ```java
 Caffeine.newBuilder().softValues().build();
 Caffeine.newBuilder().weakKeys().weakValues().build();
 ```
+To manage the data stored in Cache we have
+| key-value management|
+|---------------------|
+|weakKeys             |
+|softValues           |
+|weakValues           |
 
 By default, the returned cache uses equality comparisons `==` (the equals method) to determine equality for keys or values. 
 - If `weakKeys()` was specified, the cache uses identity (`==`) comparisons instead for keys.  
   Likewise, if `weakValues()` or `softValues()` was specified, the cache uses identity(`==`)comparisons for values.
-
-- `weakValues` and `softValues` cant be configured at the same time
-
+- `weakValues` and `softValues` can't be configured at the same time
 - You wouldn't want to use `weakKeys()` or `softKeys()` because they both use `==` identity, which would cause problems for you
 
-### The word Soft and Weak
-
 **If `weakKeys`, `weakValues`, or `softValues` are requested, it is possible for a key or value present in the cache to be reclaimed by the garbage collector(GC)**.
-    
-**Use `weakValues()` when you want entries whose values are weakly reachable to be garbage collected (Delete the cache while GC scan it)**
-
-**`softValues()` is good for caching... if you have a `Map<Integer, Foo>` and you want entries to to be removable in response to memory demand(delete the caches if the memory capacity reaches limit)**.
+- **Use `weakValues()` when you want entries whose values are weakly reachable to be garbage collected (Delete the cache while GC scan it)**
+- **`softValues()` is good for caching... if you have a `Map<Integer, Foo>` and you want entries to to be removable in response to memory demand(delete the caches if the memory capacity reaches limit)**.
 
 ## Notes  
 
@@ -190,7 +178,6 @@ Only caches built with `removalListener`, `expireAfterWrite`, `expireAfterAccess
 @Slf4j
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
-
 
     private UserRepository userRepo;
 
@@ -336,7 +323,7 @@ public class CacheConfig {
         return Ticker.systemTicker();  
     }  
 
-    // fields will map to "caching.xxxx" in the application.properties
+    // These two fields map to "caching.xxxx" in the application.properties
     private Map<String, LocalCacheSpec> localCacheSpecs;
     private Map<String,Integer> redisCacheSpecs;
 
@@ -378,20 +365,22 @@ public class CacheConfig {
     // REDIS
     @Bean  
     public CacheManager redisCacheManager(
-        RedisConnectionFactory redisConnectionFactory) {
+        RedisConnectionFactory redisConnectionFactory) 
+    {
             // cacheDefaults
             var redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()  
-                                        .entryTtl(Duration.ofHours(4))  
-                                        .prefixKeysWith("test:")　
+                                        .entryTtl(
+                                            Duration.ofHours(4))  
+                                        .prefixKeysWith(
+                                            "test:")　
                                         .serializeValuesWith(
                                             RedisSerializationContext.SerializationPair
-                                                .fromSerializer(new GenericJackson2JsonRedisSerializer()
+                                            .fromSerializer(
+                                                    new GenericJackson2JsonRedisSerializer()
                                         );
 
         // Configurations of Redis From Application.Properties
-    
-        Map<String, RedisCacheConfiguration> redisCacheConfigMap = 
-                            new HashMap<>(redisCacheSpecs.size());
+        Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>(redisCacheSpecs.size());
   
         for (Map.Entry<String, Integer> entry : redisCacheSpecs.entrySet()) {  
                     redisCacheConfigMap.put(entry.getKey(), 
