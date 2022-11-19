@@ -1,39 +1,46 @@
 # Basic Shell Command
 
 - [Basic Shell Command](#basic-shell-command)
-  - [Get Some Information](#get-some-information)
-- [Commands for the File System](#commands-for-the-file-system)
-    - [ls](#ls)
-  - [File Globbing](#file-globbing)
-    - [`touch`](#touch)
-    - [`cp`](#cp)
-    - [linking the file with `ln -s`](#linking-the-file-with-ln--s)
-      - [soft link](#soft-link)
-      - [hard link](#hard-link)
-  - [`mv` Source Dstination](#mv-source-dstination)
-  - [rm file](#rm-file)
+  - [User Password Information](#user-password-information)
+  - [Virtual File System](#virtual-file-system)
+  - [`;` and `&&`](#-and-)
+  - [ls](#ls)
+    - [`-a`](#-a)
+    - [`-l`](#-l)
+    - [`-F`](#-f)
+    - [`-R`](#-r)
+  - [File Globing](#file-globing)
+  - [`touch`](#touch)
+    - [touch -a](#touch--a)
+  - [`cp`](#cp)
+    - [cp -R](#cp--r)
+  - [ln file `[soft|hard]`](#ln-file-softhard)
+    - [Soft Link `ln -s`](#soft-link-ln--s)
+    - [ls -i](#ls--i)
+    - [Hard Link](#hard-link)
+  - [`mv`](#mv)
   - [mkdir](#mkdir)
-  - [rmdir](#rmdir)
+    - [mkdir -p](#mkdir--p)
+  - [rmdir & rm](#rmdir--rm)
   - [file file](#file-file)
   - [cat file](#cat-file)
+    - [cat -t](#cat--t)
   - [more , less , tail](#more--less--tail)
-## Get Some Information
+    - [tail -f](#tail--f)
+## User Password Information
 
 The Information for users are in the ... 
 ```bash
 /etc/passwd 
 ```
-> `$` at terminal means wait for user input
-
 
 To find the current workplace
 ```bash
 $ pwd 
 ```
+- `$` : wait for user input
 
-
-
-To find **Man**ual of the each command
+**Man**ual of the each command
 ```bash
 man command
 #for example
@@ -48,129 +55,132 @@ man section# topic
 man 7 hostname
 ```
 
-# Commands for the File System 
+## Virtual File System 
 ref : https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
 ref : https://www.linuxnix.com/linux-directory-structure-lib-explained/
 
-Managment of File System via **virtual directory** 
-> ![](https://i.imgur.com/1u7xG8m.png)
+**Virtual Directory of Linux** 
+![](https://i.imgur.com/1u7xG8m.png)
+
+- `/`    : root of virtual directory 
+- `/etc` : contain all your system/application configuration(`.conf`) files
+- `/home`: the users (e.g. jian, zhang …)
+- `/mnt` : external device
+- `/opt` : Third parts packages
+- `/pro` : process information
+- `/run` : system information data when system is on running 
+- `/tmp` : temporary files
+- `/lib` : contains all helpful library files used by the system e.g, the commands we used
+- `/usr` : **: contains by far the largest share of data on a system. Hence, this is one of the most important directories in the system as it contains all the userbinaries, their documentation, libraries, header files, etc**
+
+## `;` and `&&`
+
+```bash
+# stop doing command operation
+# if any of commands goes wrong
+cd /Am_I_Existing && pwd && ls && cd
+-bash: cd: /Am_I_Existing : No such file or directory
+
+# ; : do each commands orderly
+cd /NNNNNNNNN ; pwd ; ls
+-bash: cd: /NNNNNNNNN: No such file or directory
+/home
+jian
+```
+
+## ls 
+
+### `-a`
+to show up the hidden file
+### `-l`
+List each files **INFORMATION** of user, group such as .. `421` ..etc ..
+### `-F`
+
+List directory and files clearly often with `-d` (list directory only)
+- `/` means it's directory not a file 
+```bash
+pi@ji:~ $ ls -F
+ backup.php*          Downloads/    MagPi/       Pictures/    test/
+'#blockchian.org#~'   file/         mu_code/     Public/      text.txt~
+ blockchian.org~      get-pip.py    Music/       s.py~        Videos/
+ data/                HistoShift/   myproject/   Templates/
+ Desktop/             home.html~    noip/        termp/
+```
+### `-R`
+recursively to show up files and directory until no other directories exists
 
 
-mount point : directory for external device (e.g. USB, driver...)
-> /etc/fstab
-> : Contains file system mounting information and we can edit this file to mount file system permanently and delete mount points.
 
 
-- /
-    > : root of virtual dirctory 
-- /etc 
-    > : /etc is a folder which contain all your system configuration files in it.
-- /home
-    > : place for the users (e.g. jian, zhang, Domi …)
-- /mnt 
-    > : for external device
-- /opt 
-    > Third parts packages
-- /proc 
-    > : process information
-- /run
-    > : system information data when system is on runing 
-- /tmp
-    >  : temporary files
-- /usr
-    > : contains by far the largest share of data on a system. Hence, this is one of the most important directories in the system as it contains all the userbinaries, their documentation, libraries, header files, etc
-- /lib 
-    >: **contains all helpful library files used by the system e.g, the commands we used **
-
-
-### ls 
-- with `-F` 
-    > to list directory and files clearly often with `-d` (list directory only)
-    ```bash
-    pi@ji:~ $ ls -F
-     backup.php*          Downloads/    MagPi/       Pictures/    test/
-    '#blockchian.org#~'   file/         mu_code/     Public/      text.txt~
-     blockchian.org~      get-pip.py    Music/       s.py~        Videos/
-     data/                HistoShift/   myproject/   Templates/
-     Desktop/             home.html~    noip/        termp/
-    ```
-    - `/` means it's directory not a file 
-- with `-a`
-    > to show up the hidden file
-- with `-R`
-    > recursively to show up files and directory until no other directories exists
-- with `-l`
-    >to list each files **INFORMATION** of user, group such as .. `421` ..etc ..
-
-
-## File Globbing
+## File Globing
 
 such as `?`, `*`,`[]` (metacharacter wildcards)
 
 ```bash
-#list all the files name with f_ll,
-# _ : in the range of  a,b,c,....h, i
-$ ls -l f[a-i]ll 
+ls -l f[a-i]ll # - : in the range of  a,b,c,....h, i
 -rw-rw-r-- 1 christine christine 0 May 21 13:44 fall 
 -rw-rw-r-- 1 christine christine 0 May 21 13:44 fell 
 -rw-rw-r-- 1 christine christine 0 May 21 13:44 fill
 
-#list all the files name except fall 
-$ls -l f[!a]ll 
+# list all the files name except fall 
+ls -l f[!a]ll 
 ```
 
-### `touch` 
+## `touch` 
 To create a file
+### touch -a
 
-with -a
-> To change the access time 
-### `cp`
-To copy the file, with `i` to confirm
-> `cp -i sour dest`
+To change the access time 
 
-To copy file to other direcotory
-> `cp -i testone /home/jian/Documents/`
+## `cp`
 
-with -R
+```bash
+cp -i sour dest
+
+# for example 
+cp -i doc.txt /home/test/Documents/
+```
+### cp -R
 > To copy all the files in the directory to other directory
 ```bash
-# All the files in Sciprt/ would copy to Mode_script/
+# Copy All the files in Script/ to Mode_script/
 cp -R Script/ Mod_scripts
 ```
 
 using `*` copy all the files end with something 
 ```bash
-$cp *script dirctory/
-# all file end with script would copy into dirctory/ 
+# all file end with script copy into directory/ 
+$cp *script directory/
+
 ```
 
-### linking the file with `ln -s`
-file1 ---> file2
+## ln file `[soft|hard]`
 
-#### soft link
+### Soft Link `ln -s`
 ```bash
-#two different file link together
+# two different file link together
 $ls -l data_file 
 -rw-rw-r-- 1 christine christine 1092 May 21 17:27 data_file
-$ 
+
+#                soft file
 $ln -s data_file sl_data_file
-$ 
+
 $ls -l *data_file 
 -rw-rw-r-- 1 christine christine 1092 May 21 17:27 data_file
 lrwxrwxrwx 1 christine christine 9 May 21 17:29 sl_data_file -> data_file $ 
 ```
-- everyone can access sl_data_file
+Everyone can access `sl_data_file`
+
+### ls -i
 
 using `ls -i` to check identifier of the file (inode)
 ```bash
 1234 data_file 1235 sl_data_file
 ```
 
-#### hard link
-> Concept : Just like Reference in Cpp
+### Hard Link
 
-Say File1 -> Virtual FileX then
-> FileX has the content of File1
+Just like Reference in Cpp, for example
 
 For example : 
 ```bash
@@ -179,38 +189,36 @@ $ln code_file hl_code_file
 $ls -i *code_file
 410765 code_file  410765 hl_code_file
 ```
-:::info
-A suggestion  : Do Not use soft-link
-:::
 
-## `mv` Source Dstination
+
+
+## `mv` 
 
 1. To rename the file name 
+```bash
+# move directory Mod_Script to New_script
+# but actually it just change the file's name
+mv Mod_script New_script
+```
+
 2. To move the whole directory 
 ```bash
-# move directory Mod_sscript to New_script
-# but acutally it just change the file's name
-mv Mod_script New_script
-
 # move fzll to Picture/
 mv fzll Picture/
 ```
 
 
-## rm file
-To remove file
-- f : force to delet
-- i : to Comfirm
 
 ## mkdir
 To make a directory
 
-With -p
-```bash=
+### mkdir -p
+```bash
 # To create a directory and many sub directories at same time
-$ mkdir -p New_Dir/Sub_Dir/Under_Dir
-# Recursely showing up New_dir/
-$ls -R New_Dir
+mkdir -p New_Dir/Sub_Dir/Under_Dir
+
+# New_Dir tree structure
+ls -R New_Dir
 New Dir:
 Sub Dir
 
@@ -218,20 +226,21 @@ Sub Dir:
 Under_Dir
 ```
 
-## rmdir
-**Only avaible for empty directory by deafult**
+## rmdir & rm
+**Only available for empty directory by default**
 
-if you want to really delete all the files inside the directory then
 ```bash
+# clean the files in directory
+# -i : make sure to delete it or not
 rm -i New_Dir/my_file
+# remove the empty file
 rmdir New_Dir
-# or using -r
-rm -ri My_Dir
 ```
 
-if you want to delte all the files and directories inside a directory at once
+if you want to delete all the files and directories inside a directory at once
 ```bash
-rm -rf Directory
+# -f force 
+rm -rf My_Dir
 ```
 
 ## file file
@@ -248,22 +257,22 @@ etc...
 
 ## cat file 
 
-To watch the file content 
+View the file content 
 
-with `-n` giving the content of each line with number
-such as ..
-```
+with `-n` giving the content of each line with number such as ..
+```vim
 1 Hello
 2 This Second
 3 What 
 4 You
-.
-.
+...
+...
 ```
+### cat -t
 
-with `-T` it would turn the cotent such as
-```cpp
+```python
 That we'll to   test the it
+
 # with -T it will become
 That we'll to^Itest the cat command.
 ```
@@ -271,25 +280,21 @@ That we'll to^Itest the cat command.
 ## more , less , tail
 
 ```bash
-$more file #you can see cotent of the file with pages
+$more file #you can see content of the file with pages
 $less file #like `more` but more flexible
-$head file #check the first 10 line of the cotent by default
+$head file #check the first 10 line of the content by default
 $tail file #see the last 10 line of the content by default
-```
 
-```bash
 # with -n 
 $tail -n 2 log_file  
 # only check last 2 line of the content from log_file
 ```
 
-:::success
-```bash=
+### tail -f 
+
+```bash
 tail -f file
 ``` 
-> To constantly update the file's status
-> 
-> This are made for programs that need to be monitored for always 
-:::
+**To constantly update the file's status. This are made for programs that need to be monitored for always.**
 
 
