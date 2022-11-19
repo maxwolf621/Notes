@@ -121,7 +121,7 @@ Redis Java Configuration
 
 1. [`RedisCacheConfiguration` (Redis Server Configuration)](#1-rediscacheconfiguration-configuration)
     dataBase port , hostname , TTL, ... etc 
-2. [Redis Connection Cnfiguration](#2-cache-configuration-with-cachingconfigurersupport)
+2. [Redis Connection Confif](#2-cache-configuration-with-cachingconfigurersupport)
    1. `RedisConnectionFactory` Configuration  `Lettuce` or `jedis`
    2. Connection Configuration = RedisCacheConfiguration + RedisConnectionFactory
 3. [`CacheManager` Configuration](#3-cachemanager-cache-configuration)

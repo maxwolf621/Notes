@@ -1,7 +1,7 @@
 # RedisTemplate
 
 - [RedisTemplate](#redistemplate)
-  - [BoundXXXXOps](#boundxxxxops)
+  - [BoundXXXXOps Instances](#boundxxxxops-instances)
   - [opsForXXXX](#opsforxxxx)
     - [opsForHash](#opsforhash)
     - [opsForSet](#opsforset)
@@ -13,12 +13,6 @@
     - [Override `opsForList()`](#override-opsforlist)
 
 
-`value` :(key-value pairs)
-`hash`  : (key -> (hashkey-value pairs))
-`list`  : (key -> values)
-`Set`  un-sorted set : (key -> values)
-`ZSet` sorted set : (key -> values)
-
 [Spring.io redisTemplate specification](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/RedisTemplate.html)
 [RedisTemplate操作Redis](https://blog.csdn.net/lydms/article/details/105224210)
 [SpringBoot redis 基礎篇](https://zhuanlan.zhihu.com/p/139528556)   
@@ -26,9 +20,7 @@
 [(METHODS) How to use Redis-Template in Java Spring Boot?](https://medium.com/@hulunhao/how-to-use-redis-template-in-java-spring-boot-647a7eb8f8cc)   
 **[springboot-redis-demo](https://github.com/MiracleTanC/springboot-redis-demo)**   
 
-## BoundXXXXOps 
-
-BoundXXXXops generates `key` instance
+## BoundXXXXOps Instances
 
 ```java
 boundGeoOps(K key)    
@@ -144,21 +136,19 @@ increment(H key, HK hashKey, double delta)
 ### opsForSet
 
 ```java
+// Add element
 Long add(K key, V... values)
 String key = "cacheName";
 String value1 = "2";
 String value2 = "1";
 redisTemplate.opsForSet().add(key, value1, value2);
 
-
 // Check if set#key contains value.
-Boolean	isMember(K key, Object o)
-// is value exists in set#key
+Boolean	isMember(K key, Object o) 
 String value = "2";
 Boolean member = redisTemplate.opsForSet().isMember(key, value);
 
 Map<Object,Boolean>	isMember(K key, Object... objects)
-
 
 // Get all elements of set at key.
 Set<V> members(K key)
@@ -579,7 +569,7 @@ public Set<Object> sGet(String key) {
 /**
  * {@code isMember(key, value)}
  * search the value in Set via key
- */
+ */ 
 public boolean sHasKey(String key, Object value) {
     try {
         return redisTemplate.opsForSet().isMember(key, value);
