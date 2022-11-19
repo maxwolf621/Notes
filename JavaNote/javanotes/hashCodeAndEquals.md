@@ -1,28 +1,42 @@
 # `equals(Object obj)` and `hashCode()`
 
-- [Code Examples](https://www.jitendrazaa.com/blog/java/what-is-the-need-to-override-hashcode-and-equals-method/)
+[Code Examples](https://www.jitendrazaa.com/blog/java/what-is-the-need-to-override-hashcode-and-equals-method/)      
+**[Effective Java Item11 - 覆蓋equals時總要覆蓋hashCode](https://www.jyt0532.com/2018/06/23/always-override-hashcode-when-you-override-equals/)**
+[Java equals() and hashCode() Contracts](https://www.baeldung.com/java-equals-hashcode-contracts)  
+
+
+- [`equals(Object obj)` and `hashCode()`](#equalsobject-obj-and-hashcode)
+  - [equals(Object obj)](#equalsobject-obj)
+    - [String#equals(Object o)](#stringequalsobject-o)
+  - [`hashCode()`](#hashcode)
+  - [A class with without/with overriding `hashCode()`](#a-class-with-withoutwith-overriding-hashcode)
 
 ## equals(Object obj)
 
+Violating equals() Symmetry With Inheritance
+
 ```java
-/**
- * @Description :
- *    if {@code this} and {@code obj} 
- *    both reference to the same address 
- */
-public boolean equals(Object obj) {  
-    return (this == obj);  
+public boolean equals(Object o){
+    // address
+    if(this == o) return true;
+    // type 
+    if(! o instanceof this) return false;
+
+    // convert Object to (this) Object
+    thisObject other = (thisObject) o
+    // object checking 
+    boolean valueEquals = (this.value == null && other.value == null)
+          || (this.value != null && this.value.equals(other.value));
+    // primitive type checking 
+    boolean b = this.b == other.b;
+    return a && b;
 }
 ```
 
-To Check the contents of two objects is equal or not 
+
+### String#equals(Object o)
+
 ```java
-/**
-  *  @Description :
-  *      To check the cotents of two objects is equal
-  *      By using {@code if(Object instanceof objectType)}
-  *     
-  */
 public boolean equals(Object anObject) {  
     
     if (this == anObject) { 
@@ -56,14 +70,15 @@ public boolean equals(Object anObject) {
 
 ## `hashCode()`
 It is not necessary that two different object(an entry) must have different hashcode values, it might be possible that they share common index(bucket) 
-- Same object has same hash code but same hash code has not 100% of the same object
 
+**Hash Code is used to narrow the search result**
+
+Same object has same hash code but same hash code has not 100% of the same object
 ```java
 // FOR EXAMPLE 
 // entry_1_1 and -> entry_1_2 has the same bucket(index1)
 public int hashCode()
 
-/**
      |-------|
      |index_1| ---> entry_1_1 -> entry_1_2 -> 
      |index_2| 
@@ -71,36 +86,21 @@ public int hashCode()
      |index_4| 
      |index_5| ---> entry_5_1 -> entry_5_2 -> entry_5_3
      |-------|
-**/
 ```
+ 
 
-### List and Set
 
-Before realizing how hashCode() functions.   
-Java has two collections without using HashMap
-1. List
-2. Set
+**If we don't use hash map to compare our object's content, we might have time complexity `O(n)` to compare each elements**
+- List is sequence elements  
+- Set is not **sequence**   
 
-Properties of these two collections
-- List allows
-    > Sequence Elements  
-    > Duplicate Elements  
-- Set allows
-    > Is not **sequence**    
-    > Contains **no duplicate elements**
-
-- If we dont use hash map to compare our object's content, we might have time complexity `O(n)` to compare each elements
-
-## Methods For Hashcode
-
-**Hash Code is used to narrow the search result**
 
 ![](https://i.imgur.com/MDJt9WL.png)  
 - Every object is placed in Hash bucket depending on the hashcode they have
 
 When a key is inserted in HashMap
-First it checks if any other objects present with same hashcode (same bucket)  
-- If true then it checks for the `equal()` method (compare content)  
+- First it checks if any other objects present with same hashcode (same bucket)  
+- If `true` then it checks for the `equal()` method (compare content)  
 - **if two objects are same then HashMap will not add that key instead it will replace the old value by new one(update)**
 
 ## A class with without/with overriding `hashCode()`
@@ -232,4 +232,3 @@ public class demo{
     }
 }
 ```
-

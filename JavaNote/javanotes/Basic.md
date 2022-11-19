@@ -10,22 +10,23 @@
   - [Access-Specifier](#access-specifier)
     - [Access Control For The Class](#access-control-for-the-class)
   - [OOP Four Basic Concepts of OOP](#oop-four-basic-concepts-of-oop)
-    - [Encapsulation (Hiding Object's data)](#encapsulation-hiding-objects-data)
+    - [Encapsulation](#encapsulation)
     - [Polymorphism](#polymorphism)
     - [Abstraction(Hiding the Implementation)](#abstractionhiding-the-implementation)
     - [Inheritances (Reusability)](#inheritances-reusability)
-    - [Inheritance(EXISTING CODE) VS Abstraction(HIDING IMPLEMENTATION DETAILS)](#inheritanceexisting-code-vs-abstractionhiding-implementation-details)
+  - [Inheritance vs Abstraction](#inheritance-vs-abstraction)
     - [`Is-A` Relationship Does Not Work In Reverse](#is-a-relationship-does-not-work-in-reverse)
   - [`finalize` keyword](#finalize-keyword)
-  - [`final` keyword](#final-keyword)
+  - [IMMUTABLE `final` keyword](#immutable-final-keyword)
+    - [Final Value](#final-value)
+    - [Final Class](#final-class)
   - [Package & Namespace](#package--namespace)
     - [Class Loader](#class-loader)
-    - [Namespace Collision](#namespace-collision)
   - [`abstract` keyword](#abstract-keyword)
     - [abstract class](#abstract-class)
     - [When an Abstract Class Implements an Interface](#when-an-abstract-class-implements-an-interface)
-    - [When an Abstract Class extends an Concrete Class](#when-an-abstract-class-extends-an-concrete-class)
-    - [Hierarchies Hierarchy](#hierarchies-hierarchy)
+    - [When an Abstract Class extends an Concrete Class (Inheritance)](#when-an-abstract-class-extends-an-concrete-class-inheritance)
+    - [`IS-A` Hierarchies Hierarchy](#is-a-hierarchies-hierarchy)
   - [`interface` keyword (`abstract`的延伸)](#interface-keyword-abstract的延伸)
   - [Java 9 `private` and `private static`](#java-9-private-and-private-static)
     - [Usage of the Private Method](#usage-of-the-private-method)
@@ -149,6 +150,7 @@ Visibility Outside the class's package
 
 
 ***The Derived classes can not access base's `private` members but theses can be accessed via `public`/`protected` method from Base Class***  
+
 **`protected`通常都用來修飾類別成員(e.g. methods, field)，表該成員在繼承時對於其Derived classes是可見的，其對於類別(Class)沒什麼意義**      
 
 | Access Specifier    |     |
@@ -158,9 +160,10 @@ Visibility Outside the class's package
 | `protected` class A | Members in A can only be **accessed by same package's classes or its subclasses(other classes from other packages can inherit from it)**
 | `default` class A   | Only Classes in SAME PACKAGE can inherit from it (Accessed By the Classes Within the same package)
 
-Conclusion
+PS
 1. **DO NOT declare more than one `public` class in same file**   
-2. Pubic class' name should be the same as file name. e.g. filename : `X.java` => class name : `public class X`  
+2. Pubic class' name should be the same as file name.  
+   e.g. filename : `X.java` => class name : `public class X`  
 3. **non-public class only can be accessed by same package's classes**.  
 ## OOP Four Basic Concepts of OOP
 - [Class and Object](https://medium.com/@nwyyy/design-pattern%E5%88%9D%E5%BF%83%E8%80%85%E7%AD%86%E8%A8%98-1-95774a905010)   
@@ -177,20 +180,21 @@ Object = (DATE)Fields + (CODE)Methods
 3. Abstraction
 4. Inheritance
 
-### Encapsulation (Hiding Object's data)
+### Encapsulation
 
-Encapsulation is wrapping/binding up of Data and Code(functions) in single unit. 
+**Encapsulation is wrapping/binding up of Data and Code(functions) in single unit.**
 
-物件將其本身的資料以及行為 (Behaviors) 包裝在Object內部(Group all relevant things together.)，**外界除了透過物件所開放的成員  (如： 屬性、方法、事件...etc...) 使用物件外，不需知道物件內部的各種實作細節**
+OBJECT將其本身的資料以及行為 (Behaviors) 包裝在其內部(Group all relevant things together.)，**外界除了透過物件所開放的成員  (如： 屬性、方法、事件...etc...) 使用物件外，不需知道物件內部的各種實作細節**
 
-- **模組之間只透過他們API進行溝通，一個模組不需要知道其他模組的内部工作情況，我們把概念稱作訊息隱藏或封装**. e.g 利用instance提供的method(e.g setter/getter)來訪問某模組內的某個功能  
+**MODEL之間只透過他們API進行溝通，一個模組不需要知道其他模組的内部工作情況，我們把概念稱作訊息隱藏或封装**. e.g 利用instance提供的method(e.g setter/getter)來訪問某MODEL內的某個功能  
 
 ### Polymorphism 
 
-Polymorphism describes a pattern in OOP in which **classes have different functionality while sharing a common interface.**
-- To archive **an object exhibits different behavior in different situation**
+Polymorphism describes a pattern in OOP in which **classes have different functionality while sharing a common interface.**   
+To archive **an object exhibits different behavior in different situation**
 
-**相同性質的類別及相同名稱Methods的行為，會依物件特性不同而有所不同，這個性質經常出現在介面實作以及抽象類別的覆寫(`@override`)上**
+>>> **相同性質的類別及相同名稱Methods的行為，會依物件特性不同而有所不同，這個性質經常出現在介面實作以及抽象類別的覆寫(`@override`)上**
+
 ```java
 public abstract Encryption{
     abstract void Encrypt()
@@ -208,7 +212,7 @@ public abstract Encryption{
 
 ### Abstraction(Hiding the Implementation)
 
-一個良好的OOP/OOD會隱藏所有實現(implementations)的**DETAILS,把它的API與實現細節清楚地隔離開(Decoupling)**
+**一個良好的OOP/OOD會隱藏所有實現(implementations)的DETAILS,把它的API與實現細節清楚地隔離開(Decoupling)**
 
 In Java the programmer can implement Abstraction using concepts such as `abstract` and `interface`.     
 1. Firstly,**an Abstract class can consist of abstract and non-abstract methods.** 
@@ -222,16 +226,17 @@ In Java the programmer can implement Abstraction using concepts such as `abstrac
 
 ### Inheritances (Reusability)
 
-透過繼承的方式，可以複製父物件所有`public`以及`protected`成員的功能，外界在存取子物件時也可以得到父物件的所有`public`以及`protected`成員的功能,而子物件本身也可以存取到父物件所public/protected成員的功能，或是進一步改變(`override`)父物件的行為
+**Inheritance enables you to create new classes that re-use (public/protected fields), extend and modify the behavior that is defined in existing classes**  
 
-- **Inheritance enables you to create new classes that re-use, extend and modify the behavior that is defined in other classes**  
-- **Inheritance is the methodology of using properties and methods of an already existing class in a new class.**   
-   - The existing class is the parent or superclass while the new class is the child or subclass. 
+Inheritance is the methodology of using properties and methods of an already existing class(so called superclass or parent) in a new class(so called subclass or child).
 
-### Inheritance(EXISTING CODE) VS Abstraction(HIDING IMPLEMENTATION DETAILS)
-- [source](https://reurl.cc/l5pQbY)  
+>>> 透過繼承的方式，可以複製父物件所有`public`以及`protected`成員的功能，外界在存取子物件時也可以得到父物件的所有`public`以及`protected`成員的功能,而子物件本身也可以存取到父物件所public/protected成員的功能，或是進一步改變(`override`)父物件的行為
 
-The main difference between abstraction and inheritance is that **abstraction allows hiding the implementation details and displaying only the functionality to the users(Hiding)**, while **inheritance allows using PROPERTIES and METHODS of an already existing class (reusability)** 
+## Inheritance vs Abstraction
+
+[What is the Difference Between Abstraction and Inheritance](https://reurl.cc/l5pQbY)  
+
+The main difference between abstraction and inheritance is that **abstraction allows hiding the implementation details and displaying only the functionality to the users**, while **inheritance allows using PROPERTIES and METHODS of an already existing class** 
 
 ![image](https://user-images.githubusercontent.com/68631186/128846000-d2ae0501-6980-4a35-ad51-91f1a1390918.png)  
 
@@ -267,23 +272,32 @@ FinalExam exam = (FinalExam) activity;    // ERROR!
 1. `finalize` method returns `void`
 2. `finalize` method may not be executed even program reaches its end
 
-## `final` keyword
+## IMMUTABLE `final` keyword 
 
-| TYPE          |                      |
-|---------------|----------------------|
+| TYPE          |                          |
+|---------------|--------------------------|
 |`final` class  | **can't be a Base Class**|
-|`final` method | can't be OVERRIDDEN  |
-|`final` field  | a CONSTANT field     |
+|`final` method | can't be OVERRIDDEN      |
+|`final` field  | a CONSTANT field         |
+
+### Final Value
 
 Final Field Usually represents as UPPERCASE
 ```java
-final dataType VAR = value;
+final T VAR;
 ```
+
+### Final Class 
+
+- The class must be declared as final so that child classes can’t be created.
+- Fields in the class must be declared private so that direct access is not allowed.
+- Fields in the class must be declared as `final` so that we can’t change the value of it after object creation.
+- **A parameterized constructor should initialize all the fields performing a `deep copy` so that data members can't be modified with an object reference.**
+Deep Copy of objects should be performed in the getter methods to return a copy rather than returning the actual object reference)
+
 ## Package & Namespace 
 
-- Java Package is kinda like `.h` in Cpp.  
-
-Java Packages are namespaces. for example 
+Java Package is kinda like `.h` in Cpp.  
 ```java
 import java.util.*
 ```
@@ -300,20 +314,6 @@ Compiler uses **Class Loader** to find the package and it search the package fir
 2. search optional package
 3. search from class' path (package list)
 
-### Namespace Collision
-
-There might having same class name existing in our project
-```java
-import com.method.practice;
-import tw.practice;
-pubic class test{    
-  //...
-
-  tw.practice p1 = new tw.practice();
-  practice p2 = new practice();
-```
-- one should specifically declaration
-
 ##  `abstract` keyword
 
 * An abstract class is not instantiated, but other classes extend it.
@@ -323,83 +323,74 @@ pubic class test{
 /**
   * <p> A Abstract Class </p>
   */
-  /*public or protected*/ abstract class Name{
+/*public or protected*/ abstract class Name{
 
-// A Abstract Method
-/*public or protected*/ abstract returnType method
-(parameter1, parameter2, ...);
+  // A Abstract Method
+  /*public or protected*/ abstract T method(...);
 
-//A Abstract VARIABLE
-/*final*/ dataType VAR = VALUE ;
+  //A Abstract VARIABLE
+  /*final*/ K VAR = VALUE ;
+}
 ```
 
 ### abstract class 
 
-- [abstract class extends concrete class](https://stackoverflow.com/questions/20970980/abstract-class-extends-concrete-class)
-
+- [abstract class extends concrete class](https://stackoverflow.com/questions/20970980/abstract-class-extends-concrete-class)   
 - [abstract class extends abstract class](https://stackoverflow.com/questions/6743584/can-one-abstract-class-extend-another-abstract-class-and-increase-functionality)
 
-An abstract class may have `static` fields,`static` methods, abstract methods. 
-- You can use these static members with a class reference (for example, `AbstractClass.staticMethod()`) as you would with any other class.
+
+An abstract class may have `static` fields,`static` methods. 
+  
+You can use these static members with a class reference (for example, `AbstractClass.staticMethod()`) as you would with any other class.
 
 ### When an Abstract Class Implements an Interface
 
-An abstract class does not implement all of the interface's method
+An abstract class **does not implement** all of the interface's method
 ```java 
 abstract class X implements Y {
   // x methods of y are implemented
 }
 ```
 
-a class that implements an interface must implement all of the interface's methods. 
+A class that implements an interface must implement all of the interface's methods. 
 ```java
-// X implements Y
-class XX extends X {
+class XX extends X { // class XX extends X implements Y
   // All of methods in interface Y must be implemented
-  // Here remaining(All - x) methods  of Y must be implemented
+  Here remaining methods of Y (All - x) must be implemented
 }
 ```
 
-### When an Abstract Class extends an Concrete Class
+### When an Abstract Class extends an Concrete Class (Inheritance)
 
 ```java
-public class Animal
-{
-    public final String name;
-    public final int weight;
+public class Animal{
+  public final String name;
+  public final int weight;
 
-    public Animal(String name, int weight)
-    {
-      // ...
-    }
-
-    public void jump()
-    {
-        // ....
-    }
+  public Animal(String name, int weight){ /* ... */ }
+  public void jump() { /* ... */}
 }
 
-public abstract class Mammal extends Animal
-{
-    public Mammal(String name, int weight)
-    {
-        super(name, weight);
-    }
+public abstract class Mammal extends Animal{
+  // Constructors
+  public Mammal(String name, int weight){
+    // SuperClass need to be initialized
+    super(name, weight);
+  }
 
-    public abstract void jumpMammal();
+  public abstract void jumpMammal();
 
-    @Override
-    public final void jump()
-    {
-        jumpMammal();
-    }
+  @Override
+  public final void jump(){
+      jumpMammal();
+  }
 }
 ```
 - Any class that extends `Mammal` is required to override the `jumpMammal()` method, therefore running in the `jump()` method.
 
-### Hierarchies Hierarchy
+### `IS-A` Hierarchies Hierarchy
 
-`IS-A` Relationship中呼叫Method時，最先從該(Current)類別中查找看是否有對應的Method，如果没有才會從父類別去找，檢查是否從父類別繼承，都沒有就要進行強制轉型:
+Relationship中呼叫Method時，最先從該(Current)類別中查找看是否有對應的Method，如果没有才會從父類別去找，檢查是否從父類別繼承，都沒有就要進行強制轉型:
 
 ```java
 Hierarchies Hierarchy
@@ -453,7 +444,8 @@ public static void main(String[] args) {
     
     /** 
       * B中不存在show(D obj)
-      * 但 D extends C -> C extends B -> B存在繼承A的{@code show(C obj)}
+      * 但 D extends C -> C extends B 
+           -> B存在繼承A的{@code show(C obj)}
       * 故 Convert D obj to C obj 
       */
     b.show(d); // A.show(C)
@@ -480,7 +472,7 @@ public static void main(String[] args) {
 | After  java 9| same | + `private` methods, `private static` methods |
 
 ## Java 9 `private` and `private static`   
-1. Private methods can be implemented `static` or non-static meaning that in an interface we are able to create private methods to encapsulate code from both `default` and `static` public method signatures.**
+1. Private methods can be implemented `static` or non-static meaning that in an interface we are able to create private methods to encapsulate code from both `default` and `static` public method signatures.
 2. `private` also means things done on the side, so the user can not see it(coz of encapsulation). That's why we call the public methods a public interface it's all the user will see from the outside.   
 3. `private` is what won't be **reimplemented and accessed** by future programmers using our code.  
 
@@ -488,7 +480,7 @@ public static void main(String[] args) {
 
 Private methods will improve code re-usability inside interfaces and will provide choice to expose only our intended methods implementations to users.   
 - **Private Methods are only accessible within that interface ONLY and cannot be accessed or inherited from an interface to another interface or class.**
-- Private method in `interface` cannot be `abstract` (`private` + `abstract` modifiers together).
+- Private method in `interface` cannot be `abstract`.
 - **Private method can be used(called) only inside `interface` and other `static` and non-static methods in the `interface`.**
 - Private non-static methods cannot be used inside private static methods. (Same as `static` usage)
     - We should use `private` modifier to define these methods and no lesser accessibility than private modifier.
@@ -518,6 +510,8 @@ interface example{
 
 ## Interface & Abstract Class
 - [Further Details](https://stackoverflow.com/questions/1913098/what-is-the-difference-between-an-interface-and-abstract-class)   
+
+
 **A class/an Abstract class can extend one abstract class/class and implements multiple interfaces**
 ```java
 class A extends classX implements interfaceBase1, interfaceBase2{
@@ -653,11 +647,12 @@ PS. **子類別一定會呼叫父類別的Constructor來完成初始化(一般�
 ## `Override`
 
 為了滿足LSP，Override有三個限制
-- `Access-Specifier` : 子類方法訪問權限必須**大於**等於父類方法
-- `return` : 子類方法的返回類型必須是父類方法相同或為**其子類型**
-- `throws` : 子類方法拋出的異常類型必須是父類拋出異常類型或為**其子類型**
+- `Access-Specifier` : 子類方法訪問權限必須**`>=`**父類方法  
+  (`public > protected > private`)
+- `return` : 子類方法的返回類型必須是父類方法**相同**或為**其子類型**
+- `throws` : 子類方法拋出的異常類型必須是**父類拋出異常類型**或為**其子類型**
 
-Annotation `@Override` : 可以讓Compiler幫忙檢查是否滿足上面的三個限制條件
+**Annotation `@Override` : 可以讓Compiler幫忙檢查是否滿足上面的三個限制條件**
 ```java
 // SubClass overrides SuperClass 的func()
 class SuperClass {
@@ -665,7 +660,6 @@ class SuperClass {
         return new ArrayList<>();
     }
 }
-
 class SubClass extends SuperClass {
     
     // ArrayList < List

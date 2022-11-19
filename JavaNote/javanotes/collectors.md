@@ -1,5 +1,4 @@
 # Collectors
-
 - [Collectors](#collectors)
   - [Reference](#reference)
   - [toList, toMap, toSet, toCollection](#tolist-tomap-toset-tocollection)

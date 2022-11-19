@@ -11,9 +11,9 @@
     - [`Collections.singletonMap(key,value)`](#collectionssingletonmapkeyvalue)
   - [Methods](#methods)
     - [entrySet](#entryset)
-    - [get & put](#get--put)
-    - [replace](#replace)
-    - [compute & computeIf ComputeIfAbsent](#compute--computeif-computeifabsent)
+    - [get-OrDefault & put-IfAbsent](#get-ordefault--put-ifabsent)
+    - [replace-All](#replace-all)
+    - [compute-If & compute-IfAbsent](#compute-if--compute-ifabsent)
     - [Merge](#merge)
   - [TreeMap](#treemap)
     - [Methods in SortedMap](#methods-in-sortedmap)
@@ -148,8 +148,7 @@ Set<K> keySet()
 
 ### entrySet
 ```java
-Set<Map.Entry<K,V>> entrySet()
-Map<Integer, String> sites = Map.of(
+Set<Map.Entry<K,V>> entrySet() = Map<Integer, String> sites = Map.of(
         1,"Google",
         2,"Youtube",
         3,"Github"
@@ -157,7 +156,7 @@ Map<Integer, String> sites = Map.of(
 sites.entrySet().forEach(System.out::println);
 ```
 
-### get & put
+### get-OrDefault & put-IfAbsent
 
 ```java
 V get(Object key)
@@ -170,7 +169,7 @@ V put(K key, V value)
 void putAll(Map<? extends K,? extends V> map)
 ```
 
-### replace
+### replace-All
 
 `V replace(K key, V value)`  
 - Replaces the entry for the specified key only if it is currently mapped to some value.
@@ -184,7 +183,7 @@ maps.replaceAll((key, value) -> value.toUpperCase());
 ```
 
 
-### compute & computeIf ComputeIfAbsent
+### compute-If & compute-IfAbsent
 
 **If key is not null then compute (operate) this key,value pair.**
 
@@ -204,7 +203,6 @@ assertEquals((long)stringLength.computeIfAbsent("John", s -> s.length()), 4);
 assertEquals((long)stringLength.get("John"), 4);
 ```
 
-
 `V computeIfPresent(K key, BiFunction<? super K,? super V,? extends V> remappingFunction)`
 If the value for the specified key is present and non-null, attempts to compute a new mapping given the key and its current mapped value.
 
@@ -218,10 +216,11 @@ Map<String, String> countries = Map.of(
     "Canberra", "Australia",
     "Madrid", "Spain"
 );
-//                                           key     newValue
-String returnedValue = countries.merge("Washington", "USA", (oldValue, newValue) -> oldValue + "/" + newValue);
-```
 
+String returnedValue = countries.merge(
+  //    key   :  newValue
+  "Washington", "USA", (oldValue, newValue) -> oldValue + "/" + newValue);
+```
 ## TreeMap 
 
 The class implements Map interfaces including `NavigableMap`, `SortedMap`, and extends `AbstractMap` class.

@@ -1,5 +1,13 @@
 # util
 
+- [util](#util)
+  - [Collection](#collection)
+  - [Interface List](#interface-list)
+  - [Interface queue](#interface-queue)
+  - [Interface Deque](#interface-deque)
+  - [Interface NavigableSet](#interface-navigableset)
+  - [Interface TreeSet](#interface-treeset)
+
 ## Collection
 
 Collection supports default `Stream<E> parallelStream()` and `default Stream<E> stream()`

@@ -145,12 +145,22 @@ public class Demo {
 
 ### Static Class (Typescript doesn't have static class)
 
+An instance of an inner class cannot be created without an instance of the outer class. 
+
+Therefore, an inner class instance can access all of the members of its outer class, **without using a reference to the outer class instance**.
+
+For this reason, inner classes can help make programs simple and concise. 
+
 Static nested class may be instantiated without instantiating its outer class.
 - **The static class can access only the static members of the OuterClass**.
 - Inner classes can access Both static and non-static members of the outer class. 
+
+
 ```java
 public class A{
-    // ...
+
+    public final static String filedA = "FieldA";
+    
 
     public class nonStaticClass{
         //..
@@ -164,6 +174,7 @@ public class A{
 To initialize these inner classes 
 ```java
 A.staticClass staticClassObj = new A.staticClass();   
+
 A.nonStaticClass nonStaticCLassObj = new A.new nonStaticObj();   
 ```
 

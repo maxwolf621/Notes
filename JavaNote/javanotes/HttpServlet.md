@@ -1,11 +1,14 @@
 # HTTP
 [http, session and cookie](https://tw.alphacamp.co/blog/cookie-session-difference)   
-[http security](https://tw.alphacamp.co/blog/http-https-difference)  
+[http security](https://tw.alphacamp.co/blog/http-https-difference)    
+[HTTP HEADER](https://byvoid.com/zht/blog/http-keep-alive-header/)
 
 - [HTTP](#http)
   - [Session And Cookie](#session-and-cookie)
     - [Stateless Protocol](#stateless-protocol)
-  - [Session for stateless HTTP](#session-for-stateless-http)
+  - [stateless HTTP Session](#stateless-http-session)
+  - [Status Code](#status-code)
+  - [HTTP Request & Response](#http-request--response)
   - [HTTP METHOD](#http-method)
     - [HTTP敏感資訊](#http敏感資訊)
     - [發送的資料長度](#發送的資料長度)
@@ -17,7 +20,7 @@
       - [DIFFERENCE BTW `POST` AND `PUT`](#difference-btw-post-and-put)
     - [CONCLUSION](#conclusion)
     - [REST Api](#rest-api)
-  - [SPA and MVC Structure](#spa-and-mvc-structure)
+  - [Structure of SPA MVC](#structure-of-spa-mvc)
       - [MVC](#mvc)
       - [SPA](#spa)
   - [Java Methods for Servlet](#java-methods-for-servlet)
@@ -32,21 +35,22 @@
 - [HTTP METHODS](https://ithelp.ithome.com.tw/articles/10227433)  
 
 **A stateless protocol does not require the server to retain information or status about each user for the duration of multiple requests.**  
-But some web applications may have to track the user's progress from page to page 
+But some web applications may have to track the user's progress from page to page.
 
-For Example   
-- WHEN a Web Server is **required to customize the content** of a web page for a user   
-  > Solutions for these cases include (THESE are important for `Oauth2` concept):
-    - THE USE of HTTP cookies. (重點)  
-    - Server side sessions     (重點)  
-    - Hidden variables (WHEN the current page contains a form)  
-    - URL-rewriting using URI-encoded parameters, e.g. `/index.php?session_id=some_unique_session_code`.  
+For Example when a Web Server is **required to customize the content** of a web page for a user    
+Solutions for these cases include:
+- THE USE of HTTP cookies.   
+- Server sessions     
+- Hidden Data (WHEN the current page contains a form)  
+- URL-rewriting using URI-encoded parameters, e.g. `/index.php?session_id=some_unique_session_code`.  
 
-## Session for stateless HTTP
+## stateless HTTP Session 
 
-讓stateless的HTTP能得知使用者狀態的方法；簡單來說，就是Servlet透過Header的屬性`Set-Cookie`，把使用者的狀態(STATE)紀錄成儲存在使用者電腦(LOCAL STORAGE或BROWSER CACHE)裡的Cookie，當(Client's)Browser在每一次發送Request時，都會在Header設定Cookie屬性，把Cookie帶上，(Web Server)Servlet就能藉由Header檢視Cookie的內容，得知瀏覽器該使用者的狀態STATE；而像是「從登入到登出」、「從開始瀏覽網頁到 Cookie 失效」，或是**任何伺服器能認出使用者狀態的時間區間，就叫做Session**
+Session : **「從登入到登出」、「從開始瀏覽網頁到 Cookie 失效」，或是任何伺服器能認出使用者狀態的時間區間，就叫做Session**，在Stateless HTTP Protocol中Server透過Session來得知使用者狀態。
 
-Browser's response
+Servlet 透過 Header 的屬性`Set-Cookie`，把使用者的狀態(STATE)紀錄成儲存在使用者電腦(LOCAL STORAGE或BROWSER CACHE)裡的Cookie，當(Client端)Browser每次發送Request時，都會在Header設定Cookie屬性，把Cookie帶上，(Server端)Servlet就能藉由Header檢視Cookie的內容，得知瀏覽器該使用者的狀態STATE。
+
+Sever's response
 ```json 
 HTTP/1.0 200 OK
 Content-type: text/html
@@ -55,13 +59,43 @@ Set-Cookie: tasty_cookie=strawberry
 [page content]
 ```
 
-After browser receives the response from server and stores the cookie in local storage.  
+After Browser receives the response from server and stores the cookie in its local storage.  
 ```json 
 GET /sample_page.html HTTP/1.1
 Host: www.example.org
 Cookie: yummy_cookie=choco; tasty_cookie=strawberry
 ```
+
+## Status Code
+
+1XX 訊息類 (收到請求，請求者繼續執行操作) 
+2XX 成功類 (操作被成功接受並處理)，例如：200 成功回應
+3XX 重定向類 (需進一步操作才能完成)，例如：301 成功轉向
+4XX 客戶端錯誤類 (請求語法錯誤或無法完成請求)，例如：404 找不到資源
+5XX 伺服器錯誤類 (後端的問題)，例如：500 伺服器錯誤
+
+HTTP Status Code 301 - Permanent Redirect   
+A 301 redirect should be utilized any time one URL needs to be redirected to another permanently.  A 301 redirect means that visitors and bots that land on that page will be passed to the new URL.
+
+HTTP Status Code 302 - Temporary Redirect   
+A 302 redirect is similar to a 301 in that visitors and bots are passed to the new page, but link equity may not be passed along. **We do not recommend using 302 redirects for permanent changes**. Using 302s will cause search engine crawlers to treat the redirect as temporary, meaning that it may not pass along the link equity that the magical 301 does.
+
+HTTP Status Code 404 - Not Found   
+This means the file or page that the browser is requesting wasn’t found by the server. 404s don’t indicate whether the missing page or resource is missing permanently or only temporarily.
+
+HTTP Status Code 410 - Gone
+A 410 is more permanent than a 404; it means that the page is gone. The page is no longer available from the server and no forwarding address has been set up.  
+HTTP Status Code 500 - Internal Server Error  
+HTTP Status Code 503 - Service Unavailable  
+
+
+## HTTP Request & Response
+
+必備 BODY & HEADER
+![圖 1](../../images/f028afe8433f274d0615b31354f979a274ee24ef7d26f6f6493161970728e507.png)  
+
 ## HTTP METHOD
+
 - [POST AND GET](https://reurl.cc/O45203)
 
 在`HTTP 1.1`的版本中定義了八種 Method (方法)
@@ -75,8 +109,8 @@ DELETE
 TRACE
 CONNECT
 ```
-- POST : 信封(地址) + 信(內容) **安全**   
-- GET  : 明信片(地址+內容)     **不安全**  
+- POST : 信封(地址`uri`) + 信(`Body`內容) **安全**   
+- GET  : 明信片(地址`uri`+內容`Body`)     **不安全**  
 
 ![image](https://user-images.githubusercontent.com/68631186/129292506-74e75a8a-d9c9-46dd-91bb-f5fa73d314a5.png)  
 
@@ -106,7 +140,7 @@ CONNECT
 
 另一個問題在於`HTTP`的 `Referer`標頭，這是用來表示從(source)哪裡連結到目前的網頁(destination)，如果你的網址列出現了敏感資訊，之後連接到網站B，該網址就有可能透過`Referer`標頭得到敏感資訊  
 `HTTP/1.1` 對`POST`的規範，是要求指定的`URI`「接受」請求(REQUEST)中附上的實體（`Entity`），像是儲存為檔案、新增為資料庫中的一筆資料等... 
-由於要求伺服器接受的資訊是附在請求本體（`Body`如下圖）而不是在`URI`，瀏覽器網址列不會顯示附上的資訊，傳統上敏感資訊也因此常透過`POST`發送  
+由於要求伺服器接受的資訊是附在請求本體（`Body`如下圖）而不是在`URI`，瀏覽器網址列不會顯示附上的資訊，**傳統上敏感資訊也因此常透過`POST`發送** 
 ![image](https://user-images.githubusercontent.com/68631186/127017382-aa7cbe05-8493-425e-b2fa-17a7ac85d411.png)  
 
 ### 發送的資料長度 
@@ -209,10 +243,9 @@ Information State stays the same after duplicates HTTP methods request/response 
 
 
 ### REST Api 
-
-- Keyword :  
+  
 `減少重複性`,    
-`使HTTP protocol語意話`,   
+`使HTTP protocol語意化`,   
 `資源對應的URL`,   
 `Stateless`  
 
@@ -227,33 +260,33 @@ Information State stays the same after duplicates HTTP methods request/response 
 透過動詞(HTTP Methods)、名詞(URI/URL，代表目標資源)、內容型態(回應的內容，HTML、XML、JSON、etc.), **讓Stateless HTTP protocol能藉由 REST 的語意化設計，攜帶所有的狀態資訊降低對網路通訊的重複請求資源消耗   
 
 透過RESTful API的設計風格，**每個資源(Resource)都會得到一個到對應的位置（URL），並能透過 HTTP 語意化的方法**
-```diff
-   動詞     名詞
-+ [POST] /bookmarks 
+```html
+動詞     名詞
+[POST] /bookmarks 
 <!-- 是用來新增一筆資 -->
 
-! [GET] /bookmarks/1 
+[GET] /bookmarks/1 
 <!-- 用來取得 ID 為 1 的書籤-->
 
-! [PUT] /bookmarks/1 
+[PUT] /bookmarks/1 
 <!-- 用來更新 ID 為 1 的書籤資料-->
 
-! [DELETE] /bookmarks/1  
+[DELETE] /bookmarks/1  
 <!-- 用來刪除 ID 為 1 的書籤資料-->
 
-! [GET] http://mytube.com/v1/videos/            
+[GET] http://mytube.com/v1/videos/            
 <!-- [GET]取得 video list -->
 
-+ [POST] http://mytube.com/v1/videos/           
+[POST] http://mytube.com/v1/videos/           
 <!-- [POST]新增 video -->
 
-! [GET] http://mytube.com/v1/videos/MgphHyGgeQU 
+[GET] http://mytube.com/v1/videos/MgphHyGgeQU 
 <!-- [GET]取得 指定ID[MgphHyGgeQU] 的video -->
 
-! [PUT] http://mytube.com/v1/videos/MgphHyGgeQU 
+[PUT] http://mytube.com/v1/videos/MgphHyGgeQU 
 <!-- [PUT]修改 指定ID[MgphHyGgeQU] 的video -->
 
-! [DELETE] http://mytube.com/v1/videos/MgphHyGgeQU 
+[DELETE] http://mytube.com/v1/videos/MgphHyGgeQU 
 <!--[DELETE]刪除 指定ID[MgphHyGgeQU] 的video -->
 ```
 
@@ -261,8 +294,9 @@ Information State stays the same after duplicates HTTP methods request/response 
 [HTTP SEO](https://ithelp.ithome.com.tw/articles/10225117)  
 
 
-## [SPA and MVC Structure](https://ithelp.ithome.com.tw/articles/10224772)  
+## Structure of SPA MVC
 
+- [SPA and MVC Structure](https://ithelp.ithome.com.tw/articles/10224772)  
 #### MVC
 ![](https://ithelp.ithome.com.tw/upload/images/20200908/20111380cEB9Gr0Y4q.png)  
 #### SPA
@@ -541,7 +575,7 @@ response.sendRedirect("/Longin.jsp");
 
 ### LIFE TIME OF SERVERLETCONTEXT AND REQUEST
 ServletContext：
-- INITIALIZED：SNICE SERVER STARTS
+- INITIALIZED：SINCE SERVER STARTS
 - DESTRUCTION：WHEN SERVER CLOSES 
 - SCOPE : WHOLE WEB APPLICATION
 

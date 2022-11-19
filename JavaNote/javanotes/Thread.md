@@ -7,6 +7,8 @@
   - [Program, Process and Thread](#program-process-and-thread)
   - [Tips](#tips)
   - [Java Thread Management `util.concurrent.Executors`](#java-thread-management-utilconcurrentexecutors)
+  - [Threads In Java (`Runnable`, `Callable` and `Thread`)](#threads-in-java-runnable-callable-and-thread)
+    - [extends `Thread`](#extends-thread)
     - [implements `Runnable`](#implements-runnable)
     - [implements `Callable<T>`](#implements-callablet)
   - [Thread Methods](#thread-methods)
@@ -61,7 +63,7 @@
 **程式碼的集合**，用以解決特定的問題  
 
 - Process(相當於Object)  
-相當於Object的variable，**由Program所產生的執行個體,一個Program可以同時執行多次,OS給予執行程式的資源與空間的排程單位**，一個Program產生多個Process
+相當於Object的variable，**執行中的Program,一個Program可以同時執行多次,OS給予執行程式的資源與空間的排程單位**，一個Program產生多個Process
   - 一個Memory Space。  
   **，不同Process的Memory Space也不同，彼此看不到對方的Memory Space**
   - 內含一個以上的Threads

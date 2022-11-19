@@ -3,7 +3,7 @@
 
 - [Function & BiFunction](#function--bifunction)
   - [Ref](#ref)
-  - [Function](#function)
+  - [Function<T,R>](#functiontr)
   - [BiFunction](#bifunction)
 
 ## Ref
@@ -31,7 +31,7 @@ public static
 Integer curriedResult = curry().apply(1).apply(2).apply(3);
 ```
 
-## Function
+## Function<T,R>
 
 ```java
 public interface Function<T, R> {
@@ -70,7 +70,7 @@ public int compute(int a, Function<Integer, Integer> function) {
 // method with compose 
 public int compute(int a, Function<Integer, Integer> itSelf, 
                     Function<Integer, Integer> other){
-    return itSelf.compose(other).apply(a);
+    return itSelf.compose(other).apply(a)
 }
 example.compute(2, value -> value * 3, value -> value * value);
 // (2*2)*3

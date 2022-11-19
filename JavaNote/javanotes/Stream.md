@@ -17,8 +17,8 @@
     - [range & rangeClosed](#range--rangeclosed)
   - [`static <T> Stream<T> generate(Supplier<T> s)`](#static-t-streamt-generatesuppliert-s)
   - [mapToObj](#maptoobj)
-  - [parallel](#parallel)
   - [mapToInt, mapToLong ,mapToDouble,](#maptoint-maptolong-maptodouble)
+  - [parallel](#parallel)
   - [intermediate operations](#intermediate-operations)
   - [Terminal Operation](#terminal-operation)
     - [`all/none/any-Match`](#allnoneany-match)
@@ -234,11 +234,29 @@ IntStream.range(1, 4) // IntStream
     .forEach(System.out::println);
 
 String testString = "String";
-Stream<String> stringStream = testString.codePoints()
-  .mapToObj(c -> String.valueOf((char) c));
-Stream<Character> characterStream = testString.chars()
-  .mapToObj(c -> (char) c);
+Stream<String> stringStream = testString.codePoints().mapToObj(c -> String.valueOf((char) c));
+Stream<Character> characterStream = testString.chars().mapToObj(c -> (char) c);
 ```
+## mapToInt, mapToLong ,mapToDouble,
+
+```java
+IntStream mapToInt(ToIntFunction<? super T> mapper)
+LongStream mapToLong(ToLongFunction<? super T> mapper)
+DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper)
+```
+```java
+Stream
+    // Stream<String>
+    .of("a1", "a2", "a2") 
+    // Stream<R> map(Function<? super T,? extends R> mapper)
+    .map(s -> s.substring(1)) // "1", "2", "2"
+    // IntStream mapToInt(ToIntFunction<? super T> mapper)
+    .mapToInt(Integer::parseInt) // 1,2,2
+    // Optional<T> max(Comparator<? super T> comparator)
+    .max() // 3
+    .ifPresent(System.out::println);  // 2
+```
+
 ## parallel
 
 Synchronized
@@ -255,28 +273,6 @@ IntStream.range(5, 12).parallel().forEach(
  */
 ```
 
-## mapToInt, mapToLong ,mapToDouble,
-
-```java
-IntStream mapToInt(ToIntFunction<? super T> mapper)
-LongStream mapToLong(ToLongFunction<? super T> mapper)
-DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper)
-```
-
-```java
-Stream
-    // Stream<String>
-    .of("a1", "a2", "a2") 
-    // Stream<R> map(Function<? super T,? extends R> mapper)
-    .map(s -> s.substring(1)) // "1", "2", "2"
-    // IntStream mapToInt(ToIntFunction<? super T> mapper)
-    .mapToInt(Integer::parseInt) // 1,2,2
-    // Optional<T> max(Comparator<? super T> comparator)
-    .max() // 3
-    .ifPresent(System.out::println);  // 2
-```
-
-
 ## intermediate operations
 
 ```java
@@ -287,9 +283,12 @@ Stream<T> distinct()
 Stream<T> sorted(Comparator<? super T> comparator)
 Stream<R> map(Function<? super T,? extends R> mapper)
 Stream<T> peek(Consumer<? super T> action)
-long count()
+long      count()
 
-// filter
+/**
+ * filter
+ *
+ */
 List<String> s = Arrays.asList(
                 new String("d2"),
                 new String("d3"),
@@ -298,16 +297,21 @@ List<String> s = Arrays.asList(
                 new String("c"));
 
 s.stream().filter(
-        (a) -> a.equals("b3")).forEach(System.out::println);
-// if filter with { ... } then you must write if & else
+                (a) -> a.equals("b3")
+            ).forEach(
+                System.out::println
+            );
+
+// if filter with bracket then you must write if & else
 Stream.of("d2", "a2", "b1", "b3", "c")
         .filter((o) -> {
             // o : string type 
             if (o.equals("b3")){
                 return true;
             }else return false;
-         }).forEach(a -> System.out.println(o.getClass().getName()));
-
+        }).forEach(
+            a -> System.out.println(o.getClass().getName())
+        );
 
 List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
 // findFirst & findAny
@@ -325,7 +329,11 @@ Integer min = list.stream().min(Integer::compareTo).get(); //1　　
 Stream<Student> stdStream = Stream.of(
                     new Student(1, "a", 19, "male", 88), 
                     new Student(2, "a", 18, "female", 90));
-List<Student> stds = stdStream.peek(o -> o.setAge(100)).collect(Collectors.toLis());
+List<Student> stds = stdStream.peek(
+                            o -> o.setAge(100)
+                        ).collect(
+                            Collectors.toLis()
+                        );
 // all student's age are 100
 ```
 
@@ -546,15 +554,15 @@ class Bar {
 
 // create foos
 List<Foo> foos = new ArrayList<>();
-IntStream
-    .range(1, 4)
-    .forEach(i -> foos.add(new Foo("Foo" + i)));
+IntStream.range(1, 4).forEach(
+            i -> foos.add(new Foo("Foo" + i))
+        );
 
 // create bars
 foos.forEach(f ->
-    IntStream
-        .range(1, 4)
-        .forEach(i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name))));
+    IntStream.range(1, 4).forEach(
+        i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name)))
+    );
 ```
 
 `flatMap` accepts a function which has to return a stream of objects `stream<object>`.  
