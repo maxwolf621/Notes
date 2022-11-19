@@ -1,31 +1,43 @@
+# Oauth2 FLOW
+
+- [Oauth2 FLOW](#oauth2-flow)
+  - [Reference](#reference)
+  - [Basic Oauth2 User Login Flow via GITHUB](#basic-oauth2-user-login-flow-via-github)
+  - [Endpoints](#endpoints)
+  - [Oauth2 Setup](#oauth2-setup)
+    - [Maven](#maven)
+    - [Client-registration configuration in `application.properties`](#client-registration-configuration-in-applicationproperties)
+    - [SpringBoot Web Security OAuth2 Configuration](#springboot-web-security-oauth2-configuration)
+  - [Configure The OAuth2 Client via Java](#configure-the-oauth2-client-via-java)
+    - [MODEL of Client Registration](#model-of-client-registration)
+    - [ClientRegistrationRepository](#clientregistrationrepository)
+  - [Oauth2 Authentication Configuration](#oauth2-authentication-configuration)
+  - [`OAuth2AuthorizedClientProvider`](#oauth2authorizedclientprovider)
+    - [`OAuth2AuthorizedClient`](#oauth2authorizedclient)
+  - [`OAuth2AccessToken`](#oauth2accesstoken)
+  - [AuthorizedClientManager](#authorizedclientmanager)
+  - [`contextAttributeMapper`](#contextattributemapper)
+    - [`AuthorizedClientServiceOAuth2AuthorizedClientManager`](#authorizedclientserviceoauth2authorizedclientmanager)
+  - [`authorizationRequestRepository` (Authorization Endpoint)](#authorizationrequestrepository-authorization-endpoint)
+    - [Create a custom AuthorizationRequestRepository](#create-a-custom-authorizationrequestrepository)
+    - [CommonOAuth2Provider](#commonoauth2provider)
+  - [Oauth2 Authentication Introspecter to form valid `Oauth2AuthenticatedPrincipal`](#oauth2-authentication-introspecter-to-form-valid-oauth2authenticatedprincipal)
+    - [Custom Introspector](#custom-introspector)
+
+## Reference
 [More Details](https://datatracker.ietf.org/doc/html/rfc6749#section-1.1)  
 [Good Explanation](http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html)  
-[Google API login SetUp](https://xenby.com/b/245-%E6%95%99%E5%AD%B8-google-oauth-2-0-%E7%94%B3%E8%AB%8B%E8%88%87%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)  
+[Google API login SetUp](shorturl.at/bcIR1)  
 [The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)  
 [Attributes of Different Third Parties](https://blog.yorkxin.org/posts/oauth2-implementation-differences-among-famous-sites.html)
 
 ## Basic Oauth2 User Login Flow via GITHUB
 - [SpringBoot github oauth2login](https://medium.com/swlh/spring-boot-oauth2-login-with-github-88b178e0c004)  
     - [Demo](https://github.com/maxwolf621/OauthUser/tree/main/demo)  
+![image](https://user-images.githubusercontent.com/68631186/124995577-249f8c80-e07a-11eb-84ea-d523765bf523.png)
 
-# Oauth2 FLOW
 
-```diff
-User         Client(frontend)   SpringAPI         Provider
- '-----1------------+---------------+------->-------'
-                                    +<------2-------'
-	                            '-------3------>+
-                                    +<------4-------'
-                                    '-------5-------+
 ```
-1. `User` access `Client`，`Client` redirects to `Provider`(e.g. GITHUB, ...)
-   - `Provider` asks `User` for granting `Client` to access third party application account (**User enters 3rd part application account**) 
-2. `Provider` response HTTP payload withing Authorization Code after the user successfully logs in 3rd part account
-3. `Spring API` uses Authorization Code to fetch access token from `Provider`
-4. `Provider` _Authenticates_ Authorization Code and responses _Access Token_ to `Spring API`
-5. `Spring API` calls UserInfo-API with Access Token to access resource in `Provider`
-
-```diff
 		     +----------+ 
 		     | Resource |
 		     |   Owner  |
@@ -34,8 +46,8 @@ User         Client(frontend)   SpringAPI         Provider
 			  |
 			 (B)
 			  |
--		     +----|-----+          Client Identifier      +---------------+
--		     |          |>---(A)-- & Redirection URI ---->|               |
+		     +----|-----+          Client Identifier      +---------------+
+ 		     |          |>---(A)-- & Redirection URI ---->|               |
 		     |  User-   |                                 | Authorization |
 		     |  Agent   |>---(B)-- User authenticates --->|     Server    |
 		     |          |                                 |               |
@@ -46,9 +58,9 @@ User         Client(frontend)   SpringAPI         Provider
 		       |    |                                         |      |
 		       ^    v                                         |      |
 		     +---------+                                      |      |
-	+-----+	     |         |>---(D)-- Authorization Code ---------'      |
-	|user |-(.)->|  Client |          & Redirection URI                  |
-	+-----+	     |         |                                             |
++-----+	     |         |>---(D)-- Authorization Code ---------'      |
+|user |----->|  Client |          & Redirection URI                  |
++-----+	     |         |                                             |
 		     |         |<---(E)----- Access Token -------------------'
 		     +---------+       (w/ Optional Refresh Token)
 ```
@@ -57,11 +69,10 @@ User         Client(frontend)   SpringAPI         Provider
 
 - Resource Owner (Your third party application Account)  
 - Client (The Application you are currently using (e.g. backend+frontend))  
-- (Identity) Provider (Third Party Application authenticates the identity : Google, Facebook, Twitter, etc...)  
+- (Identity) Provider (Google, Facebook, Twitter, etc...)  
 - Resource Server (Third Party Application's Server, e.g. Authorization Server, Resource Server, etc ... )  
-- Resources (Resources in third party application that you are trying to access via the 3rd part application account)  
+- Resources (3rd party account's attributes)  
 
-**(.)** The User Accesses The Client (The Spring Application(e.g. frontend)) 
 
 **(A)** The client initiates the flow by **directing the resource owner's user-agent to the authorization endpoint**.
 - The client includes these information and offers them to provider
@@ -87,7 +98,7 @@ For example :
 
 **(E)** The authorization server authenticates the client, validates the authorization code, and ensures that the redirection URI received matches the URI used to redirect the client in step (C). **If valid, the authorization server responds back with an access token and, optionally, a refresh token.**  
 
-## Endpoint
+## Endpoints
 - [Protocol Endpoints](https://datatracker.ietf.org/doc/html/rfc6749#section-3)  
 
 ![image](https://user-images.githubusercontent.com/68631186/122627719-db47c700-d0e3-11eb-9c9b-9c8f3743c623.png)  
@@ -97,12 +108,12 @@ Authorization Server issues Authorization Grant (intercepted by `OAuth2Authoriza
 - **Redirection Endpoint(used by authorization server)**  
 Client receives Authorization Grant(intercepted by `LoginAuthenticationFilter`)
 
-- Token Endpoint  
+- **Token Endpoint** 
 Authorization Server issues Access Token
 
 ## Oauth2 Setup 
 
-### in Maven  
+### Maven  
 
 ```xml
 <dependency>
@@ -110,11 +121,11 @@ Authorization Server issues Access Token
   <artifactId>spring-boot-starter-oauth2-client</artifactId>
 </dependency>
 ```
-### Add client-registration details in `application.properties`
-```
-spring.security.oauth2.client.registration.github.client-id = 
-spring.security.oauth2.client.registration.github.client-secret =
-spring.security.oauth2.client.registration.github.redirect-uri = 
+### Client-registration configuration in `application.properties`
+```xml
+spring.security.oauth2.client.registration.github.client-id = ...
+spring.security.oauth2.client.registration.github.client-secret = ...
+spring.security.oauth2.client.registration.github.redirect-uri = ...
 ```
 
 ### SpringBoot Web Security OAuth2 Configuration  
@@ -134,7 +145,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 }
 ```
-
 Accessing default host `localhost:8080` it will direct to the AuthorizedEndpoint (login page of the 3rd party application) after execute `mvn spring boot:run` 
 
 After the user entered the password and the email of the 3rd party application account, it might have two results
@@ -142,20 +152,23 @@ After the user entered the password and the email of the 3rd party application a
 2. It succeeded then the request sent by client is getting handled by `OAuth2AuthorizationRequestRedirectFilter`
 
 Internally the implementation which implements `doFilterInternal` that matches against the `/oauth2/authorization/github` URI and redirect the request to
-```diff
-+ https://github.com/login/oauth/authorize?
-- response_type=code&
-- client_id=<clientId>&
-- scope=read:user&state=<state>&
-- redirect_uri=http://localhost:8080/login/oauth2/code/github
 ```
-- `redirect_uri` is same as the one we registered our `application.properties`.  
++ https://github.com/login/oauth/authorize?
+  response_type=code&
+  client_id=<clientId>&
+  scope=read:user&state=<state>&
+  redirect_uri=http://localhost:8080/login/oauth2/code/github
+```
+- `redirect_uri` is same as the one we configured our `application.properties`.  
 
 After the User successfully authenticates against GitHub, the user will be redirected to (default) `http://localhost:8080/login/oauth2/code/github` with the authentication code in the request parameters.  
+
 This will be handled by the `OAuth2LoginAuthenticationFilter`, which will perform a `POST` request to the GitHub API to get an Access Token.  
 With AccessToken the Spring API calls implementation (e.g `Oauth2User` ) to access resource of Provider  
 
-# Configure The OAuth2 Client
+## Configure The OAuth2 Client via Java 
+
+We can configure the oauth2 client via Java instead of `application.properties`  
 
 ```java
 @EnableWebSecurity
@@ -174,10 +187,8 @@ public class OAuth2ClientSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
-- We can configure client registration via java configuration or `application.properties`  
-
-## MODEL of Client Registration 
-A client registration holds these (The Most Important) information  
+### MODEL of Client Registration 
+A client registration holds these information  
 ```diff
 - client id 	
 - client secret
@@ -190,9 +201,10 @@ A client registration holds these (The Most Important) information
 
 ### ClientRegistrationRepository   
 
-**This repository provides the ability to retrieve a sub-set of the primary client registration information, which is stored with the Authorization Server.* 
+This repository provides the ability to retrieve a sub-set of the primary client registration information, which is stored with the Authorization Server.
 
-- Spring Boot 2.x auto-configuration binds each of the properties under `spring.security.oauth2.client.registration.[registrationId]` to an instance of `ClientRegistration` and then composes each of the `ClientRegistration` instance(s) within a `ClientRegistrationRepository`. [EXAMPLE CODE](https://www.baeldung.com/spring-security-5-oauth2-login)  
+**Spring Boot 2.x auto-configuration binds each of the properties under `spring.security.oauth2.client.registration.[registrationId]` to an instance of `ClientRegistration` and then composes each of the `ClientRegistration` instance(s) within a `ClientRegistrationRepository`.**
+- [EXAMPLE CODE](https://www.baeldung.com/spring-security-5-oauth2-login)  
 
 For example :: get the registration information of client(the application) stored in Google(third part application) via `clientRegistrationRepository`
 ```java
@@ -486,21 +498,20 @@ public OAuth2AuthorizedClientManager authorizedClientManager(
     return authorizedClientManager;
 }
 ```
-
 ## `authorizationRequestRepository` (Authorization Endpoint)
 
 The `authorizationRequestRepository` is responsible for the persistence of the `OAuth2AuthorizationRequest` from the time the Authorization Request is initiated to the time the Authorization Response is received (intercepted by `OAuth2LoginAuthenticationFilter`).
 
-- It is Used by the `OAuth2AuthorizationRequestRedirectFilter` for persisting the `OAuth2AuthorizationRequest` before it initiates the authorization code grant flow.
-  - As well, used by the `OAuth2LoginAuthenticationFilter` for resolving the associated Authorization Request when handling the callback of the Authorization Response.  
+- It is Used by the `OAuth2AuthorizationRequestRedirectFilter` for persisting the `OAuth2AuthorizationRequest` **before it initiates the authorization code grant flow.**  
+As well, used by the `OAuth2LoginAuthenticationFilter` for resolving the associated Authorization Request when handling the callback of the Authorization Response.  
 
-REVIEW of `OAuth2AuthorizationRequest`  
-- A representation of an OAuth 2.0 **Authorization Request for the authorization code grant type or implicit grant type**. [code](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/core/endpoint/OAuth2AuthorizationRequest.html)
+REVIEW of `OAuth2AuthorizationRequest` [code](https://reurl.cc/oZg2qg)
+- A representation of an **OAuth 2.0 Authorization Request for the authorization code grant type or implicit grant type**. 
 
 
-### Create a custom AuthorizationRequestRepository  
+### custom AuthorizationRequestRepository  
 
-Configure HttpSecurity to allow an custom Authorization Request Repository 
+Configure `HttpSecurity` to allow an custom Authorization Request Repository 
 ```java
 @EnableWebSecurity
 public class OAuth2ClientSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -518,7 +529,9 @@ public class OAuth2ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-Oauth2User has default provider called `CommonOAuth2Provider` to fetch protected resource from google, github, ...
+### CommonOAuth2Provider
+
+`Oauth2User` has default provider called `CommonOAuth2Provider` to fetch protected resource from google, github, ...
 ```java
 public enum CommonOAuth2Provider {
 

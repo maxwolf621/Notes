@@ -2,13 +2,27 @@
 
 [Oauth2 Filter Code](https://www.gushiciku.cn/pl/pnSK/zh-/tw)  
 
+- [Filter For Oauth2User](#filter-for-oauth2user)
+	- [`OAuth2AuthorizationRequestRedirectFilter`](#oauth2authorizationrequestredirectfilter)
+	- [DefaultOAuth2AuthorizationRequestResolver](#defaultoauth2authorizationrequestresolver)
+		- [`expandRedirectUri`](#expandredirecturi)
+		- [`UrlUtil`](#urlutil)
+			- [`HttpServletRequest#getRequestURI`](#httpservletrequestgetrequesturi)
+		- [`OAuth2AuthorizationRequest#getGrantType()`](#oauth2authorizationrequestgetgranttype)
+	- [OAuth2LoginAuthenticationFilter](#oauth2loginauthenticationfilter)
+			- [removeAuthorizationRequest](#removeauthorizationrequest)
+		- [Authenticating Access Token](#authenticating-access-token)
+	- [Conclusion of the filters](#conclusion-of-the-filters)
+
 There are two important filters for OAuth2 Flow    
 `Oauth2AuthorizationRequestRedirectFilter` (If the authorization grant is valid it goes `Oauth2LoginAuthenticationFilter`)
 
 ## `OAuth2AuthorizationRequestRedirectFilter` 
 
-When Client asks for Authorization grant via `httpSerletReq` , then `OAuth2AuthorizationRequestRedirectFilter` will _resolve/parse_ the request
-- The request contains `client_id`、`scope` and `state` to form a callback `redirect_url` and redirect to third party authorized's url for asking the grant from resource owner 
+When Client asks for Authorization grant via `httpServletReq` , then `OAuth2AuthorizationRequestRedirectFilter` will _resolve/parse_ the request
+
+- The request contains `client_id`、`scope` and `state` to form a callback `redirect_url`
+- Redirect to third party authorized's url for asking the grant from resource owner 
  
 The `OAuth2AuthorizationRequestRedirectFilter` uses an `OAuth2AuthorizationRequestResolver` to **RESOLVE** `HttpServletRequest` an `OAuth2AuthorizationRequest`    
 
@@ -42,17 +56,15 @@ public class OAuth2AuthorizationRequestRedirectFilter extends OncePerRequestFilt
   }
 }   
 ```
-
-```java
-DefaultOAuth2AuthorizationRequestResolver
-+--extract {@code registrationId} from "/oauth2/authorization/{registrationId}"
-   '--use registrationId
-      build Oauth2AuthorizationRequest 
-      for the associated ClientRegistration
-```
-- The default implementation `DefaultOAuth2AuthorizationRequestResolver` matches on the (default) path `/oauth2/authorization/{registrationId}` extracting the `registrationId` (from `ClientRegistration`) and new the `OAuth2AuthorizationRequest` for the associated `ClientRegistration`.  
+## DefaultOAuth2AuthorizationRequestResolver
 
 **`DefaultOAuth2AuthorizationRequestResolver` determines to** give a grant or not and then return instance of the `AuthorizationRequest` to `OAuth2AuthorizationRequestRedirectFilter` 
+```java
+DefaultOAuth2AuthorizationRequestResolver
+```
+1. EXTRACT `registrationId` from `/oauth2/authorization/{registrationId}`
+2. USE `registrationId` to build `Oauth2AuthorizationRequest` for the associated ClientRegistration
+
 
 ```java
 /**
@@ -60,15 +72,14 @@ DefaultOAuth2AuthorizationRequestResolver
   *         from the provided HttpServletRequest 
   *         or null if not available.
   */
-OAuth2AuthorizationRequest resolve(
-	javax.servlet.http.HttpServletRequest request)	
-OAuth2AuthorizationRequest resolve(
-	javax.servlet.http.HttpServletRequest request, java.lang.String registrationId)	
+
+
+OAuth2AuthorizationRequest resolve(javax.servlet.http.HttpServletRequest request)	
+OAuth2AuthorizationRequest resolve(javax.servlet.http.HttpServletRequest request, java.lang.String registrationId)	
 
 private OAuth2AuthorizationRequest resolve(HttpServletRequest request, 
 										   String registrationId, 
-										   String redirectUriAction) 
-{
+										   String redirectUriAction){
 	if (registrationId == null) {
 		return null;
 	}
@@ -116,7 +127,7 @@ private OAuth2AuthorizationRequest resolve(HttpServletRequest request,
 }
 ```
 
-#### `expandRedirectUri` 
+### `expandRedirectUri` 
 
 Generate Expand Redirect URI (e.g. URI from `ClientRegistration` + `HttpServletRequest`'s Attributes)   
 ```java
@@ -367,7 +378,7 @@ public void sendRedirect(HttpServletRequest request,
 - [`OAuth2LoginAuthenticationFilter`](https://zhuanlan.zhihu.com/p/100625981) 
 
 If they are valid then the filter returns `access_token` url 
-- Client uses access token and calls (its spring api) `Oauth2UserService` to get third party protected resource for returning instance of `Authenttication` 
+- Client uses access token and calls (its spring api) `Oauth2UserService` to get third party protected resource for returning instance of `Authentication` 
 - `SecurityContextPersistenceFilter` will store protected resource in the local http session  (local endpoint) after that 
 
 ![image](https://user-images.githubusercontent.com/68631186/122872974-cd07de00-d363-11eb-88a4-67edc7b91d04.png)   
@@ -661,13 +672,13 @@ public class OAuth2LoginAuthenticationProvider implements AuthenticationProvider
 
 ```
 
-#### Conclusion of the filters
+## Conclusion of the filters
 
 1. `OAuth2AuthorizationRequestResolver` resolves the (`HttpServletRequest`) request from client.   
 If the httpServletRequest `!= null`, it returns an instance of `OAuth2AuthorizationRequest` including `client_id`, `state`, `redirect_uri` ...
 
-2. Store the valid `OAuth2AuthorizationRequest` via `authorizationRequestRepository.saveAuthorizationRequest` to the client's(spring application) session 
-   > Authorization Server can look up authorization request's attribute `state` in the httpSession to compare with `state` from client's request to prevent the csrf attack
+2. Store the valid `OAuth2AuthorizationRequest` via `authorizationRequestRepository.saveAuthorizationRequest` to the client's(spring application) session   
+**Authorization Server can look up authorization request's attribute `state` in the http Session to compare with `state` from client's request to prevent the csrf attack**
 
-3. (If retured `OAuth2AuthorizationRequest` instance is not `null`)，filter will call `response.sendRedirect` method (to the Authorized Endpoint)
-   > `OAuth2AuthorizationRequest` sent the frontend's response to redirect browser to the authorized page for the user entering password/email ..etc to be authenticated by Loginfilter
+3. (If return `OAuth2AuthorizationRequest` instance is not `null`), filter will call `response.sendRedirect` method (to the Authorized Endpoint)
+   > `OAuth2AuthorizationRequest` sent the frontend's response to redirect browser to the authorized page for the user entering password/email ..etc to be authenticated by Login filter
