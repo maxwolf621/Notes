@@ -108,7 +108,7 @@ For example, **using public/private key pairs — you can be sure the senders ar
 ### Content of JWT token
 
 Construction of JWT can be presented 3 sections
-```bash
+```java
 Header + Payload + Signature	
 ```
 - **Each section is base64 URL-encoded.**   
@@ -143,7 +143,7 @@ These are the **custom claims** created to share information between parties tha
 
 #### Signature
 
-A Signature contains `based64url` Encrypted Header/Play and password
+A Signature contains `based64url` Encrypted Header, Payload and signatureKey.
 
 `HEADER.PAYLOAD.signatureKey`
 ```json

@@ -408,6 +408,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     public List<User> findUserByEmails(Set<String> emails) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = cb.createQuery(User.class);
+        
         Root<User> user = query.from(User.class);
 
         Path<String> emailPath = user.get("email");
@@ -430,7 +431,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, UserReposi
 
 Set<String> emails = new HashSet<>();
 // filling the set with any number of items
-
 userRepository.findUserByEmails(emails);
 ```
 

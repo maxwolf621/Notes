@@ -46,8 +46,9 @@ curl -i -H "key1:val1" -H "key2:val2" http://localhost:8080/spring-rest/ex/foos
 #### `@RequestMapping( ..., produces = { "..." , "...." }, ...)`
 
 Starting From Spring 3.1
-- consumes : Request's Content-Type e.g.`application/json`,`text/html`  
-- produces : 指定response's returned Type，Request's header中的`accept`有包含response's returned type才會返回  
+
+`consumes` : Invocation the method if request's Content-Type is e.g. `application/json`,`text/html`     
+`produces` : **指定response's returned Type**，Request's header中的`accept`有包含response's returned type才會返回    
 
 ```java
 @RequestMapping(
