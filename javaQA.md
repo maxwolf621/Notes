@@ -1,6 +1,7 @@
 # MyNote
 
 - [MyNote](#mynote)
+  - [Data Type](#data-type)
   - [OOP Association & Dependency](#oop-association--dependency)
   - [Abstract Class](#abstract-class)
   - [Override & Overload](#override--overload)
@@ -16,13 +17,14 @@
   - [Concurrent computing & Parallel computing](#concurrent-computing--parallel-computing)
   - [Java Pass By Value](#java-pass-by-value)
   - [Static](#static)
+    - [final static field](#final-static-field)
     - [Call Non-Static Fields/Methods in Static Method](#call-non-static-fieldsmethods-in-static-method)
     - [Order of Initializer](#order-of-initializer)
   - [Error & Exception](#error--exception)
   - [catch try final](#catch-try-final)
   - [`Thread#sleep()` vs `Object#wait()`](#threadsleep-vs-objectwait)
-  - [sleep vs yield](#sleep-vs-yield)
-  - [join](#join)
+  - [`Thread#sleep` vs `Thread#yield`](#threadsleep-vs-threadyield)
+  - [`Thread#join()`](#threadjoin)
   - [Thread , Interface Runnable, Interface callable](#thread--interface-runnable-interface-callable)
   - [`Thread#start()` & `Thread#run()`](#threadstart--threadrun)
   - [Lock vs Synchronized](#lock-vs-synchronized)
@@ -59,20 +61,75 @@
   - [FULL GC](#full-gc)
     - [如何減少GC次數（GC優化）](#如何減少gc次數gc優化)
 
+## Data Type
+
+byte、short、int、long : Default `0`  
+float、double : Default `0.0`  
+Boolean : Default `false`  
+char : default `""`  
+
+Reference Type : default `null`
+
 ## OOP Association & Dependency
 
 [OOP design](DesignPattern/_UMLDiagram.md)
 
 ## Abstract Class
-- Abstract class implements InterfaceX(Without implementing methods of InterfaceX)
+
+Abstract class implements InterfaceX(Without implementing methods of InterfaceX)
+```java
+abstract class implements InterfaceX{
+  //...
+}
+```
+
 - Class extends Abstract class (that implements InterfaceX) : must implement All InterfaceX methods
-- Abstract Class extends an Concrete Class : superClass must be implemented 
+  
+Abstract Class extends an Concrete Class : superClass must be implemented 
+```java
+abstract classA extends concreteClass{
+  //...
+}
+```
 
 **A classX must Implemented abstract Methods Must be except the classX is an Abstract Class or Interface**
 
 **A class/an Abstract class can extend one abstract class/class and implements multiple interfaces**
 
-子類別一定會呼叫父類別的Constructor來完成初始化(一般是呼叫父類別Default Constructor)
+
+父類別 Constructor 不能被子類重寫。在子類的 Constructor 中，會自動寫入`super()`方法，`super()` 表示父類別的 Default Constructor，**如果自行定義`super()`，必須放在子類構造方法的第一行**
+- 子類別一定會呼叫父類別的 Constructor 來完成初始化(一般是呼叫父類別Default Constructor)
+
+一個interface可以繼承多個interfaces，子類的interface可以`@override` 父類的 interface 中的Methods
+```java
+interface Maininterface extends inter1, inter2, inter3 {  
+  // methods
+}
+```
+
+A Class can implement multiple interfaces
+```java
+interface A {
+    void test();
+}
+
+interface B {
+    void test();
+}
+
+class C implements A, B {
+
+    @Override
+    public void test() {
+
+    }     
+
+}
+```
+
+
+
+抽象类可以继承具体类
 
 ## Override & Overload
 
@@ -81,29 +138,68 @@
 - Overload：一個類中有多個同名的方法，但是具有有不同的參數列表（參數類型不同、參數個數不同或者二者都不同)
 - Override：發生在子類與父類之間，子類對父類的方法進行重寫，參數都不能改變，**返回值類型可以不相同，但是必須是父類返回值的派生類。即外殼不變，核心重寫！重寫的好處在於子類可以根據需要，定義特定於自己的行為**
 
+- Constructor can't be overridden but overloaded
+
 為了滿足LSP，Override有三個限制
-- `Access-Specifier` : 子類方法訪問權限必須**`>=`**父類方法 (public > protected > private)
+- `Access-Specifier` : 子類方法訪問權限必須`>=`父類方法 (public > protected > private)
 - `return` : 子類方法的返回類型必須是父類方法**相同**或為**其子類型**
 - `throws` : 子類方法拋出的異常類型必須是**父類拋出異常類型**或為**其子類型**
 
 
-Constructor can't be overridden but overloaded
 
 ## Immutable (FINAL) class/method/variable/Object 
+
 - [create-immutable-class-java](https://www.geeksforgeeks.org/create-immutable-class-java/)
 
-Final Class
+Final Method
+- Cant be override
+
+Final Class (Cant be extended)
 - All the fields should be `private final`.
 - Constructor should initialize all the fields
 - Getter Method return deep copy
 - No Setter
 
-Final Object
+
+final Field
+```java
+final static int a;
+static{
+  a = 123;
+}
+
+final String name;
+public void setName(String name){
+  this.name = name;
+}
+```
+
+final Object
 ```java
 // reference can not be changed not object's properties
 public static final User user = new User()
 user.setName("john") // pass 
 ```
+
+java 8 static inner class
+```java 
+class TestFinal{
+    public static void main(String[] args) {
+        int b = 10;
+        testFinals(b);
+    }
+    public static void testFinals(int b) {
+        int a = 0;
+        new Person(){
+          public void test(){
+              System.out.println(a);
+              System.out.println(b);
+          }
+        }.test();
+    }
+}
+```
+
 
 ## 反射 & Dynamical Binding
 
@@ -165,9 +261,8 @@ stack(addr)       heap(val)
 +---+         +----------------+
 ```
 
-AutoBoxing does not `new` an integer object each time.
-
-**If value is between `-128` and `127`, it returns cache-value instead of `new` an space of object**
+AutoBoxing does not `new` an integer object each time.    
+**If value is between `-128` and `127`, it returns cache-value instead of `new` an space of object**.   
 ```java
 IntStream.rangeClosed(0, 150).forEach(
                     i ->{
@@ -252,9 +347,8 @@ System.out.println(reference == pool2);//false
 
 Java是屬於pass by value.
 
-Reference Type -> value is address
 
-**Reference Type (Object) 是參照(reference)的pass-by-value的傳遞**    
+**Reference Type (Object) 是參照(reference)的pass-by-value的傳遞**      
 Different Stack stores same address and reference to same heap location  
 
 [Source Code](https://matthung0807.blogspot.com/2019/01/java-pass-by-valuepass-by-reference.html)
@@ -296,18 +390,32 @@ class A {
 
 ## Static
 
-Field存在於Stack中。Static Fields存在於Method Area(Share by Thread)中。
+**Non Static Field存在於Stack中。Static Fields存在於Method Area(Share by Thread)中。**
 
-- 只要 new 出一個 Instance， 所有 Class Member( field 與 method ) 就會產生一份放在記憶體中，若再 new 同一個 class 一次(產生了新的 Instance)， 則該 class 的所有 field 會再產生一份放在記憶體中，而 class method 就不會再產生一份了(除非前一個 Instance 已經被記憶體回收了， 那麼就會在產生一份 class method )，
+- 只要 new 出一個 Instance， 所有 Class Member( fields 與 methods ) 就會產生一份放在記憶體中，若再 new 同一個 class 一次(產生了新的 Instance)， 則該 class 的所有 field 會再產生一份放在Heap記憶體中，而 class method 就不會再產生一份了(除非前一個 Instance 已經被記憶體回收了， 那麼就會在產生一份 class method )，
 **因為 class method 在執行時不會被變更， 因此 JVM 只會產生一份在記憶體中**。
-所有 Class Member 皆會跟著 Instance 存亡。
+所有 Class Members 皆會跟著 Instance 被釋放。
 
-- 所有宣告成 static 的 object/field 皆會因 class (內含 static 成員或 class 就是 static) 被載入而將所有 static object 產生一份在記憶體中， 所有 static object 皆會隨著應用程式(Application存亡。
+- 所有宣告成 static 的 object/field 皆會因 class (內含 static 成員或 class 就是 static) 被載入而將所有 static object 產生一份在Heap Memory中， 所有 static object 皆會隨著應用程式Application存亡。
 
-Fields所屬於Object，所以也稱為Instance。
+
 Static Field/Method所屬於Class，所以也稱為Class Instance。 
-Fields只能被對象所呼叫
-**Static Fields可以被Object呼叫，也可以被Class呼叫**
+
+Fields所屬於每一個獨立的Object，所以也稱為Instance，只能被Object所呼叫
+
+- **Static Fields可以被Object呼叫，也可以被Class呼叫**
+
+### final static field
+
+```java
+public class staticA{
+  
+  final static int a = 1; 
+  //...
+}
+```
+- a is global variable, access by the class itself
+
 
 ### Call Non-Static Fields/Methods in Static Method
 
@@ -378,29 +486,28 @@ After `finally` is finished, it call `iload` & `ireturn` the result (here `i = 3
 
 ## `Thread#sleep()` vs `Object#wait()`
 
-對於同步鎖的影響不同：
-- `sleep()`不會釋放synchronized lock，如果當前Thread持有同步鎖，那麼`sleep()`是不會讓thread釋放同步鎖的。 
+對於synchronized lock的影響不同：
+- `sleep()`不會釋放synchronized lock
 - `wait()`會釋放synchronized lock，讓其他Thread進入`synchronized`代碼塊執行。
 
 使用範圍不同：
 - `sleep()` 可以在任何地方使用。 
 - `wait()` **只能在Synchronized Method或者Synchronized Block裡面使用**，否則會拋 `IllegalMonitorStateException`。
 
-恢復方式不同
+恢復方式不同：
 - 兩者會暫停當前thread，但是在恢復上不太一樣。 
   - sleep(): 在時間到了之後會重新恢復
   - wait() : 則需要其他Thread呼叫同一Object的 `notify()/notifyAll()` 才能重新恢復。
 
-## sleep vs yield
+## `Thread#sleep` vs `Thread#yield`
 
 `Thread#sleep()`方法後進入超時等待（TIMED_WAITING）狀態，而`Thread#yield()`方法後進入就緒（READY）狀態。 
 - `sleep()`給其他Thread運行機會時**不考慮Thread的優先級**，因此會給低優先級的thread運行的機會
 - `yield()`只會給**相同優先級或更高優先級的thread以運行的機**會。
 
-## join
+## `Thread#join()`
 
-用於等待某Thread終止後再繼續
-如果一個`threadA`執行了`threadB.join()`，則表前`threadA`等待`threadB`終止之後才從`threadB.join()`返回繼續往下執行自己的代碼
+用於等待某Thread終止後再繼續，如果一個`threadA`執行了`threadB.join()`，則`threadA`等待`threadB`終止之後才從`threadB.join()`返回繼續往下執行自己的程式
 
 ## Thread , Interface Runnable, Interface callable
 
@@ -508,7 +615,7 @@ Dead Lock 須滿足以下四點缺一不可
 用new的方式系統需求量大的時就會創建很多Threads，不僅會消耗系統資源，還會降低系統的穩定性，很容易造成Application崩潰
 
 使用Thread Pool，對有限Threads進行管理可以帶來
-1. 降低對系統資源消耗。  
+1. 重複利用Thread，降低對系統資源消耗。  
 通過**重覆利用已創建的Thread**，降低Thread創建和銷毀造成的消耗。
 2. 提高反應速度。  
 Task可以不需要等到Thread創建就能立即執行(**一有Thread釋出即可執行queue中的task**)。

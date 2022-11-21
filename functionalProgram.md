@@ -11,11 +11,10 @@
 ```typescript
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-// sum will be affect by sumEvenSquare
+// sum will be affected by sumEvenSquare
 let sum = {
   value: 0
 };
-
 const sumEvenSquare = () => {
   for (let i = 0; i < data.length; ++i) {
     const value = data[i];
@@ -28,17 +27,17 @@ const sumEvenSquare = () => {
 sumEvenSquare();
 console.log(sum.value); // 220
  
-// 
+// arrow fn
 const sumEvenSquare = (dataArray: number[]) => {
-    // 把計算總和的物件從外部移動到內部
-    let innerSum = {
-        value: 0
-    };
+  // 把計算總和的物件從外部移動到內部
+  let innerSum = {
+    value: 0
+  };
 
-    // ...
+  // ...
 
-    // 回傳這個總和的內部物件
-    return innerSum;
+  // 回傳這個總和的內部物件
+  return innerSum;
 }
 
 // 每次傳入陣列時，都先複製一份新的陣列，避免資料被改變
@@ -53,18 +52,23 @@ console.log(sum2.value); // 220
 ```typescript
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+// sum's parameter is Function
 const sum = (processFn: (input: number) => number) => {
+
   return (inputArray: number[]) => {
     let result = 0;
+    
     for (let i = 0; i < inputArray.length; ++i) {
       result += processFn(inputArray[i]);
     }
+    
     return result;
   };
 };
 
-// 計算偶數平方，奇數回傳 0
+
 const evenSquare = (item: number) => {
+  // 計算偶數平方，奇數回傳 0
   return item % 2 === 0 ? item * item : 0;
 };
 
@@ -78,7 +82,6 @@ console.log(myResult1); // 220
 // anonymous function in function
 const sumResult2 = sum(item => (item % 2 === 0 ? item * item : 0))(data);
 console.log(sumResult2); // 220
-
 ```
 
 ## 命令式 (Imperative) v.s 宣告式 (Declarative)
