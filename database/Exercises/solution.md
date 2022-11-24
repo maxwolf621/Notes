@@ -1,6 +1,7 @@
 # mysql
 [MysqlCheatSheet](https://devhints.io/mysql)
 
+
 - [mysql](#mysql)
   - [Reference](#reference)
   - [TIPS](#tips)
@@ -11,7 +12,7 @@
   - [Duplicate Emails](#duplicate-emails)
   - [Customers Who Never Order](#customers-who-never-order)
   - [Rising Temperature](#rising-temperature)
-  - [Delete Duplicate Emails**](#delete-duplicate-emails)
+  - [Delete Duplicate Emails\*\*](#delete-duplicate-emails)
   - [Game Play Analysis I](#game-play-analysis-i)
   - [Game Play Analysis II](#game-play-analysis-ii)
   - [Employee Bonus](#employee-bonus)
@@ -20,50 +21,55 @@
           - [tags : `NOT IN`, `IS NULL`, `NOT EXISTS`, `IFNull(colum, setDefaultVal)`](#tags--not-in-is-null-not-exists-ifnullcolum-setdefaultval)
   - [Classes More Than 5 Students](#classes-more-than-5-students)
   - [Consecutive Available Seats](#consecutive-available-seats)
-  - [Friend Requests I: Overall Acceptance Rate**](#friend-requests-i-overall-acceptance-rate)
+  - [Friend Requests I: Overall Acceptance Rate\*\*](#friend-requests-i-overall-acceptance-rate)
   - [Sales Person](#sales-person)
   - [Triangle Judgement](#triangle-judgement)
   - [Shortest Distance in a Line](#shortest-distance-in-a-line)
-  - [Biggest Single Number**](#biggest-single-number)
+  - [Biggest Single Number\*\*](#biggest-single-number)
   - [Not Boring Movies](#not-boring-movies)
-  - [Swap Salary**](#swap-salary)
-  - [Actors & Directors Cooperated >= 3 Times**](#actors--directors-cooperated--3-times)
-  - [Project Employee I**](#project-employee-i)
+  - [Swap Salary\*\*](#swap-salary)
+  - [Actors \& Directors Cooperated \>= 3 Times\*\*](#actors--directors-cooperated--3-times)
+  - [Project Employee I\*\*](#project-employee-i)
   - [Project Employees II](#project-employees-ii)
   - [Sales Analysis I](#sales-analysis-i-1)
-  - [Sales Analysis II**](#sales-analysis-ii)
-  - [Sales Analysis III**](#sales-analysis-iii)
-  - [Reported Posts --](#reported-posts---)
+  - [:star: Sales Analysis II](#star-sales-analysis-ii)
+          - [tags : `with tableName as`](#tags--with-tablename-as)
+  - [:star: Sales Analysis II](#star-sales-analysis-ii-1)
+          - [tags : `Group by` , `min(YEAR)`](#tags--group-by--minyear)
+  - [:star::star:Sales Analysis III](#starstarsales-analysis-iii)
+  - [:star: Reported Posts](#star-reported-posts)
+          - [tags : `datediff(x,y) = x-y`](#tags--datediffxy--x-y)
   - [User Activity for the Past 30 Days I](#user-activity-for-the-past-30-days-i)
           - [Keyword : `DATEDIFF`](#keyword--datediff)
-  - [User Activity for the Past 30 Days II](#user-activity-for-the-past-30-days-ii)
-          - [Keyword : `AVG` , `DISTINCT`, `DATEDIFF`](#keyword--avg--distinct-datediff)
+  - [:star: User Activity For The Past 30 Days II](#star-user-activity-for-the-past-30-days-ii)
+          - [Keyword : `AVG` , `DISTINCT`, `DATEDIFF`, `ROUND(... , 2)`](#keyword--avg--distinct-datediff-round--2)
   - [Article Views I](#article-views-i)
           - [Keyword : `SELECT DISTINCT`](#keyword--select-distinct)
-  - [Immediate Food Delivery I --](#immediate-food-delivery-i---)
-        - [Keyword : `SUM(SELECT COUNT(*) FROM ... WHERE ...)`](#keyword--sumselect-count-from--where-)
-  - [Reformat Department Table](#reformat-department-table)
-          - [Keyword : `CASE WHEN ...`, `IF`](#keyword--case-when--if)
-  - [Queries Quality and Percentage --](#queries-quality-and-percentage---)
+  - [:star: Immediate Food Delivery I](#star-immediate-food-delivery-i)
+        - [Keyword : `SUM(X=Y)/COUNT(*)`語法](#keyword--sumxycount語法)
+  - [:star: Reformat Department Table](#star-reformat-department-table)
+          - [Keyword : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`](#keyword--case-when-x-then-y-else-null-end-ifx-true-false)
+  - [:star: Queries Quality and Percentage](#star-queries-quality-and-percentage)
           - [Keyword : `aggregation function with query`](#keyword--aggregation-function-with-query)
-  - [Number of Comments per Post ++](#number-of-comments-per-post-)
-  - [Students and Examinations ***](#students-and-examinations-)
-  - [Weather Type in Each Country *](#weather-type-in-each-country-)
-          - [Keyword : `case when ... then`](#keyword--case-when--then)
-  - [Find the Team Size](#find-the-team-size)
+  - [:star: Number of Comments per Post](#star-number-of-comments-per-post)
+  - [:warning: Students and Examinations](#warning-students-and-examinations)
+  - [:star: Weather Type in Each Country](#star-weather-type-in-each-country)
+          - [Keyword : `case WHEN x THEN y WHEN j THEN z ELSE k end`, `LEFT(day, 7) = '2019-11'`](#keyword--case-when-x-then-y-when-j-then-z-else-k-end-leftday-7--2019-11)
+  - [:star: Find the Team Size](#star-find-the-team-size)
   - [Ads Performance](#ads-performance)
-  - [List the Products Ordered in a Period **](#list-the-products-ordered-in-a-period-)
-  - [Students With Invalid Departments](#students-with-invalid-departments)
+  - [:star::star: List the Products Ordered in a Period](#starstar-list-the-products-ordered-in-a-period)
+  - [:star: Students With Invalid Departments](#star-students-with-invalid-departments)
+          - [KEYWORD : `NOT EXISTS`](#keyword--not-exists)
   - [Replace Employee ID with The Unique Identifier](#replace-employee-id-with-the-unique-identifier)
           - [KEYWORD : `LEFT JOIN`](#keyword--left-join)
-  - [Top Travellers *](#top-travellers-)
-          - [Keyword : `LEFT JOIN`, `ORDER BY ... , ...`](#keyword--left-join-order-by---)
-  - [Create a Session Bar Chart **](#create-a-session-bar-chart-)
+  - [:star: Traveler](#star-traveler)
+          - [Keyword : `LEFT JOIN`, `ORDER BY, IFNULL(x,0)`](#keyword--left-join-order-by-ifnullx0)
+  - [:warning: Create a Session Bar Chart (分類)](#warning-create-a-session-bar-chart-分類)
           - [Keyword : `Count(1)` , `UNION`, `New A table`](#keyword--count1--union-new-a-table)
   - [Group Sold Products By The Date](#group-sold-products-by-the-date)
           - [Keyword : `group_concat( [ATTRIBUTE] [ORDER BY] [SEPARATOR 'STRING'])`](#keyword--group_concat-attribute-order-by-separator-string)
   - [Friendly Movies Streamed Last Month](#friendly-movies-streamed-last-month)
-  - [Customer Order Frequency **](#customer-order-frequency-)
+  - [:star::star: Customer Order Frequency](#starstar-customer-order-frequency)
           - [Keyword : `EQUI-JOIN THREE TABLES`, `SUM` , `INNER JOIN THREE TABLES`](#keyword--equi-join-three-tables-sum--inner-join-three-tables)
   - [Find Users With Valid E-Mails](#find-users-with-valid-e-mails)
           - [Keyword : `regexp`](#keyword--regexp)
@@ -71,16 +77,17 @@
           - [Keyword : `LIKE` , `WILDCARD`](#keyword--like--wildcard)
   - [Fix Product Name Format](#fix-product-name-format)
           - [Keyword : `SUBSTRING()` , `TRIM()` , `LOWER()`, `ORDER BY 1,2` AND `GROUP BY 1,2`](#keyword--substring--trim--lower-order-by-12-and-group-by-12)
-  - [Unique Orders and Customers Per Month *](#unique-orders-and-customers-per-month-)
-          - [Keyword : `LEFT JION`, `GROUP BY 1`](#keyword--left-jion-group-by-1)
+  - [:star: Unique Orders and Customers Per Month](#star-unique-orders-and-customers-per-month)
+          - [Keyword : `GROUP BY 1` , `LEFT(x, len) col_name`](#keyword--group-by-1--leftx-len-col_name)
   - [Warehouse Manager](#warehouse-manager)
           - [Keyword : `INNER JOIN`](#keyword--inner-join)
   - [Customer Who Visited but Did Not Make Any Transactions](#customer-who-visited-but-did-not-make-any-transactions)
   - [Bank Account Summary II](#bank-account-summary-ii)
           - [Keyword : `INNER JOIN` , `NESTED QUERY`](#keyword--inner-join--nested-query)
-  - [Sellers With No Sales **](#sellers-with-no-sales-)
-          - [USAGE : `WHERE ... NOT EXISTS ...`](#usage--where--not-exists-)
-  - [All Valid Triplets That Can Represent a Country](#all-valid-triplets-that-can-represent-a-country)
+  - [:star::star: Sellers With No Sales](#starstar-sellers-with-no-sales)
+          - [Keyword : `WHERE ... NOT EXISTS ...`](#keyword--where--not-exists-)
+  - [:star: All Valid Triplets That Can Represent a Country](#star-all-valid-triplets-that-can-represent-a-country)
+          - [keyword : `for-loop concept via inner join different tables`](#keyword--for-loop-concept-via-inner-join-different-tables)
 
 
 ## Reference
@@ -1322,7 +1329,32 @@ HAVING Count(employee_id) = (SELECT Count(employee_id)
 
 Write an SQL query that reports the best seller by total sales price, If there is a tie, report them all.
 
-```diff
+```sql
+create table product(
+	product_id int,
+  product_name varchar(10),
+  unit_price int
+  Primary key (product_id)
+);
+Insert into product values
+  (1,'S8',1000),
+  (2,'G4',800),
+  (3,'Iphone',1400);
+
+create table sales(
+	seller_id int,
+	product_id int,
+	buyer_id int,
+	sale_date DATE,
+	quantity int ,
+	price int
+);
+INSERT INTO `practice`.`sales` VALUES
+  ('1','1','1','2019-01-21','2','2000'),
+  ('1','2','2','2019-02-17','1','800 '),
+  ('2','2','3','2019-06-02','1','800 '),
+  ('3','3','3','2019-05-13','2','2800')
+
   Product table:
   +------------+--------------+------------+
   | product_id | product_name | unit_price |
@@ -1353,11 +1385,12 @@ Write an SQL query that reports the best seller by total sales price, If there i
 + Both sellers with id 1 and 3 sold products with the most total price of 2800.
 ```
 
+Using Rank
 ```sql
 WITH tmp AS (
-SELECT seller_id, RANK() OVER(ORDER BY SUM(price) DESC) AS rnk 
-FROM Sales
-GROUP BY seller_id
+  SELECT seller_id, RANK() OVER(ORDER BY SUM(price) DESC) AS rnk 
+  FROM Sales
+  GROUP BY seller_id
 )
 
 SELECT seller_id FROM tmp
@@ -1386,24 +1419,46 @@ HAVING sum(price) = (
     )
 ```
 
-## Sales Analysis II**
+## :star: Sales Analysis II
+
+
+###### tags : `with tableName as`
+
 
 Write an SQL query that reports the buyers who have bought `S8` but not `iPhone`. 
 - Note that S8 and iPhone are products present in the Product table.
 
-```diff
-  Result table:
-  +-------------+
-  | buyer_id    |
-  +-------------+
-  | 1           |
-  +-------------+
+
+
+```sql
+Sales table:
++-----------+------------+----------+------------+----------+-------+
+| seller_id | product_id | buyer_id | sale_date  | quantity | price |
++-----------+------------+----------+------------+----------+-------+
+| 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
+| 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
+| 2         | 1          | 3        | 2019-06-02 | 1        | 800   |
+| 3         | 3          | 3        | 2019-05-13 | 2        | 2800  |
++-----------+------------+----------+------------+----------+-------+
+
+Result table:
++-------------+
+| buyer_id    |
++-------------+
+| 1           |
++-------------+
 - The buyer with id 1 bought an S8 but didn't buy an iPhone.
 - The buyer with id 3 bought both.
 ```
 
 `WITH AS` CLAUSE 
 ```sql
++---+-------+
+| 1	|S8
+| 2	|G4
+| 3	|G4
+| 3	|Iphone 
++---+-------+
 WITH tmp AS (
   SELECT a.buyer_id, b.product_name 
   FROM Sales AS a
@@ -1420,44 +1475,62 @@ AND buyer_id IN (SELECT buyer_id FROM tmp WHERE product_name = 'S8');
 /** nested query with JOIN **/
 SELECT distinct buyer_id
 FROM Sales INNER JOIN Product
-WHERE Sales.product_id = Product.product_id
-      AND Product_name = 'S8'
-      AND buyer_id NOT IN
-      /** Buyer who bought Iphone**/
+ON Sales.product_id = Product.product_id
+WHERE Product_name = 'S8' 
+AND buyer_id NOT IN  /** Buyer who bought Iphone**/
      (SELECT distinct buyer_id
       FROM Sales inner join Product
       WHERE Sales.product_id = Product.product_id
             AND product_name = 'iPhone')
 ```
 
-## Sales Analysis III**
-Write an SQL query that selects the `product_id`, `year`, `quantity`, and `price` for the first year of every product sold.
-```diff
-  Sales table:
-  +---------+------------+------+----------+-------+
-  | sale_id | product_id | year | quantity | price |
-  +---------+------------+------+----------+-------+ 
-  | 1       | 100        | 2008 | 10       | 5000  |
-  | 2       | 100        | 2009 | 12       | 5000  |
-  | 7       | 200        | 2011 | 15       | 9000  |
-  +---------+------------+------+----------+-------+
-  
-  Product table:
-  +------------+--------------+
-  | product_id | product_name |
-  +------------+--------------+
-  | 100        | Nokia        |
-  | 200        | Apple        |
-  | 300        | Samsung      |
-  +------------+--------------+
+## :star: Sales Analysis II
 
-  Result table:
-  +------------+------------+----------+-------+
-  | product_id | first_year | quantity | price |
-  +------------+------------+----------+-------+ 
-  | 100        | 2008       | 10       | 5000  |
-  | 200        | 2011       | 15       | 9000  |
-  +------------+------------+----------+-------+
+###### tags : `Group by` , `min(YEAR)`
+
+Write an SQL query that selects the `product_id`, `year`, `quantity`, and `price` for the FIRST YEAR of every product sold.
+```sql
+CREATE TABLE Sales(
+	sale_id int,
+    product_id int,
+    year YEAR,
+    quantity int,
+    price int
+)Engine = Innodb;
+
+INSERT INTO sales Values 
+	(1,100,2008,10,5000),
+	(2,100,2009,12,5000),
+  (7,200,2011,15,9000)
+
+  
+Sales
++---------+------------+------+----------+-------+
+| sale_id | product_id | year | quantity | price |
++---------+------------+------+----------+-------+ 
+| 1       | 100        | 2008 | 10       | 5000  |
+| 2       | 100        | 2009 | 12       | 5000  |
+| 7       | 200        | 2011 | 15       | 9000  |
++---------+------------+------+----------+-------+
+
+Product
++------------+--------------+
+| product_id | product_name |
++------------+--------------+
+| 100        | Nokia        |
+| 200        | Apple        |
+| 300        | Samsung      |
++------------+--------------+
+
+---
+
+Result
++------------+------------+----------+-------+
+| product_id | first_year | quantity | price |
++------------+------------+----------+-------+ 
+| 100        | 2008       | 10       | 5000  |
+| 200        | 2011       | 15       | 9000  |
++------------+------------+----------+-------+
 ```
 
 ```sql 
@@ -1469,10 +1542,12 @@ FROM sales
 GROUP BY product_id
 ```
 
+## :star::star:Sales Analysis III
 
 Write an SQL query that reports the products that were only sold in spring 2019.   
 - That is, between `2019-01-01` and `2019-03-31` inclusive.
-```mysql
+
+```sql
   Product table:
   +------------+--------------+------------+
   | product_id | product_name | unit_price |
@@ -1488,15 +1563,35 @@ Write an SQL query that reports the products that were only sold in spring 2019.
   +-----------+------------+----------+------------+----------+-------+
   | 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
   | 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
-  | 2         | 2          | 3        | 2019-06-02 | 1        | 800   |
+  | 2         | 1          | 3        | 2019-06-02 | 1        | 800   |
   | 3         | 3          | 4        | 2019-05-13 | 2        | 2800  |
   +-----------+------------+----------+------------+----------+-------+
-  
+```
+
+```sql
+/**
+  * The following wont work
+  * 
+  * result table is   
+    1	S8
+    2	G4
+  */
+SELECT DISTINCT a.product_id, b.product_name FROM Sales_ex AS a
+JOIN Product AS b
+ON a.product_id = b.product_id
+WHERE sale_date BETWEEN '2019-01-01' AND '2019-03-31'
+```
+
+```sql
 SELECT DISTINCT a.product_id, b.product_name FROM Sales AS a
 JOIN Product AS b
 ON a.product_id = b.product_id
-WHERE a.product_id NOT IN (SELECT product_id FROM Sales WHERE sale_date < '2019-01-01')
-AND a.product_id NOT IN (SELECT product_id FROM Sales WHERE sale_date > '2019-03-31');
+WHERE a.product_id NOT IN (
+  SELECT product_id FROM Sales WHERE sale_date < '2019-01-01'
+)
+AND a.product_id NOT IN (
+  SELECT product_id FROM Sales WHERE sale_date > '2019-03-31'
+);
 
 SELECT product_id, 
        product_name 
@@ -1507,10 +1602,38 @@ WHERE  product_id NOT IN (SELECT product_id
                                  '2019-01-01' AND '2019-03-31'); 
 ```
 
-## Reported Posts --
+## :star: Reported Posts 
 
-Write an SQL query that reports the number of posts reported yesterday for each report reason. 
-- Assume today is `2019-07-05`.
+###### tags : `datediff(x,y) = x-y`
+
+Write an SQL query that **reports the number of posts** reported yesterday`("2019-07-05", action_date)` for each report reason. 
+- There might be duplicate posts
+
+```sql
+create table actions(
+	user_id int,
+    post_id int,
+    action_date date,
+    action varchar(10),
+    extra  varchar(10)
+);
+insert into actions values
+('1', '1','2019-07-01','view  ',null    ),
+('1', '1','2019-07-01','like  ',null    ),
+('1', '1','2019-07-01','share ',null    ),
+('2', '4','2019-07-04','view  ',null    ),
+('2', '4','2019-07-04','report','spam'  ),
+('3', '4','2019-07-04','view  ',null    ),
+('3', '4','2019-07-04','report','spam'  ),
+('4', '3','2019-07-02','view  ',null    ),
+('4', '3','2019-07-02','report','spam'  ),
+('5', '2','2019-07-04','view  ',null    ),
+('5', '2','2019-07-04','report','racism'),
+('5', '5','2019-07-04','view  ',null    ),
+('5', '5','2019-07-04','report','racism')
+```
+
+Assume today is `2019-07-05`.
 ```diff
  Actions table:
   +---------+---------+-------------+--------+--------+
@@ -1539,7 +1662,21 @@ Write an SQL query that reports the number of posts reported yesterday for each 
   +---------------+--------------+
 ```
 
-```mysql
+```sql
++-------+--+
+|spam	  | 4|
+|spam	  | 4|
+|racism	| 2|
+|racism	| 5|
++-------+--+
+SELECT extra AS report_reason, post_id
+FROM Actions
+WHERE extra IS NOT NULL 
+AND action = 'report'
+AND DATEDIFF("2019-07-05", action_date) = 1
+
+
+-- using DISTINCT filter the duplicate post_id
 SELECT extra AS report_reason, COUNT(DISTINCT post_id) AS report_count
 FROM Actions
 WHERE extra IS NOT NULL 
@@ -1552,9 +1689,9 @@ GROUP BY extra;
 
 ###### Keyword : `DATEDIFF`
 
-Write an SQL query to find the daily active user count for a period of 30 days ending `2019-07-27` inclusively.  
+Write an SQL query to find the daily active user count for a period of 30 days ending `2019-07-27` inclusively.(找出`datediff(2019-07-27,activity_date)<30)`有上過線的user)
 - A user was active on some day if he/she made at least one activity on that day.
-```
+```sql
 Activity table:
 +---------+------------+---------------+---------------+
 | user_id | session_id | activity_date | activity_type |
@@ -1571,21 +1708,22 @@ Activity table:
 | 4       | 3          | 2019-06-25    | open_session  |
 | 4       | 3          | 2019-06-25    | end_session   |
 +---------+------------+---------------+---------------+
-There is no primary key for this table, it may have duplicate rows. 
-The activity_type column is an ENUM of type ('open_session', 'end_session', 'scroll_down', 'send_message').
+```
+- There is no primary key for this table, it may have duplicate rows. 
+- The `activity_type` column is an `ENUM` of type (`'open_session', 'end_session', 'scroll_down', 'send_message'`).
 
 Result table:
+```sql
 +------------+--------------+ 
 | day        | active_users |
 +------------+--------------+ 
 | 2019-07-20 | 2            |
 | 2019-07-21 | 2            |
 +------------+--------------+ 
-Note that we do not care about days with zero active users.
 ```
+- Note that we do not care about days with zero active users.
 
-```mysql
-/**
+```sql
 +---------+------------+---------------+---------------+
 | user_id | session_id | activity_date | activity_type |
 +---------+------------+---------------+---------------+
@@ -1599,7 +1737,7 @@ Note that we do not care about days with zero active users.
 | 3       | 2          |               | send_message  |
 | 3       | 2          |               | end_session   |
 +---------+------------+---------------+---------------+ 
-**/
+
 SELECT activity_date           AS day, 
        Count(DISTINCT user_id) AS active_users 
 FROM   activity 
@@ -1608,14 +1746,16 @@ HAVING Datediff("2019-07-27", activity_date) < 30
 ORDER  BY NULL 
 ```
 
-## [User Activity for the Past 30 Days II](https://zhuanlan.zhihu.com/p/260558715)
+## :star: User Activity For The Past 30 Days II
 
-###### Keyword : `AVG` , `DISTINCT`, `DATEDIFF`
+- [User Activity for the Past 30 Days II](https://zhuanlan.zhihu.com/p/260558715)
+
+###### Keyword : `AVG` , `DISTINCT`, `DATEDIFF`, `ROUND(... , 2)`
 
 Write an SQL query to find the **average number of sessions per user for a period of 30 days ending 2019-07-27 inclusively**, rounded to 2 decimal places.  
-The sessions we want to count for a user are those with at least one activity in that time period.
 
-```
+The sessions we want to count for a user are those with at least one activity in that time period.
+```sql
 Activity table:
 +---------+------------+---------------+---------------+
 | user_id | session_id | activity_date | activity_type |
@@ -1642,27 +1782,51 @@ Result table:
 +---------------------------+ 
 | 1.33                      |
 +---------------------------+ 
-User 1 and 2 each had 1 session in the past 30 days while user 3 had 2 sessions 
-so the average  is (1 + 1 + 2) / 3 = 1.33. 
 ```
+- User `1` and `2` each had `1` session in the past 30 days while user `3` had `2` sessions 
+so the average  is `(1 + 1 + 2) / 3 = 1.33`. 
 
-```mysql
-# Time:  O(n)
-# Space: O(n)
+
+```sql
+-- (1 + 1 + 2) / 3 = 1.33
+-- IfNull(Count(DISTINCT session_id) / Count(DISTINCT user_id), 0)
++---------+------------+---------------+---------------+
+| user_id | session_id | activity_date | activity_type |
++---------+------------+---------------+---------------+
+| 1       | 1          | 2019-07-20    | open_session  |
+| 1       | 1          | 2019-07-20    | scroll_down   |
+| 1       | 1          | 2019-07-20    | end_session   |
++---------+------------+---------------+---------------+
+| 2       | 4          | 2019-07-20    | open_session  |
+| 2       | 4          | 2019-07-21    | send_message  |
+| 2       | 4          | 2019-07-21    | end_session   |
++---------+------------+---------------+---------------+
+| 3       | 2          | 2019-07-21    | open_session  |
+| 3       | 2          | 2019-07-21    | send_message  |
+| 3       | 2          | 2019-07-21    | end_session   |
+| 3       | 5          | 2019-07-21    | open_session  |
+| 3       | 5          | 2019-07-21    | scroll_down   |
+| 3       | 5          | 2019-07-21    | end_session   |
++---------+------------+---------------+---------------+
+
+
+-- Time:  O(n)
+-- Space: O(n)
 SELECT Round(Ifnull(Count(DISTINCT session_id) / Count(DISTINCT user_id), 0), 2) 
-       AS 
-       average_sessions_per_user 
+       AS average_sessions_per_user 
 FROM   activity 
 WHERE  Datediff("2019-07-27", activity_date) < 30 
 ```
 
-## [Article Views I](https://zhuanlan.zhihu.com/p/260564257)
+## Article Views I
+
+[Article Views I](https://zhuanlan.zhihu.com/p/260564257)
 
 ###### Keyword : `SELECT DISTINCT`
 
 Write an SQL query to find all the authors that viewed at least one of their own articles, sorted in ascending order by their id.
 - Note that equal `author_id` and `viewer_id` indicate the same person.
-```diff
+```sql
   Views TABLE 
   +------------+-----------+-----------+------------+
   | article_id | author_id | viewer_id | view_date  |
@@ -1685,20 +1849,20 @@ Write an SQL query to find all the authors that viewed at least one of their own
   +------+
 ```
 
-
-```mysql
+```sql
 SELECT DISTINCT author_id AS id 
 FROM Views
 WHERE author_id = viewer_id
 ORDER BY id;
 ```
 
-## Immediate Food Delivery I --
+## :star: Immediate Food Delivery I
 
-##### Keyword : `SUM(SELECT COUNT(*) FROM ... WHERE ...)`
+##### Keyword : `SUM(X=Y)/COUNT(*)`語法
 
 Write an SQL query to find the percentage of `immediate` orders in the table, rounded to 2 decimal places.  
-- **If the preferred delivery date of the customer is the same as the order date then the order is called `immediate` otherwise it’s called scheduled.**
+- **If the preferred delivery date of the customer is the same as the order date then the order is called `immediate` otherwise it's called scheduled.**
+- count `(immediate orders) / (all orders)`
 
 ```diff
   +-------------+-------------+------------+-----------------------------+
@@ -1721,25 +1885,25 @@ Write an SQL query to find the percentage of `immediate` orders in the table, ro
 - The orders with delivery id 2 and 3 are immediate while the others are scheduled.
 ```
 
-```mysql
-SELECT
-ROUND(100* (SELECT COUNT(*) FROM Delivery WHERE order_date = customer_pref_delivery_date) / (SELECT COUNT(*) FROM Delivery),2) 
+```sql
+SELECT ROUND(100* (SELECT COUNT(*) FROM Delivery WHERE order_date = customer_pref_delivery_date) / (
+       SELECT COUNT(*) FROM Delivery),2) 
 AS immediate_percentage;
 
-# Time:  O(n)
-# Space: O(1)
+-- Time:  O(n)
+-- Space: O(1)
 SELECT Round(100 * Sum(order_date = customer_pref_delivery_date) / Count(*), 2) 
        AS 
        immediate_percentage 
 FROM   delivery;
 ```
 
-## Reformat Department Table
+## :star: Reformat Department Table
 
-###### Keyword : `CASE WHEN ...`, `IF`
+###### Keyword : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`
 
 Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
-```
+```sql
   Department table:
   +------+---------+-------+
   | id   | revenue | month |
@@ -1763,7 +1927,7 @@ Write an SQL query to reformat the table such that there is a department id colu
 - Note that the result table has 13 columns (1 for the department id + 12 for the months).
 ```
 
-```mysql
+```sql
 SELECT id,
 SUM(CASE WHEN month = 'Jan' THEN revenue ELSE NULL END) AS Jan_Revenue,
 SUM(CASE WHEN month = 'Feb' THEN revenue ELSE NULL END) AS Feb_Revenue,
@@ -1799,17 +1963,21 @@ FROM   department
 GROUP  BY id;
 ```
 
-## [Queries Quality and Percentage](https://zhuanlan.zhihu.com/p/260937964) --
+## :star: Queries Quality and Percentage
+
+- [Queries Quality and Percentage](https://zhuanlan.zhihu.com/p/260937964)
 
 ###### Keyword : `aggregation function with query`
+
 Write an SQL query to find each `query_name`, the `quality` and `poor_query_percentage`. 
 - Both `quality` and `poor_query_percentage` should be rounded to 2 decimal places.
 
-- We define query quality as: 
-  > The average of the ratio between query rating and its position.
-- We also define poor_query_percentage as: 
-  > The percentage of all queries with `rating` less than 3.
-  > if `rating` > 3 then `1` else `0`
+- We define query `quality` as:   
+  The average of the ratio between query `rating` and its `position`.
+- We also define `poor_query_percentage` as:    
+  The percentage of all queries with `rating` less than 3.
+  if `rating > 3` then `1` else `0`
+
 ```diff
   Queries table:
   +------------+-------------------+----------+--------+
@@ -1831,20 +1999,31 @@ Write an SQL query to find each `query_name`, the `quality` and `poor_query_perc
   | Cat        | 0.66    | 33.33                 |
   +------------+---------+-----------------------+
 - Dog queries quality is ((5 / 1) + (5 / 2) + (1 / 200)) / 3 = 2.50
-- Dog queries poor_ query_percentage is (1 / 3) * 100 = 33.33
+- Dog queries poor_query_percentage is (1 / 3) * 100 = 33.33
 
 - Cat queries quality equals ((2 / 5) + (3 / 3) + (4 / 7)) / 3 = 0.66
 - Cat queries poor_ query_percentage is (1 / 3) * 100 = 33.33
 ```
 
-```mysql
+```sql
+  +------------+-------------------+----------+--------+
+  | query_name | result            | position | rating |
+  +------------+-------------------+----------+--------+
+  | Dog        | Golden Retriever  | 1        | 5      |
+  | Dog        | German Shepherd   | 2        | 5      |
+  | Dog        | Mule              | 200      | 1      |
+  |------------+-------------------+----------+--------|
+  | Cat        | Shirazi           | 5        | 2      |
+  | Cat        | Siamese           | 3        | 3      |
+  | Cat        | Sphynx            | 7        | 4      |
+  +------------+-------------------+----------+--------+
 select query_name, round(avg(rating/position), 2) AS quality,
        round(100*sum(case when rating < 3 then 1 else 0 end)/count(1), 2) AS poor_query_percentage
 from Queries
 group by query_name
 ```
 
-## Number of Comments per Post ++
+## :star: Number of Comments per Post
 
 Write an SQL query to find number of comments per each post.  
 - Result table should contain `post_id` and its corresponding number of comments, and must be sorted by `post_id` in ascending order.
@@ -1886,7 +2065,7 @@ Concept
 - Nested Query
 - `SELECT DISTINCT` TO FIND SUBS
 - `LEFT JOIN` TO FROM SUBS AND SUBS OF COMMENT
-- `COUNT()` AND `GROUD BY` TO COUNT COMMENTS
+- `COUNT()` AND `GROUP BY` TO COUNT COMMENTS
 
 ```sql
 /** 
@@ -1930,7 +2109,7 @@ GROUP  BY COMMENTS.sub_id
 ORDER  BY NULL 
 ```
 
-## Students and Examinations ***
+## :warning: Students and Examinations 
 
 Write an SQL query to find the number of times each student attended each exam.   
 Order the result table by `student_id` and `subject_name`.   
@@ -1987,16 +2166,16 @@ Order the result table by `student_id` and `subject_name`.
   | 13         | John         | Physics      | 1              |
   | 13         | John         | Programming  | 1              |
   +------------+--------------+--------------+----------------+
-The result table should contain all students and all subjects.
-- Alice attended Math exam 3 times, Physics exam 2 times and Programming exam 1 time.
-- Bob attended Math exam 1 time, Programming exam 1 time and didn't attend the Physics exam.
-+ Alex didn't attend any exam.
-+ John attended Math exam 1 time, Physics exam 1 time and Programming exam 1 time.
 ```
+- The result table should contain all students and all subjects.   
+  `Alice` attended Math exam 3 times, Physics exam 2 times and Programming exam 1 time.    
+  `Bob` attended Math exam 1 time, Programming exam 1 time and didn't attend the Physics exam.    
+  `Alex` didn't attend any exam.   
+  `John` attended Math exam 1 time, Physics exam 1 time and Programming exam 1 time.
 
-```mysql 
-# Time:  O((m * n) * log(m * n))
-# Space: O(m * n)
+```sql 
+-- Time:  O((m * n) * log(m * n))
+-- Space: O(m * n)
 
 SELECT a.student_id, 
        a.student_name, 
@@ -2013,17 +2192,20 @@ ORDER  BY a.student_id,
           b.subject_name;
 ```
 
-## Weather Type in Each Country *
+## :star: Weather Type in Each Country 
 
-Write an SQL query to find the type of weather in each country for `November 2019(2019-11)`.
+
+###### Keyword : `case WHEN x THEN y WHEN j THEN z ELSE k end`, `LEFT(day, 7) = '2019-11'`
+
+Write an SQL query to find the type of weather in each country for November 2019(`2019-11`).
 - The type of weather is 
-  > `Cold` if the average weather_state is less than or equal 15,    
-  > `Hot` if the average weather_state is greater than or equal 25 and   
+  > `Cold` if the average weather_state is <= 15,    
+  > `Hot` if the average weather_state is >= 25 and   
   > `Warm` otherwise.     
 
 Return result table in any order.
 
-```diff
+```sql
   Countries table:
   +------------+--------------+
   | country_id | country_name |
@@ -2063,25 +2245,20 @@ Return result table in any order.
   | country_name | weather_type |
   +--------------+--------------+
   | USA          | Cold         |
-  | Austraila    | Cold         |
+  | Australia    | Cold         |
   | Peru         | Hot          |
   | China        | Warm         |
   | Morocco      | Hot          |
   +--------------+--------------+
-- Average weather_state in USA in November is (15) / 1 = 15 so weather type is Cold.
-- Average weather_state in Austraila in November is (-2 + 0 + 3) / 3 = 0.333 so weather type is Cold.
-- Average weather_state in Peru in November is (25) / 1 = 25 so weather type is Hot.
-- Average weather_state in China in November is (16 + 18 + 21) / 3 = 18.333 so weather type is Warm.
-- Average weather_state in Morocco in November is (25 + 27 + 31) / 3 = 27.667 so weather type is Hot.
-- We know nothing about average weather_state in Spain in November so we don't include it in the result table. 
 ```
+- Average weather_state `AVG(each country's weather_state)`
 
-###### Keyword : `case when ... then`
-
-```mysql
-SELECT country_name, case when avg(weather_state) <= 15 then "Cold"
+```sql
+SELECT country_name,  CASE 
+                          when avg(weather_state) <= 15 then "Cold"
                           when avg(weather_state) >= 25 then "Hot"
-                          else "Warm" end as weather_type
+                          else "Warm" 
+                      End as weather_type
 FROM Countries INNER JOIN Weather
 ON Countries.country_id = Weather.country_id
 WHERE LEFT(day, 7) = '2019-11'
@@ -2099,7 +2276,7 @@ INNER JOIN Weather AS w ON c.country_id = w.country_id
 WHERE w.day BETWEEN '2019-11-01' AND '2019-11-30'
 GROUP BY c.country_id;
 ```
-## Find the Team Size  
+## :star: Find the Team Size  
 
 Write an SQL query to find the team size of each of the employees.
 - Return result table in any order.
@@ -2115,6 +2292,7 @@ Write an SQL query to find the team size of each of the employees.
 + |     5       |     9      |
 + |     6       |     9      |
   +-------------+------------+
+
   Result table:
   +-------------+------------+
   | employee_id | team_size  |
@@ -2126,29 +2304,27 @@ Write an SQL query to find the team size of each of the employees.
   |     5       |     2      |
   |     6       |     2      |
   +-------------+------------+
-- Employees with Id 1,2,3 are part of a team with team_id = 8.
-- Employees with Id 4 is part of a team with team_id = 7.
-- Employees with Id 5,6 are part of a team with team_id = 9.
 ```
 
-```mysql
-/** THINK WHY IT NOT WORKING **/
+
+Wrong Concept
+```sql
 select employee_id , count(team_id)  team_size
 from Employee
 group by team_id;
 ```
 
-```mysql
-# Time:  O(n)
-# Space: O(n)
+```sql
+-- Time:  O(n)
+-- Space: O(n)
 SELECT employee_id, 
        team_size 
 FROM   employee AS e 
-       LEFT JOIN (SELECT team_id, 
-                         Count(1) AS team_size 
-                  FROM   employee 
-                  GROUP  BY team_id) AS teams 
-              ON e.team_id = teams.team_id 
+LEFT JOIN (SELECT team_id, 
+                  Count(1) AS team_size 
+           FROM employee 
+           GROUP BY team_id) AS teams 
+ON e.team_id = teams.team_id 
               
 SELECT t1.employee_id, t2.team_size
 FROM Employee as t1
@@ -2156,7 +2332,6 @@ INNER JOIN (select team_id, count(1) as team_size
             FROM Employee
             GROUP BY team_id) as t2
 ON t1.team_id = t2.team_id
-
 
 SELECT employee_id, COUNT(employee_id)OVER(PARTITION BY team_id) AS team_size
 FROM Employee
@@ -2192,15 +2367,15 @@ Round ctr to 2 decimal points. Order the result table by ctr in descending order
   | 2     | 33.33 |
   | 5     | 0.00  |
   +-------+-------+
-- for ad_id = 1, ctr = (2/(2+1)) * 100 = 66.67
-- for ad_id = 2, ctr = (1/(1+2)) * 100 = 33.33
-- for ad_id = 3, ctr = (1/(1+1)) * 100 = 50.00
-- for ad_id = 5, ctr = 0.00, Note that ad_id has no clicks or views.
-- Note that we don't care about Ignored Ads.
-- Result table is ordered by the ctr. in case of a tie we order them by ad_id
 ```
+- for `ad_id = 1, ctr = (2/(2+1)) * 100 = 66.67`
+- for `ad_id = 2, ctr = (1/(1+2)) * 100 = 33.33`
+- for `ad_id = 3, ctr = (1/(1+1)) * 100 = 50.00`
+- for `ad_id = 5, ctr = 0.00`, Note that `ad_id` has no clicks or views.
+- Note that we don't care about Ignored Ads.
+- Result table is ordered by the ctr. in case of a tie we order them by `ad_id`
 
-```mysql
+```sql
 select ad_id,
     (case when clicks+views = 0 then 0 else round(clicks/(clicks+views)*100, 2) end) as ctr
 from 
@@ -2211,10 +2386,9 @@ from
     group by ad_id) as t
 order by ctr desc, ad_id asc
 ```
-## List the Products Ordered in a Period **
+## :star::star: List the Products Ordered in a Period 
 
 Write an SQL query to get the names of products with greater than or equal to 100 units(`>100`) ordered in `February 2020` and their amount.
-
 ```diff
   Products table:
   +-------------+-----------------------+------------------+
@@ -2265,7 +2439,7 @@ Concept
 - GET DESIRED `product_id` and `order_date` FROM `Orders` table
 - INNER JOIN WITH `Product`
 
-```mysql
+```sql
 SELECT product_name, sum(unit) AS unit
 FROM Products inner join Orders
 ON Products.product_id = Orders.product_id
@@ -2296,7 +2470,9 @@ INNER JOIN products p
 ON o.product_id = p.product_id 
 ```
 
-## Students With Invalid Departments 
+## :star: Students With Invalid Departments 
+
+###### KEYWORD : `NOT EXISTS`
 
 Write a query that student does not exist in the department 
 
@@ -2316,12 +2492,12 @@ Students table:
 | 23   | Alice    | 1             | 
 | 1    | Bob      | 7             |
 | 5    | Jennifer | 13            |
-| 2    | John     | 14            |
-| 4    | Jasmine  | 77            |
-| 3    | Steve    | 74            |
++| 2    | John     | 14            |
++| 4    | Jasmine  | 77            |
++| 3    | Steve    | 74            |
 | 6    | Luis     | 1             |
 | 8    | Jonathan | 7             |
-| 7    | Daiana   | 33            |
++| 7    | Daiana   | 33            |
 | 11   | Madelynn | 1             |
 +------+----------+---------------+
 
@@ -2334,14 +2510,11 @@ Result table:
 | 4    | Jasmine  |
 | 3    | Steve    |
 +------+----------+
-
-John, Daiana, Steve and Jasmine are enrolled in departments 14, 33, 74 and 77 respectively. 
-department 14, 33, 74 and 77 doesn't exist in the Departments table.
 ```
 
-```
-# Time:  O(n) 
-# Space: O(n) 
+```sql
+-- Time:  O(n) 
+-- Space: O(n) 
 SELECT s.id, 
        s.name 
 FROM   students s 
@@ -2349,8 +2522,8 @@ FROM   students s
               ON d.id = s.department_id 
 WHERE  d.id IS NULL; 
 
-# Time:  O(n) 
-# Space: O(n) 
+-- Time:  O(n) 
+-- Space: O(n) 
 SELECT s.id, 
        s.name 
 FROM   students s
@@ -2411,17 +2584,19 @@ The unique ID of Jonathan is 1.
 # Space: O(n)
 SELECT u.unique_id, e.name
 FROM employees e
-LEFT JOIN employeeuni u
+LEFT JOIN EmployeeUNI u
 ON e.id = u.id
 ```
 
 
-## [Top Travellers](https://code.dennyzhang.com/top-travellers) *
+## :star: Traveler
 
-###### Keyword : `LEFT JOIN`, `ORDER BY ... , ...` 
+[Traveler](https://code.dennyzhang.com/top-travel 
 
-Write an SQL query to report the distance travelled by EACH USER.
-- Return the result table ordered by `travelled_distance` in **descending order**, if two or more users travelled the same distance, order them by their name in ascending order.
+###### Keyword : `LEFT JOIN`, `ORDER BY, IFNULL(x,0)` 
+
+Write an SQL query to report the distance traveled by EACH USER.
+- Return the result table ordered by `traveled_distance` in **descending order**, if two or more users traveled the same distance, order them by their name in ascending order.
 ```diff
   Users table:
   +------+-----------+
@@ -2454,7 +2629,7 @@ Write an SQL query to report the distance travelled by EACH USER.
 
 Result table:
 +----------+--------------------+
-| name     | travelled_distance |
+| name     | traveled_distance  |
 +----------+--------------------+
 | Elvis    | 450                |
 | Lee      | 450                |
@@ -2466,18 +2641,21 @@ Result table:
 +----------+--------------------+
 ```
 
-```mysql 
-SELECT U.name , IFNULL(distance,0) AS travelled_distance 
-FROM Users as U LEFT JOIN Rides AS R
+```sql
+SELECT U.name , IFNULL(distance,0) AS traveled_distance 
+FROM Users as U 
+LEFT JOIN Rides AS R
 OB U.Id = R.user_id
-GROUP BY u.name
-ORDER BY travelled_distance ASEC, U.name ASEC 
-
+GROUP BY U.name
+ORDER BY traveled_distance ASEC, U.name ASEC 
 ```
 
-## Create a Session Bar Chart **
+## :warning: Create a Session Bar Chart (分類)
 Write an SQL query to report the (`bin`, `total`) in any order.
-```
+
+###### Keyword : `Count(1)` , `UNION`, `New A table`
+
+```sql
   Sessions table:
   +-------------+---------------+
   | session_id  | duration      |
@@ -2498,15 +2676,14 @@ Write an SQL query to report the (`bin`, `total`) in any order.
   | [10-15>      | 0            |
   | 15 or more   | 1            |
   +--------------+--------------+
-- For session_id 1, 2 and 3 have a duration greater or equal than 0 minutes and less than 5 minutes.
-- For session_id 4 has a duration greater or equal than 5 minutes and less than 10 minutes.
-- There are no session with a duration greater or equial than 10 minutes and less than 15 minutes.
-- For session_id 5 has a duration greater or equal than 15 minutes.
 ```
+- For `session_id` 1, 2 and 3 have a duration greater or equal than 0 minutes and less than 5 minutes.
+- For `session_id` 4 has a duration greater or equal than 5 minutes and less than 10 minutes.
+- There are no session with a duration greater or equal than 10 minutes and less than 15 minutes.
+- For `session_id` 5 has a duration greater or equal than 15 minutes.
 
-###### Keyword : `Count(1)` , `UNION`, `New A table`
 
-```mysql
+```sql
 /**
   * create attributes
   *    [0-5>
@@ -2515,8 +2692,8 @@ Write an SQL query to report the (`bin`, `total`) in any order.
   *    15 or more
   */
 
-# Time:  O(n)
-# Space: O(1)
+-- Time:  O(n)
+-- Space: O(1)
 SELECT '[0-5>'  AS bin, 
        Count(1) AS total 
 FROM   sessions 
@@ -2540,8 +2717,8 @@ SELECT '15 or more' AS bin,
 FROM   sessions 
 WHERE  duration >= 900;
 
-# Time:  O(n)
-# Space: O(n)
+-- Time:  O(n)
+-- Space: O(n)
 SELECT
     t2.BIN,
     COUNT(t1.BIN) AS TOTAL
@@ -2570,10 +2747,12 @@ ORDER BY NULL;
 ```
 ## Group Sold Products By The Date 
 
+###### Keyword : `group_concat( [ATTRIBUTE] [ORDER BY] [SEPARATOR 'STRING'])`
+
 Write an SQL query to find for each date, the number of distinct products sold and their names.   
 The sold-products names for each date should be sorted lexicographically.   
 - Return the result table ordered by sell_date.
-```
+```sql
   Activities table:
   +------------+-------------+
   | sell_date  | product     |
@@ -2595,12 +2774,11 @@ The sold-products names for each date should be sorted lexicographically.
   | 2020-06-01 | 2        | Bible,Pencil                 |
   | 2020-06-02 | 1        | Mask                         |
   +------------+----------+------------------------------+
-For 2020-05-30, Sold items were (Headphone, Basketball, T-shirt), we sort them lexicographically and separate them by comma.
-For 2020-06-01, Sold items were (Pencil, Bible), we sort them lexicographically and separate them by comma.
-For 2020-06-02, Sold item is (Mask), we just return it.
 ```
+- For 2020-05-30, Sold items were (Headphone, Basketball, T-shirt), we sort them lexicographically and separate them by comma.
+- For 2020-06-01, Sold items were (Pencil, Bible), we sort them lexicographically and separate them by comma.
+- For 2020-06-02, Sold item is (Mask), we just return it.
 
-###### Keyword : `group_concat( [ATTRIBUTE] [ORDER BY] [SEPARATOR 'STRING'])`
 ```mysql
 # Time:  O(nlogn)
 # Space: O(n)
@@ -2647,14 +2825,14 @@ Write an SQL query to report the distinct titles of the kid-friendly movies stre
   +--------------+
   | Aladdin      |
   +--------------+
+```
 - "Leetcode Movie" is not a content for kids.
 - "Alg. for Kids" is not a movie.
 - "Database Sols" is not a movie
 - "Alladin" is a movie, content for kids and was streamed in June 2020.
 - "Cinderella" was not streamed in June 2020.
-```
 
-```mysql
+```sql
 SELECT DISTINCT c.title FROM Content AS c
 JOIN TVProgram AS t
 ON c.content_id = t.content_id
@@ -2675,7 +2853,7 @@ WHERE c.content_id = tv.content_id
         and program_date between '2020-06-01' and '2020-06-30'
 ```
 
-## Customer Order Frequency **
+## :star::star: Customer Order Frequency
 
 Write an SQL query to report the `customer_id` and of customers who have spent at least `$100` in each month of `June and July 2020`.
 - Return the result table in any order.
@@ -2921,14 +3099,15 @@ GROUP BY LOWER(TRIM(product_name)), LEFT(sale_date, 7)
 ORDER BY product_name, sale_date;
 ```
 
-## Unique Orders and Customers Per Month *
+## :star: Unique Orders and Customers Per Month
 
-###### Keyword : `LEFT JION`, `GROUP BY 1` 
+###### Keyword : `GROUP BY 1` , `LEFT(x, len) col_name`
 
 Write an SQL query to find the number of **unique orders and the number of unique customers(`DISTINCT`)** with `invoices` > `$20` for each different month.
 - Return the result table sorted in any order.
-```diff
+```sql
   Orders
+  + customer_id might contain duplicates
   +----------+------------+-------------+------------+
   | order_id | order_date | customer_id | invoice    |
   +----------+------------+-------------+------------+
@@ -2943,7 +3122,6 @@ Write an SQL query to find the number of **unique orders and the number of uniqu
   | 9        | 2021-01-07 | 3           | 31         |
   | 10       | 2021-01-15 | 2           | 20         |
   +----------+------------+-------------+------------+
-+ customer_id might contain duplicates
 
   Result table:
   +---------+-------------+----------------+
@@ -2955,15 +3133,17 @@ Write an SQL query to find the number of **unique orders and the number of uniqu
   | 2021-01 | 1           | 1              |
   +---------+-------------+----------------+
 ```
-- In September 2020(`2020-09`) we have two orders from 2 different customers with invoices > $20.
-- In October 2020(`2020-10`) we have two orders from 1 customer, and only one of the two orders has invoice > $20.
-- In November 2020(`2020-11`) we have two orders from 2 different customers but invoices < $20, so we don't include that month.
-- In December 2020(`2020-12`) we have two orders from 1 customer both with invoices > $20.
-- In January 2021(`2021-1`) we have two orders from 2 different customers, but only one of them with invoice > $20.
 
-```mysql
-# Time:  O(n)
-# Space: O(n)
+Tips
+```
+filter invoices > $20
+count(each distinct order) for each month
+count(each distinct customer) for each month
+```
+
+```sql
+-- Time:  O(n)
+-- Space: O(n)
 SELECT LEFT(order_date, 7) month,
        COUNT(DISTINCT order_id) order_count,
        COUNT(DISTINCT customer_id) customer_count
@@ -3027,7 +3207,8 @@ Volume of product_id = 4 (LC-T-Shirt), 4x10x20 = 800
 ```mysql
 SELECT name AS warehouse_name, SUM(units*Width*LENGTH*Height) AS volume
 FROM Warehouse w
-INNER JOIN Products p ON w.product_id = p.product_id
+INNER JOIN Products p
+ON w.product_id = p.product_id
 GROUP BY name
 ORDER BY NULL;
 
@@ -3193,9 +3374,9 @@ JOIN Users As u
 on u.account = t.account;
 ```
 
-## Sellers With No Sales **
+## :star::star: Sellers With No Sales 
 
-###### USAGE : `WHERE ... NOT EXISTS ...`
+###### Keyword : `WHERE ... NOT EXISTS ...`
 
 Write an SQL query to report the names of all sellers who did not make any sales in 2020.
 - Return the result table ordered by `seller_name` in ascending order.
@@ -3268,10 +3449,12 @@ WHERE NOT EXISTS
 ORDER BY 1;
 ```
 
-## All Valid Triplets That Can Represent a Country
+## :star: All Valid Triplets That Can Represent a Country
 
 Write an SQL query to find all the possible triplets representing the country under the given constraints.
 - Return the result table in any order.
+
+###### keyword : `for-loop concept via inner join different tables`
 
 ```
 SchoolA table:
@@ -3327,16 +3510,14 @@ AND b.student_id <> c.student_id
 AND a.student_name <> c.student_name
 AND b.student_name <> c.student_name;
 
-# Time:  O(n^3)
-# Space: O(n^3)
+-- Time:  O(n^3)
+-- Space: O(n^3)
 SELECT a.student_name AS member_A,
        b.student_name AS member_B,
        c.student_name AS member_c
-FROM schoola a
-INNER JOIN schoolb b ON (a.student_id != b.student_id
-                         AND a.student_name != b.student_name)
-INNER JOIN schoolc c ON (a.student_id != c.student_id
-                         AND a.student_name != c.student_name)
+FROM SchoolA a
+INNER JOIN SchoolB b ON (a.student_id != b.student_id AND a.student_name != b.student_name) -- compare with each b
+INNER JOIN SchoolC c ON (a.student_id != c.student_id AND a.student_name != c.student_name) -- compare with each c
 AND (b.student_id != c.student_id
      AND b.student_name != c.student_name);
 ```
