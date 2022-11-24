@@ -12,7 +12,8 @@
   - [Duplicate Emails](#duplicate-emails)
   - [Customers Who Never Order](#customers-who-never-order)
   - [Rising Temperature](#rising-temperature)
-  - [Delete Duplicate Emails\*\*](#delete-duplicate-emails)
+  - [:star::star: Delete Duplicate Emails](#starstar-delete-duplicate-emails)
+          - [keyword : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`](#keyword--delete-from-table-where-x-not-in-nested-query--delete-from-table-where--and-)
   - [Game Play Analysis I](#game-play-analysis-i)
   - [Game Play Analysis II](#game-play-analysis-ii)
   - [Employee Bonus](#employee-bonus)
@@ -25,11 +26,14 @@
   - [Sales Person](#sales-person)
   - [Triangle Judgement](#triangle-judgement)
   - [Shortest Distance in a Line](#shortest-distance-in-a-line)
-  - [Biggest Single Number\*\*](#biggest-single-number)
+  - [:star: Biggest Single Number](#star-biggest-single-number)
   - [Not Boring Movies](#not-boring-movies)
-  - [Swap Salary\*\*](#swap-salary)
-  - [Actors \& Directors Cooperated \>= 3 Times\*\*](#actors--directors-cooperated--3-times)
-  - [Project Employee I\*\*](#project-employee-i)
+  - [:star: Swap Salary](#star-swap-salary)
+          - [keyword : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`](#keyword--update--set--case--when--then--end-ifxtruefalse)
+  - [:star: Actors \& Directors Cooperated \>= 3 Times](#star-actors--directors-cooperated--3-times)
+          - [keyword : `group by x, y having count(*) >= 3`](#keyword--group-by-x-y-having-count--3)
+  - [:star: Project Employee I](#star-project-employee-i)
+          - [keyword : `Round(x,2)`, `ORDER BY NULL`](#keyword--roundx2-order-by-null)
   - [Project Employees II](#project-employees-ii)
   - [Sales Analysis I](#sales-analysis-i-1)
   - [:star: Sales Analysis II](#star-sales-analysis-ii)
@@ -346,35 +350,24 @@ Write an SQL query to find all dates' id with higher temperature compared to its
 
 - [lag Function](https://www.mysqltutorial.org/mysql-window-functions/mysql-lag-function/)  
 
-## Delete Duplicate Emails**
+## :star::star: Delete Duplicate Emails
 
 - [Delete Duplicate Emails](https://zhuanlan.zhihu.com/p/252243481)   
 
+###### keyword : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`
+
 Write a SQL query to delete all duplicate email entries in a table named Person, keeping only unique emails based on its smallest Id. For example, after running your query, the above Person table should have the following rows:
-```
-+----+------------------+
-| Id | Email            |
-+----+------------------+
-| 1  | john@example.com |
-| 2  | bob@example.com  |
-| 3  | john@example.com |
-+----+------------------+
-
-Result 
-+----+------------------+
-| Id | Email            |
-+----+------------------+
-| 1  | john@example.com |
-| 2  | bob@example.com  |
-+----+------------------+
+```sql
++----+------------------+  Result 
+| Id | Email            |  +----+------------------+
++----+------------------+  | Id | Email            |
+| 1  | john@example.com |  +----+------------------+
+| 2  | bob@example.com  |  | 1  | john@example.com |
+| 3  | john@example.com |  | 2  | bob@example.com  |
++----+------------------+  +----+------------------+
 ```
 
-Zwei Tabellen vergleichen via
-1. `DELETE FROM ... WHERE ... NOT IN (NESTED QUERY) ` 
-2. `DELETE FROM ... WHERE ... AND ...`
-
-
-```diff
+```java
 TABLE B
 +----+------------------+
 | Id | Email            |
@@ -405,7 +398,6 @@ WHERE Id NOT IN
        GROUP BY Email) 
  AS TMP);
 ```
----
 
 ```diff
 TABLE P
@@ -1031,16 +1023,9 @@ JOIN point AS b
 ON a.x <> b.x;
 ```
 
-## Biggest Single Number**
+## :star: Biggest Single Number
 
 Can Not use `ORDER BY num DESC LIMIT 1` if there is no such **bigger single number**
-
-```console
-Input: {"headers": {"number": ["num"]}, "rows": {"number": [[8],[1],[8],[3],[4],[3],[1],[4],[5],[5],[6],[6]]}}
-Output: {"headers":["num"],"values":[]}
-Expected: {"headers":["num"],"values":[[null]]}
-```
-
 ```diff
        Result
 +---+  +---+
@@ -1058,10 +1043,12 @@ Expected: {"headers":["num"],"values":[[null]]}
 ```
 
 ```sql
-SELECT MAX(num) AS num FROM
-(SELECT num FROM my_numbers
- GROUP BY num
- HAVING COUNT(*) = 1);
+SELECT MAX(num) AS num 
+FROM(
+    SELECT num FROM my_numbers
+    GROUP BY num
+    HAVING COUNT(*) = 1
+);
 ```
 
 
@@ -1098,11 +1085,11 @@ ORDER BY rating DESC;
 ```
 
 
-## Swap Salary**
+## :star: Swap Salary
 
 - [Swap Salary](https://zhuanlan.zhihu.com/p/259763823)
 
-`UPDATE ... SET ... CASE ... WHEN ... THEN ...`
+###### keyword : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`
 
 Swap all `f` and `m` values (i.e. change all `f` values to `m` and vice versa) with a single update statement and no intermediate temp table.  
 ```diff 
@@ -1133,7 +1120,7 @@ UPDATE salary
 SET sex = CASE sex 
           WHEN 'm' THEN 'f' 
           WHEN 'f' THEN 'm' 
-          END;    
+END;    
 
 --                      if(sex = m) sex = f else sex = m
 UPDATE salary SET sex = IF(sex = 'm', 'f', 'm');
@@ -1143,12 +1130,13 @@ UPDATE salary SET sex = CHAR(ASCII(sex) ^ (ASCII('m') ^ ASCII('f')));
 ```
 
 
-## Actors & Directors Cooperated >= 3 Times**
+## :star: Actors & Directors Cooperated >= 3 Times
 
 - [Actors & Directors Cooperated >= 3 Times](https://zhuanlan.zhihu.com/p/259934531) 
 
-
 Write a SQL query for a report that provides the pairs (`actor_id`, `director_id`) where the actor have cooperated with the director **at least 3 times**.
+
+###### keyword : `group by x, y having count(*) >= 3`
 
 ```diff
 ActorDirector table:
@@ -1190,18 +1178,18 @@ SELECT actor_id, director_id FROM ActorDirector
 GROUP BY actor_id, director_id
 HAVING COUNT(timestamp) >= 3;
 ```
-## Project Employee I** 
+## :star: Project Employee I
 
+###### keyword : `Round(x,2)`, `ORDER BY NULL`
 - [Project Employees I](https://zhuanlan.zhihu.com/p/259948436)
 
-Write an SQL query that reports **the average experience years of all the employees for each project**, rounded to 2 digits.
 
-`GROUP BY ...; ORDER BY NULL`
- 
-```diff
+
+Write an SQL query that reports **the average experience years of all the employees for each project**, rounded to 2 digits. 
+```sql
 Project table:
   +-------------+-------------+
-- | project_id  | employee_id |
+  | project_id  | employee_id |
   +-------------+-------------+
   | 1           | 1           |
   | 1           | 2           |
@@ -1227,13 +1215,13 @@ Result table:
   | 1           | 2.00          |
   | 2           | 2.50          |
   +-------------+---------------+
-
-+ The average experience years 
-  for the first project is (3 + 2 + 1) / 3 = 2.00 and 
-  for the second project is (3 + 2) / 2 = 2.50
 ```
 
-
+```
+join two table
+group the project
+round(avg(employee),2)
+```
 ```sql
 +-------------+--------+-------------------------------+
 | employee_id | name   | experience_years |project_id  |
