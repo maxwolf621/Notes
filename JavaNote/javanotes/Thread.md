@@ -14,21 +14,21 @@
   - [Thread Methods](#thread-methods)
     - [`Thread#setDaemon(true)`](#threadsetdaemontrue)
     - [`Thread#sleep(millisec)`](#threadsleepmillisec)
-    - [`Thread#yield()`](#threadyield)
+    - [:star: `Thread#yield()`](#star-threadyield)
     - [`Thread#interrupt()`](#threadinterrupt)
     - [Interrupt specific thread](#interrupt-specific-thread)
     - [InterruptedException](#interruptedexception)
     - [`shutdown()` and `shutdownNow()`](#shutdown-and-shutdownnow)
     - [wait(), notify() and notifyAll()](#wait-notify-and-notifyall)
-      - [wait vs sleep](#wait-vs-sleep)
+    - [Object#wait vs Thread#sleep](#objectwait-vs-threadsleep)
     - [`Thread#join`](#threadjoin)
-    - [await() signal() and signalAll()](#await-signal-and-signalall)
-  - [(RACE CONDITION) mutual exclusion and synchronization](#race-condition-mutual-exclusion-and-synchronization)
+    - [ReentrantLock await, signal, and signalAll](#reentrantlock-await-signal-and-signalall)
+  - [MUTUAL EXCLUSION LOCK](#mutual-exclusion-lock)
     - [`synchronized`](#synchronized)
     - [ReentrantLock](#reentrantlock)
     - [`reentrantLock` vs `synchronized`](#reentrantlock-vs-synchronized)
   - [State of threads](#state-of-threads)
-  - [J.U.C](#juc)
+  - [:star: J.U.C](#star-juc)
     - [`FutureTask<T>`](#futuretaskt)
     - [`BlockingQueue<T>`](#blockingqueuet)
     - [ForkJoin](#forkjoin)
@@ -43,9 +43,12 @@
     - [6. Thread Interruption Rule](#6-thread-interruption-rule)
     - [7. Finalizer Rule](#7-finalizer-rule)
     - [8. Transitivity](#8-transitivity)
-  - [Thread Safe In Java](#thread-safe-in-java)
-    - [Mutual Exclusion Lock](#mutual-exclusion-lock)
+  - [:star: Thread Safe In Java Strategies to avoiding Race Condition](#star-thread-safe-in-java-strategies-to-avoiding-race-condition)
+    - [Immutable Object](#immutable-object)
+    - [Mutual Exclusion Lock](#mutual-exclusion-lock-1)
     - [非阻塞(non-block)同步](#非阻塞non-block同步)
+      - [PCC](#pcc)
+      - [OCC](#occ)
     - [Compare-and-Swap，CAS](#compare-and-swapcas)
     - [ABA issues of multi-threaded computing](#aba-issues-of-multi-threaded-computing)
     - [Without `Synchronize`](#without-synchronize)
@@ -69,11 +72,12 @@
   - 內含一個以上的Threads
 
 - Thread 
-**代表從某個起始點開始(例如 `main()` )，到目前為止所有function的呼叫路、這些呼叫路徑上所用到的區域變數**、程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
+**代表從某個起始點開始(例如 `main()` )，到目前為止所有function的呼叫路徑、這些呼叫路徑上所用到的區域變數**、程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
   - 每一個Thread各自擁有 Stack : 紀錄Functions的**呼叫路徑**，以及這些Functions所用到的**Local Variable**，還有Current CPU Status
 
-**一個Process可以有多個Thread，同一個Process內的Thread使用相同的(HEAP)Memory Space，但這些Thread各自擁有其Stack**   
-換句話說，Thread能透過Reference存取到相同的Object(Process)，但是有各自獨立的Local variables，OS會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換，以讓各個Thread都有機會執行。
+**一個Process可以有多個Thread，同一個Process內的Thread使用相同的(HEAPf)Memory Space，但這些Thread各自擁有其Stack**   
+
+換句話說，Thread能透過JVM STACK的Reference(JVM HEAP)存取到相同的Object(Process)，但是有各獨立的Local variables，OS會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換，以讓各個Thread都有機會執行。
 
 ## Tips 
 1. Using synchronized blocks instead of synchronized method to decrease race condition 
@@ -90,14 +94,24 @@ ExecutorService 中會有專門集合工作的 Queue，並依照最大上限的 
 
 Executors Thread設定 
 ```java
+// ExecutorsService is implementation of Executor
+public interface Executor {
+    void execute(Runnable command);
+}
+
 // Configure ExecutorService 
-ExecutorsService executorService = Executors.new****ThreadPool(...);
+ExecutorsService executorService = Executors.new______ThreadPool(...);
+                                   Executors.newFixedThreadPool(int nThreads)
+                                   Executors.newCachedThreadPool()	
+                                   Executors.newScheduledThreadPool(int corePoolSize)
+                                   Executors.newWorkStealingPool()
+
 ExecutorsService executorService = Executors.newSingleThreadExecutor(...);
 
 // execute the thread
 executorService.execute(thread);
 ```
-- `newCachedThreadPool` ：Creates a thread pool that creates new threads as needed, but will reuse previously constructed threads when they are available.
+- `newCachedThreadPool` ：Creates a thread pool that creates new threads as needed, but will **REUSE** previously constructed threads when they are available.
 - `newFixedThreadPool` ：所有Tasks只能使用固定大小的Thread Pool
 - `newSingleThreadExecutor` ： Creates an Executor that uses a single worker thread (Thread Pool size is 1) operating off an unbounded queue.
 - `newScheduledThreadPool` : a thread pool that can schedule commands to run after a given delay, or to execute periodically.
@@ -239,13 +253,12 @@ public void run() {
 }
 ```
 
-### `Thread#yield()`
+### :star: `Thread#yield()`
 
 It provides a mechanism to inform the SCHEDULER that the current thread is willing to relinquish its current use of processor but it'd like to be scheduled back soon as possible.
 
-`Thread.yield()`的呼叫聲明了當前執行緒已經完成了生命周期中最重要的部分，可以切換給其它執行緒來執行。   
-
-**`yield()`只是對執行緒調度器SCHEDULER的一個`建議`，而且也只是`建議`具有相同優先級的其它執行緒可以運行**
+`Thread.yield()`的呼叫聲明了當前執行緒已經完成了生命周期中最重要的部分，可以切換給其它執行緒來執行。     
+**`yield()`只是對執行緒調度器SCHEDULER的一個`建議`，而且也只是`建議`具有相同優先級的其它執行緒可以運行**   
 ```java
 public void run() {
     Thread.yield();
@@ -284,12 +297,12 @@ public static void main(String[] args) throws InterruptedException {
 ```java
 Future<T> future = executorService.submit(
     () -> {
-    // ..
-    });
+        // ..
+    }
+);
 
 future.cancel(true);
 ```
-
 
 ### InterruptedException
 ```java
@@ -352,7 +365,7 @@ public static void main(String[] args) {
 - **calling `notify()` does not actually give up a lock on a resource. It tells a waiting thread that that thread can wake up.** However, the lock is not actually given up until the notifier’s synchronized block has finished/completed.
 
 `notifyAll()` : It wakes up all the threads that called `wait()` on the same object.  
-#### wait vs sleep
+### Object#wait vs Thread#sleep
 
 `wait()` is Object Method, it can release lock  
 `sleep()` is Thread's Static Method    
@@ -452,9 +465,9 @@ public static void main(String[] args) {
 ``` 
 - 雖然 b 執行緒先啟動，但是因為在 b 執行緒中呼叫 a 執行緒的`join()`方法，b 執行緒會等待 a 執行緒結束才繼續執行，因此最後能夠保證 a 執行緒的輸出先於 b 執行緒的輸出。
 
-### await() signal() and signalAll()
+### ReentrantLock await, signal, and signalAll
 
-`java.util.concurrent` package 提供了 Condition 類來實現執行緒之間的協調，可以在 Condition 上呼叫 `await()` 方法使執行緒等待，其它執行緒呼叫`signal()` 或 `signalAll()` 方法喚醒等待的執行緒。
+`java.util.concurrent` 提供了 Condition 類來實現執行緒之間的協調，可以在 Condition 上呼叫 `await()` 方法使執行緒等待，其它執行緒呼叫`signal()` 或 `signalAll()` 方法喚醒等待的執行緒。
 
 `await()` : `wait()` with `Condition` Class
 ```java
@@ -498,17 +511,20 @@ public static void main(String[] args) {
 }
 ```
 
-## (RACE CONDITION) mutual exclusion and synchronization 
+## MUTUAL EXCLUSION LOCK
 
-In order to prevent the race conditions, one should ensure that only one process can access the shared data at a time. It is the main reason why we need to synchronize the processes.
+In order to prevent the race conditions, one should ensure that only one process can access the shared data at a time. 
+
+It is the main reason why we need to synchronize the processes.
 
 - JVM  
-`synchronized`
+  `synchronized`
 
 - JDK  
-`ReentrantLock` (`java.util.concurrent`)
+  `ReentrantLock` (`java.util.concurrent`) 
+  `private Lock lock = new ReentrantLock()`
 
-`synchronized IS NOT THE SAME AS ReentrantLock`
+:warning: **`synchronized` IS NOT THE SAME AS ReentrantLock** :warning:
 
 ### `synchronized` 
 
@@ -525,8 +541,8 @@ public class SynchronizedExample {
 }
 public static void main(String[] args) {
     SynchronizedExample e1 = new SynchronizedExample();
-    ExecutorService executorService = 
-        Executors.newCachedThreadPool();
+
+    ExecutorService executorService = Executors.newCachedThreadPool();
     
     // its the same object e1 
     // one of thread need to wait the other one
@@ -593,18 +609,19 @@ public static void main(String[] args) {
 除非需要使用 `ReentrantLock` 的高級功能，否則優先使用 `synchronized`。
 
 這是因為`synchronized`是 JVM 實現的一種鎖機制，JVM 原生地支持它，而 `ReentrantLock` 不是所有的 JDK 版本都支持。
-並且**使用 `synchronized` 不用擔心沒有釋放鎖而導致(死結)Dead Lock問題**，因為 JVM 會確保鎖的釋放。
 
-ReentrantLock`為等待可中斷`，而`synchronized` 不是。
-- 等待可中斷 **(當持有鎖的執行緒長期不釋放鎖的時候，正在等待的執行緒可以選擇放棄等待，改為處理其他事情)**
+並且**使用 `synchronized` 不用擔心沒有釋放鎖而導致(死結)Dead Lock問題，因為 JVM 會確保鎖的釋放。**
 
-`synchronized` 中的鎖是非公平的, `ReentrantLock` 默認情況下也是非公平的，但是也可以是公平的
-- Fair lock **(多個執行緒在等待同一個鎖時，必須按照申請鎖的時間順序來依次獲得鎖)**
+1. ReentrantLock`為等待可中斷`，而`synchronized` 不是。
+   等待可中斷 : **當持有鎖的執行緒長期不釋放鎖的時候，正在等待的執行緒可以選擇放棄等待，改為處理其他事情**
 
-一個 `ReentrantLock` 可以同時綁定多個 Condition 對象
+2. `synchronized` 中的鎖是非公平的， `ReentrantLock` 默認情況下也是非公平的，但是也可以是公平的
+   Fair lock **: 多個執行緒在等待同一個鎖時，必須按照申請鎖的時間順序來依次獲得鎖)**
+
+3. 一個 `ReentrantLock` 可以同時綁定多個 Condition 對象
 ## State of threads
 
-![圖 2](images/a7e8888db35c6283389165104f3c2d26a1ea729a11793f885d6d272bc0bc2ad4.png)  
+![圖 2](../images/a7e8888db35c6283389165104f3c2d26a1ea729a11793f885d6d272bc0bc2ad4.png)  
 
 | State    |   |
 | -----    |---|
@@ -615,41 +632,52 @@ ReentrantLock`為等待可中斷`，而`synchronized` 不是。
 |TERMINATED    | `.exit()` or exception being thrown   
 
 
-## J.U.C
+## :star: J.U.C
 
 ### `FutureTask<T>`
 
 Returned Value from method in Implementation of `Callable` will be encapsulated by `Future<V>` which makes class `FutureTask<V>` can be a task for a thread and has returned value
-
 ```java
+public interface RunnableFuture<V> extends Runnable, Future<V>
+
 public class FutureTask<V> implements RunnableFuture<V>
 
-public interface RunnableFuture<V> extends Runnable, Future<V>
+FutureTask<T> futureTask = new FutureTask<T>(new Callable<T>{
+    @Override
+    public Integer call() throws Exception{
+        // ...
+    }
+}
+)
+Thread taskThread = new Thread(futureTask);
+taskThread.start();
 ```
 
+
+For example
 ```java
 public class FutureTaskExample {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        FutureTask<Integer> futureTask = new FutureTask<Integer>(new Callable<Integer>() 
-        {
-            @Override
-            public Integer call() throws Exception {
-                int result = 0;
-                for (int i = 0; i < 100; i++) {
-                    Thread.sleep(10);
-                    result += i;
+
+        // Task
+        FutureTask<Integer> futureTask = new FutureTask<Integer>(
+            new Callable<Integer>(){
+                @Override
+                public Integer call() throws Exception {
+                    int result = 0;
+                    for (int i = 0; i < 100; i++) {
+                        Thread.sleep(10);
+                        result += i;
+                    }
+                    return result;
                 }
-                return result;
-            }
-        });
+            });
 
         Thread computeThread = new Thread(futureTask);
-        
         computeThread.start();
 
-        Thread otherThread = new Thread(() -> {
-            
+        Thread otherThread = new Thread(() -> {            
             System.out.println("other task is running...");
             try {
                 Thread.sleep(1000);
@@ -659,7 +687,6 @@ public class FutureTaskExample {
         });
         
         otherThread.start();
-        
         System.out.println(futureTask.get());
     }
 }
@@ -678,7 +705,7 @@ PriorityBlockingQueue
 
 The [`take()`](https://www.geeksforgeeks.org/blockingqueue-take-method-in-java-with-examples/) is used to retrieve and remove the head of this queue.    
 - If the queue is empty then it will wait until an element becomes available.   
-So the thread that initially calls `take()` goes to sleep if there is no element available, letting other threads do whatever they need to do.   
+So **the thread that initially calls `take()` goes to sleep if there is no element available, letting other threads do whatever they need to do.**
 
 The [`put(E e)`](https://www.geeksforgeeks.org/blockingqueue-put-method-in-java-with-examples/) inserts element passed as parameter to method at the tail of this BlockingQueue, if queue is not full.  
 - If the queue is full, then this method will wait for space to become available and after space is available, it inserts the element to BlockingQueue.
@@ -716,9 +743,6 @@ public class ProducerConsumer {
         }
     }
 }
-```
-
-```java
 public static void main(String[] args) {
     for (int i = 0; i < 2; i++) {
         Producer producer = new Producer();
@@ -734,22 +758,31 @@ public static void main(String[] args) {
     }
 }
 ```
-
 ```html
 produce..produce..consume..consume..produce..consume..produce..consume..produce..consume..
 ```
 
 ### ForkJoin
-主要用於Concurrency，和 MapReduce 類似，都是把大的計算任務拆分成多個小任務並行計算。
+
+主要用於Concurrency，和 MapReduce 類似，都是**把大的計算任務拆分成多個小任務並行計算。**
+
+- **與Thread Pool不同，ForkJoin Pool是每個thread有一個自己的queue**
+- 發現task還是太大，就會繼續切更小，並再放到queue的最後方。如此一邊切一邊往下執行，直到task夠小可以直接運算為止。
+
 
 需ForkJoinPool類來實現ForkJoin，它是一個特殊的Thread Pool，執行緒數量取決於 CPU 核心數。
 ```java
 public class ForkJoinPool extends AbstractExecutorService
+
+ForkJoinPool handleForkJoinTask = new ForkJoinPool();
+handleForkJoinTask.submit(forkJoinTask);
 ```
+
+For example 
 ```java
 public class ForkJoinExample extends RecursiveTask<Integer> {
 
-    // Threshold of Task 
+    // Threshold of Task  (bound of task)
     private final int threshold = 5;
 
     private int first;
@@ -768,7 +801,8 @@ public class ForkJoinExample extends RecursiveTask<Integer> {
                 result += i;
             }
         } else {
-            // task > threshold into smaller ones 
+            // task > threshold 
+            // Split task into smaller ones 
             int middle = first + (last - first) / 2;
             ForkJoinExample leftTask = new ForkJoinExample(first, middle);
             
@@ -798,21 +832,24 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 ![圖 5](../images/52a8be3c53461923376a93d7c2b25147ccacc72aa06d70b2907d911393dbf147.png)     
 - 每個執行緒都維護了一個Deque，用來存儲需要執行的任務。     
-- ForkJoinPool 實現了Work-Stealing Algorithm來提高CPU的利用率。
- - **Work-Stealing Algorithm允許的執行緒從其它執行緒的Deque中竊取一個任務來執行**
 
-**Stealing的Task必須是最晚的任務，避免和Deque所屬執行緒發生Race Condition**  
+**ForkJoinPool 實現了Work-Stealing Algorithm來提高CPU的利用率。**  
+**Work-Stealing Algorithm允許的執行緒從其它執行緒的Deque中竊取一個任務來執行**  
+**Stealing的Task必須是最晚的任務，避免和Deque所屬執行緒發生Race Condition**    
 ![圖 6](../images/2da580acd082a865a7e84eadc702cf6cae61f7dd14861d46600969a1d1f08db0.png)  
-- Thread2 從 Thread1的Deque中拿出最晚的 Task1 任務，Thread1 會拿出 Task2 來執行，這樣就避免發生Race Condition。但是如果Deque中只有一個Task時還是會發生Race Condition。
+- Thread2 從 Thread1的Deque中拿出最晚的 Task1 任務，Thread1 會拿出 Task2 來執行，這樣就避免發生Race Condition。**:warning:但是如果Deque中只有一個Task時還是會發生Race Condition。:warning:**
 
+
+>>> 而ForkJoinPool有一個很大的好處是減少thread因為blocking造成context switching。不管是fork, compute, join都幾乎不會blocking(只有join少數情況會要等待結果)。這可以讓thread一直保持running的狀態，一直到時間到了被context switch，而不是自己卡住了造成的context switch。
+>>> 但ForkJoinPool對於不可分割的task，並且處理時間差異很大的情境比較不適合，畢竟每個thread都有一個queue。就很像在大賣場排隊結帳，只要運氣不好排到一個前面卡比較久的task就要等比較久。但是別排又沒有閒到可以把你steal走，那就沒有辦法做到先到先處理的特性了。
 ## Java Memory Model
 
 所有的資源都存儲在Memory中，**每個Thread還有自己的工作快取**，工作快取存儲在CPU Cache或者Register，使用Memory的資源副本(Copy from Memory)  
 
-**執行緒只能直接操作CPU Cache/Register中的資源，不同執行緒之間的資源的值傳遞需要通過Main Memory 來成**
-![圖 1](images/7343a90b52886c9dd5e7c750e1f59809576d200e659f4cee373501e6fd870963.png)   
-![圖 4](images/adf83f317a2b9863d10bee06790ca290f4ff62fb65aa7c5ea0604b54bbc28f99.png)    
-|       |        |
+:warning: **執行緒只能直接操作CPU Cache/Register中的資源，不同執行緒之間的資源的值傳遞需要通過Main Memory 來成** :warning:
+![圖 1](../images/7343a90b52886c9dd5e7c750e1f59809576d200e659f4cee373501e6fd870963.png)   
+![圖 4](../images/adf83f317a2b9863d10bee06790ca290f4ff62fb65aa7c5ea0604b54bbc28f99.png)    
+|  動作 |  解釋  |
 | ----- | ------ |
 | read  | 把一個Variable的值從Memory傳輸到Cache中
 | load  | 在 read 後執行，把 read 得到的值放入Cache的Variable 副本(COPY)中
@@ -858,7 +895,7 @@ Thread a (`a.start()`) happen before each operations in a
 
 Only code that implements a thread's interruption policy may swallow an interruption request.
 
-### 7. Finalizer Rule 
+### 7. Finalizer Rule  
 
 A object's `Constructor()` happen before `finalize()` 
 
@@ -866,9 +903,9 @@ A object's `Constructor()` happen before `finalize()`
 operation A先行於 operation B, operation B先行於 operation C  operation A先行 operation C 
 
 
-## Thread Safe In Java
+## :star: Thread Safe In Java Strategies to avoiding Race Condition 
 
-Strategies to avoiding Race Condition 
+### Immutable Object
 
 Immutable Objects in Java are Thread Safe
 - `final`
@@ -879,7 +916,7 @@ Immutable Objects in Java are Thread Safe
 - `BigInteger`
 - `BigDecimal` 
 
-**AtomicInteger And AtomicLong are not immutable**
+:warning:**AtomicInteger And AtomicLong are not immutable**:warning:
 
 ### Mutual Exclusion Lock
 
@@ -888,12 +925,17 @@ Immutable Objects in Java are Thread Safe
 
 ### 非阻塞(non-block)同步
 
-Mutual Exclusion and Synchronization 最主要的問題就是執行緒阻塞和喚醒所帶來的性能問題，因此這種同步也稱為阻塞同步。
-- Mutual Exclusion and Synchronization 屬於一種悲觀的並行策略，總是認為只要不去做正確的同步措施，那就肯定會出現問題。
+Mutual Exclusion and Synchronization 最主要的問題就是執行緒阻塞(BLOCK)和喚醒所帶來的性能問題，因此這種同步也稱為阻塞同步。
 
-- 無論Shared Source是否真的會出現Race Condition，它都要進行Locking（該處討論的是概念模型，實際上虛擬機會優化掉很大一部分不必要的加鎖）、用戶態核心態轉換、維護鎖Counter和檢查是否有被阻塞的執行緒需要喚醒等操作。
 
-隨著硬體指令集的發展，我們可以使用基於沖突檢測的樂觀並行策略：先進行操作，如果沒有其它執行緒爭用Shared Sources，那操作就成功了，否則采取補償措施（不斷地重試，直到成功為止）。
+#### PCC
+
+- Mutual Exclusion and Synchronization 屬於一種悲觀並行策略)(Pessimistic Concurrency Control)，總是認為只要不去做正確的同步措施，那就肯定會出現問題。
+  無論Shared Source是否真的會出現Race Condition，它都要進行Locking（該處討論的是概念模型，實際上虛擬機會優化掉很大一部分不必要的加鎖）、用戶態核心態轉換、維護鎖Counter和檢查是否有被阻塞的執行緒需要喚醒等操作。
+
+#### OCC
+
+隨著硬體指令集的發展，我們可以使用基於衝突檢測的樂觀並行策略(Optimistic Concurrency Control)：先進行操作，如果沒有其它執行緒競爭Shared Sources，那操作就成功了，否則採取補償措施（不斷地重試，直到成功為止）。
 - 這種樂觀的並行策略的許多實現都不需要將執行緒阻塞，因此這種同步操作稱為非阻塞同步
 
 ### Compare-and-Swap，CAS
@@ -959,8 +1001,10 @@ J.U.C 提供了一個帶有標記的原子引用類 `AtomicStampedReference` 來
 
 **要保證Thread Safe，並不是一定就要使用`synchronized`如果一個Method本來就不涉及資料共享(Shared Sources)，自然就無須任何同步措施去保證正確性。**
 
-1. Stack Closure : It's Thread Safe for multiple threads access method's **local variable**
-2. Thread Local Storage : It's Thread Safe to handle the shared resource in one thread
+1. Stack Closure   
+   It's Thread Safe for multiple threads access method's **local variable**
+2. Thread Local Storage   
+   **It's Thread Safe to handle the shared resource in one thread**
 
 #### Stack Closure
 ```java

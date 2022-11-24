@@ -285,12 +285,12 @@ public void methodC() throws XxxException, YyyException {
 }
 ```
 
-
 ## `finally`
 
 `finally` Block無論有沒有例外拋出(exception)都會執行。
- - 如果拋出例外，即使沒有`catch` Block，`finally` Block也會執行    
-    - 例如`finally`在關閉文件和釋放(release)任何在方法開始時被分配的其他(外部)資源是很有用(避免如因為exception造成memory leak)     
+- 例如`finally`在關閉文件和釋放(release)任何在方法開始時被分配的其他(外部)資源是很有用(避免如因為exception造成memory leak)     
+
+**如果拋出例外，即使沒有`catch` Block，`finally` Block也會執行**    
  
 `finally` Block是optional,**但是每個try至少需要一個`catch`或者`finally` Block**, 如
 ```java

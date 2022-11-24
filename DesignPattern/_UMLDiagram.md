@@ -1,8 +1,11 @@
 # UML diagram
 
 - [UML diagram](#uml-diagram)
+  - [UML](#uml)
   - [Association and Dependency](#association-and-dependency)
+          - [tags : `Association(繼承HAS)`，`Dependency(實現Use)`](#tags--association繼承hasdependency實現use)
   - [Composition and Aggregation](#composition-and-aggregation)
+          - [tags : `Composition互相依賴` ，`Aggregation整體依賴成員`](#tags--composition互相依賴-aggregation整體依賴成員)
       - [Life cycle](#life-cycle)
       - [Strong/Weak Association](#strongweak-association)
   - [Realization Implementation vs Inheritance](#realization-implementation-vs-inheritance)
@@ -12,14 +15,19 @@ References
 - [Introduction of UML](https://spicyboyd.blogspot.com/2018/07/umlclass-diagram-relationships.html)  
 - [Composition and aggregation](https://www.tutorialspoint.com/difference-between-composition-and-aggregation)  
 
----
+
+## UML
 
 ![image](https://user-images.githubusercontent.com/68631186/126488408-65750f74-b5f5-431e-8a81-0fda94b6f206.png)  
 | dotted line arrow | solid line arrow |
 | ----------------- | ---------------- |
 | you USE it        | you HAVE it |
 
+
+
 ## Association and Dependency
+
+###### tags : `Association(繼承HAS)`，`Dependency(實現Use)`
 
 Association : HAVE the object
 ![image](https://user-images.githubusercontent.com/68631186/126490747-f2af8080-a6e5-45d9-b948-3e299086dd18.png)
@@ -34,6 +42,9 @@ Dependency : USE the object
 >>> A dependency is very much implied by an association.  
 
 ## Composition and Aggregation
+
+
+###### tags : `Composition互相依賴` ，`Aggregation整體依賴成員`
 
 **Composition and aggregation are two types of association** which is used to represent relationships between two classes.  
 

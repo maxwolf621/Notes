@@ -14,7 +14,6 @@ References
 - [Static Classes In Jav](https://stackoverflow.com/questions/7486012/static-classes-in-java)
  
 
-
 A `static` Field is **shared by everyone in this class or it's subclass** 
   
 `Static` method or member are bound directly with Class   
