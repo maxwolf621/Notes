@@ -13,7 +13,7 @@
   - [Customers Who Never Order](#customers-who-never-order)
   - [Rising Temperature](#rising-temperature)
   - [:star::star: Delete Duplicate Emails](#starstar-delete-duplicate-emails)
-          - [keyword : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`](#keyword--delete-from-table-where-x-not-in-nested-query--delete-from-table-where--and-)
+          - [Keywords : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`](#keywords--delete-from-table-where-x-not-in-nested-query--delete-from-table-where--and-)
   - [Game Play Analysis I](#game-play-analysis-i)
   - [Game Play Analysis II](#game-play-analysis-ii)
   - [Employee Bonus](#employee-bonus)
@@ -23,17 +23,18 @@
   - [Classes More Than 5 Students](#classes-more-than-5-students)
   - [Consecutive Available Seats](#consecutive-available-seats)
   - [Friend Requests I: Overall Acceptance Rate\*\*](#friend-requests-i-overall-acceptance-rate)
-  - [Sales Person](#sales-person)
-  - [Triangle Judgement](#triangle-judgement)
+  - [Sales Person :star:](#sales-person-star)
+  - [:star: Triangle Judgement](#star-triangle-judgement)
+          - [Keywords : `CASE WHEN (x + y > z) AND (x + z > y) AND (y + z > x) THEN 'Yes' ELSE 'No' END`](#keywords--case-when-x--y--z-and-x--z--y-and-y--z--x-then-yes-else-no-end)
   - [Shortest Distance in a Line](#shortest-distance-in-a-line)
   - [:star: Biggest Single Number](#star-biggest-single-number)
   - [Not Boring Movies](#not-boring-movies)
   - [:star: Swap Salary](#star-swap-salary)
-          - [keyword : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`](#keyword--update--set--case--when--then--end-ifxtruefalse)
+          - [Keywords : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`](#keywords--update--set--case--when--then--end-ifxtruefalse)
   - [:star: Actors \& Directors Cooperated \>= 3 Times](#star-actors--directors-cooperated--3-times)
-          - [keyword : `group by x, y having count(*) >= 3`](#keyword--group-by-x-y-having-count--3)
+          - [Keywords : `group by x, y having count(*) >= 3`](#keywords--group-by-x-y-having-count--3)
   - [:star: Project Employee I](#star-project-employee-i)
-          - [keyword : `Round(x,2)`, `ORDER BY NULL`](#keyword--roundx2-order-by-null)
+          - [Keywords : `Round(x,2)`, `ORDER BY NULL`](#keywords--roundx2-order-by-null)
   - [Project Employees II](#project-employees-ii)
   - [Sales Analysis I](#sales-analysis-i-1)
   - [:star: Sales Analysis II](#star-sales-analysis-ii)
@@ -44,17 +45,15 @@
   - [:star: Reported Posts](#star-reported-posts)
           - [tags : `datediff(x,y) = x-y`](#tags--datediffxy--x-y)
   - [User Activity for the Past 30 Days I](#user-activity-for-the-past-30-days-i)
-          - [Keyword : `DATEDIFF`](#keyword--datediff)
+          - [Keywords : `DATEDIFF`](#keywords--datediff)
   - [:star: User Activity For The Past 30 Days II](#star-user-activity-for-the-past-30-days-ii)
-          - [Keyword : `AVG` , `DISTINCT`, `DATEDIFF`, `ROUND(... , 2)`](#keyword--avg--distinct-datediff-round--2)
-  - [Article Views I](#article-views-i)
-          - [Keyword : `SELECT DISTINCT`](#keyword--select-distinct)
+          - [Keywords : `AVG` , `Count DISTINCT`, `DATEDIFF`, `ROUND( X/Y , 2)`](#keywords--avg--count-distinct-datediff-round-xy--2)
   - [:star: Immediate Food Delivery I](#star-immediate-food-delivery-i)
         - [Keyword : `SUM(X=Y)/COUNT(*)`語法](#keyword--sumxycount語法)
   - [:star: Reformat Department Table](#star-reformat-department-table)
-          - [Keyword : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`](#keyword--case-when-x-then-y-else-null-end-ifx-true-false)
+          - [Keywords : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`](#keywords--case-when-x-then-y-else-null-end-ifx-true-false)
   - [:star: Queries Quality and Percentage](#star-queries-quality-and-percentage)
-          - [Keyword : `aggregation function with query`](#keyword--aggregation-function-with-query)
+          - [Keywords : `aggregation function with query`](#keywords--aggregation-function-with-query)
   - [:star: Number of Comments per Post](#star-number-of-comments-per-post)
   - [:warning: Students and Examinations](#warning-students-and-examinations)
   - [:star: Weather Type in Each Country](#star-weather-type-in-each-country)
@@ -65,22 +64,22 @@
   - [:star: Students With Invalid Departments](#star-students-with-invalid-departments)
           - [KEYWORD : `NOT EXISTS`](#keyword--not-exists)
   - [Replace Employee ID with The Unique Identifier](#replace-employee-id-with-the-unique-identifier)
-          - [KEYWORD : `LEFT JOIN`](#keyword--left-join)
+          - [Keywords : `LEFT JOIN`](#keywords--left-join)
   - [:star: Traveler](#star-traveler)
-          - [Keyword : `LEFT JOIN`, `ORDER BY, IFNULL(x,0)`](#keyword--left-join-order-by-ifnullx0)
+          - [Keywords : `LEFT JOIN`, `ORDER BY`, `IFNULL(x,0)`](#keywords--left-join-order-by-ifnullx0)
   - [:warning: Create a Session Bar Chart (分類)](#warning-create-a-session-bar-chart-分類)
-          - [Keyword : `Count(1)` , `UNION`, `New A table`](#keyword--count1--union-new-a-table)
-  - [Group Sold Products By The Date](#group-sold-products-by-the-date)
-          - [Keyword : `group_concat( [ATTRIBUTE] [ORDER BY] [SEPARATOR 'STRING'])`](#keyword--group_concat-attribute-order-by-separator-string)
+          - [Keywords : `Count(1)` , `UNION ALL 垂直式合併+允許重複ROWs`](#keywords--count1--union-all-垂直式合併允許重複rows)
+  - [:star: Group Sold Products By The Date](#star-group-sold-products-by-the-date)
+          - [Keywords : `group_concat( [ATTRIBUTE] | [子查詢], [SEPARATOR 'STRING'])`](#keywords--group_concat-attribute--子查詢-separator-string)
   - [Friendly Movies Streamed Last Month](#friendly-movies-streamed-last-month)
   - [:star::star: Customer Order Frequency](#starstar-customer-order-frequency)
-          - [Keyword : `EQUI-JOIN THREE TABLES`, `SUM` , `INNER JOIN THREE TABLES`](#keyword--equi-join-three-tables-sum--inner-join-three-tables)
+          - [Keywords : `EQUI-JOIN THREE TABLES`, `SUM` , `INNER JOIN THREE TABLES`, `group by having`](#keywords--equi-join-three-tables-sum--inner-join-three-tables-group-by-having)
   - [Find Users With Valid E-Mails](#find-users-with-valid-e-mails)
-          - [Keyword : `regexp`](#keyword--regexp)
+          - [Keywords : `regexp`](#keywords--regexp)
   - [Patients With a Condition](#patients-with-a-condition)
-          - [Keyword : `LIKE` , `WILDCARD`](#keyword--like--wildcard)
+          - [Keywords : `LIKE` , `WILDCARD`](#keywords--like--wildcard)
   - [Fix Product Name Format](#fix-product-name-format)
-          - [Keyword : `SUBSTRING()` , `TRIM()` , `LOWER()`, `ORDER BY 1,2` AND `GROUP BY 1,2`](#keyword--substring--trim--lower-order-by-12-and-group-by-12)
+          - [Keywords : `SUBSTRING()` , `TRIM()` , `LOWER()`, `ORDER BY 1,2`, `GROUP BY 1,2`](#keywords--substring--trim--lower-order-by-12-group-by-12)
   - [:star: Unique Orders and Customers Per Month](#star-unique-orders-and-customers-per-month)
           - [Keyword : `GROUP BY 1` , `LEFT(x, len) col_name`](#keyword--group-by-1--leftx-len-col_name)
   - [Warehouse Manager](#warehouse-manager)
@@ -354,7 +353,7 @@ Write an SQL query to find all dates' id with higher temperature compared to its
 
 - [Delete Duplicate Emails](https://zhuanlan.zhihu.com/p/252243481)   
 
-###### keyword : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`
+###### Keywords : `DELETE FROM Table WHERE X NOT IN (NESTED QUERY) `, `DELETE FROM TABLE WHERE ... AND ...`
 
 Write a SQL query to delete all duplicate email entries in a table named Person, keeping only unique emails based on its smallest Id. For example, after running your query, the above Person table should have the following rows:
 ```sql
@@ -887,11 +886,11 @@ from request_accepted) /
 from friend_request), 0),2) as accept_rate
 ```
 
-## Sales Person
+## Sales Person :star:
 
-- [Sales Person](https://zhuanlan.zhihu.com/p/259424830) **
+- [Sales Person](https://zhuanlan.zhihu.com/p/259424830) 
 
-Output all the names in the table salesperson, who didn’t have sales to company `RED`.
+Output all the names in the table salesperson, who didn't have sales to company `RED`.
 ```diff
 Salesperson table
 +----------+------+--------+-----------------+-----------+
@@ -937,6 +936,19 @@ Output
 ```
 
 ```sql
+-- LEFT JOIN 
+SELECT name
+FROM salesperson
+WHERE sales_id NOT IN (SELECT o.sales_id  
+                       FROM orders o 
+                       LEFT JOIN company c 
+                       ON o.com_id = c.com_id
+                       WHERE c.name = 'RED'
+                       GROUP BY o.sales_id);
+```
+
+
+```sql
 SELECT name 
 from salesperson 
 WHERE (SELECT sales_id FROM orders WHERE com_id  NOT IN 
@@ -950,17 +962,11 @@ INNER JOIN orders AS b
 ON a.com_id = b.com_id
 WHERE a.name = 'RED'
 );
-
--- LEFT JOIN 
-SELECT name
-FROM salesperson
-WHERE sales_id NOT IN (SELECT o.sales_id 
-                       FROM orders o LEFT JOIN company c ON o.com_id = c.com_id
-                       WHERE c.name = 'RED'
-                       GROUP BY o.sales_id);
 ```
 
-## Triangle Judgement
+## :star: Triangle Judgement
+
+###### Keywords : `CASE WHEN (x + y > z) AND (x + z > y) AND (y + z > x) THEN 'Yes' ELSE 'No' END`
 
 - [Triangle Judgement](https://zhuanlan.zhihu.com/p/259435481)  
 
@@ -1089,7 +1095,7 @@ ORDER BY rating DESC;
 
 - [Swap Salary](https://zhuanlan.zhihu.com/p/259763823)
 
-###### keyword : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`
+###### Keywords : `UPDATE ... SET ... CASE ... WHEN ... THEN ... END`, `IF(X,TRUE,FALSE)`
 
 Swap all `f` and `m` values (i.e. change all `f` values to `m` and vice versa) with a single update statement and no intermediate temp table.  
 ```diff 
@@ -1136,7 +1142,7 @@ UPDATE salary SET sex = CHAR(ASCII(sex) ^ (ASCII('m') ^ ASCII('f')));
 
 Write a SQL query for a report that provides the pairs (`actor_id`, `director_id`) where the actor have cooperated with the director **at least 3 times**.
 
-###### keyword : `group by x, y having count(*) >= 3`
+###### Keywords : `group by x, y having count(*) >= 3`
 
 ```diff
 ActorDirector table:
@@ -1180,7 +1186,7 @@ HAVING COUNT(timestamp) >= 3;
 ```
 ## :star: Project Employee I
 
-###### keyword : `Round(x,2)`, `ORDER BY NULL`
+###### Keywords : `Round(x,2)`, `ORDER BY NULL`
 - [Project Employees I](https://zhuanlan.zhihu.com/p/259948436)
 
 
@@ -1675,7 +1681,7 @@ GROUP BY extra;
 
 ## User Activity for the Past 30 Days I   
 
-###### Keyword : `DATEDIFF`
+###### Keywords : `DATEDIFF`
 
 Write an SQL query to find the daily active user count for a period of 30 days ending `2019-07-27` inclusively.(找出`datediff(2019-07-27,activity_date)<30)`有上過線的user)
 - A user was active on some day if he/she made at least one activity on that day.
@@ -1738,7 +1744,7 @@ ORDER  BY NULL
 
 - [User Activity for the Past 30 Days II](https://zhuanlan.zhihu.com/p/260558715)
 
-###### Keyword : `AVG` , `DISTINCT`, `DATEDIFF`, `ROUND(... , 2)`
+###### Keywords : `AVG` , `Count DISTINCT`, `DATEDIFF`, `ROUND( X/Y , 2)`
 
 Write an SQL query to find the **average number of sessions per user for a period of 30 days ending 2019-07-27 inclusively**, rounded to 2 decimal places.  
 
@@ -1775,9 +1781,13 @@ Result table:
 so the average  is `(1 + 1 + 2) / 3 = 1.33`. 
 
 
-```sql
+tips
+```java
 -- (1 + 1 + 2) / 3 = 1.33
 -- IfNull(Count(DISTINCT session_id) / Count(DISTINCT user_id), 0)
+```
+
+```sql
 +---------+------------+---------------+---------------+
 | user_id | session_id | activity_date | activity_type |
 +---------+------------+---------------+---------------+
@@ -1806,51 +1816,18 @@ FROM   activity
 WHERE  Datediff("2019-07-27", activity_date) < 30 
 ```
 
-## Article Views I
-
-[Article Views I](https://zhuanlan.zhihu.com/p/260564257)
-
-###### Keyword : `SELECT DISTINCT`
-
-Write an SQL query to find all the authors that viewed at least one of their own articles, sorted in ascending order by their id.
-- Note that equal `author_id` and `viewer_id` indicate the same person.
-```sql
-  Views TABLE 
-  +------------+-----------+-----------+------------+
-  | article_id | author_id | viewer_id | view_date  |
-  +------------+-----------+-----------+------------+
-  | 1          | 3         | 5         | 2019-08-01 |
-  | 1          | 3         | 6         | 2019-08-02 |
-  | 2          | 7         | 7         | 2019-08-01 |
-  | 2          | 7         | 6         | 2019-08-02 |
-  | 4          | 7         | 1         | 2019-07-22 |
-  | 3          | 4         | 4         | 2019-07-21 |
-  | 3          | 4         | 4         | 2019-07-21 |
-  +------------+-----------+-----------+------------+
-
-  Result
-  +------+
-  | id   |
-  +------+
-  | 4    |
-  | 7    |
-  +------+
-```
-
-```sql
-SELECT DISTINCT author_id AS id 
-FROM Views
-WHERE author_id = viewer_id
-ORDER BY id;
-```
-
 ## :star: Immediate Food Delivery I
 
 ##### Keyword : `SUM(X=Y)/COUNT(*)`語法
 
 Write an SQL query to find the percentage of `immediate` orders in the table, rounded to 2 decimal places.  
-- **If the preferred delivery date of the customer is the same as the order date then the order is called `immediate` otherwise it's called scheduled.**
-- count `(immediate orders) / (all orders)`
+
+**If the preferred delivery date of the customer is the same as the order date then the order is called `immediate` otherwise it's called scheduled.**
+
+tips
+```java
+count (immediate orders) / (all orders)
+```
 
 ```diff
   +-------------+-------------+------------+-----------------------------+
@@ -1874,21 +1851,24 @@ Write an SQL query to find the percentage of `immediate` orders in the table, ro
 ```
 
 ```sql
-SELECT ROUND(100* (SELECT COUNT(*) FROM Delivery WHERE order_date = customer_pref_delivery_date) / (
-       SELECT COUNT(*) FROM Delivery),2) 
+SELECT ROUND(100* (
+  SELECT COUNT(*) 
+  FROM Delivery 
+  WHERE order_date = customer_pref_delivery_date) / (
+    SELECT COUNT(*) FROM Delivery
+  ),2) 
 AS immediate_percentage;
 
 -- Time:  O(n)
 -- Space: O(1)
 SELECT Round(100 * Sum(order_date = customer_pref_delivery_date) / Count(*), 2) 
-       AS 
-       immediate_percentage 
+       AS immediate_percentage 
 FROM   delivery;
 ```
 
 ## :star: Reformat Department Table
 
-###### Keyword : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`
+###### Keywords : `CASE WHEN X THEN Y ELSE NULL END`, `IF(X, true, false)`
 
 Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
 ```sql
@@ -1902,8 +1882,11 @@ Write an SQL query to reformat the table such that there is a department id colu
   | 1    | 7000    | Feb   |
   | 1    | 6000    | Mar   |
   +------+---------+-------+
-- The month has values in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].
+```
+- The month has values in   
+  `["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]`.
 
+```sql
   Result table:
   +------+-------------+-------------+-------------+-----+-------------+
   | id   | Jan_Revenue | Feb_Revenue | Mar_Revenue | ... | Dec_Revenue |
@@ -1912,28 +1895,32 @@ Write an SQL query to reformat the table such that there is a department id colu
   | 2    | 9000        | null        | null        | ... | null        |
   | 3    | null        | 10000       | null        | ... | null        |
   +------+-------------+-------------+-------------+-----+-------------+
-- Note that the result table has 13 columns (1 for the department id + 12 for the months).
 ```
+- Note that the result table has 13 columns (1 for the department id + 12 for the months).
+
 
 ```sql
-SELECT id,
-SUM(CASE WHEN month = 'Jan' THEN revenue ELSE NULL END) AS Jan_Revenue,
-SUM(CASE WHEN month = 'Feb' THEN revenue ELSE NULL END) AS Feb_Revenue,
-SUM(CASE WHEN month = 'Mar' THEN revenue ELSE NULL END) AS Mar_Revenue,
-SUM(CASE WHEN month = 'Apr' THEN revenue ELSE NULL END) AS Apr_Revenue,
-SUM(CASE WHEN month = 'May' THEN revenue ELSE NULL END) AS May_Revenue,
-SUM(CASE WHEN month = 'Jun' THEN revenue ELSE NULL END) AS Jun_Revenue,
-SUM(CASE WHEN month = 'Jul' THEN revenue ELSE NULL END) AS Jul_Revenue,
-SUM(CASE WHEN month = 'Aug' THEN revenue ELSE NULL END) AS Aug_Revenue,
-SUM(CASE WHEN month = 'Sep' THEN revenue ELSE NULL END) AS Sep_Revenue,
-SUM(CASE WHEN month = 'Oct' THEN revenue ELSE NULL END) AS Oct_Revenue,
-SUM(CASE WHEN month = 'Nov' THEN revenue ELSE NULL END) AS Nov_Revenue,
-SUM(CASE WHEN month = 'Dec' THEN revenue ELSE NULL END) AS Dec_Revenue
+
+SELECT 
+  -- Each Row
+  id,
+  SUM(CASE WHEN month = 'Jan' THEN revenue ELSE NULL END) AS Jan_Revenue,
+  SUM(CASE WHEN month = 'Feb' THEN revenue ELSE NULL END) AS Feb_Revenue,
+  SUM(CASE WHEN month = 'Mar' THEN revenue ELSE NULL END) AS Mar_Revenue,
+  SUM(CASE WHEN month = 'Apr' THEN revenue ELSE NULL END) AS Apr_Revenue,
+  SUM(CASE WHEN month = 'May' THEN revenue ELSE NULL END) AS May_Revenue,
+  SUM(CASE WHEN month = 'Jun' THEN revenue ELSE NULL END) AS Jun_Revenue,
+  SUM(CASE WHEN month = 'Jul' THEN revenue ELSE NULL END) AS Jul_Revenue,
+  SUM(CASE WHEN month = 'Aug' THEN revenue ELSE NULL END) AS Aug_Revenue,
+  SUM(CASE WHEN month = 'Sep' THEN revenue ELSE NULL END) AS Sep_Revenue,
+  SUM(CASE WHEN month = 'Oct' THEN revenue ELSE NULL END) AS Oct_Revenue,
+  SUM(CASE WHEN month = 'Nov' THEN revenue ELSE NULL END) AS Nov_Revenue,
+  SUM(CASE WHEN month = 'Dec' THEN revenue ELSE NULL END) AS Dec_Revenue
 FROM Department
 GROUP BY id;
 
-# Time:  O(n)
-# Space: O(n)
+-- Time:  O(n)
+-- Space: O(n)
 SELECT id, 
        SUM(IF(month = 'Jan', revenue, NULL)) AS Jan_Revenue, 
        SUM(IF(month = 'Feb', revenue, NULL)) AS Feb_Revenue, 
@@ -1955,7 +1942,7 @@ GROUP  BY id;
 
 - [Queries Quality and Percentage](https://zhuanlan.zhihu.com/p/260937964)
 
-###### Keyword : `aggregation function with query`
+###### Keywords : `aggregation function with query`
 
 Write an SQL query to find each `query_name`, the `quality` and `poor_query_percentage`. 
 - Both `quality` and `poor_query_percentage` should be rounded to 2 decimal places.
@@ -2085,8 +2072,8 @@ LEFT JOIN submissions C ON P.post_id = C.parent_id) AS tmp
 GROUP BY post_id
 
 
-# Time:  O(n)
-# Space: O(n)
+-- Time:  O(n)
+-- Space: O(n)
 SELECT COMMENTS.sub_id                 AS post_id, 
        Count(DISTINCT POST.sub_id) AS number_of_comments 
 FROM   submissions COMMENTS
@@ -2525,7 +2512,7 @@ WHERE  NOT EXISTS (SELECT id
 
 A PROBLEM THAT FIND WHO DOESN'T EXIST ON ANOTHER TABLE
 
-###### KEYWORD : `LEFT JOIN`
+###### Keywords : `LEFT JOIN`
 
 Write an SQL query to show the unique ID of each user, If a user doesn’t have a unique ID replace just show `NULL`.
 - Return the result table in any order.
@@ -2560,33 +2547,72 @@ EmployeeUNI table:
 | 3         | Winston  |
 | 1         | Jonathan |
 +-----------+----------+
-
-Alice and Bob don't have a unique ID, We will show null instead.
-The unique ID of Meir is 2.
-The unique ID of Winston is 3.
-The unique ID of Jonathan is 1.
 ```
+Alice and Bob don't have a unique ID, We will show null instead.   
+The unique ID of Meir is 2.   
+The unique ID of Winston is 3.   
+The unique ID of Jonathan is 1.   
 
 ```mysql
-# Time:  O(n)
-# Space: O(n)
+-- Time:  O(n)
+-- Space: O(n)
 SELECT u.unique_id, e.name
 FROM employees e
 LEFT JOIN EmployeeUNI u
 ON e.id = u.id
 ```
 
-
 ## :star: Traveler
 
 [Traveler](https://code.dennyzhang.com/top-travel 
 
-###### Keyword : `LEFT JOIN`, `ORDER BY, IFNULL(x,0)` 
+###### Keywords : `LEFT JOIN`, `ORDER BY`, `IFNULL(x,0)` 
 
-Write an SQL query to report the distance traveled by EACH USER.
-- Return the result table ordered by `traveled_distance` in **descending order**, if two or more users traveled the same distance, order them by their name in ascending order.
-```diff
-  Users table:
+Write an SQL query to **report the distance traveled by EACH USER**.
+- Return the result table **ordered by `traveled_distance` in descending order**, if two or more users traveled the same distance, **order them by their name in ascending order**.
+
+tips
+```
+report each user
+```
+
+```sql
+Create table user(
+	id int not null,
+    name varchar(10) not null,
+    primary key (id)
+);
+Create table rides(
+	id int not null,
+    user_id int not null,
+    distance int not null,
+    primary key (id)
+);
+
+insert into user
+values
+	(1 ,"Alice"   ),
+	(2 ,"Bob"	    ),
+	(3 ,"Alex"    ),
+	(4 ,"Donald"  ),
+	(7 ,"Lee"     ),
+	(13,"Jonathan"),
+	(19,"Elvis"   )
+
+insert into rides
+values
+  (1    ,1   ,120  ),
+  (2    ,2   ,317  ),
+  (3    ,3   ,222  ),
+  (4    ,7   ,100  ),
+  (5    ,13  ,312  ),
+  (6    ,19  ,50   ),
+  (7    ,7   ,120  ),
+  (8    ,19  ,400  ),
+  (9    ,7   ,230  )
+
+
+  Users table(`PK : id`):
   +------+-----------+
   | id   | name      |
   +------+-----------+
@@ -2598,9 +2624,8 @@ Write an SQL query to report the distance traveled by EACH USER.
   | 13   | Jonathan  |
   | 19   | Elvis     |
   +------+-----------+
-- Id is PK
 
-  Rides table:
+  Rides table(duplicates user_id):
   +------+----------+----------+
   | id   | user_id  | distance |
   +------+----------+----------+
@@ -2609,40 +2634,53 @@ Write an SQL query to report the distance traveled by EACH USER.
   | 3    | 3        | 222      |
   | 4    | 7        | 100      |
   | 5    | 13       | 312      |
-  | 6    | 19       | 50       |
+  | 6    | 19       | 50       |  
   | 7    | 7        | 120      |
   | 8    | 19       | 400      |
   | 9    | 7        | 230      |
   +------+----------+----------+
 
-Result table:
-+----------+--------------------+
-| name     | traveled_distance  |
-+----------+--------------------+
-| Elvis    | 450                |
-| Lee      | 450                |
-| Bob      | 317                |
-| Jonathan | 312                |
-| Alex     | 222                |
-| Alice    | 120                |
-| Donald   | 0                  |
+  Result table:
+  +----------+--------------------+
+  | name     | traveled_distance  |
+  +----------+--------------------+
+  | Elvis    | 450                |
+  | Lee      | 450                |
+  | Bob      | 317                |
+  | Jonathan | 312                |
+  | Alex     | 222                |
+  | Alice    | 120                |
+  | Donald   | 0                  |
 +----------+--------------------+
 ```
 
 ```sql
-SELECT U.name , IFNULL(distance,0) AS traveled_distance 
+|1	 |Alice	    |1	 |1	  |120
+|2	 |Bob	      |2	 |2	  |317
+|3	 |Alex	    |3	 |3	  |222
+|4	 |Donald		|n	 |n   |n
+|7	 |Lee	      |9	 |7	  |230
+|7	 |Lee	      |7	 |7	  |120
+|7	 |Lee	      |4	 |7	  |100
+|13  |Jonathan	|5	 |13	|312
+|19  |Elvis	    |8	 |19	|400
+|19  |Elvis	    |6	 |19	|50
+
+SELECT U.name , SUM(IFNULL(distance,0)) AS traveled_distance 
 FROM Users as U 
 LEFT JOIN Rides AS R
-OB U.Id = R.user_id
+ON U.Id = R.user_id
 GROUP BY U.name
-ORDER BY traveled_distance ASEC, U.name ASEC 
+ORDER BY traveled_distance DESC, U.name ASC 
 ```
 
 ## :warning: Create a Session Bar Chart (分類)
+
+- [Select from multiple tables without a join](https://stackoverflow.com/questions/12095109/select-from-multiple-tables-without-a-join)
+
 Write an SQL query to report the (`bin`, `total`) in any order.
 
-###### Keyword : `Count(1)` , `UNION`, `New A table`
-
+###### Keywords : `Count(1)` , `UNION ALL 垂直式合併+允許重複ROWs`
 ```sql
   Sessions table:
   +-------------+---------------+
@@ -2665,41 +2703,32 @@ Write an SQL query to report the (`bin`, `total`) in any order.
   | 15 or more   | 1            |
   +--------------+--------------+
 ```
-- For `session_id` 1, 2 and 3 have a duration greater or equal than 0 minutes and less than 5 minutes.
-- For `session_id` 4 has a duration greater or equal than 5 minutes and less than 10 minutes.
-- There are no session with a duration greater or equal than 10 minutes and less than 15 minutes.
+- For `session_id` 1, 2 and 3 have a duration greater or equal than 0() minutes and less than 5(`300`s) minutes
+- For `session_id` 4 has a duration greater or equal than 5(`300`s) minutes and less than 10 minutes(`600`s).
+- There are no session with a duration greater or equal than 10 minutes(`600`s) and less than 15(`900`s) minutes.
 - For `session_id` 5 has a duration greater or equal than 15 minutes.
 
-
 ```sql
-/**
-  * create attributes
-  *    [0-5>
-  *    [5-10>
-  *    [10-15>
-  *    15 or more
-  */
-
 -- Time:  O(n)
 -- Space: O(1)
-SELECT '[0-5>'  AS bin, 
-       Count(1) AS total 
-FROM   sessions 
-WHERE  duration >= 0 
-       AND duration < 300 
-UNION ALL
-SELECT '[5-10>' AS bin, 
-       Count(1) AS total 
-FROM   sessions 
-WHERE  duration >= 300 
-       AND duration < 600 
+SELECT '[0-5>'  AS bin,                   
+       Count(1) AS total                  
+FROM   sessions                   
+WHERE  duration >= 0                  
+       AND duration < 300                   
+UNION ALL                 
+SELECT '[5-10>' AS bin,                   
+       Count(1) AS total                  
+FROM   sessions                   
+WHERE  duration >= 300                  
+       AND duration < 600                   
 UNION ALL 
-SELECT '[10-15>' AS bin, 
-       Count(1)  AS total 
-FROM   sessions 
-WHERE  duration >= 600 
-       AND duration < 900 
-UNION ALL 
+SELECT '[10-15>' AS bin,                        
+       Count(1)  AS total                         
+FROM   sessions                         
+WHERE  duration >= 600                        
+       AND duration < 900                         
+UNION ALL              
 SELECT '15 or more' AS bin, 
        Count(1)     AS total 
 FROM   sessions 
@@ -2733,14 +2762,46 @@ ON t1.bin = t2.bin
 GROUP BY t2.bin
 ORDER BY NULL;
 ```
-## Group Sold Products By The Date 
+## :star: Group Sold Products By The Date 
 
-###### Keyword : `group_concat( [ATTRIBUTE] [ORDER BY] [SEPARATOR 'STRING'])`
+###### Keywords : `group_concat( [ATTRIBUTE] | [子查詢], [SEPARATOR 'STRING'])`
+
+**使用 `GROUP_CONCAT()` 和 `CONCAT(string1, string2, separator)`，如果資料會有 NULL，必須使用 IFNULL() 排除，否則會導致整筆資料為 NULL**
+```sql
+CONCAT(
+        '[',
+        GROUP_CONCAT(
+            CONCAT('{"name":"', employees.name, '",'),
+            CONCAT('"sex":"', employees.sex, '",'),
+            -- 如果資料會有 NULL，必須使用 IFNULL() 排除，否則會導致整筆資料為 NULL
+            CONCAT('"last_day":"', IFNULL(employees.last_day, '0'), '"}')
+        ),
+        ']'
+      )
+```
+
 
 Write an SQL query to find for each date, the number of distinct products sold and their names.   
+
 The sold-products names for each date should be sorted lexicographically.   
-- Return the result table ordered by sell_date.
+
+Return the result table ordered by `sell_date`.
 ```sql
+
+Create table activities(
+	sell_date date not null,
+    product varchar(15) not null
+);
+Insert into activities 
+values
+  ("2020-05-30", "Headphone"  ),
+  ("2020-06-01", "Pencil"     ),
+  ("2020-06-02", "Mask"  ),
+  ("2020-05-30", "Basketball"  ),
+  ("2020-06-01", "Bible"  ),
+  ("2020-06-02", "Mask"  ),
+  ("2020-05-30", "T-Shirt"  )
+
   Activities table:
   +------------+-------------+
   | sell_date  | product     |
@@ -2753,6 +2814,7 @@ The sold-products names for each date should be sorted lexicographically.
   | 2020-06-02 | Mask        |
   | 2020-05-30 | T-Shirt     |
   +------------+-------------+
+
 
   Result table:
   +------------+----------+------------------------------+
@@ -2767,12 +2829,25 @@ The sold-products names for each date should be sorted lexicographically.
 - For 2020-06-01, Sold items were (Pencil, Bible), we sort them lexicographically and separate them by comma.
 - For 2020-06-02, Sold item is (Mask), we just return it.
 
-```mysql
-# Time:  O(nlogn)
-# Space: O(n)
+```sql
+-- Time:  O(nlogn)
+-- Space: O(n)
+
+  +------------+-------------+
+  | sell_date  | product     |
+  +------------+-------------+
+  | 2020-05-30 | Headphone   |
+  |            | Basketball  |
+  |            | T-Shirt     |
+  | 2020-06-01 | Pencil      |
+  |            | Bible       |
+  | 2020-06-02 | Mask        |
+  |            | Mask        |
+  +------------+-------------+
 
 SELECT sell_date,
        COUNT(DISTINCT(product)) AS num_sold, 
+       -- concatenate products in group
        GROUP_CONCAT(DISTINCT product ORDER BY product ASC SEPARATOR ',') AS products
 FROM Activities
 GROUP BY sell_date
@@ -2781,9 +2856,8 @@ ORDER BY sell_date ASC;
 
 ## Friendly Movies Streamed Last Month 
 
-Write an SQL query to report the distinct titles of the kid-friendly movies streamed in `June 2020`.
-- Return the result table in any order.
-```
+Write an SQL query to report the distinct titles of the `kid-friendly movies` streamed in `June 2020`.
+```sql
   TVProgram table:
   +--------------------+--------------+-------------+
   | program_date       | content_id   | channel     |
@@ -2796,7 +2870,7 @@ Write an SQL query to report the distinct titles of the kid-friendly movies stre
   | 2020-07-15 16:00   | 5            | Disney Ch   |
   +--------------------+--------------+-------------+
 
-  Content table:
+  Content table(PK : content_id):
   +------------+----------------+---------------+---------------+
   | content_id | title          | Kids_content  | content_type  |
   +------------+----------------+---------------+---------------+
@@ -2806,7 +2880,7 @@ Write an SQL query to report the distinct titles of the kid-friendly movies stre
   | 4          | Aladdin        | Y             | Movies        |
   | 5          | Cinderella     | Y             | Movies        |
   +------------+----------------+---------------+---------------+
-- content_id is PK
+
   Result table:
   +--------------+
   | title        |
@@ -2814,11 +2888,6 @@ Write an SQL query to report the distinct titles of the kid-friendly movies stre
   | Aladdin      |
   +--------------+
 ```
-- "Leetcode Movie" is not a content for kids.
-- "Alg. for Kids" is not a movie.
-- "Database Sols" is not a movie
-- "Alladin" is a movie, content for kids and was streamed in June 2020.
-- "Cinderella" was not streamed in June 2020.
 
 ```sql
 SELECT DISTINCT c.title FROM Content AS c
@@ -2843,12 +2912,41 @@ WHERE c.content_id = tv.content_id
 
 ## :star::star: Customer Order Frequency
 
-Write an SQL query to report the `customer_id` and of customers who have spent at least `$100` in each month of `June and July 2020`.
-- Return the result table in any order.
+Write an SQL query to report the `customer_id` and of customers who have spent at least `$100` in EACH MONTH of `June and July 2020`.
 
-###### Keyword : `EQUI-JOIN THREE TABLES`, `SUM` , `INNER JOIN THREE TABLES`
+###### Keywords : `EQUI-JOIN THREE TABLES`, `SUM` , `INNER JOIN THREE TABLES`, `group by having`
 
-```diff
+tips
+```
+oder是主角
+```
+
+```sql
+Insert into customers 
+values
+  (1,"Winston","USA"  ),
+  (2,"Jonathan","Peru" ),
+  (3,"Moustafa","Egypt");
+
+Insert Into products
+values
+  (10 ,"LC Phone",300 ),
+  (20 ,"LC T-Shirt",10  ),
+  (30 ,"LC Book",45  ),
+  (40 ,"LC Keychain",2   );
+
+Insert into Orders
+values
+  (1,1,10 ,"2020-06-10",1 ), 
+  (2,1,20 ,"2020-07-01",1 ), 
+  (3,1,30 ,"2020-07-08",2 ), 
+  (4,2,10 ,"2020-06-15",2 ), 
+  (5,2,40 ,"2020-07-01",10), 
+  (6,3,20 ,"2020-06-24",2 ), 
+  (7,3,30 ,"2020-06-25",2 ), 
+  (9,3,30 ,"2020-05-08",3 );
+  
+  
   Customers
   +--------------+-----------+-------------+
   | customer_id  | name      | country     |
@@ -2882,23 +2980,30 @@ Write an SQL query to report the `customer_id` and of customers who have spent a
   | 9            | 3           | 30          | 2020-05-08  | 3         |
   +--------------+-------------+-------------+-------------+-----------+
 
-
   Result table:
   +--------------+------------+
   | customer_id  | name       |  
   +--------------+------------+
   | 1            | Winston    |
   +--------------+------------+ 
-- Winston spent $300 (300 * 1) in June and $100 ( 10 * 1 + 45 * 2) in July 2020.
-- Jonathan spent $600 (300 * 2) in June and $20 ( 2 * 10) in July 2020.
-- Moustafa spent $110 (10 * 2 + 45 * 2) in June and $0 in July 2020.
 ```
 
 THREAD
 1. `EQUI-JOIN` Three tables
 2. `GROUP BY` CUSTOMER ID
 3. `CASE WHEN ... LIKE ... THEN ... ELSE ... END` to find the month off June and July 2020
-   > Or we can use `CASE WHEN LEFT = ... THEN ... ELSE ... END`  
+   Or we can use `CASE WHEN LEFT = ... THEN ... ELSE ... END`  
+
+```sql
+-- Each Row of 
+-- join table of Customers and Orders c.customer_id = o.customer_id 
+-- Maps Each row of Products
+-- because there is no specific condition for mapping Product
+select *
+from Customers c, Products p, Orders o
+where c.customer_id = o.customer_id 
+```
+
 
 ```sql
 /**
@@ -2911,25 +3016,35 @@ where c.customer_id = o.customer_id AND p.product_id = o.product_id
 group by o.customer_id
 having 
 (
-    sum(case when o.order_date like '2020-06%' then o.quantity*p.price else 0 end) >= 100
+    sum(
+      case 
+        when o.order_date like '2020-06%' 
+        then o.quantity*p.price 
+        else 0 
+      end) >= 100
     and
-    sum(case when o.order_date like '2020-07%' then o.quantity*p.price else 0 end) >= 100
+    sum(
+      case 
+        when o.order_date like '2020-07%' 
+        then o.quantity*p.price 
+        else 0 
+      end) >= 100
 )
-
 
 -- Time:  O(n)
 -- Space: O(n)
 SELECT a.customer_id, a.name
 FROM Customers AS a
 -- JOIN TABLE with order btw 2020-06-01 AND 2020-07-31 
-INNER JOIN (SELECT *
-            FROM Orders
-            WHERE order_date BETWEEN "2020-06-01" AND "2020-07-31" ) AS b
-  ON a.customer_id = b.customer_id
--- JOIN TABLE Product
+INNER JOIN (
+  SELECT *
+  FROM Orders
+  WHERE order_date BETWEEN "2020-06-01" AND "2020-07-31" 
+) AS b
+ON a.customer_id = b.customer_id
+-- JOIN TABLE Product to Filter WHO spent $100
 INNER JOIN Product AS c
-  ON b.product_id = c.product_id
--- Filter WHO spent $100
+ON b.product_id = c.product_id
 GROUP BY a.customer_id
 HAVING SUM(CASE
                WHEN LEFT(b.order_date, 7) = "2020-06" THEN c.price * b.quantity
@@ -2942,7 +3057,9 @@ AND    SUM(CASE
 ORDER BY NULL;
 ```
 
-## [Find Users With Valid E-Mails](https://cloud.tencent.com/developer/article/1787722)
+## Find Users With Valid E-Mails
+
+[Find Users With Valid E-Mails](https://cloud.tencent.com/developer/article/1787722)
 Write an SQL query to find the users who have valid emails.
 Return the result table in any order.
 
@@ -2951,9 +3068,9 @@ A valid e-mail has a prefix name and a domain where:
 - The prefix name must start with a letter.
 - The domain is `@leetcode.com`.
 
-###### Keyword : `regexp`
+###### Keywords : `regexp`
 
-```
+```sql
   Users
   +---------+-----------+-------------------------+
   | user_id | name      | mail                    |
@@ -2975,10 +3092,6 @@ A valid e-mail has a prefix name and a domain where:
   | 3       | Annabelle | bella-@leetcode.com     |
   | 4       | Sally     | sally.come@leetcode.com |
   +---------+-----------+-------------------------+
-The mail of user 2 doesn't have a domain.
-The mail of user 5 has # sign which is not allowed.
-The mail of user 6 doesn't have leetcode domain.
-The mail of user 7 starts with a period.
 ```
 
 
@@ -2990,22 +3103,19 @@ WHERE  u.mail REGEXP '^[a-zA-Z][a-zA-Z0-9._-]*@leetcode.com$';
 
 ## Patients With a Condition 
 
-###### Keyword : `LIKE` , `WILDCARD`
+###### Keywords : `LIKE` , `WILDCARD`
 
 Write an SQL query to report the `patient_id`, `patient_name` all conditions of patients who have Type I Diabetes.   
-Type I Diabetes always starts with `DIAB1` prefix
-
-Return the result table in any order.
-
-```
+- Type I Diabetes always starts with `DIAB1` prefix
+```java
   Patients
   +------------+--------------+--------------+
   | patient_id | patient_name | conditions   |
   +------------+--------------+--------------+
   | 1          | Daniel       | YFEV COUGH   |
   | 2          | Alice        |              |
-  | 3          | Bob          | DIAB100 MYOP |
-  | 4          | George       | ACNE DIAB100 |
++ | 3          | Bob          | DIAB100 MYOP |
++ | 4          | George       | ACNE DIAB100 |
   | 5          | Alain        | DIAB201      |
   +------------+--------------+--------------+
 
@@ -3017,7 +3127,6 @@ Return the result table in any order.
   | 4          | George       | ACNE DIAB100 | 
   +------------+--------------+--------------+
 ```
-- Bob and George both have a condition that starts with `DIAB1`(`LIKE`).
 ```sql
 select *
 from Patients
@@ -3026,14 +3135,22 @@ where conditions like "%DIAB1%"
 
 ## Fix Product Name Format 
 
-###### Keyword : `SUBSTRING()` , `TRIM()` , `LOWER()`, `ORDER BY 1,2` AND `GROUP BY 1,2` 
+###### Keywords : `SUBSTRING()` , `TRIM()` , `LOWER()`, `ORDER BY 1,2`, `GROUP BY 1,2` 
+
+```sql
+    SELECT account_id, open_emp_id
+ --           ^^^^        ^^^^
+ --           1           2
+    FROM account
+    GROUP BY 1;
+```
 
 Write an SQL query to report
-- `product_name` in lowercase(`LOWER()`) without leading or trailing white spaces.
-- `sale_date` in the format ('YYYY-MM')`LEFT` OR ``SUBSTRING`
+- `product_name` in lowercase(`LOWER()`) without leading or trailing white spaces(`TRIM()`). 
+- `sale_date` in the format ('YYYY-MM') `LEFT` OR ``SUBSTRING`
 - total the number of times the product(`COUNT`) was sold in this month.
 - Return the result table ordered by `product_name` in ascending order, in case of a tie order it by `sale_date` in ascending order.
-```diff
+```java
   Sales
   +------------+------------------+--------------+
   | sale_id    | product_name     | sale_date    |
@@ -3061,22 +3178,14 @@ Write an SQL query to report
 - In March, 1 matryoshka was sold.
 - NOTE that the product names are not case sensitive and may contain spaces.
 
-```mysql
-/**
-    SELECT account_id, open_emp_id
-             ^^^^        ^^^^
-              1           2
-
-    FROM account
-    GROUP BY 1;
-  */
-# Time:  O(nlogn)
-# Space: O(n)
+```sql
+-- Time:  O(nlogn)
+-- Space: O(n)
 SELECT LOWER(TRIM(product_name)) product_name,
        substring(sale_date, 1, 7) sale_date,
        count(sale_id) total
 FROM Sales
-GROUP BY 1, 2
+GROUP BY 1, 2 
 ORDER BY 1, 2;
 
 -- SAME AS 
@@ -3504,8 +3613,14 @@ SELECT a.student_name AS member_A,
        b.student_name AS member_B,
        c.student_name AS member_c
 FROM SchoolA a
-INNER JOIN SchoolB b ON (a.student_id != b.student_id AND a.student_name != b.student_name) -- compare with each b
-INNER JOIN SchoolC c ON (a.student_id != c.student_id AND a.student_name != c.student_name) -- compare with each c
+INNER JOIN SchoolB b ON (
+  a.student_id != b.student_id 
+  AND 
+  a.student_name != b.student_name) -- compare with each b
+INNER JOIN SchoolC c ON (
+  a.student_id != c.student_id 
+  AND 
+  a.student_name != c.student_name) -- compare with each c
 AND (b.student_id != c.student_id
      AND b.student_name != c.student_name);
 ```
