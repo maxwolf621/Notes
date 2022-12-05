@@ -14,11 +14,53 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.streampractice.Test.Bar;
+
+abstract class C1
+{
+  public C1() {
+    System.out.print(1);
+  }
+}
+
+class C2 extends C1
+{
+  public C2() {
+    System.out.print(2);
+  }
+}
+
+class C3 extends C2
+{
+  public C3() {
+    System.out.print(3);
+  }
+}
+
 /**
  * Unit test for simple App.
  */
 public class AppTest 
-{
+{      
+    
+    public static void main(String[] a) {
+        //new C3();
+        HashSet<String> set = new HashSet<String>(){{
+            add("a");
+            add("b");
+            add("c");
+        }};
+        Bar b = new Bar(set);
+        Bar b2 = b;
+        
+        b.addSetElement("Im new value");
+        b = null; // b reference to null
+
+        b2.getHashSet();
+
+    }
+
+
     static int proc(int i){
         try{
             if(i == 0 ){

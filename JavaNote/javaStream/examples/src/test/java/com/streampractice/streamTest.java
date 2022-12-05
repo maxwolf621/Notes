@@ -11,6 +11,7 @@ import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 
 public class streamTest {
+
     List<Student> students = Arrays.asList(
             new Student(1, "a", 18, "female", 88),
             new Student(2, "b", 17, "male", 60),

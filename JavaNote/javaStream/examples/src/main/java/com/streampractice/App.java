@@ -1,12 +1,33 @@
 package com.streampractice;
 
 import java.util.*;
+
+import com.streampractice.C.C3;
+import com.streampractice.Test.Bar;
+import com.streampractice.Test.Foo;
 public class App 
 {
-    private static final int Student = 0;
+    // private static final int Student = 0;
+    
+    String title = "";
+    int value;
 
+    public App() {
+      this.title = "world";
+    }
+    public App(int value) {
+      this.value = value;
+      this.title = "Hello";
+    }
     public static void main( String[] args )
     {
+        // App c = new App(1);
+        // System.out.println(c.title);
+
+        Foo bar = new Bar();
+        System.out.println((Bar) bar.a);
+
+        
         /* 
         List<Fruit> fruitList = Arrays.asList(
             new Fruit("apple", 6),
