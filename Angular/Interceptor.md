@@ -1,6 +1,5 @@
 # Interceptor
 
-
 - [Interceptor](#interceptor)
   - [Reference](#reference)
   - [URL (`req.clone`)](#url-reqclone)

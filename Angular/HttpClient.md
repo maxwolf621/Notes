@@ -1,6 +1,3 @@
-###### tags: `Angular`
-
-
 # HttpClient
 
 - [HttpClient](#httpclient)
