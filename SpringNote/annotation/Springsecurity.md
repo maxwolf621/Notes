@@ -1,7 +1,7 @@
 # Security Annotations
 
 - [Security Annotations](#security-annotations)
-  - [Reference](#reference)
+  - [`@EnableWebSecurityConfig`](#enablewebsecurityconfig)
   - [@EnableWebSecurity](#enablewebsecurity)
   - [@EnableGlobalMethodSecurity class](#enableglobalmethodsecurity-class)
   - [@DenyAll/@PermitAll Method](#denyallpermitall-method)
@@ -9,21 +9,23 @@
   - [@RolesAllowed method](#rolesallowed-method)
   - [Post/Pre-Authorize](#postpre-authorize)
     - [@PreAuthorize Method](#preauthorize-method)
-    - [@PostAuthorize Method](#postauthorize-method)
+    - [:star: @PostAuthorize Method](#star-postauthorize-method)
   - [pre/post-filter](#prepost-filter)
   - [@PreFilter Method](#prefilter-method)
   - [@PostFilter Method](#postfilter-method)
 
-`@EnableWebSecurityConfig` should be annotated with `@Configuration`
-- This Annotation will be used for class related with `WebSecurityConfigurer`
-
-## Reference
-
+References
 - [Spring Security Methods](https://www.baeldung.com/spring-security-method-security)
 - [Spring Security – @PreFilter and @PostFilter](https://www.baeldung.com/spring-security-prefilter-postfilter)
 - [Intro to Spring Security Expressions](https://www.baeldung.com/spring-security-expressions)
 - [Spring Expression-based](https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html#el-common-built-in)
 - [spring-expression-language](https://www.baeldung.com/spring-expression-language)
+
+## `@EnableWebSecurityConfig` 
+
+It should be annotated with `@Configuration`. 
+
+This Annotation will be used for class related with `WebSecurityConfigurer`
 
 ## @EnableWebSecurity
 
@@ -106,7 +108,7 @@ public String getMyRoles(String username) {
 }
 ```
 - Here a user can invoke the `getMyRoles` method only if the value of the argument username is the same as current principal's username.
-### @PostAuthorize Method
+### :star: @PostAuthorize Method
 
 It's worth noting that `@PreAuthorize` expressions can be replaced by `@PostAuthorize` ones. **However the `@PostAuthorize` annotation provides the ability to access the method result.**
 
@@ -135,7 +137,7 @@ Spring Security provides the `@PreFilter` annotation to **filter a COLLECTION ar
 
 We use the name `filterObject` to represent the current object in the collection.
 
-However, if the method has more than one argument that is a collection type, we need to use the filterTarget property to specify which argument we want to filter:
+However, if the method has more than one argument that is a collection type, **we need to use the `filterTarget` property to specify which argument we want to filter:**
 ```java
 @PreFilter
   (value = "filterObject != authentication.principal.username",
@@ -156,6 +158,8 @@ public String joinUsernamesAndRoles(
 - Filter the returned collection of a method by using the `@PostFilter` annotation
 
 ```java
+// filterObject is return value of
+// userRoleRepository.getAllUsernames
 @PostFilter("filterObject != authentication.principal.username")
 public List<String> getAllUsernamesExceptCurrent() {
 

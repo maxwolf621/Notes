@@ -5,7 +5,7 @@ Bean is loaded depending on Condition
   - [Reference](#reference)
   - [@ConditionalOnBean](#conditionalonbean)
   - [@ConditionalOnMissingBean](#conditionalonmissingbean)
-  - [@ConditionalOnProperty (重要)](#conditionalonproperty-重要)
+  - [:star: @ConditionalOnProperty](#star-conditionalonproperty)
     - [`havingValue` attribute](#havingvalue-attribute)
     - [`value` attribute](#value-attribute)
     - [`matchIfMissing` attribute](#matchifmissing-attribute)
@@ -28,7 +28,7 @@ Load a bean only if a certain other bean is available in the application context
 @Configuration
 @ConditionalOnBean(A.class)
 class B {
-  ...
+  // ...
 }
 ```
 
@@ -37,8 +37,6 @@ class B {
 Load a bean only if a certain other bean is not in the application context
 
 ```java
-// InMemoryDataSource is injected into the application context
-// if there is not already a dataSource bean available
 @Configuration
 class OnMissingBeanModule {
 
@@ -49,23 +47,23 @@ class OnMissingBeanModule {
   }
 }
 ```
+- `InMemoryDataSource` is injected into the application context if there is not already a dataSource bean available
 
-## @ConditionalOnProperty (重要)
+## :star: @ConditionalOnProperty 
 
 **It may be the most commonly used conditional annotation in Spring Boot projects**
 ```java 
 @Bean(name = "emailNotification")
-// if notification.service is defined in the application.properties 
 @ConditionalOnProperty(prefix = "notification", name = "service")
 public NotificationSender notificationSender() {
     return new EmailNotification();
 }
 ```
 
-`notificationSender()` is only loaded if the property `notification.service` is defined in in the `application.properties` file
+Method `notificationSender()` is only loaded if the property `notification.service` is defined in in the `application.properties` file
 ```bash
 #prefix       name   =havingValue 
- notification.service=email
+notification.service=email
 ```
 
 ### `havingValue` attribute
@@ -76,15 +74,13 @@ it defines the value that a property must have in order for a specific bean to b
 @ConditionalOnProperty(prefix = "notification",
                        name = "service", 
                        havingValue = "sms")
+public NotificationSender notificationSender()
 ```
 - `notificationSender()` is only loaded if the `property notification.service` has the value `sms`
-  ```bash
-  notification.service=sms
-  ```
 
 ### `value` attribute
 
-it defines the `prefix.value` in the application.properties
+it defines the `prefix.value` in the `application.properties`
 ```bash
 # prefix             value  =havingValue
 spring.http.encoding.enabled=true
@@ -94,14 +90,13 @@ spring.http.encoding.enabled=true
 - [StackOverflow Ref](https://stackoverflow.com/questions/26394778/what-is-purpose-of-conditionalonproperty-annotation)
 
 
-If `module.enabled=true` is not defined or property `module.enabled` havingValue other than `false` then class `CrossCuttingConcernModule` is loaded by default.(`module.enabled`只要不是`false`就載入)
-
+If `module.enabled=true` is not defined or property `module.enabled` and `havingValue` other than `false` then class `CrossCuttingConcernModule` is loaded by default.(`module.enabled`只要不是`false`就載入)
 ```java
 @Configuration
 @ConditionalOnProperty(
     value="module.enabled", 
     havingValue = "true", 
-    matchIfMissing = true)
+    matchIfMissing = true) // match if missing module.enabled=true
 class CrossCuttingConcernModule {
   ...
 }
@@ -114,7 +109,10 @@ class CrossCuttingConcernModule {
 public Apple createAppleX() {}
 
 @Bean
-@ConditionalOnProperty("some.property.text", matchIfMissing=true, havingValue="value_that_never_appears")
+@ConditionalOnProperty(
+  "some.property.text", 
+  havingValue="value_that_never_appears",
+  matchIfMissing=true)
 public Apple createAppleY() {}
 ```
 
@@ -159,10 +157,13 @@ Load a bean only if we’re not running inside a web application
 
 ## @ConditionalOnResource(resource = "classpath: ...")
 
-Create a bean if specified resource found otherwise it will not create a bean.
+Create a bean if specified resource found otherwise.
 
 ```java
-@ConditionalOnResource(resources = {"classpath:example.json","classpath:example1.json"})
+@ConditionalOnResource(resources = {
+  "classpath:example.json",
+  "classpath:example1.json"}
+)
 @Bean
 CatService catService(){
   // ... 
