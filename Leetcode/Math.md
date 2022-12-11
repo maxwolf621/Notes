@@ -8,9 +8,7 @@ Extended Euclidean algorithm
 int gcd(int a, int b){
   return b == 0 ? b : gcd(b, a%b);
 }
-```
 
-```java
 int lcm(int a, int b){
   return a * b / gcd(a,b);
 }
@@ -22,7 +20,7 @@ int lcm(int a, int b){
 
 Given an integer n, return the number of prime numbers that are strictly less than n.
 
-```html 
+```java 
 Input: n = 10
 Output: 4
 There are 4 prime numbers less than 10, they are 2, 3, 5, 7.
@@ -33,9 +31,7 @@ Example 3:
 
 Input: n = 1
 Output: 0
-```
 
-```java
 public int countPrimes(int n) {
 
   // Assume Each Number < n is not Prime

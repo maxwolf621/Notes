@@ -70,7 +70,10 @@ Given an integer, convert it to a roman numeral.
 ```typescript
 Input: num = 58
 Output: "LVIII"
-Explanation: L = 50, V = 5, III = 3.
+Explanation: L = 50, V = 5, III = 3
+
+Input: num = 49
+Output:"XLIX"
 ```
 
 ## In Place Algo
