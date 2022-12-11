@@ -5,7 +5,7 @@
   - [Search Specific files](#search-specific-files)
   - [反向匹配 `grep -v`](#反向匹配-grep--v)
   - [遞迴搜尋 `grep -r`](#遞迴搜尋-grep--r)
-    - [顯示關鍵字的前後幾行 `grep [-A | -B | -C]`](#顯示關鍵字的前後幾行-grep--a---b---c)
+    - [顯示關鍵字的前後幾行 `grep [-A|-B|-C]`](#顯示關鍵字的前後幾行-grep--a-b-c)
     - [`grep --color=[never | always | auto]`](#grep---colornever--always--auto)
   - [Wildcard](#wildcard)
     - [start with `^`](#start-with-)
@@ -68,8 +68,8 @@ grep -v Ubuntu /etc/os-release
 grep -r ubuntu /etc/
 ```
 
-**如果只想要從特定的檔案中尋找關鍵字，可以使用 `grep -r --include` 指定檔案類型**，例如在`/etc/*.conf` 中尋找 `ubuntu`。
-```
+**如果只想要從特定的檔案中尋找關鍵字，可以使用 `grep -r --include` 指定檔案類型**，例如在`/etc/`資料夾下尋找所有`conf`檔案(`*.conf`)其內容含有 `ubuntu` 關鍵字。
+```bash
 grep -r --include="*.conf" ubuntu /etc/
 ```
 
@@ -79,7 +79,7 @@ grep -r --include="*.conf" ubuntu /etc/
 grep -r ubuntu /etc/ 2>/dev/null
 ```
 
-### 顯示關鍵字的前後幾行 `grep [-A | -B | -C]`
+### 顯示關鍵字的前後幾行 `grep [-A|-B|-C]`
 有時候只顯示匹配成功那一行，不容易看出是否是我們想要找的資料，這時候可以加上 `-A`（After）、`-B`（Before）或 `-C`（Context），指定要顯示的前後行數：
 ```bash
 grep -A 1 Ubuntu /etc/os-release # Display 1 line after the line containing `Ubuntu`
