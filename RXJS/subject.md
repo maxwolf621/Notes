@@ -8,7 +8,7 @@ const source$ = interval(1000).pipe(
   take(5),
   multicast(() => new Subject())
 );
-// srouce$ 變成一個 multicast 的 Observable
+// source$ 變成一個 multicast 的 Observable
 // 使用 Subject 作為多播的來源
 ```
 
@@ -31,7 +31,7 @@ export class ChatService {
     this.messages$.next(this._message);
   }
 
-  // 推送新的 message
+  // 推送新的 message + 舊的資料
   addMessage(message) {
     this._message = [...this._message, message];
     this.messages$.next(this._message);
@@ -59,7 +59,6 @@ subject.subscribe(data => {
 
 subject.next('2');
 ```
-
 
 ### `BehaviorSubject<TYPE>(initializedVal)`
 
