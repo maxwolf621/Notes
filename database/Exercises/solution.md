@@ -19,7 +19,7 @@
   - [Employee Bonus](#employee-bonus)
   - [Customer Placing the Largest Number of Orders](#customer-placing-the-largest-number-of-orders)
   - [Find Customer Referee](#find-customer-referee)
-          - [tags : `NOT IN`, `IS NULL`, `NOT EXISTS`, `IFNull(colum, setDefaultVal)`](#tags--not-in-is-null-not-exists-ifnullcolum-setdefaultval)
+          - [tags : `NOT IN`, `IS NULL`, `NOT EXISTS`, `IFNull(colum, defaultValue)`](#tags--not-in-is-null-not-exists-ifnullcolum-defaultvalue)
   - [Classes More Than 5 Students](#classes-more-than-5-students)
   - [Consecutive Available Seats](#consecutive-available-seats)
   - [Friend Requests I: Overall Acceptance Rate\*\*](#friend-requests-i-overall-acceptance-rate)
@@ -43,7 +43,7 @@
           - [tags : `Group by` , `min(YEAR)`](#tags--group-by--minyear)
   - [:star::star:Sales Analysis III](#starstarsales-analysis-iii)
   - [:star: Reported Posts](#star-reported-posts)
-          - [tags : `datediff(x,y) = x-y`](#tags--datediffxy--x-y)
+          - [tags : `datediff(x,y) = diff`](#tags--datediffxy--diff)
   - [User Activity for the Past 30 Days I](#user-activity-for-the-past-30-days-i)
           - [Keywords : `DATEDIFF`](#keywords--datediff)
   - [:star: User Activity For The Past 30 Days II](#star-user-activity-for-the-past-30-days-ii)
@@ -679,7 +679,7 @@ HAVING COUNT(customer_number) >= ALL(SELECT COUNT(customer_number) FROM orders G
 ## Find Customer Referee
 - [Find Customer Referee](https://zhuanlan.zhihu.com/p/258694894)
 
-###### tags : `NOT IN`, `IS NULL`, `NOT EXISTS`, `IFNull(colum, setDefaultVal)`
+###### tags : `NOT IN`, `IS NULL`, `NOT EXISTS`, `IFNull(colum, defaultValue)`
 
 Write a query to return the list of customers NOT referred by the person with id `2`. 
 
@@ -725,9 +725,7 @@ SELECT name FROM customer WHERE
 id NOT IN
 (SELECT id FROM customer WHERE referee_id = 2);
 
-SELECT NAME FROM customer WHERE NOT EXISTS(
-	SELECT 1 WHERE REFERENCE_ID = 2
-);
+SELECT NAME FROM customer WHERE NOT EXISTS(SELECT 1 WHERE REFERENCE_ID = 2);
 
 -- IFNULL
 SELECT name FROM customer
@@ -1598,7 +1596,7 @@ WHERE  product_id NOT IN (SELECT product_id
 
 ## :star: Reported Posts 
 
-###### tags : `datediff(x,y) = x-y`
+###### tags : `datediff(x,y) = diff`
 
 Write an SQL query that **reports the number of posts** reported yesterday`("2019-07-05", action_date)` for each report reason. 
 - There might be duplicate posts
@@ -3621,6 +3619,8 @@ INNER JOIN SchoolC c ON (
   a.student_id != c.student_id 
   AND 
   a.student_name != c.student_name) -- compare with each c
-AND (b.student_id != c.student_id
-     AND b.student_name != c.student_name);
+AND (
+  b.student_id != c.student_id
+  AND 
+  b.student_name != c.student_name);
 ```
