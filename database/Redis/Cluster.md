@@ -1,7 +1,10 @@
+# Cluster
 
+
+References
 - [redis cluster的hash slot算法和一致性 hash 算法、普通hash算法的介绍](https://www.cnblogs.com/mrmirror/p/13665018.html)
 - [](https://ithelp.ithome.com.tw/articles/10195191)
-- [wsl中redis集群搭建](https://www.jianshu.com/p/7fe101dba5d0)
+- [wsl中redis Cluster](https://www.jianshu.com/p/7fe101dba5d0)
 - [AOF file](https://blog.csdn.net/kfengqingyangk/article/details/53454309)
 
 ## redis.conf
@@ -24,7 +27,7 @@ mkdir 7000 7001 7002 7003 7004 7005
 Create `redis.conf` for each node
 
 for example, port 7000 would be
-```bash
+```python
 port 7000
 # pidfile /var/run/redis_7000.pid
 # logfile /var/log/redis_7000.log
@@ -35,7 +38,6 @@ cluster-node-timeout 5000
 appendonly yes
 
 # appendfilename "xxxx.aof"
-
 ```
 
 ## Accessing
