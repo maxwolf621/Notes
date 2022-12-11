@@ -56,16 +56,16 @@ Structural design patterns are concerned with how classes and objects can be com
 
 In these design patterns, the interaction between the objects should be in such a way that they can easily talk to each other and still should be loosely coupled.   
 
-That means the implementation and the client should be loosely coupled in order to avoid hard coding and dependencies.   
-
+That means **the implementation and the client should be loosely coupled in order to avoid hard coding and dependencies.**   
+  
 - [Iterator](B_Iterator.md)
 - [Command](B_Command.md)
 - [Strategy](B_Strategy.md)
-- ***[Observer](B_Observer.md)***
+- **:star:[Observer](B_Observer.md)**
 - [Memento](B_Memento.md)  
 - **[Template](B_Template.md)**
 - [State](B_State.md)
-- **[Chain of Responsibility](B_ChainOfResponsibility.md)**
+- **:star:[Chain of Responsibility](B_ChainOfResponsibility.md)**
 - [Interpreter]
 - [Mediator](B_Mediator.md)
 - **[Null Object](B_NullObject.md)**
