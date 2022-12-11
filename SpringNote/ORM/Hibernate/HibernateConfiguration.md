@@ -1,8 +1,9 @@
 # Hibernate Configuration
 
 - [Hibernate Configuration](#hibernate-configuration)
-  - [Session Factory `org.hibernate.SessionFactory`](#session-factory-orghibernatesessionfactory)
-    - [`getCurrentSession` & `openSession`](#getcurrentsession--opensession)
+  - [`org.hibernate.SessionFactory` Session Factory](#orghibernatesessionfactory-session-factory)
+    - [`openSession`](#opensession)
+    - [`getCurrentSession`](#getcurrentsession)
     - [`openStatelessSession` method](#openstatelesssession-method)
     - [The Session `get` and `load` method](#the-session-get-and-load-method)
     - [Persist entity](#persist-entity)
@@ -15,16 +16,20 @@
 
 **Hibernate is a popular Object Relational Mapping (ORM) framework that aims at simplifying database programming for developers**
 
-## Session Factory `org.hibernate.SessionFactory`
+## `org.hibernate.SessionFactory` Session Factory 
 
 ![](https://i.imgur.com/MYDYdd1.png)   
 
 - A thread Per Session
 
+### `openSession`
+
+To create new Hibernate session via openSession
+
 ```java
 Configuration config = new Configuration().configure();
-SessionFactory sessionFactory = config.buildSessionFactory();
 
+SessionFactory sessionFactory = config.buildSessionFactory();
 Session session = sessionFactory.openSession();
 Transaction tx = session.beginTransaction();
 /********************************************/
@@ -38,42 +43,28 @@ Transaction tx = session.beginTransaction();
 tx.commit();
 session.close();
 ```
-
-
-### `getCurrentSession` & `openSession`
-
-**Hibernate Session Object are not thread safe, so we should use `getCurrentSession()` in multi-threaded environment**
-
-```java
-Session currentSession = sessionFactory.getCurrentSession();
-```
-
-```java
-// method always opens a new session.
-Session newSession = sessionFactory.openSession();
-//...
-
-newSession.close()
-```
 - Remember to close the session while we are done with all the database operations
 - For web application Frameworks(**multi-threaded environment**), we can choose **to open a new session for each request or for each session based on the requirement**
 
+### `getCurrentSession` 
+
+**Hibernate Session Object are not thread safe, so we should use `getCurrentSession()` in multi-threaded environment**
+```java
+Session currentSession = sessionFactory.getCurrentSession();
+```
 ### `openStatelessSession` method
 
-To reduce the load of the caches we can use this method
-
+To reduce the load of the caches.
 ```java
 StatelessSession statelessSession = sessionFactory.openStatelessFactory()
-
-// ... using session to query with database ...
-// ............................................
-
+/***************************************
+*             ORM LOGICS               *
+****************************************/
 statelessSession.close();
 ```
 - The Operation performed through a stateless session **bypass Hibernate's event model and interceptor.**
-- An instance of StatelessSession does not implement first-level cache and does not interact with any second-level cache  
-  > This is good fit in certain situation for loading bulk data into database and **to avoid hibernate session holding huge data in first-level cache memory**. 
-
+- An instance of `StatelessSession` does not implement first-level cache and does not interact with any second-level cache.  
+  This is good fit in certain situation for loading bulk data into database and **to avoid hibernate session holding huge data in first-level cache memory**.    
 - We can also use an object of `java.sql.Connection` to get a stateless object from hibernate.
 
 ### The Session `get` and `load` method

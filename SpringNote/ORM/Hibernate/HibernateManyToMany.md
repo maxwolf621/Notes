@@ -3,8 +3,6 @@
 
 [advanced ManyToMany](https://www.baeldung.com/jpa-many-to-many)     
 
-[TOC]
-
 With `@ManyToMany`, we should create a third table (Join Table) so that we can map both entities. 
 
 Join Table will have two FK pointing to their parent tables.  
