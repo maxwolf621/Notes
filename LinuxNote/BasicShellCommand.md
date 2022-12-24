@@ -55,24 +55,6 @@ man section# topic
 man 7 hostname
 ```
 
-## Virtual File System 
-ref : https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
-ref : https://www.linuxnix.com/linux-directory-structure-lib-explained/
-
-**Virtual Directory of Linux** 
-![](https://i.imgur.com/1u7xG8m.png)
-
-- `/`    : root of virtual directory 
-- `/etc` : contain all your system/application configuration(`.conf`) files
-- `/home`: the users (e.g. jian, zhang …)
-- `/mnt` : external device
-- `/opt` : Third parts packages
-- `/pro` : process information
-- `/run` : system information data when system is on running 
-- `/tmp` : temporary files
-- `/lib` : contains all helpful library files used by the system e.g, the commands we used
-- `/usr` : **: contains by far the largest share of data on a system. Hence, this is one of the most important directories in the system as it contains all the userbinaries, their documentation, libraries, header files, etc**
-
 ## `;` and `&&`
 
 ```bash
@@ -277,7 +259,7 @@ That we'll to   test the it
 That we'll to^Itest the cat command.
 ```
 
-## more , less , tail
+## more | less | tail
 
 ```bash
 $more file #you can see content of the file with pages
@@ -292,9 +274,11 @@ $tail -n 2 log_file
 
 ### tail -f 
 
+
+**To constantly update the file's status. This are made for programs that need to be monitored for always.**
+
 ```bash
 tail -f file
 ``` 
-**To constantly update the file's status. This are made for programs that need to be monitored for always.**
 
 
