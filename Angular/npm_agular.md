@@ -4,7 +4,7 @@
 [To install Node.js](https://hackmd.io/6Nvu-p8aQ0ynRhhsppBbww)  
 
 
-## Reinstall angular  
+## Reinstall angular 
 
 ```bash
 # old version
