@@ -4,9 +4,9 @@
   - [Image](#image)
   - [Container](#container)
   
-Reference
-[Docker 基本教學](https://ithelp.ithome.com.tw/articles/10199339)
-
+Reference  
+[Docker 基本教學](https://ithelp.ithome.com.tw/articles/10199339)   
+[Container內部及外部的執行](https://joshhu.gitbooks.io/dockercommands/content/Containers/ContainersBasic.html)   
 
 ## Image
 
@@ -25,13 +25,18 @@ userName/hybris-db               latest        e340f074eb5e   7 weeks ago    5.1
 userName/hybris-xyo              latest        0eac2688b7c7   7 weeks ago    3.14GB   
 mcr.microsoft.com/mssql/server   2019-latest   4885f6112d74   3 months ago   1.47GB
 
-
 #      移除 Image-ID , rmi means remove image
 docker rmi 615cb40d5d19
 
+# create and run a NEW container
+# t : pseudo-tty
+# d : execution in background
+# -name : container name
+# -p : port
+#      執行 輸入輸出  image  使用linux terminal bin/bash
+docker run [options] IMAGE  [COMMAND] [ARGS]
+docker run  -it      centos /bin/bash # if centos not exist then pull first
 
-docker build -t member:1 .
-docker login docker.okborn.com
 ```
 
 
@@ -39,15 +44,8 @@ docker login docker.okborn.com
 
 
 ```bash
-# 啟動container
-# t : pseudo-tty
-# d : execution in background
-# -name : container name
-# -p : port
-#      執行 輸入輸出  image  使用linux terminal bin/bash
-docker run  -it      centos /bin/bash # if centos not exist then pull first
-
-# create new container and enters
+# EXECUTE created container and enters
+docker exec [options] CONTAINER [COMMAND] [ARGS]
 docker exec -it  container-id /bin/bash
 
 #            container-ID
