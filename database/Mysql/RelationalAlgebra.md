@@ -170,15 +170,15 @@ ON A.c = B.c
 
 ### EQUI-JOIN/JOIN
 
-When a theta join uses only equivalence condition (`=`), it becomes a equi join.   
-It merges Attributes from table A `=` Attributes from table B to form a desired table
-- A EQUI-JOIN TABLE may have contain duplicates
+When a theta join uses only equivalence condition (`=`), it becomes a equi-join.  
 
+It merges Attributes from table A `=` Attributes from table B to form a desired table   
+
+**A EQUI-JOIN TABLE may have contain duplicates**
 ```sql
 SELECT column_list 
-FROM table1, table2....
-WHERE table1.column_name =
-table2.column_name; 
+FROM table1, table2 , ... , tableN
+WHERE table1.column_name = table2.column_name; , ... 
 
 -- or
 
