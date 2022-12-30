@@ -1,6 +1,17 @@
 ###### tags: `DataBase`  
 # VIEWS (Ansichten)
 
+- [VIEWS (Ansichten)](#views-ansichten)
+  - [Create View with Multiple base tables](#create-view-with-multiple-base-tables)
+  - [Create View with new Alias of Attribute](#create-view-with-new-alias-of-attribute)
+  - [Insert \& Update View](#insert--update-view)
+  - [Alter the view](#alter-the-view)
+  - [Drop The Views](#drop-the-views)
+  - [Type of VIEW tables](#type-of-view-tables)
+    - [Row-Column Subset VIEWs](#row-column-subset-views)
+    - [Equi-Join VIEWs](#equi-join-views)
+    - [Statistic Summary VIEWs](#statistic-summary-views)
+
 **A view is a virtual table** based on the result-set of an SQL statement.   
 The fields in a view are fields from one or more real tables in the database.  
 
@@ -8,75 +19,71 @@ You can add SQL statements and functions to a view and present the data as if th
 ![](https://i.imgur.com/DeRrWon.png)   
 
 
-Good Sides  
-> **Using view is good for hiding the information to keep it inaccessible for sepcidied users**   
-> Make records (information in database) more readable for the users    
-> For programmer it also makes Structure of Database maintainable   
+Pros and Cons
 
-Bad Sides
-> Efficiency sucks
+1. **Using view is good for hiding the information to keep it inaccessible for specific users**   
+2. Make records (information in database) more readable for the users    
+3. For programmer it also makes Structure of Database maintainable   
+4. **Efficiency sucks**
 
 General Syntax
 ```sql
 CREATE VIEW View_Name 
 AS
-SELECT column1, column2, ...
-FROM Base_Table
-WHERE condition;
 ```
 
-## Create View with multiple base tables 
+## Create View with Multiple base tables 
 
 ```sql
 create view StudentGrade
 AS
-select Name,CourseName,Grade
+SELECT name,courseName,grade
 FROM Student as S, Course AS C, StudentCourse as SC
-WHERE S.ID = SC.ID AND SC.CourseID = C.CourseID
+WHERE 
+    S.ID = SC.ID 
+    AND 
+    SC.CourseID = C.CourseID
 ```
 
 ## Create View with new Alias of Attribute
 
 ```sql
-create view Alias(StudentID,StudentName)
+CREATE VIEW Alias(StudentID,StudentName)
 AS
-select ID,Name
+SELECT ID, Name
 FROM Student
 ```
 
-##  Insert New Values Or Update the Values
+##  Insert & Update View
 
 The Base Table would also be modified 
-
 ```sql
 INSERT INTO VIEW
 VALUES
 (
-UPDATE VIEW
-SET
-WHERE
+    UPDATE VIEW
+    SET  ...
+    WHERE ...
 )
 ```
 
-
 ## Alter the view 
 
-Alter the way of Display for the informations of the table 
+Alter the way of Display for the information of the table. 
 
 General Syntax
 ```sql
 /* [ .. ] : OPTIONAL */
 ALTER VIEW Name_View[Attribute1,Attribute2,...]
-AS
-SELECT
-FROM 
+AS  ... 
+SELECT ...
+FROM   ...
 [WHERE] 
 [GROUP BY]
 [HAVING]
 ```
 
-## Delete the View
-
+## Drop The Views
 ```sql
 DROP VIEW View_Table1,View_Table2, ... 
 ```
@@ -84,31 +91,30 @@ DROP VIEW View_Table1,View_Table2, ...
 ## Type of VIEW tables
 
 ### Row-Column Subset VIEWs
->  The informations of views would (Row and Col) would always $ <=$ bast table
 
-example : to create a view from base table Employee without showing the Salary
+The information of views would always `<=` base table.
+For example, to create a view from base table Employee without showing the Salary
 
-### Join VIEWs
+### Equi-Join VIEWs
 
-to merge with multiple base tables together
-
-select who is the first three starting with heighest points of the subjects
+Select who is the first three starting with hightest points of the subjects
 ```sql
-CERATE VIEW First3
-AS
+CERATE VIEW First3 AS
 SELECT Name,CourseName, Grade
 FROM Student as S, Course as C, StudentCourses as SC
 WHERE 
-C.CourseID = SC.CourseID 
-AND C.CourseName = 'C001' 
-AND S.ID = SC.ID
-/* Heightst */
+    C.CourseID = SC.CourseID 
+    AND 
+    C.CourseName = 'C001' 
+    AND 
+    S.ID = SC.ID
 ORDER BY Grade DESC
-LIMIT 3
+LIMIT 3;
 
-/* Find out who got >= 90 */
+-- Using View 
+-- Find out whose grade >= 90
 SELECT *
-FROM `First3`
+FROM First3
 WHERE Grade >=90
 ```
 ### Statistic Summary VIEWs
