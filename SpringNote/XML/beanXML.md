@@ -7,7 +7,8 @@
     - [Spring ApplicationContext retrieve Dependencies](#spring-applicationcontext-retrieve-dependencies)
 
 References
-[Code Java - Spring Dependency Injection Example with XML Configuration](https://www.codejava.net/frameworks/spring/spring-dependency-injection-example-with-xml-configuration)   
+[Code Java - Spring Dependency Injection Example with XML Configuration](https://www.codejava.net/frameworks/spring/spring-dependency-injection-example-with-xml-configuration)    
+[Spring - Bean Definition](https://www.tutorialspoint.com/spring/spring_bean_definition.htm)
 
 Use `<bean>` tags to declare the dependencies in a XML file, use the `ClassPathXmlApplicationContext` class to load the configuration from the XML file, and call `getBean()` method to retrieve a bean instance from the container.
 
@@ -38,10 +39,15 @@ public class ServerImplementation implements Server{
 
 Syntax
 ```xml
-<bean id="id_for_class" class="package_position">
+<!--
+    Bean to be injected  
+-->
+<bean id="[BEAN_NAME]" class="[PACKAGE_PATH]">
 
-<bean id="..." class="...">
-    <!-- DI -->
+<!--
+    To Inject the bean 
+-->
+<bean id="[BEAN_NAME]" class="[PACKAGE_PATH]">
     <constructor-arg ref="id_for_class">     
 </bean>
 
@@ -49,8 +55,11 @@ Syntax
     For Example
 -->
 <bean id="service1" class="com.example.ServerImplementation">
-<!-- injection bean with id named service1 -->
-<bean id="ClientImplementation" class="net.example.ClientImplementation">
+
+<!-- 
+    dependency injection with bean named service1 
+-->
+<bean id="ClientImplementation" class="com.example.ClientImplementation">
     <constructor-arg ref="service1" />
 </bean>
 ```
@@ -58,7 +67,7 @@ Syntax
 ### Bean XML Setter Injection
 
 ```xml
-<bean id="..." class="...">
+<bean id="[BEAN_NAME]" class="PACKAGE_PATH">
     <property name="[PROPERTY_NAME]" ref="[BEAN_ID_NAME]">
 </bean>
 
@@ -72,8 +81,7 @@ Syntax
 
 ### Spring ApplicationContext retrieve Dependencies
 
-Using `getBean()` of the `ApplicationContext` class is used to retrieve the reference of an instance managed by Spring's IoC Container.
-
+Using `ApplicationContext#getBean()` is used to retrieve the reference of an instance managed by Spring's IoC Container.
 ```java
 ApplicationContext appContext = new ClassPathApplicationContext("classpath:applicationContext.xml");
 ObjectType ob = (ObjectType) appContext.getBean("Bean_ID_Name");
