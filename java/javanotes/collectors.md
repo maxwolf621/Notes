@@ -3,17 +3,16 @@
   - [Reference](#reference)
   - [toList, toMap, toSet, toCollection](#tolist-tomap-toset-tocollection)
   - [Operations(reduce,joining)](#operationsreducejoining)
-  - [CONVERSION(mapping,flatMapping,collectingAndThen​)](#conversionmappingflatmappingcollectingandthen)
-  - [Filtering](#filtering)
-  - [groupBy & partitionBy](#groupby--partitionby)
-      - [groupingBy(.... , Collectors.groupingBy(...))](#groupingby--collectorsgroupingby)
-    - [groupingBy with a Complex Map Key Type](#groupingby-with-a-complex-map-key-type)
-  - [maxBy(Comparator#)/minBy(Comparator#) & counting](#maxbycomparatorminbycomparator--counting)
-  - [Summing---](#summing---)
-  - [Averaging---](#averaging---)
-  - [Summarizing---](#summarizing---)
-  - [counting](#counting)
-  - [maxBy & minBy](#maxby--minby)
+  - [CONVERSION(`mapping`,`flatMapping`,`collectingAndThen`)](#conversionmappingflatmappingcollectingandthen)
+  - [filtering](#filtering)
+  - [groupBy](#groupby)
+    - [groupingBy(classifier\_1 , Collectors.groupingBy(classifier\_2))](#groupingbyclassifier_1--collectorsgroupingbyclassifier_2)
+    - [groupingBy a Complex Map Key Type](#groupingby-a-complex-map-key-type)
+  - [partitioningBy](#partitioningby)
+  - [`Collectors.counting()`](#collectorscounting)
+  - [Summing\* , Averaging\* and Summarizing\*](#summing--averaging-and-summarizing)
+    - [Examples](#examples)
+  - [`Collectors.maxBy` \& `Collectors.minBy`](#collectorsmaxby--collectorsminby)
   - [Collectors.reducing(...)](#collectorsreducing)
 
 ## Reference
@@ -143,7 +142,7 @@ List<String> result = givenArrayList.stream()
   .collect(collectingAndThen(toList(), ImmutableList::copyOf))
 ```
 
-## Filtering
+## filtering
 
 ```java
 static <T,A,R> Collector<T,?,R>	filtering(
@@ -151,26 +150,15 @@ static <T,A,R> Collector<T,?,R>	filtering(
     Collector<? super T,A,R> downstream)	
 ``` 
 
-## groupBy & partitionBy
+## groupBy 
 
-```
-// Returns a Collector which partitions the input elements according 
-// to a Predicate, and organizes them into a Map<Boolean, List<T>>.
-static <T> Collector<T,?,Map<Boolean,List<T>>> partitioningBy(
-    Predicate<? super T> predicate)	
 
-static <T,D,A> Collector<T,?,Map<Boolean,D>> partitioningBy(
-    Predicate<? super T> predicate, 
-    Collector<? super T,A,D> downstream)	
-
+```java 
 // Return a Collector which groups the input elements according
 // to classifier, and organizes them into a Map<K,List<T>>
 static <T,K> Collector<T,?,Map<K,List<T>>> groupingBy(
     Function<? super T,? extends K> classifier)	
-```
 
-
-```java
 /**
 @Data
 public class Fruit{
@@ -201,14 +189,6 @@ Map<String, List<Fruit>>map = fruitList.stream()
     grape=[
         Fruit(name=grape, price=8.0)]
 }
-```
-
-
-```java
-Map<Boolean, List<Student>> partMap = fruitList.stream().collect(
-		Collectors.partitioningBy(
-			v -> 
-			v.getPice() >= 5.0));
 ```
 
 
@@ -244,7 +224,6 @@ Map<String, List<Integer>> map = fruitList.stream().collect(
 // {banana=[7, 7, 7], apple=[6, 6], grape=[8]}
 
 
-```java
 List<Item> items = Arrays.asList(
         new Item("apple", 10, new BigDecimal("9.99")),
         new Item("banana", 20, new BigDecimal("19.99")),
@@ -261,21 +240,21 @@ Map<BigDecimal, List<Item>> groupByPriceMap =
 	items.stream().collect(Collectors.groupingBy(Item::getPrice));
 	
 System.out.println(groupByPriceMap);
-// output
-	19.99=[
-			Item{name='banana', qty=20, price=19.99}, 
-			Item{name='banana', qty=10, price=19.99}
-		], 
-	29.99=[
-			Item{name='orang', qty=10, price=29.99}, 
-			Item{name='watermelon', qty=10, price=29.99}
-		], 
-	9.99=[
-			Item{name='apple', qty=10, price=9.99}, 
-			Item{name='papaya', qty=20, price=9.99}, 
-			Item{name='apple', qty=10, price=9.99}, 
-			Item{name='apple', qty=20, price=9.99}
-		]
+/** output **/
+19.99=[
+		Item{name='banana', qty=20, price=19.99}, 
+		Item{name='banana', qty=10, price=19.99}
+	], 
+29.99=[
+		Item{name='orang', qty=10, price=29.99}, 
+		Item{name='watermelon', qty=10, price=29.99}
+	], 
+9.99=[
+		Item{name='apple', qty=10, price=9.99}, 
+		Item{name='papaya', qty=20, price=9.99}, 
+		Item{name='apple', qty=10, price=9.99}, 
+		Item{name='apple', qty=20, price=9.99}
+	]
 
 
 // group by price and use 'mapping' to convert List<Item> to Set<String>
@@ -287,7 +266,7 @@ Map<BigDecimal, Set<String>> result =
                 )
         );
 	
-System.out.println(result);
+/** output **/
 {
 	19.99=[banana], 
 	29.99=[orang, watermelon], 
@@ -295,7 +274,7 @@ System.out.println(result);
 }
 ```
 
-#### groupingBy(classifier_1 , Collectors.groupingBy(classifier_2))
+### groupingBy(classifier_1 , Collectors.groupingBy(classifier_2))
 ```java
 /    3 layers
 //   '            '        '            
@@ -303,9 +282,8 @@ Map<String, Map<Integer, List<Student>>> typeAgeMap =
         students.stream().collect(Collectors.groupingBy(Student::getSex, Collectors.groupingBy(Student::getAge)));
 
 
-// output 
-    
-    Sex={}    age=[]
+/** output **/
+    Sex={...}   age=[...]
      ^          ^
 {    |          | 
     female ={   20=[Student(id=7, name=g, age=20, sex=female, score=66.0)],
@@ -318,12 +296,12 @@ Map<String, Map<Integer, List<Student>>> typeAgeMap =
                 19=[Student(id=3, name=c, age=19, sex=male, score=100.0)], 
                 20=[Student(id=4, name=d, age=20, sex=male, score=10.0)], 
                 21=[Student(id=6, name=f, age=21, sex=male, score=55.0)], 
-                25=[Student(id=10, name=j, age=25, sex=male, score=90.0)]
+                25=[Student(id=10,name=j, age=25, sex=male, score=90.0)]
             }}
 ```  
 
 
-### groupingBy with a Complex Map Key Type
+### groupingBy a Complex Map Key Type
 
 - [source code](https://www.baeldung.com/java-groupingby-collector)
 ```java
@@ -338,20 +316,22 @@ enum BlogPostType {
     REVIEW,
     GUIDE
 }
-
 class Tuple {
     BlogPostType type;
     String author;
 }
 
 Map<Pair<BlogPostType, String>, List<BlogPost>> postsPerTypeAndAuthor = 
-    posts.stream().collect(groupingBy(
-        post -> new ImmutablePair<>(post.getType(), post.getAuthor())));
+    posts.stream().collect(
+        groupingBy(
+        post -> 
+        new ImmutablePair<>(post.getType(), post.getAuthor())));
 
 Map<Tuple, List<BlogPost>> postsPerTypeAndAuthor = 
-    posts.stream()
-        .collect(groupingBy(
-            post -> new Tuple(post.getType(), post.getAuthor())));
+    posts.stream().collect(
+        groupingBy(
+            post -> 
+            new Tuple(post.getType(), post.getAuthor())));
 
 ```
 
@@ -390,15 +370,26 @@ Map<BlogPostType, IntSummaryStatistics> likeStatisticsPerType = posts.stream()
   .collect(groupingBy(BlogPost::getType, 
   summarizingInt(BlogPost::getLikes)));
 Map<BlogPostType, Integer> likesPerType = posts.stream()
-  .collect(groupingBy(BlogPost::getType, summingInt(BlogPost::getLikes)));
+  .collect(
+    groupingBy(
+        BlogPost::getType, summingInt(BlogPost::getLikes)));
+
 Map<BlogPostType, Double> averageLikesPerType = posts.stream()
-  .collect(groupingBy(BlogPost::getType, averagingInt(BlogPost::getLikes)));
+  .collect(
+    groupingBy(
+        BlogPost::getType, 
+        averagingInt(BlogPost::getLikes)));
+
 Map<BlogPostType, Set<BlogPost>> postsPerType = posts.stream()
-  .collect(groupingBy(BlogPost::getType, toSet()));
+  .collect(
+    groupingBy(
+        BlogPost::getType, toSet()));
 
 Map<BlogPostType, Optional<BlogPost>> maxLikesPerPostType = posts.stream()
-  .collect(groupingBy(BlogPost::getType,
-  maxBy(comparingInt(BlogPost::getLikes))));
+  .collect(
+    groupingBy(
+        BlogPost::getType,maxBy(
+            comparingInt(BlogPost::getLikes))));
 
 int maxValLikes = 17;
 Map<String, BlogPost.TitlesBoundedSumOfLikes> postsPerAuthor = posts.stream()
@@ -424,30 +415,35 @@ Map<String, BlogPost.PostCountTitlesLikesStats> postsPerAuthor = posts.stream()
   })));
 ```
 
-## maxBy(Comparator#)/minBy(Comparator#) & counting
-
-Returns `Optional<T>` of max/min values from given collection
+## partitioningBy
 
 ```java
-static <T> Collector<T,?,Optional<T>> maxBy(
-    Comparator<? super T> comparator)	
-static <T> Collector<T,?,Optional<T>> minBy(
-    Comparator<? super T> comparator)	
+// Returns a Collector which partitions the input elements according 
+// to a Predicate, and organizes them into a Map<Boolean, List<T>>.
+static <T> Collector<T,?,Map<Boolean,List<T>>> partitioningBy(
+    Predicate<? super T> predicate)	
 
-// strList : ["a","b", "c"]
-// return c
-stringList.stream().collect(Collectors.maxBy(Comparator.naturalOrder())).get()
+static <T,D,A> Collector<T,?,Map<Boolean,D>> partitioningBy(
+    Predicate<? super T> predicate, 
+    Collector<? super T,A,D> downstream)	
+
+
+Map<Boolean, List<Student>> partMap = fruitList.stream().collect(
+		Collectors.partitioningBy(
+			v -> 
+			v.getPice() >= 5.0));
 ```
+
 
 ## `Collectors.counting()`
 
 same as `count()`  
 ```java
 static <T> Collector<T,?,Long> counting()	
-Long count = list.stream().collect(Collectors.counting()); // 3
+Long count = theList.stream().collect(Collectors.counting()); // 3
 ```
 
-## Summing*/Averaging*/Summarizing*
+## Summing* , Averaging* and Summarizing*
 
 Summing*
 - Returns a Collector that produces the sum of a double-valued function applied to the input elements.
@@ -515,8 +511,9 @@ System.out.println("Employee with minimum Salary " + min);
 
 // get a person with the maximum income
 Payroll max = salaries.stream()
-                    .collect(Collectors.maxBy(
-                        Comparator.comparingInt(Payroll::getIncome)))
+                    .collect(
+                        Collectors.maxBy(
+                            Comparator.comparingInt(Payroll::getIncome)))
                     .get();
 
 System.out.println("Employee with maximum Salary " + max);
@@ -530,9 +527,10 @@ Payroll min = salaries.stream()
  
 // get a person with the maximum income
 Payroll max = salaries.stream()
-                //                         current max
-                //                         '
-                .collect(Collectors.maxBy((x, y) -> x.getIncome() - y.getIncome()))
+                .collect(
+                    //            current max
+                    //                '
+                    Collectors.maxBy((x, y) -> x.getIncome() - y.getIncome()))
                 .get();
 ```
 
@@ -545,5 +543,10 @@ Payroll max = salaries.stream()
  * {name : simon, age= 20}
 * ]
  */
-Integer allAge = stdList.stream().map(Student::getAge).collect(Collectors.reducing(Integer::sum)).get(); //40　　
+Integer allAge = stdList.stream()
+    .map(Student::getAge)
+    .collect(
+        Collectors.reducing(
+            Integer::sum))
+    .get(); //40　　
 ```

@@ -1,10 +1,9 @@
 # String
 
 - [String](#string)
-    - [`final` for String](#final-for-string)
-  - [String Pool And `new String(...)`](#string-pool-and-new-string)
-    - [Intern()](#intern)
-  - [String Methods](#string-methods)
+  - [String is `final` type](#string-is-final-type)
+  - [String Pool And `new String(...)` And `intern()`](#string-pool-and-new-string-and-intern)
+  - [Methods](#methods)
       - [equals(Object obj) and equalsIgnoreCase(String s)](#equalsobject-obj-and-equalsignorecasestring-s)
       - [compareTo(String s) and compareToIgnoreCase(String s)](#comparetostring-s-and-comparetoignorecasestring-s)
       - [trim()](#trim)
@@ -45,18 +44,18 @@ public final class String
 ```
 
 
-### `final` for String
+## String is `final` type
 
+Reason
 1. Hash Value  : Reduce duplicate Strings
 2. String Pool : It keeps all literal strings stored **at the compiler time** to reduce `new` operation
 3. Security   
 4. Thread Safe
 
-## String Pool And `new String(...)`
+## String Pool And `new String(...)` And `intern()`
 
-If string is created by `new`, it wont add its reference into string pool
 
-`new String("v")` operation
+Process `new String("v")`
 ```java
 STACK               HEAP
 | ... |             | ... |
@@ -65,17 +64,18 @@ STACK               HEAP
 +-----+             +-----+
 | ... |             | ... |
 ```
+>>> **If string is created by `new`, it wont add its reference into string pool**
 
 
-- [Source Code & Images](https://www.jyt0532.com/2020/03/11/runtime-data-area/)
-![圖 13](../../images/d5cbb4789af19e0c858401dda7826bf5d25df0cbd37073346b230a24bc96d20b.png)  
 ```java
 String s1 = new String("aaa");
 String s2 = s1.intern(); // add "aaa" to string pool
-String s3 = "aaa"
+String s3 = "aaa"; 
 String s4 = "bbb";
 String s5 = new String("bbb");
 ```
+![圖 13](../../images/d5cbb4789af19e0c858401dda7826bf5d25df0cbd37073346b230a24bc96d20b.png)  
+- [Source Code & Images](https://www.jyt0532.com/2020/03/11/runtime-data-area/)
 
 
 ```java
@@ -87,8 +87,21 @@ String str5 = new String("ab");
 
 System.out.println(str5.equals(str3)); // true , content is the same
 System.out.println(str5 == str3); // false , address not the same
+```
 
-String a = "abc"; // ADD IN STRING POOL
+Method `intern()` checks first in string pool if `"ab"` exists, due to `str3` already defined `"ab"` in string pool.  
+It then returns reference of `"ab"` in string pool to `str5` which is same reference as `str3`
+```java
+System.out.println(str5.intern() == str3);
+System.out.println(str5.intern() == str4);
+```
+
+>>> 如果其中含有變量（如f中的e）則不會進入字符串池中。但是字符串一旦進入字符串池中，就會先查找池中有無此對象。如果有此對象，則讓對象引用指向此對象。如果無此對象，則先創建此對象，再讓對象引用指向此對象。
+
+
+
+```java 
+String a = "abc"; // CHECK STRING POOL FIRST IF NOT EXISTS THEN PUT "abc" TO THE STRING POOL
 String b = "abc"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
 String c = "a" + "b" + "c"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
 String d = "a" + "bc"; // CHECK STRING POOL THEN RETURN THE REFERENCE OF "abc"
@@ -101,20 +114,8 @@ System.out.println(c == d); // true
 System.out.println(c == e); // true
 ```
 
-### Intern()
 
-Method `intern()` checks first in string pool if `"ab"` exists, due to `str3` already defined `"ab"` in string pool. It then returns reference of `"ab"` in string pool to `str5` which is same reference as `str3`
-```java
-System.out.println(str5.intern() == str3);
-System.out.println(str5.intern() == str4);
-```
-
-
-
-如果其中含有變量（如f中的e）則不會進入字符串池中。但是字符串一旦進入字符串池中，就會先查找池中有無此對象。如果有此對象，則讓對象引用指向此對象。如果無此對象，則先創建此對象，再讓對象引用指向此對象。
-
-
-## String Methods
+## Methods
 
 ```java
 boolean matches(String regex)
@@ -132,7 +133,9 @@ static String copyValueOf(char[] data, int offset, int count)
 
 String toString()
 boolean contentEquals(StringBuffer sb)
+```
 
+```java
 // most used
 char[] toCharArray()
 char charAt(int index))
@@ -152,8 +155,7 @@ String substring(int beginIndex, int endIndex_Exclusive)
 String toLowerCase()
 String toUpperCase()
 
-String trim() 
-// "  abc  " => "abc"
+String trim() // "  abc  " => "abc"
 
 int length()
 Boolean isEmpty()
@@ -190,12 +192,12 @@ String[] split(String regex, ?int arrayLength)
 
 int indexOf(int ch, int ?fromIndex) // search character
 int indexOf(String str, ?int fromIndex) // search string
-int lastIndexOf(int ch, ?int startFromIndex)
+int lastIndexOf(int ch, ?int startFromIndex) // searching ch
 int lastIndexOf(String str, ?int startFromIndex)
 // String s = "Learn Share";
 // int output = s.indexOf("Share"); returns 6
-// int output = s.indexOf("ea",3); returns 13
-// int output = s.lastIndexOf("a"); returns 14
+// int output = s.indexOf("ea",3); returns -1
+// int output = s.lastIndexOf("a"); returns 8
 ```
 
 #### equals(Object obj) and equalsIgnoreCase(String s)
