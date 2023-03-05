@@ -1,6 +1,8 @@
-# Catalog
+###### tags: `Design Pattern`
 
-- [Catalog](#catalog)
+# Design Pattern
+
+- [Design Pattern](#design-pattern)
   - [Basics](#basics)
   - [Principle](#principle)
   - [Creational Pattern](#creational-pattern)
@@ -9,8 +11,7 @@
 
 ## Basics
 * [UML Diagram](_UMLDiagram.md)
-
-[深入淺出依賴反向原則](https://www.jyt0532.com/2020/03/24/dip/)
+* [深入淺出依賴反向原則](https://www.jyt0532.com/2020/03/24/dip/)
 * [Dependency Injection](_DependencyInjection.md)
 
 ## Principle
@@ -24,12 +25,11 @@
   - LKP	Least Knowledge Principle/ DP (Demeter Principle)
 
 ## Creational Pattern
-Creational patterns provide various object creation mechanisms, which increase flexibility and reuse of existing code.
 
-Creational design patterns are concerned with the way of creating objects. 
+Creational patterns provide various object creation mechanisms, which increase flexibility and reuse of existing code.  
 
-With this pattern we can avoid such way to create a object  
-```Java
+This Pattern is concerned with the way of creating objects. to avoid creating a object like such way  
+```java
 ObjectX s1 = new ObjectX();  
 ```
 
@@ -70,5 +70,3 @@ That means **the implementation and the client should be loosely coupled in orde
 - [Mediator](B_Mediator.md)
 - **[Null Object](B_NullObject.md)**
 - [Visitor](B_Visitor.md)
-
-
