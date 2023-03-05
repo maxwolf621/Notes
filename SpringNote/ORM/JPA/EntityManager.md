@@ -1,11 +1,31 @@
 # EntityManger
 
+- [EntityManger](#entitymanger)
+  - [EntityManager Type](#entitymanager-type)
+    - [Container-Managed EntityManager (推薦使用)](#container-managed-entitymanager-推薦使用)
+    - [Application-Managed EntityManager](#application-managed-entitymanager)
+  - [Persistence Context Scope](#persistence-context-scope)
+  - [Persistence Unit](#persistence-unit)
+
+
 每個EntityManager都與一個 Persistence Context 關聯，EntityManager不直接維護Entity，而是將之委托給 Persistence Context，Persistence Context中會維護一組Entity實例，Entity實例在Persistence Context中為Managed狀態。
 
-Entity物件的生命週期、與資料表格的對應、資料庫的存取，都與EntityManager息息相關
+被 EntityManager 映射到資料庫中的對象，或者從資料庫映射至記憶體空間中的對象，同時關聯到一個 Persistence Context 管理。
+
+這些被管理的對象統稱 Managed Object，每個受管對像都有一個唯一的id。 
+
+**EntityManager 和 Persistence Context之間的關係，一般可以是多對一的**，即多個EntityManager 可以同時指向一個 Persistence Context，以此保證了多個 EntityManager 所管理Managed State Entity 擁有的 ID 是唯一的。
+
+Entity 物件的生命週期、與資料表格的對應、資料庫的存取，都與EntityManager息息相關。
 
 ![](https://i.imgur.com/ueO4FzQ.png)  
 - Only Objects in Managed State are MANAGED BY EntityManager and Persistence Context
+
+
+Reference
+[JPA EntityManager詳解](https://www.jianshu.com/p/091360c47e6b)  
+[Guide to the Hibernate EntityManager](https://www.baeldung.com/hibernate-entitymanager)  
+[Spring Data JPA EntityManager Examples (CRUD Operations)](https://www.codejava.net/frameworks/spring-boot/spring-data-jpa-entitymanager-examples)
 
 ## EntityManager Type
 
@@ -13,12 +33,24 @@ Two Types
 1. Application-Managed EntityManager
 2. Container-Managed EntityManager
 
+### Container-Managed EntityManager (推薦使用)
 
-## Application-Managed EntityManager
+the container creates the `EntityManager` from the `EntityManagerFactory` for us:
 
-Application-Managed EntityManager : 透過 EntityManagerFactory 管理 EntityManager。
+Via `@PersistenceContext` annotation
+```java
+@PersistenceContext
+private EntityManager em;
+```
+- The container is in charge of beginning the transaction, as well as committing or rolling it back.
+- The container is responsible for closing the `EntityManager`, so it's safe to use without manual cleanups
+### Application-Managed EntityManager
 
-Persistence Context(所有被管理的Entities)隨著 EntityManager的關閉而失效，在Persistence Context內的Entities的狀態皆不是 Managed State。
+透過 EntityManagerFactory 管理 EntityManager(`EntityManagerFactory#createEntityManager()`)，需要手動操控 EntityManager 關閉 及 連接、控制 Transaction 等。
+
+優點是，Application-Managed EntityManager可以在EJB，也可以使 JPA 脫離 EJB，與任何的Java環境集成，如 Web容器以及J2SE環境等、、、。
+
+Persistence Context 隨著 EntityManager 的關閉而失效，此時在Persistence Context內的Entities 狀態皆不是 Managed State。
 
 ```java
 package onlyfun.caterpillar;
@@ -115,3 +147,53 @@ Persistence Context預設為Transaction-scoped(`PersistenceContextType.TRANSACTI
 ```
 
 嚴格說來，本頁標題名稱應該叫作PersistenceContext範圍，因為type屬性設定的正是EntityManager的Persistence Context有效範圍，不過一般也常稱為Transaction-scoped EntityManager或Extended-scoped EntityManager。
+
+
+
+## Persistence Unit
+
+透過 `META-INF/persistence.xml` 配置Persistence Unit
+```xml
+<persistence>
+    <persistence-unit name="jpa-1" transaction-type="...">
+
+        <description>Hibernate EntityManager Demo</description>
+
+        <!--
+            ORM Management
+        -->
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <!-- 
+            Class Entity 
+        -->
+        <class>com.example.model.User</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <!-- 
+            DataSource Configuration
+        -->
+        <properties>
+            <property name="javax.persistence.jdbc.dirver" value="..."/>
+            <property name="javax.persistence.jdbc.url" value=".."/>
+            <property name="javax.persistence.jdbc.user" value="..." />
+            <property name="javax.persistence.jdbc.password" value="..." />
+
+            <property name="hibernate.show_sql" value="true" />
+            // ... other configurations
+        </<properties>
+    </persistence-unit>
+</persistence>
+```
+
+Java EE可以透過`@PersistenceUnit` Annotation
+```java
+// Java EE
+@PersistenceUnit(unitName="jpa-1")
+private EntityManagerFactory emf;
+```
+
+Java SE透過`Persistence.createEntityManagerFactory("jpa-1")`
+```java
+// Java SE
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-1");
+```

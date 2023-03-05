@@ -384,7 +384,7 @@ but overloads do exist that expect either 1 or 3 arguments.
 one accepting one argument, and another accepting three arguments.  
 These first two signatures are called the overload signatures.  
 Then, we wrote a function implementation with a compatible signature.  
-- **Functions have an implementation signature, but this signature can’t be called directly.**   
+- **Functions have an implementation signature, but this signature can't be called directly.**   
 **Even though we wrote a function with two optional parameters after the required one, it can’t be called with two parameters!**
 
 ### Overload Signatures and the Implementation Signature

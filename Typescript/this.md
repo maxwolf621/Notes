@@ -46,7 +46,7 @@ console.log(b.set("new content"));
 
 ## this in method block
 
-Without `return`
+function without `return`
 ```typescript
 // this = itself 
 let foo = {
@@ -83,13 +83,11 @@ console.log(foo.f(123));
 
 `this` types is
 ```typescript
-/**
-   this: {
-      x: string;
-      n: number;
-      f(n: number): ...;
-  }
-*/
+ this: {
+    x: string;
+    n: number;
+    f(n: number): ...;
+}
 ```
 
 Console prints
@@ -105,7 +103,7 @@ Console prints
 
 **`xxx : this` is different from writing `xxx : Class`.**
 
-`xxx : this` means `xxx` only accept the type `>=` itself. 
+`xxx : this` means `xxx`'s datatype `<= this` itself. 
 
 For example, if you have a derived class, its `sameAs` method **will now only accept other instances of that same derived class**. 
 ```typescript
@@ -485,7 +483,6 @@ class Parent {
     }
   }
 }
-
 class Child extends Parent {
   age?: number
   constructor(name ?: string, age ?: number){
@@ -493,7 +490,6 @@ class Child extends Parent {
     this.age = age;
   }
 }
-
 
 class A {
   filedA = "ImFiledA"
@@ -522,10 +518,8 @@ class B extends A {
   } 
 }
 
-
 let a = new A();
 let b = new B();
-
 a.A2(new Parent("ImParentField"));
 b.A2(new Parent("ImChildField"));
 b.A2(new Child()) // if optional ? is not declare then compiler error
