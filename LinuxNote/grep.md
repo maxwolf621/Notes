@@ -1,3 +1,4 @@
+###### tags: `Linux`
 # grep 
 
 [Linux 匹配文字 grep 指令用法教學與範例](https://blog.gtwang.org/linux/linux-grep-command-tutorial-examples/)
