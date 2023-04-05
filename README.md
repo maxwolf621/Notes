@@ -24,13 +24,6 @@
   - [CSS && SASS](#css--sass)
     - [Cheat Sheet](#cheat-sheet)
 
-
-## Git & Linux
-- [git](git/README.md)
-- [Basic Shell Command](LinuxNote/BasicShellCommand.md)
-- [Grep](LinuxNote/grep.md)
-- [Basic Shell Script](LinuxNote/BasicShellScript.md)
-- [Environment Path](LinuxNote/environmentPath.md)
 ## Java&Spring & DesignPattern
 
 - [Java Methods mkyong](https://mkyong.com/)
