@@ -1,3 +1,4 @@
+###### tags: `Linux`
 # Environment Variable
 
 [what-does-the-export-path-line-in-bashrc-do](https://askubuntu.com/questions/833922/what-does-the-export-path-line-in-bashrc-do)  
