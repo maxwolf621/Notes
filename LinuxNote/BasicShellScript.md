@@ -1,51 +1,69 @@
 ###### tags: `Linux`
-# [BASIC Shell Script](https://blog.techbridge.cc/2019/11/15/linux-shell-script-tutorial/)
 
-Using `;` to put the Commands in one line in the terminal;
+
+# BASIC Shell Script
+
+https://blog.techbridge.cc/2019/11/15/linux-shell-script-tutorial/
+
+[TOC]
+
+
+## `;` separator
+
+Using `;` to gather the commands in one line in the terminal;
 ```console
-pi@mayer:~/Desktop $ date ; who
+date ; who
+
+# it shows
+Wed Apr  5 05:18:11 PM CST 2021
+issac    tty2         2021-04-05 02:37 (tty2)
 ```
 
-For advoiding the troublesome to type the commands in the terminal every time instead we can write a shell script  
-First step create a script
-```console
-pi@mayer:~/Desktop $ vim script.sh
+## shell script
+
+Use a shell script to avoid the troublesome to type the commands in the terminal repeatedly.  
+
+
+Create a shell script
+```console=
+vim script.sh
 ```
 
-Write out script
-```console 
+A shell script(`*.sh`) should declare `# !/bin/bash` in the first line to tell the system which shell(`bash` here) allows to execute this script.  
+```bash
 # !/bin/bash
+# 
 # This scirpt display the date and who's logged on
 date
 who
 ```
-- To tell the system which shell can execute this shell script we need to add `#!/bin/bash` in the first line 
-
-Some linux systems put `$HOME/bin` into `$PATH` enviroment, it supplys every user a file that the shell can find the command to be executed in the `/HOME/..` directory
 
 Set up the priority and executable of the file after creating the script
 ```console
-pi@mayer:~/Desktop $ chmod u+x script.sh
+chmod u+x script.sh
 ```
 
-Execute
+Execute the shell script
 ```console
-pi@mayer:~/Desktop $ ./script.sh
+./script.sh
+
+# it shows
 So 11. Aug 09:38:46 CST 2020
 pi       tty1         2021-08-15 03:47
 pi       tty7         2021-08-15 03:47 (:0)
 ```
-- this creates a child shell and the child shell cant use the variable in the script from father shell
+- it creates a child shell while `./script.sh` is executed and the child shell can not use the variable in the script from father shell
 
-#### `$`
-In linux `$abc` presents abc is a variable, but if we want to show up `$15` dollars , add `\` before `$numbers`
-```console
-echo "it cost \$15 usa dollars"
-printf "%s\n" "it cost \$15 usa dollar"
-```
 
-#### local variable in the script `variable=value`
-for example
+:::danger
+Some Linux OS put `$HOME/bin` into `$PATH` environment, it supplies every user a file that the shell can find the executable commands in the `/HOME/*` directory
+:::
+
+
+## `$`variable
+
+
+We can define local variable in a shell script
 ```console
 var1=10
 var2=-57
@@ -53,7 +71,14 @@ var3=testing
 var4="more than one words"
 ```
 
-#### Operator varibale and `$(variable)`
+if we want to show up `$15` dollars , add `\` escape character before `$15`
+```console
+echo "it cost \$15 usa dollars"
+printf "%s\n" "it cost \$15 usa dollar"
+```
+
+
+#### Operator variables and `$(variable)`
 
 By giving command `date` to a local variable
 ```console
@@ -68,15 +93,16 @@ today=$(date+%y%m%d)
 ls /usr/bin -al > log.$today
 ```
 
-## RE-define ouput and input
+## `>` output
+Using `>` logs the output of `command` to other script in the specific file 
 
-To GIVE the output of `command` to other script in the specific file using `>`  
-sytanx
+syntax
 ```console
 command > outputfile
 ```
 
-If the script `test6` doesn't exist then create one else it would cover up the old one
+If the script `test6` doesn't exist then create one;  
+else it overwrites.   
 ```console
 pi@Ji:~ $ date > test6
 pi@Ji:~ $ ls - l test6
@@ -87,15 +113,15 @@ Thu Feb 10 17:56:58 EDT 2014
 
 #### using `>>` to avoid **overwriting(überschriben)**
 
-```console
+```console=
 pi@Ji:~ $ who >> test6
 pi@Ji:~ $ cat test6
 Thu Feb 10 18:02:14 EDT 2014 #this is date > test6
 user pts/0 Feb 10 17:55      #this is who >> test6
 ```
 
-#### `<` redirect backward 
-sytanx
+## `<` redirect backward (Input)
+
 ```console
 command < inputfile
 ```
@@ -223,22 +249,32 @@ exit 5
 - or using `exit $variable`
 - The range of exit code number is btw `0 ~ 255` so if there is exit `300` it would actually means `abs(256-300)=44` 
 
-## `if` ... `then` ... `fi` 
+## Condition
 
-sytanx 
 ```console
+# if
 if command
 then
   commands
 fi
+
+
+# if and else
+if command 
+then 
+  commands 
+else 
+  commands 
+fi
 ```
 
 For example 
+- If User `mayer` is online then ...
 ```bash
 #!/bin/bash 
 #testing multiple commands in the then section 
 
-testuser=JohnMayer 
+testuser=mayer 
  
 if grep $testuser /etc/passwd 
 then 
@@ -248,29 +284,9 @@ then
   ls -a /home/$testuser/.b* 
 fi
 ```
-- if User `JohnMayer` is online then ...
 
+### nested if else
 
-## `if` ... `then` ... `else` ...
-
-```console
-if command 
-then 
-  commands 
-else 
-  commands 
-fi
-```
-
-## nested `if` ... `then` ... `else` ...
-
-```console
-pi@mayer:~ $ ls -d /home/NoSuchUser/ 
-/home/NoSuchUser/ 
-pi@mayer:~ $ vim test5.sh 
-```
-
-In `test5.sh`
 ```bash
 #!/bin/bash 
 #Testing nested ifs 
@@ -283,7 +299,8 @@ then
 else 
   echo "The user $testuser does not exist on this system."
   if ls -d /home/$testuser/ 
-  then echo "However, $testuser has a directory." 
+      then 
+          echo "However, $testuser has a directory." 
   fi 
 fi
 ```
@@ -301,26 +318,19 @@ fi
 ```
 
 ## `test`  
-syntax
-```console
-test condition
-```
 
-### `if` ... `then` ... `fi`
-
-with `test`
 ```console
 variable=""
 if test $variable
 then
-  ...
+  commands
 else
-  ...
+  commands
 fi
 ```
 
 or use `[]` instead of `test`  
-`[` and `]` must seprate with space between `condition` as the following  
+`[` and `]` must separate with space between `condition` as the following  
 ```console
 if[ condition ]
 then
@@ -328,12 +338,12 @@ then
 fi
 ```
 
-What commad `test` can handle?
+What commands `test` can handle?
 1. compare values **(only integer)**
 2. compare strings (`!=,<,>,-n,-z`)
 3. compare files
 
-## Operator
+## Operators
 ```diff
 n1 -eq n2  
 n1 -ge n2  
