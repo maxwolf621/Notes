@@ -6,13 +6,42 @@
     - [Bean XML Setter Injection](#bean-xml-setter-injection)
     - [Spring ApplicationContext retrieve Dependencies](#spring-applicationcontext-retrieve-dependencies)
 
-References
+References   
 [Code Java - Spring Dependency Injection Example with XML Configuration](https://www.codejava.net/frameworks/spring/spring-dependency-injection-example-with-xml-configuration)    
 [Spring - Bean Definition](https://www.tutorialspoint.com/spring/spring_bean_definition.htm)
 
-Use `<bean>` tags to declare the dependencies in a XML file, use the `ClassPathXmlApplicationContext` class to load the configuration from the XML file, and call `getBean()` method to retrieve a bean instance from the container.
 
-## Bean and XML-file
+- `<bean>` tags to declare the dependencies in a XML file
+- `ClassPathXmlApplicationContext` class to load the configuration from the XML file
+    - `ClassPathXmlApplicationContext#getBean()` retrieves a bean instance from the container.
+
+## Bean XML Constructor Injection 
+
+Syntax
+```xml
+<!--
+  Register Bean 
+-->
+<bean id="[BEAN_NAME]" class="[PACKAGE_PATH]">
+    <constructor-arg ref="bean_id">     
+</bean>
+
+<!-- 
+    For Example
+-->
+  
+ <!--
+  Register bean service1 ref to com.example.ServerImplementation
+-->
+<bean id="service1" class="com.example.ServerImplementation">
+  
+<!-- 
+    Inject bean named service1 for bean named ClientImplementation
+-->
+<bean id="ClientImplementation" class="com.example.ClientImplementation">
+    <constructor-arg ref="service1" />
+</bean>
+```
 
 ```java
 interface Client{
@@ -35,36 +64,7 @@ public class ServerImplementation implements Server{
 }
 ```
 
-### Bean XML Constructor Injection 
-
-Syntax
-```xml
-<!--
-    Bean to be injected  
--->
-<bean id="[BEAN_NAME]" class="[PACKAGE_PATH]">
-
-<!--
-    To Inject the bean 
--->
-<bean id="[BEAN_NAME]" class="[PACKAGE_PATH]">
-    <constructor-arg ref="id_for_class">     
-</bean>
-
-<!-- 
-    For Example
--->
-<bean id="service1" class="com.example.ServerImplementation">
-
-<!-- 
-    dependency injection with bean named service1 
--->
-<bean id="ClientImplementation" class="com.example.ClientImplementation">
-    <constructor-arg ref="service1" />
-</bean>
-```
-
-### Bean XML Setter Injection
+## Bean XML Setter Injection
 
 ```xml
 <bean id="[BEAN_NAME]" class="PACKAGE_PATH">
@@ -79,9 +79,10 @@ Syntax
 </bean>
 ```
 
-### Spring ApplicationContext retrieve Dependencies
+## Spring ApplicationContext retrieve Dependencies
 
 Using `ApplicationContext#getBean()` is used to retrieve the reference of an instance managed by Spring's IoC Container.
+
 ```java
 ApplicationContext appContext = new ClassPathApplicationContext("classpath:applicationContext.xml");
 ObjectType ob = (ObjectType) appContext.getBean("Bean_ID_Name");
