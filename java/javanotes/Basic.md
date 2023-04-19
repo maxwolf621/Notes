@@ -7,8 +7,9 @@
 - [Basics](#basics)
   - [Pass By Parameter](#pass-by-parameter)
   - [Pass By Value](#pass-by-value)
-  - [Access-Specifier](#access-specifier)
-    - [Access Control For The Class](#access-control-for-the-class)
+  - [Access Control For The Class](#access-control-for-the-class)
+      - [Visibility Within package](#visibility-within-package)
+      - [Visibility Outside the class's package](#visibility-outside-the-classs-package)
   - [OOP Four Basic Concepts of OOP](#oop-four-basic-concepts-of-oop)
     - [Encapsulation](#encapsulation)
     - [Polymorphism](#polymorphism)
@@ -20,7 +21,7 @@
   - [IMMUTABLE `final` keyword](#immutable-final-keyword)
     - [Final Value](#final-value)
     - [Final Class](#final-class)
-  - [Package & Namespace](#package--namespace)
+  - [Package \& Namespace](#package--namespace)
     - [Class Loader](#class-loader)
   - [`abstract` keyword](#abstract-keyword)
     - [abstract class](#abstract-class)
@@ -31,7 +32,7 @@
   - [Java 9 `private` and `private static`](#java-9-private-and-private-static)
     - [Usage of the Private Method](#usage-of-the-private-method)
     - [Benefits of Private Methods in Interfaces](#benefits-of-private-methods-in-interfaces)
-  - [Interface & Abstract Class](#interface--abstract-class)
+  - [Interface \& Abstract Class](#interface--abstract-class)
     - [Use Interface or Abstract](#use-interface-or-abstract)
   - [`super`](#super)
   - [`Override`](#override)
@@ -48,18 +49,11 @@ public class Dog {
     Dog(String name) {
         this.name = name;
     }
-
-    String getName() {
-        return this.name;
-    }
-
-    void setName(String name) {
-        this.name = name;
-    }
-
     String getObjectAddress() {
         return super.toString();
     }
+
+    // getter and setter 
 }
 
 class PassByValueExample {
@@ -104,7 +98,9 @@ public class PassByValueExample {
         // Dog@4554617c
 
         dog = new Dog("B");  
-        // change reference#dog from Dog@4554617c to Dog@74a14482
+        // change reference#dog 
+        // from Dog@4554617c 
+        // to Dog@74a14482
 
         System.out.println(dog.getObjectAddress()); 
         // Dog@74a14482
@@ -115,19 +111,9 @@ public class PassByValueExample {
 }
 ```
 
-## Access-Specifier
+## Access Control For The Class
 
-```java
-access-specifier storage returnType function(parameters)
-
-public final integer fun(int i , String b){
-  //...
-}
-```
-
-### Access Control For The Class
-
-Visibility Within package   
+#### Visibility Within package   
 |Access Specifier | Accessible to a SUBCLASS inside A same package | Accessible to all OTHER CLASSES in the same package|
 | ---             | ---                                            |---                                                  |
 |  default(no modifier)  | Yes                                     |Yes                                                 |
@@ -139,7 +125,7 @@ Visibility Within package
 
 ---
 
-Visibility Outside the class's package 
+#### Visibility Outside the class's package 
 | Access Specifier      |  Accessible to a SUBCLASS outside the same package | Accessible to all OTHER CLASSES outside the same package |
 | ----                  |     ---                                            |     ----                                                 |
 |  default(no modifier) |     No                                             |     No                                                   |
