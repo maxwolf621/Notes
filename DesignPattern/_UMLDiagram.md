@@ -1,14 +1,12 @@
+###### tags : `Design Pattern`
 # UML diagram
 
 - [UML diagram](#uml-diagram)
   - [UML](#uml)
   - [Association and Dependency](#association-and-dependency)
-          - [tags : `Association(繼承HAS)`，`Dependency(實現Use)`](#tags--association繼承hasdependency實現use)
   - [Composition and Aggregation](#composition-and-aggregation)
-          - [tags : `Composition互相依賴` ，`Aggregation整體依賴成員`](#tags--composition互相依賴-aggregation整體依賴成員)
-      - [Life cycle](#life-cycle)
       - [Strong/Weak Association](#strongweak-association)
-  - [Realization Implementation vs Inheritance](#realization-implementation-vs-inheritance)
+  - [Implementation \& Inheritance](#implementation--inheritance)
   - [Degree of Coupling](#degree-of-coupling)
 
 References
@@ -21,19 +19,31 @@ References
 ![image](https://user-images.githubusercontent.com/68631186/126488408-65750f74-b5f5-431e-8a81-0fda94b6f206.png)  
 | dotted line arrow | solid line arrow |
 | ----------------- | ---------------- |
-| you USE it        | you HAVE it |
-
-
+| (decoupled) you USE it        | (Coupled) you HAVE it |
 
 ## Association and Dependency
 
-###### tags : `Association(繼承HAS)`，`Dependency(實現Use)`
+```plantuml
+class Customer{
+        - address : String
+        - contactNumber : String
+        - name : String
+}
+class Car{
+        - modelNumber : String
+        - owner : Customer
+}
+Car --> "owner" Customer
+```
 
-Association : HAVE the object
-![image](https://user-images.githubusercontent.com/68631186/126490747-f2af8080-a6e5-45d9-b948-3e299086dd18.png)
-
-Dependency : USE the object
-![image](https://user-images.githubusercontent.com/68631186/126490824-cc757e91-15d9-4cc8-a912-91e6f7960e62.png)
+```plantuml
+class Order{
+    + paymentProduce(Payment payment) : void
+}
+class Payment{
+}
+Order ..> Payment
+```
 
 [According to this Post](https://stackoverflow.com/questions/1230889/difference-between-association-and-dependency)   
 - An association almost always implies that one object has the other object as a **field/property/attribute** (terminology differs).  
@@ -43,32 +53,39 @@ Dependency : USE the object
 
 ## Composition and Aggregation
 
-
-###### tags : `Composition互相依賴` ，`Aggregation整體依賴成員`
-
 **Composition and aggregation are two types of association** which is used to represent relationships between two classes.  
 
-In Aggregation , **parent and child entity maintain `Has-A` relationship but both can also exist independently**. 
+In Aggregation , **parent and child entity maintain `Has-A` relationship but both can also exist independently**.   
+Any modification in the parent entity will not impact the child entity or vice versa. 
 
-We can use parent and child entity independently. Any modification in the parent entity will not impact the child entity or vice versa. 
+Which means aggregation's Children can have their own life time   
 
-![image](https://user-images.githubusercontent.com/68631186/126583667-5f2562b1-add7-4e2e-a265-ac0a490efdc5.png)
+
+```plantuml
+class Car{
+    - engine : Engine
+    - door : Door
+    - wheel : Wheel
+}
+Car o.left. "4" Wheel
+Car o.right. "4" Door
+Car o.. "1" Engine
+```
 
 In Composition, **parent owns child entity so child entity can't exist without parent entity**. We can’t directly or independently access child entity.   
 In the UML diagram, composition is denoted by a filled diamond.   
-![image](https://user-images.githubusercontent.com/68631186/126583753-714eed3e-417f-454f-af68-47ce310719a4.png)
-
-
-Basic 
-Composition(mixture) is a way to wrap simple objects or data types into a single unit   
-
- Aggregation(collection) differs from ordinary composition in that it does not imply ownership  
-
-#### Life cycle   
 
 **Composition's Children don't have their own life time (they are dependent on parent side)**   
+```plantuml
+class Hand{
+    
+}
+Hand *-- finger
+```
 
-Aggregation's Children can have their own life time   
+> - Composition(MIXTURE) is a way to wrap simple objects or data types into a single unit   
+> - Aggregation(COLLECTION) differs from ordinary composition in that it does not imply ownership    
+
 
 #### Strong/Weak Association
 
@@ -76,7 +93,7 @@ Aggregation's Children can have their own life time
 - Composition is a strong association  
 - Aggregation is a weak association   
 
-## Realization Implementation vs Inheritance
+## Implementation & Inheritance
 
 Child `uses`/implements parent's methods  
 ![image](https://user-images.githubusercontent.com/68631186/126583945-e7bb0a51-86a1-42a1-8070-f608579dd95a.png)  
