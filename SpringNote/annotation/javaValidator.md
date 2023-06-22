@@ -14,31 +14,32 @@
   - [Date](#date)
     - [@Past Date](#past-date)
     - [@Future Date](#future-date)
-
+    
 ## Reference
 - [oracle](https://docs.oracle.com/javaee/7/tutorial/bean-validation001.htm)
 - [@valid example](http://www.mydlq.club/article/49/)
 
+
 ## @Valid
 
-- Annotation is used entity within an entity , controller POST Method
+- field and method level 
 
+`@Valid` validates the validators (such as `@NotNull` , @NotEmpty, ... etc ). 
+- If data is not valid, it throws `MethodArgumentNotValidException`
+
+For example
 ```java
 package com.application.entity;
 
 @Data
 public class User {
+	// ...
 
-    // ...
-
-    @Valid
-    @NotNull(message = "userInfo cant be null")
-    private UserInfo userInfo;
-}
-
-@Data
-public class UserInfo {
-    // ...
+	// validate the validator
+	@Valid
+	@NotNull(message = "userInfo cant be null")
+	private UserInfo userInfo; 
+		
 }
 
 @RestController
@@ -60,7 +61,7 @@ public class Controller {
 
 }
 ```
-- If data is not valid, it throws `MethodArgumentNotValidException`
+
 
 ## @DecimalMax
 
