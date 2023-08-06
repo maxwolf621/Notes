@@ -646,17 +646,14 @@ public static void main(String[] args) {
 
 ### `reentrantLock` vs `synchronized`
 
-除非需要使用 `ReentrantLock` 的高級功能，否則優先使用 `synchronized`。
+除非需要使用 `ReentrantLock` 的高級功能，否則優先使用 `synchronized`。 
+這是因為`synchronized`是 JVM 實現的一種鎖機制，JVM 原生地支持它，而 `ReentrantLock` 不是所有的 JDK 版本都支持。 且**使用 `synchronized` 不用擔心沒有釋放鎖而導致 Dead Lock 問題，因為 JVM 會確保鎖的釋放。**
 
-這是因為`synchronized`是 JVM 實現的一種鎖機制，JVM 原生地支持它，而 `ReentrantLock` 不是所有的 JDK 版本都支持。
+1. ReentrantLock 為 等待可中斷，`synchronized` 不是。
+   - 等待可中斷 : **當持有鎖的執行緒長期不釋放鎖的時候，正在等待的執行緒可以選擇放棄等待，改為處理其他事情**
 
-並且**使用 `synchronized` 不用擔心沒有釋放鎖而導致(死結)Dead Lock問題，因為 JVM 會確保鎖的釋放。**
-
-1. ReentrantLock`為等待可中斷`，而`synchronized` 不是。
-   等待可中斷 : **當持有鎖的執行緒長期不釋放鎖的時候，正在等待的執行緒可以選擇放棄等待，改為處理其他事情**
-
-2. `synchronized` 中的鎖是非公平的， `ReentrantLock` 默認情況下也是非公平的，但是也可以是公平的
-   Fair lock **: 多個執行緒在等待同一個鎖時，必須按照申請鎖的時間順序來依次獲得鎖)**
+2. `synchronized` 中的鎖是非公平的， `ReentrantLock` 也是非公平的 By Default，但是也可以是公平的
+   - Fair lock : **多個執行緒在等待同一個鎖時，必須按照申請鎖的時間順序來依次獲得鎖)**
 
 3. 一個 `ReentrantLock` 可以同時綁定多個 Condition 對象
 ## State of threads
@@ -684,12 +681,14 @@ public interface RunnableFuture<V> extends Runnable, Future<V>
 
 public class FutureTask<V> implements RunnableFuture<V>
 
-FutureTask<T> futureTask = new FutureTask<T>(new Callable<T>{
-    @Override
-    public Integer call() throws Exception{
-        // ...
-    }
-}
+FutureTask<T> futureTask = 
+    new FutureTask<T>(
+        new Callable<T>{
+            @Override
+            public Integer call() throws Exception{
+                // ...
+            }
+            }
 )
 Thread taskThread = new Thread(futureTask);
 taskThread.start();
