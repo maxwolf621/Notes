@@ -1,6 +1,6 @@
-# Redis
+# Operation
 
-- [Redis](#redis)
+- [Operation](#operation)
   - [SCAN (Cursor Pagination)](#scan-cursor-pagination)
   - [String](#string)
     - [Set/Get \& Length(key's val)](#setget--lengthkeys-val)
@@ -42,15 +42,14 @@ Iteration based on Cursor
 > scan 13912   match key99*   count 1000
 ```
 
-Keys VS Scan
-- Same Complexity , But Scan using `Cursor` to avoid Blocking
-- 提供 LIMIT 參數，控制每次返回值的最大資料數，返回的结果可多可少
-- Server不需要保存Cursor，Cursor的唯一狀態就是 SCAN 返回给客户端的Integer Type;
-- **返回的結果可能會有Duplicates，Client要自己處理**
-- Iteration的過程中如果有資料修改，Modified的資料能不能Iteration不确定的
+Diff btw scan and keys
+- Same Complexity , But Scan using `Cursor` to avoid blocking
+- Provide LIMIT parameter，控制每次返回值的最大資料數，返回的结果可多可少
+- Server 不需要保存Cursor，Cursor 的唯一狀態就是 SCAN 返回给 Client 的Integer Type
+- **返回的結果可能會有 Duplicates，Client 要自己處理**
 - **單次返回的結果是NILL的不表示着Iteration結束，而要看返回的Cursor是否為零**
 
->>> SScan、 HScan 和 ZScan 第一參數一定要為KEY，而 SCAN 不必提供任何KEY，SCAN的Iteration該Redis Server的所有KEY。
+SScan、 HScan 和 ZScan 第一參數一定要為KEY，而 SCAN 不必提供任何 KEY， SCAN的Iteration 為該 Redis Server 的所有 KEY。
 
 ## String 
 
@@ -64,12 +63,14 @@ StrLen key
 Set key value
 Get key
 
-GetSet key NewValue // get old value set new value
+// get old value set new value
+GetSet key NewValue 
 > GetSet phone Iphone
 (nil)
 > GetSet phone Samsung
 "Iphone"
 
+// Multiple Get
 MGet key1 [key2..]
 MSet key value [key value ...]
 

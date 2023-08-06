@@ -27,7 +27,7 @@
 ## Java&Spring & DesignPattern
 
 - [Java Methods mkyong](https://mkyong.com/)
-- [Java](JavaNote/README.md)
+- [Java](Java/README.md)
 - [Spring](SpringNote/README.md)
 - [Design Pattern Java](DesignPattern/README.md)
 

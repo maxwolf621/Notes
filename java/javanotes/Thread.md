@@ -4,9 +4,11 @@
 [牛年自強計畫 Week 2 - SpringBoot - 番外篇 Java 執行緒 Thread Pool](https://hackmd.io/@KaiChen/HyJwzDqxu)
 
 - [Thread](#thread)
-  - [Program, Process and Thread](#program-process-and-thread)
-  - [Tips](#tips)
+  - [Life Cycle of a Thread](#life-cycle-of-a-thread)
+  - [Thread Life Cycle In JAVA](#thread-life-cycle-in-java)
+    - [Tips](#tips)
   - [Java Thread Management `util.concurrent.Executors`](#java-thread-management-utilconcurrentexecutors)
+  - [Execute Thread Via ExecutorService](#execute-thread-via-executorservice)
   - [Threads In Java (`Runnable`, `Callable` and `Thread`)](#threads-in-java-runnable-callable-and-thread)
     - [extends `Thread`](#extends-thread)
     - [implements `Runnable`](#implements-runnable)
@@ -20,10 +22,11 @@
     - [InterruptedException](#interruptedexception)
     - [`shutdown()` and `shutdownNow()`](#shutdown-and-shutdownnow)
     - [wait(), notify() and notifyAll()](#wait-notify-and-notifyall)
-    - [Object#wait vs Thread#sleep](#objectwait-vs-threadsleep)
+    - [wait vs sleep](#wait-vs-sleep)
     - [`Thread#join`](#threadjoin)
     - [ReentrantLock await, signal, and signalAll](#reentrantlock-await-signal-and-signalall)
   - [MUTUAL EXCLUSION LOCK](#mutual-exclusion-lock)
+    - [Lock Level](#lock-level)
     - [`synchronized`](#synchronized)
     - [ReentrantLock](#reentrantlock)
     - [`reentrantLock` vs `synchronized`](#reentrantlock-vs-synchronized)
@@ -57,42 +60,58 @@
     - [Reentrant Code (Pure Code)](#reentrant-code-pure-code)
 
 
-## Program, Process and Thread  
-[Program, Process and Thread](https://hackmd.io/@KaiChen/B1J-x9Akd) 
+![Alex Wu](../images/image.png)
 
-![圖 2](../images/f4ecbb48fe611fafdb387bda7e635e0e731160ab8628f87c0718d917de2ab4ae.png)  
+![image](https://user-images.githubusercontent.com/68631186/126061245-14b919ac-68dd-47ca-a905-5ab1e9292805.png)    
 
-- Program(相當於物件導向中的Class)  
-**程式碼的集合**，用以解決特定的問題  
+Program (Code and Data on DISK)
+- **A Program allow to execute multiple times，OS manages the EXECUTING PROGRAM(PROCESS) (資源與空間的排程單位)**
 
-- Process(相當於Object)  
-相當於Object的variable，**執行中的Program,一個Program可以同時執行多次,OS給予執行程式的資源與空間的排程單位**，一個Program產生多個Process
-  - 一個Memory Space。  
-  **，不同Process的Memory Space也不同，彼此看不到對方的Memory Space**
-  - 內含一個以上的Threads
+Process (Executing Program or Running Application )
+- **Instance of a Program & Organization of a Program in RAM**
+- Process 指已經執行(EXECUTED) 並且被記憶體載入的Program 
+  - 不同 Process 的 Memory Space 也不同，彼此看不到對方的Memory Space 
+- Program的每一行程式碼隨時都有可能被 CPU 執行
+- **Process is a Container of Threads**
+  - e.g. ChatRoom Application 可以同時接受對方傳來的訊息以及發送自己的訊息給對方。
 
-- Thread 
-**代表從某個起始點開始(例如 `main()` )，到目前為止所有function的呼叫路徑、這些呼叫路徑上所用到的區域變數**、程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
-  - 每一個Thread各自擁有 Stack : 紀錄Functions的**呼叫路徑**，以及這些Functions所用到的**Local Variable**，還有Current CPU Status
+Thread (A running Application handles different tasks at same time)
+-  **O.S manages each thread inside a Queue，優先權高的可能會執行比較久，但優先權低的也會執行到，只是可能會一直被插隊。**
+-  thread 之間工作切換的速度很快，因此看來就像在同時執行
+- **代表從某個起始點開始(例如 `main()` )，到目前為止所有function的呼叫路徑、這些呼叫路徑上所用到的區域變數**、程式的執行狀態，除了紀錄在主記憶體外，CPU內部的暫存器(e.g. Program Counter, Stack Pointer, Program Status Word)也需要一起紀錄
+- 每一個Thread各自擁有 Stack : 紀錄 Functions 的**呼叫路徑**、它們所用到的**Local Variable**，以及Current CPU Status
 
-**一個Process可以有多個Thread，同一個Process內的Thread使用相同的(HEAPf)Memory Space，但這些Thread各自擁有其Stack**   
 
-換句話說，Thread能透過JVM STACK的Reference(JVM HEAP)存取到相同的Object(Process)，但是有各獨立的Local variables，OS會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換，以讓各個Thread都有機會執行。
+>>> **一個Process可以有多個Thread，同一個Process內的Thread使用相同的(HEAPf)Memory Space，但這些Thread各自擁有其Stack** 換句話說，Thread能透過JVM STACK的Reference(JVM HEAP)存取到相同的Object(Process)，但是有各獨立的Local variables，OS會根據Thread的優先權以及已經用掉的CPU時間,在不同的Thread作切換，以讓各個Thread都有機會執行。
 
-## Tips 
-1. Using synchronized blocks instead of synchronized method to decrease race condition 
+## Life Cycle of a Thread
+
+![image](https://user-images.githubusercontent.com/68631186/126061324-564dfd3f-6b8c-45b9-b4c3-788ec255ec20.png)  
+
+## Thread Life Cycle In JAVA
+![image](https://user-images.githubusercontent.com/68631186/126061335-f576d692-d39a-418d-ae27-ee9541410f62.png)  
+1. `new` a thread object and call `start()` 後，會進入 Runnable Status
+2. JVM 中有一個 scheduler 專門負責處理所有狀態為 Runnable Thread 排程(Scheduling)，因此即使狀態是 Runnable Thread，也必須要被排入(scheduled)執行才會真的執行`run()`。
+
+
+### Tips 
+1. **Using synchronized blocks instead of synchronized method** to decrease race condition 
 2. First priority using Class `CountDownLatch`, `CyclicBarrier`, `Semaphore` and `Exchanger` instead of `wait()` and `notify()`
 3. Using `BlockingQueue` to handle Producer-Consumer Problem 
 4. Using Local Variable and Immutable Objects to make sure Thread Safe 
 5. Using Thread Pool instead `new` a thread
 6. Using `Collection.synchronizedCollection` (e.g `ConcurrentHashMap`) instead of `Collection` (e.g. `HashTable`)
 
+
 ## Java Thread Management `util.concurrent.Executors`
 
-ExecutorService 中會有專門集合工作的 Queue，並依照最大上限的 Thread 數量去執行依序的工作，並蒐集這些結果，開發師可以透過呼叫方法，一次性 or 需求性的取得這些結果的回傳集合，接續後續的處理動作
-![圖 1](../images/d687fd157985ea32df8defc18260c132c5a33a5504c53c2f6daf43bb58c60571.png)  
+ExecutorService 中會有專門集合 Task Queue，並依照最大上限(Thread Pool Max Size)的 Thread 數量去執行依序的工作，並蒐集這些結果，Programmer 可以透過呼叫 Methods ，一次性 OR 按需求性取得這些結果的回傳集合，接續進行後續的處理動作
+![Java Thread](../images/image-1.png)
 
-Executors Thread設定 
+Go ROUTINE (Fork Join Pool) 類似 JAVA THREAD POOL
+- GO : Synchronize Tasks in Different Task Queue 
+
+Thread Pool Executors 
 ```java
 // ExecutorsService is implementation of Executor
 public interface Executor {
@@ -100,7 +119,7 @@ public interface Executor {
 }
 
 // Configure ExecutorService 
-ExecutorsService executorService = Executors.new______ThreadPool(...);
+ExecutorsService executorService = // Executors.new______ThreadPool(...);
                                    Executors.newFixedThreadPool(int nThreads)
                                    Executors.newCachedThreadPool()	
                                    Executors.newScheduledThreadPool(int corePoolSize)
@@ -112,9 +131,12 @@ ExecutorsService executorService = Executors.newSingleThreadExecutor(...);
 executorService.execute(thread);
 ```
 - `newCachedThreadPool` ：Creates a thread pool that creates new threads as needed, but will **REUSE** previously constructed threads when they are available.
-- `newFixedThreadPool` ：所有Tasks只能使用固定大小的Thread Pool
-- `newSingleThreadExecutor` ： Creates an Executor that uses a single worker thread (Thread Pool size is 1) operating off an unbounded queue.
-- `newScheduledThreadPool` : a thread pool that can schedule commands to run after a given delay, or to execute periodically.
+- `newFixedThreadPool` ：Creates fixed size threads in pool and shared by tasks in queue
+- `newSingleThreadExecutor` ： Creates an Executor that uses a single worker thread (Thread Pool th size is 1) operating off an unbounded queue.
+- `newScheduledThreadPool` : A thread pool that can schedule commands to run after a given delay, or to execute periodically.
+
+
+## Execute Thread Via ExecutorService
 
 ```java
 public class MyRunnable implements Runnable{
@@ -155,6 +177,8 @@ public static void main(String[] args) {
 
 ### extends `Thread`
 
+It's expensive to inherit Thread
+
 ```java
 /**
   * <p> Thread </p>
@@ -171,6 +195,7 @@ public static void main(String[] args) {
     mt.start();
 }
 ```
+
 ### implements `Runnable`
 
 `Runnable` and `Callable` Both are interface which we still have to create a thread via `new Thread(Runnable/Callable obj)` 
@@ -226,7 +251,7 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 ### `Thread#setDaemon(true)`
 
-Daemon是程序運行時在背景背景提供服務的執行緒，不屬於Program中不可或缺的部分。
+Daemon是 Program 運行時在背景背景提供服務的執行緒，不屬於Program中不可或缺的部分。
 - 當所有非Daemon執行緒(e.g. `main()`)結束時，Program也就終止，同時會殺死(KILL)所有Daemon執行緒。
 ```java
 public static void main(String[] args) {
@@ -255,10 +280,10 @@ public void run() {
 
 ### :star: `Thread#yield()`
 
-It provides a mechanism to inform the SCHEDULER that the current thread is willing to relinquish its current use of processor but it'd like to be scheduled back soon as possible.
+It provides a mechanism to inform the SCHEDULER that the current thread is willing to relinquish(give up) its current use of processor but it'd like to be scheduled back soon as possible.
+- `yield()`的呼叫聲明了當前執行緒已經完成了生命周期中最重要的部分，可以切換給其它執行緒來執行。     
+- **`yield()`只是對執行緒調度器SCHEDULER的一個`建議`，而且也只是`建議`具有相同優先級的其它執行緒可以運行**   
 
-`Thread.yield()`的呼叫聲明了當前執行緒已經完成了生命周期中最重要的部分，可以切換給其它執行緒來執行。     
-**`yield()`只是對執行緒調度器SCHEDULER的一個`建議`，而且也只是`建議`具有相同優先級的其它執行緒可以運行**   
 ```java
 public void run() {
     Thread.yield();
@@ -293,7 +318,7 @@ public static void main(String[] args) throws InterruptedException {
 
 ### Interrupt specific thread 
 
-使用`ExecutorService#submit()` with return `Future<T>` type，並利用`Future#cancel(true)`進行中斷。  
+使用 `ExecutorService#submit()` with return `Future<T>` type，並利用`Future#cancel(true)`進行中斷。  
 ```java
 Future<T> future = executorService.submit(
     () -> {
@@ -358,20 +383,22 @@ public static void main(String[] args) {
 ```
 ### wait(), notify() and notifyAll()
 
-`wait()` (Do nothing just wait) : Tells the calling thread to give up the lock and go sleeping until some other thread enters the same monitor and calls `notify()`
+`wait()` (Do nothing just wait)
+- Tells the executing thread to give up the lock and go sleeping until some other thread enters the same monitor and calls `notify()`
 
+`notify()` 
+- Give the notification only one thread which is waiting but it does not mean that current running thread to give up a lock just notify. However, the lock is not actually given up until the notifier’s synchronized block has finished/completed.
 
-`notify()` (Do the task you are waiting) : It wakes up one single thread that called  `wait()` on the same object. 
-- **calling `notify()` does not actually give up a lock on a resource. It tells a waiting thread that that thread can wake up.** However, the lock is not actually given up until the notifier’s synchronized block has finished/completed.
+`notifyAll()`
+- Notify all the waiting threads
 
-`notifyAll()` : It wakes up all the threads that called `wait()` on the same object.  
-### Object#wait vs Thread#sleep
+### wait vs sleep
 
-`wait()` is Object Method, it can release lock  
-`sleep()` is Thread's Static Method    
+`wait()` : Object Method and allow to release lock  
+`sleep()` : Thread's Static Method    
  
-
 **The highest priority thread will run first in most of the situation**, though not guaranteed. Rests are same as `notify()`
+
 ```java
 public class WaitNotifyExample {
 
@@ -409,11 +436,7 @@ public static void main(String[] args) {
 // after
 ```
 
-
-
 ### `Thread#join`
-
-`join()` allows one thread to wait until joined thread completes its execution.
 
 ```java
 public class JoinExample {
@@ -467,9 +490,8 @@ public static void main(String[] args) {
 
 ### ReentrantLock await, signal, and signalAll
 
-`java.util.concurrent` 提供了 Condition 類來實現執行緒之間的協調，可以在 Condition 上呼叫 `await()` 方法使執行緒等待，其它執行緒呼叫`signal()` 或 `signalAll()` 方法喚醒等待的執行緒。
+`java.util.concurrent` 提供了 Condition 類來實現執行緒之間的協調，可以在 `Condition` 上呼叫 `await()` 方法使執行緒等待，或呼叫`signal()`/`signalAll()` 方法喚醒等待的執行緒。
 
-`await()` : `wait()` with `Condition` Class
 ```java
 public class AwaitSignalExample {
 
@@ -526,7 +548,25 @@ It is the main reason why we need to synchronize the processes.
 
 :warning: **`synchronized` IS NOT THE SAME AS ReentrantLock** :warning:
 
+### Lock Level 
+
+Biased Lock -> Lightweight Lock(原地轉圈圈) -> Heavyweight Lock(Queue)  
+- **Heavyweight Lock : Threads are managed By OS**
+
 ### `synchronized` 
+
+```java
+synchronized (o) // lock the object
+
+synchronized returned method() {
+    synchronized (this) // lock this
+}
+
+static synchronized void m() {
+    synchronized (xxx.class)
+}
+```
+
 
 ```java
 public class SynchronizedExample {
@@ -634,6 +674,8 @@ public static void main(String[] args) {
 
 ## :star: J.U.C
 
+JUC provides different Lock Level to enhance efficiency  
+
 ### `FutureTask<T>`
 
 Returned Value from method in Implementation of `Callable` will be encapsulated by `Future<V>` which makes class `FutureTask<V>` can be a task for a thread and has returned value
@@ -652,7 +694,6 @@ FutureTask<T> futureTask = new FutureTask<T>(new Callable<T>{
 Thread taskThread = new Thread(futureTask);
 taskThread.start();
 ```
-
 
 For example
 ```java
@@ -941,70 +982,72 @@ Mutual Exclusion and Synchronization 最主要的問題就是執行緒阻塞(BLO
 ### Compare-and-Swap，CAS
 
 - [compare-and-swap-cas-algorithm](https://howtodoinjava.com/java/multi-threading/compare-and-swap-cas-algorithm/)
- 
+
+Linux command : `lock cmpxchg`
+
 Using `synchronized` keyword in java, is said to be pessimistic technique.
 
 Optimistic approach to CAS relies on collision detection to determine if there has been interference from other parties during the update, in which case the operation fails and can be retried (or not).
+- CAS has 3 variables
+  - `V` : target value (where we expect to change this value)
+  - **`A` : A SNAPSHOT of `V`(compare with V) expect the `V` value is equal to itself (last read value of `V`)**
+  - `B` : new value for assign to `V` if `V == A`
 
-CAS has 3 variables (V : address, A : old-expected value, B : new value )
 
 For Example ::   
-Assume V is a memory location where value `10` is stored.  
+Assume `V` is a memory location where value `10` is stored.    
+There are multiple threads who want to increment same(this) value and use the incremented value for other operations.     
 
-There are multiple threads who want to increment this value and use the incremented value for other operations.
-
-- Step 1 Thread 1 and 2 want to increment it, they both read the value and increment `V` to `11`.  
+Assume Thread#1 and #2 want to increment it, they both read the value and increment `V` to `11`.  
 ```java
 V = 10, A = 0, B = 0
 
 // CAS procedure
-if A = V  && V = B  
-else
-   operation failed
-   return V
+if A = V then 
+    V = B  
+else 
+    print operation failed 
+    return V
 ```
 
-- Step 2 Now thread 1 comes first and compare `V` with it’s last read value:
+Now thread#1 comes FIRST and compare `V` with it's last read value(`A`):
 ```java 
 // Current Values
 V = 10, A = 10, B = 11
-
-do CAS procedure
 ```
+Assign `B`(new value) to `V`
 
-- Step 3 Thread 2 comes and try the same operation as thread 1
+Thread#2 comes and try the same operation as thread 1
 ```java 
 // Current Values
 V = 11, A = 10, B = 11
-
-do CAS procedure
 ```
+In this case, V is not equal to `A`, so value is not replaced and current value of V.    
 
-In this case, V is not equal to A, so value is not replaced and current value of V.    
-i.e. 11 is returned. Now thread 2, again retry this operation with values:
+
+Now thread#2 read `V`'s last value(`A = 11`), again retry this operation with values:
 ```java
 V = 11, A = 11, B = 12
 ```
-And this time, condition is met and incremented value 12 is returned to thread 2.
+The Condition is met and incremented value is returned this time.  
 
 ### ABA issues of multi-threaded computing
 
-**大部分情況下 ABA issue不會影響Program的正確性，如果需要解決 ABA Issue ，改用傳統的互斥同步可能會比原子類更高效。**
+> Wiki :
+>> In multi-threaded computing, the ABA problem occurs during synchronization, when a location is read twice, has the same value for both reads, and **value is the same is used to indicate nothing has changed**.  
+>> **However, another thread can execute between the two reads and `change the value, do other work, then change the value back`, thus fooling the first thread into thinking "nothing has changed" even though the second thread did work that violates that assumption**.(`value_A->value_B->value_A`)(https://en.wikipedia.org/wiki/ABA_problem)
 
-In multi-threaded computing, the ABA problem occurs during synchronization, when a location is read twice, has the same value for both reads, and **value is the same is used to indicate nothing has changed**.  
-
-**However, another thread can execute between the two reads and `change the value, do other work, then change the value back`, thus fooling the first thread into thinking "nothing has changed" even though the second thread did work that violates that assumption**.(`value_A->value_B->value_A`) - [Wiki](https://en.wikipedia.org/wiki/ABA_problem)
-
-J.U.C 提供了一個帶有標記的原子引用類 `AtomicStampedReference` 來解決ABA issues，它可以**通過控制Variable的版本來保證 CAS 的正確性**。   
+**大部分情況下 ABA issue不會影響Program的正確性，如果需要解決 ABA Issue ，改用傳統的互斥同步可能會比原子類更高效。**  
+J.U.C 提供了一個帶有標記(MARK)的原子引用類 `AtomicStampedReference` 來解決 ABA issues，它可以**通過控制Variable的版本來保證 CAS 的正確性**。   
    
 ### Without `Synchronize`
 
-**要保證Thread Safe，並不是一定就要使用`synchronized`如果一個Method本來就不涉及資料共享(Shared Sources)，自然就無須任何同步措施去保證正確性。**
+要保證Thread Safe，並不是一定就要使用`synchronized`。
 
-1. Stack Closure   
-   It's Thread Safe for multiple threads access method's **local variable**
-2. Thread Local Storage   
-   **It's Thread Safe to handle the shared resource in one thread**
+
+如果一個 Method 本來就不涉及資料共享(Shared Sources)，自然就無須任何同步措施去保證正確性。For example :
+1. Stack Closure : it's Thread Safe for multiple threads access method's **local variable**
+2. Thread Local Storage : **it's Thread Safe to handle the shared resource in one thread** 
 
 #### Stack Closure
 ```java
@@ -1142,4 +1185,5 @@ public class ThreadLocalExample1 {
 Reentrant (multi-instance) code is a reusable routine that multiple programs can invoke, interrupt, and reinvoke simultaneously.
 Reentrant Code執行的任何時刻都可以被中斷，轉而去執行另外一段代碼（包括遞迴呼叫Reentrant Code本身），而在控制權返回後，原來的Program不會出現任何錯誤。
 - 例如不依賴存儲在堆上的數據和公用的系統資源、用到的State都由Parameter中傳入、不呼叫非可重入的方法等
+
 
