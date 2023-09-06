@@ -1,59 +1,61 @@
 # Functions
 
+References
 [Function overload](https://bobbyhadz.com/blog/typescript-overload-signature-not-compatible-implementation)
 
-- [Functions](#functions)
-  - [Function type expressions (`functionName : ( parameters ) => returnType`)](#function-type-expressions-functionname---parameters---returntype)
-  - [Function Type Alias](#function-type-alias)
-  - [Call Signatures in Ojbect Types](#call-signatures-in-ojbect-types)
-  - [Construct Signatures](#construct-signatures)
-  - [Generic Functions](#generic-functions)
-  - [(type) Inference](#type-inference)
-  - [Constraints `T extends A` (Generic Function)](#constraints-t-extends-a-generic-function)
-    - [Working with Constrained Values](#working-with-constrained-values)
-    - [Specifying Type Arguments instead of the constraints](#specifying-type-arguments-instead-of-the-constraints)
-  - [Guidelines for Writing Good Generic Functions](#guidelines-for-writing-good-generic-functions)
-    - [Use Fewer Type Parameters](#use-fewer-type-parameters)
-    - [Type Parameters Should Appear Twice](#type-parameters-should-appear-twice)
-  - [Optional Parameters](#optional-parameters)
-    - [Default parameter](#default-parameter)
-    - [Optional Parameters in Callbacks](#optional-parameters-in-callbacks)
-  - [Function Overloads](#function-overloads)
-    - [Overload Signatures and the Implementation Signature](#overload-signatures-and-the-implementation-signature)
-    - [Writing Good Overloads](#writing-good-overloads)
-    - [Declaring `this` in a Function](#declaring-this-in-a-function)
-
 ```typescript 
-// Named function
+/************************
+ * Named functions      *
+ ************************/
 function add(x, y) {
   //..
 }
  
-// Anonymous function
+/************************
+ * Anonymous functions  *
+ ************************/
+//         "--- function type expression ---"
 let myAdd: (x: number, y: number) => number = function (
   x: number,
   y: number
 ): number {
   return x + y;
 };
+
+// simplied
+let myAdd = (x: number, y: number) : number => {
+    return x + y
+}
+
 ```
-## Function type expressions (`functionName : ( parameters ) => returnType`)
+## Function type expressions 
+
+Pass a function as parameter 
+
+```typescript 
+// Function_name      :  type
+functionName          : ( parameters ) => returnType
+```
 
 The simplest way to describe a function is with a function type expression.
 ```typescript 
-function greeter(fn: (a: string) => void) {
-  fn("Hello, World");
+function greeter(fn : (s : string) => void){
+    fn("it's my life");
 }
 
 function printToConsole(s: string) {
   console.log(s);
 }
-greeter(printToConsole);
+
+// pass a function as parameter
+greeter(printToConsole;
 ```
 - The syntax `(a: string) => void` means _a function with one parameter, named `a`, of type `string`, that doesn’t have a return value (`void`)_.  
 - Just like with function declarations, if a parameter type isn’t specified, it’s implicitly `any`.  that is `(string) => void` is same as `(string : any) => void`
 
 ## Function Type Alias
+
+Make a Function type expression readable with `type` keyword
 
 ```typescript
 type GreetFunction = (a: string) => void;
@@ -61,26 +63,28 @@ function greeter(fn: GreetFunction) {
   // ...
 }
 ```
-## Call Signatures in Ojbect Types
+## Signatures
+
+### Call Signatures
 
 Functions can have properties in addition to being callable.    
 However, the function type expression syntax doesn't allow for declaring properties. 
 
 If we want to describe something callable with properties, we can write a call signature in an object type
 ```typescript
-// object type 
+// Create Object-Type 
 type DescribableFunction = {
   description: string;
   // Call Signatures (function without name)
   (someArg: number): boolean;
 };
 
-// callable object type 
+// Callable object type 
 function doSomething(fn: DescribableFunction) {
   console.log(fn.description + " returned " + fn(6));
 }
 ```
-## Construct Signatures 
+### Construct Signatures 
 
 You can write a construct signature by adding the `new` keyword in front of a call signature
 ```typescript
@@ -93,7 +97,7 @@ function fn(ctor: SomeConstructor) {
 }
 ```
 
-Some objects, like JavaScript’s Date object, can be called with or without `new`
+Some objects, like JavaScript’s Date object, can be called with/without `new`
 ```typescript
 interface CallOrConstruct {
   new (s: string): Date;
@@ -103,22 +107,27 @@ interface CallOrConstruct {
 
 ## Generic Functions
 
-It’s common to write a function where the types of the input relate to the type of the output, or where the types of two inputs are related in some way. 
+
+Generics are used when we want to describe a correspondence between two values.  
+
+Instead of the return type `any`
 ```typescript 
 function firstElement(arr: any[]) {
   // return input's first element as output
   return arr[0];
 }
 ```
-- It’d be better if the function returned the type of the array element instead of the return type `any`.
 
-Generics are used when we want to describe a correspondence between two values.   
+It’d be better using generics type to represent array's element type
 ```typescript 
-function firstElement<Type>(arr: Type[]):  Type | undefined {
-  // return Specific Type or undefined
+function firstElement<Type>(arr: Type[]): Type | undefined {
+    // return Specific Type or undefined
   return arr[0];
 }
 
+/*********************************************
+ * the type will be inferred automatically   *
+ *********************************************/
 // s is of type 'string'
 const s = firstElement(["a", "b", "c"]);
 // n is of type 'number'
@@ -127,30 +136,26 @@ const n = firstElement([1, 2, 3]);
 const u = firstElement([]);
 ```
 
-## (type) Inference
+### (type) Inference
     
-**The type was inferred - chosen automatically - by TypeScript.**  
+>>> **The type was inferred - chosen automatically - by TypeScript.**  
 
-For example, a standalone version of map would look like this:
 ```typescript 
 function map<Input, Output>(arr: Input[], func: (arg: Input) => Output): Output[] {
   return arr.map(func);
 }
 
-// 'n' is of type 'string' 
-// 'parsed' is of type 'number[]'
+// infer the type automatically
+//     'n' is of type 'string' 
+//     'parsed' is of type 'number[]'
 const parsed = map(["1", "2", "3"], (n) => parseInt(n));
 ```
 - TypeScript could infer both the type of the Input type parameter (from the given `string` array), as well as the Output type parameter based on the return value of the function expression (`number`).
 
-## Constraints `T extends A` (Generic Function)
+### Constraints
 
-Sometimes we want to relate two values, but can only operate on a certain subset of values. 
-In this case, we can use a constraint to limit the kinds of types that a type parameter can accept.
-
-**We constrain the type parameter to that type by writing an `extends` clause:**
-
-```typescript
+**We can constrain the type parameter to the specific type by writing an `extends` clause :**  
+```typescript=
 function longest<Type extends { length: number }> (a: Type, b: Type) 
 {
   if (a.length >= b.length) {
@@ -170,7 +175,7 @@ const longerString = longest("alice", "bob");
 const notOK = longest(10, 100);
 Argument of type 'number' is not assignable to parameter of type '{ length: number; }'.
 ```
-- Because we constrained `Type` to `{ length: number }`, we were allowed to access the `.length` property of the a and b parameters.
+- Because we constrained `Type` to `{ length: number }`, we were allowed to access the `.length` property of the `a` and `b` parameters.
 - Without the type constraint, we wouldn’t be able to access those properties because the values might have been some other type without a length property.
 - the call to `longest(10, 100)` is rejected because the `number` type doesn’t have a `.length` property.
 
@@ -183,11 +188,10 @@ function minimumLength<Type extends { length: number }>( obj: Type, minimum: num
     return obj;
   } else {
     return { length : minimum };
-    
-    Type '{ length: number; }' is not assignable to type 'Type'.
-    '{ length: number; }' is assignable to the constraint of type 'Type', 
-     but 'Type' could be instantiated 
-     with a different subtype of constraint '{ length: number; }'.
+     ^ Type '{ length: number; }' is not assignable to type 'Type'.
+       '{ length: number; }' is assignable to the constraint of type 'Type', 
+       but 'Type' could be instantiated 
+       with a different subtype of constraint '{ length: number; }'.
   }
 }
 ```
@@ -205,7 +209,7 @@ console.log(arr.slice(0));
 
 ### Specifying Type Arguments instead of the constraints
 
-**When possible, use the type parameter itself rather than _constraining_ it**
+>>> **When possible, use the type parameter itself rather than _constraining_ it**
 
 TypeScript can usually infer the intended type arguments in a generic call, **BUT NOT ALWAYS.**
 
@@ -507,8 +511,3 @@ const admins = db.filterUsers(() => this.admin);
   ^The containing arrow function captures the global value of 'this'.
    Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
 ```
-
-
-
-
-
