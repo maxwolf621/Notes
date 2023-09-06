@@ -1,6 +1,6 @@
 # Functions
 
-References
+Reference
 [Function overload](https://bobbyhadz.com/blog/typescript-overload-signature-not-compatible-implementation)
 
 ```typescript 
@@ -72,17 +72,34 @@ However, the function type expression syntax doesn't allow for declaring propert
 
 If we want to describe something callable with properties, we can write a call signature in an object type
 ```typescript
-// Create Object-Type 
-type DescribableFunction = {
-  description: string;
-  // Call Signatures (function without name)
-  (someArg: number): boolean;
-};
-
-// Callable object type 
-function doSomething(fn: DescribableFunction) {
-  console.log(fn.description + " returned " + fn(6));
+// Object Type Creation
+type Operator = {
+    (y : number , x : number) : number
+    (fnname : string) : string
+    description ?: string | undefined
 }
+
+// Callable Function Creation
+function callableFn(c : Operator){
+    console.log(c("addTwoNumbers"))
+    console.log(c.description)
+    console.log(c(1,2))
+}
+
+// Implementations
+function addTwoNumber(x : string) : string
+function addTwoNumber(x : number, y : number) : number
+function addTwoNumber(x : string | number, y ?: number) : string | number {
+    if(typeof x === 'string' && typeof y === 'undefined') return x
+    else if(typeof x === 'number' && typeof y !== 'undefined') return x + y
+    throw new Error("ArgumentExceptio")
+}
+const fn : Operator= addTwoNumber 
+fn.description = "a test for multiple call signatures"
+
+
+// Execute Callable Function
+callableFn(fn)
 ```
 ### Construct Signatures 
 
@@ -155,7 +172,7 @@ const parsed = map(["1", "2", "3"], (n) => parseInt(n));
 ### Constraints
 
 **We can constrain the type parameter to the specific type by writing an `extends` clause :**  
-```typescript=
+```typescript  
 function longest<Type extends { length: number }> (a: Type, b: Type) 
 {
   if (a.length >= b.length) {
@@ -170,17 +187,18 @@ const longerArray = longest([1, 2], [1, 2, 3]);
 
 // longerString is of type 'alice' | 'bob'
 const longerString = longest("alice", "bob");
+```
 
+
+The call to `longest(10, 100)` is rejected because the `number` type doesn't have a `length` property.
+```typescript
 // Error
 const notOK = longest(10, 100);
 Argument of type 'number' is not assignable to parameter of type '{ length: number; }'.
 ```
-- Because we constrained `Type` to `{ length: number }`, we were allowed to access the `.length` property of the `a` and `b` parameters.
-- Without the type constraint, we wouldn’t be able to access those properties because the values might have been some other type without a length property.
-- the call to `longest(10, 100)` is rejected because the `number` type doesn’t have a `.length` property.
 
-### Working with Constrained Values
 
+Here the problem is that the function promises to return the same kind of object as was passed in, not just some object matching the constraint.  
 ```typescript 
 function minimumLength<Type extends { length: number }>( obj: Type, minimum: number): Type 
 {
@@ -195,17 +213,14 @@ function minimumLength<Type extends { length: number }>( obj: Type, minimum: num
   }
 }
 ```
-- `Type` is constrained to `{ length: number }`, and the function either returns `Type` or a value matching that constraint.  
 
-The problem is that the function promises to return the same kind of object as was passed in, not just some object matching the constraint.    
 If this code were legal, you could write the following code that definitely wouldn’t work:
 ```typescript 
 const arr = minimumLength([1, 2, 3], 6);
 
 console.log(arr.slice(0));
 ```
-- `arr` gets value `{ length: 6 }` minimum Length 
-- it will crashes because arrays have a `slice` method, but not the returned object (`arr`)!
+- `arr` gets value `{ length: 6 }` minimum Length and it will crashes because arrays have a `slice` method, but not the returned object (`arr`)!
 
 ### Specifying Type Arguments instead of the constraints
 
@@ -213,7 +228,6 @@ console.log(arr.slice(0));
 
 TypeScript can usually infer the intended type arguments in a generic call, **BUT NOT ALWAYS.**
 
-For example 
 ```typescript 
 // Combine two arrays
 function combine<Type>(arr1: Type[], arr2: Type[]): Type[] {
@@ -248,8 +262,7 @@ const a = firstElement1([1, 2, 3]);
 // b could be any type
 const b = firstElement2([1, 2, 3]);
 ```
-`firstElement1` is a much better way to write this function.  
-Its inferred return type is `Type`, but `firstElement2`'s inferred return type is `any` because TypeScript has to resolve the `arr[0]` expression using the constraint type, rather than waiting to resolve the element during a call.
+
 
 ## Guidelines for Writing Good Generic Functions
 
@@ -262,14 +275,16 @@ function filter1 <Type> (arr: Type[], func : (arg: Type) => boolean): Type[] {
   return arr.filter(func);
 }
 
+// make the function harder to read and reason about!
 function filter2<Type, Func extends (arg: Type) => boolean>(arr: Type[], func: Func): Type[] {
   return arr.filter(func);
 }
 ```
- means callers wanting to specify type arguments have to manually specify an extra type argument for no reason.   
-`Func` doesn’t do anything but make the function harder to read and reason about!
 
 ### Type Parameters Should Appear Twice   
+
+
+>>> **Type parameters are for relating the types of multiple values. If a type parameter is only used once in the function signature, it’s not relating anything.**
 
 If a type parameter only appears in one location, strongly reconsider if you actually need it
 ```typescript 
@@ -286,8 +301,6 @@ function greet(s: string) {
 }
 ```
 
-**Type parameters are for relating the types of multiple values. If a type parameter is only used once in the function signature, it’s not relating anything.**
-
 ## Optional Parameters
 
 ```typescript 
@@ -298,9 +311,10 @@ function f(x?: number) {
 f(); // OK
 f(10); // OK
 ```
-- Although the parameter is specified as type `number`, the `x` parameter will actually have the type `number | undefined` because unspecified parameters in JavaScript get the value `undefined`. (we need to narrow the undefined case)
+- Although the parameter is specified as type `number`, the `x` parameter will actually have the type `number | undefined` because unspecified parameters in JavaScript get the value `undefined`. (we need to narrow the undefined case)  
 
-**Note that when a parameter is optional, callers can always pass `undefined`, as this simply simulates a _missing_ argument**:
+
+>>> **Note that when a parameter is optional, callers can always pass `undefined`, as this simply simulates a _missing_ argument**:
 ```typescript 
 declare function f(x?: number): void;
 
@@ -310,9 +324,9 @@ f(10);
 f(undefined);
 ```
 
-### Default parameter 
+## Default Parameters
 
-Provide a default parameter instead of using Optional Parameter
+Provide a default parameter instead of using Optional Parameter  
 ```typescript 
 function f(x = 10) {
   // ...
@@ -333,13 +347,14 @@ function myForEach(arr: any[],
   }
 }
 ```
+
 What people usually intend when writing `index?` as an optional parameter is that they want both of these calls to be legal:
 ```typescript 
 myForEach([1, 2, 3], (a) => console.log(a));
 myForEach([1, 2, 3], (a, i) => console.log(a, i));
 ```
 
-if `callback` gets invoked with one argument.     
+if `callback` gets invoked with one argument.  
 ```typescript 
 function myForEach(arr: any[], callback: (arg: any, index?: number) => void) {
   for (let i = 0; i < arr.length; i++) {
@@ -347,21 +362,21 @@ function myForEach(arr: any[], callback: (arg: any, index?: number) => void) {
   }
 }
 ```
-In turn, TypeScript will enforce this meaning and issue errors that aren’t really possible:
-```typescript
+In turn, TypeScript will enforce this meaning and issue errors that aren't really possible:
+```typescript 
 //                       index
-myForEach([1, 2, 3], (a, index) => {
+myForEach([1, 2, 3], (a, i) => {
   console.log(i.toFixed());
-  ^ Object is possibly 'undefined'.
+  //            ^ Object is possibly 'undefined'.
 });
 ```
-- In JavaScript, if you call a function with more arguments than there are parameters, the extra arguments are simply ignored. TypeScript behaves the same way.   
-
-- Functions with fewer parameters (of the same types) can always take the place of functions with more parameters.    
+- **In JavaScript, if you call a function with more arguments than there are parameters, the extra arguments are simply ignored. TypeScript behaves the same way.**  
+- Functions with fewer parameters (of the same types) can always take the place of functions with more parameters.  
 
 ## Function Overloads
 
-In TypeScript, **the implementation signature of the function cannot be called directly, you have to call one of the overload signatures**
+>>> In TypeScript, **the implementation signature of the function cannot be called directly, you have to call one of the overload signatures**  
+
 ```typescript 
 // overload signatures
 function makeDate(timestamp: number): Date;
@@ -381,13 +396,10 @@ const d2 = makeDate(5, 5, 5);
 
 // ERROR
 const d3 = makeDate(1, 3);
-No overload expects 2 arguments, 
-but overloads do exist that expect either 1 or 3 arguments.
+//        ^ No overload expects 2 arguments, 
+//          but overloads do exist that expect either 1 or 3 arguments.
 ```
-- we wrote two overloads:   
-one accepting one argument, and another accepting three arguments.  
-These first two signatures are called the overload signatures.  
-Then, we wrote a function implementation with a compatible signature.  
+- Here two overloads were written, one accepting one argument, and another accepting three arguments.These first two signatures are called the overload signatures. Then, we wrote a function implementation with a compatible signature.  
 - **Functions have an implementation signature, but this signature can't be called directly.**   
 **Even though we wrote a function with two optional parameters after the required one, it can’t be called with two parameters!**
 
@@ -402,20 +414,20 @@ function fn(x: string): void;
 function fn() {}
 
 // Expected to be able to call with zero arguments
-fn();
-"Expected 1 arguments, but got 0.
+ fn();
+// ^ "Expected 1 arguments, but got 0.
 ```
 
 1. **When writing an overloaded function, you should always have two or more signatures above the implementation of the function.**
 2. The implementation signature must also be compatible with the overload signatures.
 
-the following functions have errors because the implementation signature doesn’t match the overloads in a correct way
-```typescript
+The following functions have errors because the implementation signature doesn't match the overloads in a correct way
+```typescript 
 function fn(x: boolean): void;
 
 // parameter isn't compatible with the first overload signature.
 function fn(x: string): void; 
-This overload signature is not compatible with its implementation signature.
+//        ^ This overload signature is not compatible with its implementation signature.
 
 function fn(x: boolean) {}
 
@@ -423,47 +435,46 @@ function fn(x: string): string;
 
 // Return type isn't right should be boolean
 function fn(x: number): boolean;
-This overload signature is not compatible with its implementation signature.
+//       ^ This overload signature is not compatible with its implementation signature.
 
 function fn(x: string | number) {
   return "oops";
 }
 ```
 
-### Writing Good Overloads
+## Writing Good Overloads
 
 Like generics, there are a few guidelines you should follow when using function overloads. 
 
-**Always prefer parameters with union types instead of overloads when possible.**
+### Always prefer parameters with union types instead of overloads when possible.
 
-```typescript
+```typescript  
+// Overload Functions
 function len(s: string): number;
 function len(arr: any[]): number;
 
+// Implementations
 function len(x: any) {
   return x.length;
 }
 ```
 
-we can’t invoke it with A value that MIGHT BE(Ambiguous) A string or AN array, because TypeScript can only resolve a function call to a single overload:
-```typescript 
+we can't invoke it with A value that MIGHT BE (Ambiguous) **A** string or **AN** array, because TypeScript can only resolve a function call to a single overload:
+```typescript   
 len("");  // ok
 len([0]); // OK
 ```
 
-```typescript
+```typescript  
 // Ambiguous
 len(Math.random() > 0.5 ? "hello" : [0]);
-```
-the above code gets the following error message
-```typescript
-No overload matches this call.
-Overload 1 of 2, '(s: string): number', gave the following error.
-Argument of type 'number[] | "hello"' is not assignable to parameter of type 'string'.
-Type 'number[]' is not assignable to type 'string'.
-Overload 2 of 2, '(arr: any[]): number', gave the following error.
-Argument of type 'number[] | "hello"' is not assignable to parameter of type 'any[]'.
-Type 'string' is not assignable to type 'any[]'.
+//          ^ No overload matches this call.
+//            Overload 1 of 2, '(s: string): number', gave the following error.
+//            Argument of type 'number[] | "hello"' is not assignable to parameter of type 'string'.
+//            Type 'number[]' is not assignable to type 'string'.
+//            Overload 2 of 2, '(arr: any[]): number', gave the following error.
+//            Argument of type 'number[] | "hello"' is not assignable to parameter of type 'any[]'.
+//            Type 'string' is not assignable to type 'any[]'.
 ```
 
 Because **both overloads have the same argument count and same return type**, we can instead write a non-overloaded version of the function:
@@ -479,7 +490,6 @@ TypeScript will infer what the `this` should be in a function via code flow anal
 const user = {
   id: 123,
   admin: false,
-  
   becomeAdmin: function () {
     this.admin = true;
   },
@@ -498,16 +508,21 @@ const admins = db.filterUsers(function (this: User) {
   return this.admin;
 });
 ```
-This pattern is common with callback-style APIs, where another object typically controls when your function is called. 
+This pattern is common with callback-style APIs, where another object typically controls when your function is called.   
 
-**Note that you need to use function and not arrow functions to get this behavior:**
-```typescript
+**Note that you need to use function and not arrow functions to get this behavior:**  
+```typescript 
 interface DB {
   filterUsers(filter: (this: User) => boolean): User[];
 }
  
 const db = getDB();
 const admins = db.filterUsers(() => this.admin);
-  ^The containing arrow function captures the global value of 'this'.
-   Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
+//  ^ The containing arrow function captures the global value of 'this'.
+//   Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.
 ```
+
+
+
+
+
