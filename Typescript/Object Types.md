@@ -1,37 +1,45 @@
 # Object Types 
-## Reference
-[unknown vs any](https://stackoverflow.com/questions/51439843/unknown-vs-any)
-- [Object Types](#object-types)
-  - [Reference](#reference)
-  - [Object Type As Type Annotation](#object-type-as-type-annotation)
-  - [Optional Properties (`?`) in Object Types](#optional-properties--in-object-types)
-  - [`readonly` Properties in object type](#readonly-properties-in-object-type)
-  - [Index Signatures in object type](#index-signatures-in-object-type)
-    - [array is indexed with `number`](#array-is-indexed-with-number)
-    - [array is indexed with `string`](#array-is-indexed-with-string)
-    - [array is indexed with `number | string`](#array-is-indexed-with-number--string)
-    - [readonly index signature](#readonly-index-signature)
-  - [The Array Type](#the-array-type)
-  - [The ReadonlyArray Type](#the-readonlyarray-type)
-    - [readonly cant be assigned to mutable](#readonly-cant-be-assigned-to-mutable)
 
+[TOC]
 
-Object Types **GROUP** and **PASS** around data that is through objects, for example :
-```typescript
+References  
+[`unknown` vs `any`](https://stackoverflow.com/questions/51439843/unknown-vs-any)  
+
+---
+
+Object Types :arrow_right: **GROUP** and **PASS** around data that is through objects, for example :
+```typescript 
+
+/************
+ * Object   *
+ ************/
 const std = {
   name : string;
   age : number;
-}
-// or 
+} 
 interface std = {
   name : string;
   age : number;
 }
-```
 
-## Object Type As Type Annotation
-```typescript 
+/*******************************
+ * Object-Type                 *
+ * Represent A Type Literally  *
+ *******************************/
+type std = {
+    name : string;
+    age : number;
+}
+
+
+// We Say person parameter is object type
+
 function greet(person: { name: string; age: number }) {
+  return "Hello " + person.name;
+}
+
+// better
+function greet(person: std) {
   return "Hello " + person.name;
 }
 ```
@@ -39,7 +47,7 @@ function greet(person: { name: string; age: number }) {
 ## Optional Properties (`?`) in Object Types
 when we do under `strictNullChecks = ON`, TypeScript will tell us they’re potentially `undefined`.
 - For example
-```typescript
+```typescript 
 interface PaintOptions {
   shape: Shape;
   xPos?: number; // xPos is optional
@@ -71,38 +79,47 @@ function paintShape({ shape, xPos = 0, yPos = 0 }: PaintOptions) {
 }
 ```
 
-## `readonly` Properties in object type
+## `readonly` Properties
 
-**`readonly` doesn't imply that a value is totally immutable**
+>>> **`readonly` does NOT imply that a value is totally immutable**
+
+- Object Type : Address Can Not Be Modified
+- Primitive Type : Read Only
+
 ```typescript
 /**
-  * update the value not the address 
+  * Allow Update the value not the address 
   */
 interface Home {
-  readonly resident: { name: string; age: number };
+    readonly resident: { name: string; age: number };
 }
+
+ 
+
+// We can read and update properties from 'home.resident'.
 function visitForBirthday(home: Home) {
-  // We can read and update properties from 'home.resident'.
-  console.log(`Happy birthday ${home.resident.name}!`);
-  home.resident.age++;
-}
-function evict(home: Home) {
-  // But we can't write to the 'resident' property itself on a 'Home'.
-  // It created a new address 
-  home.resident = { 
-    // Cannot assign to 'resident' because it is a read-only property.
-    name: "Victor the Evictor",
-    age: 42,
-  };
+    console.log(`Happy birthday ${home.resident.name}!`);
+    home.resident.age++;
 }
 ```
 
-## Index Signatures in object type
+But we can't write to the 'resident' property itself on a 'Home'. It created a new address for the object
+```typescript 
+function evict(home: Home) {
+    home.resident = { 
+        name: "Victor the Evictor",
+        age: 42,
+    };
+//     ^ Cannot assign to 'resident' because it is a read-only property.
+}
+```
 
-**Sometimes you don’t know all the names of a type’s properties ahead of time(in advance), but you do know the shape of the values.**
+## Index Signatures
+
+**Sometimes you don’t know all the names of a type’s properties ahead of time(in advance), but YOU DO KNOW THE SHAPE OF THE VALUES.**  
 In those cases you can use an index signature to describe the types of possible values   
 
-- **An index signature property type must be either `string` or `number`.**   
+>>> **An index signature property type must be either `string` or `number`.**   
 ### array is indexed with `number`
 
 ```typescript
@@ -134,8 +151,8 @@ interface NumberDictionary {
   [index: string]: number;
   length: number; // ok  
   name: string;
-        ^ Property 'name' of type 'string' 
-        ^ is not assignable to 'string' index type 'number'.
+        // ^ Property 'name' of type 'string' 
+        // ^ is not assignable to 'string' index type 'number'.
 }
 ```
 ### array is indexed with `number | string`
@@ -160,14 +177,14 @@ interface ReadonlyStringArray {
  
 let myArray: ReadonlyStringArray = getReadOnlyStringArray();
 myArray[2] = "Mallory";
-        ^ Index signature in type 'ReadonlyStringArray' only permits reading.
+        // ^ Index signature in type 'ReadonlyStringArray' only permits reading.
 ```
 
 ## The Array Type
 
 Generic object types are often some sort of container type that work independently of the type of elements they contain.   
 
-the Array type. Whenever we write out types like `number[]` or `string[]`, that’s really just a shorthand for `Array<number>` and `Array<string>`.
+>>> The Array type. **Whenever we write out types like `number[]` or `string[]`, that's really just a shorthand for `Array<number>` and `Array<string>`.**
 ```typescript
 function doSomething(value: Array<string>) {
   // ...
@@ -234,7 +251,7 @@ const roArray: ReadonlyArray<string> = ["red", "green", "blue"];
 ```
 
 
-TypeScript provides a shorthand syntax for `Array<Type>` with `Type[]`, it also provides a shorthand syntax for `ReadonlyArray<Type>` with `readonly Type[]`.
+>>> **TypeScript provides a shorthand syntax for `Array<Type>` with `Type[]`, it also provides a shorthand syntax for `ReadonlyArray<Type>` with `readonly Type[]`.**
 ```typescript 
 function doStuff(values: readonly string[]) {
   // We can read from 'values'...
@@ -256,7 +273,7 @@ let y: string[] = [];
  
 x = y;
 y = x;
-    ^ The type 'readonly string[]' is 
-      readonly' and cannot be assigned 
-      to the mutable type 'string[]'.
+// ^ The type 'readonly string[]' is 
+//   readonly' and cannot be assigned 
+//   to the mutable type 'string[]'.
 ```
