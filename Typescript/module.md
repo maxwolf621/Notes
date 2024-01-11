@@ -11,7 +11,7 @@ Conversely, a file without any top-level import or export declarations is treate
 /**
  * export module -> allow to be used as module
  */
-export [variable | function | class | type alias | interface]
+export [const | default] [variable | function | class | type alias | interface ]
 
 /**
  * import module -> use the module
@@ -295,3 +295,5 @@ squareTwo;
 ---
 References
 [Day27 :【TypeScript 學起來】Module 模組](https://ithelp.ithome.com.tw/articles/10280543)
+
+
